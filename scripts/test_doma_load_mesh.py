@@ -4,7 +4,7 @@ import open3d as o3d
 from doma.envs import ClayEnv
 
 script_path = os.path.dirname(os.path.realpath(__file__))
-mesh_file_path = os.path.join(script_path, '..', 'objects', 'pcd_to_mesh', 'mesh_0_repaired.obj')
+mesh_file_path = os.path.join(script_path, '..', 'data-motion-1', 'trial-1', 'mesh_0_repaired.obj')
 initial_pos = (0.2, 0.25, 0.03)
 env = ClayEnv(ptcl_density=1e7, horizon=500,
               mesh_file=mesh_file_path, material_id=2, voxelise_res=1080, initial_pos=initial_pos)
@@ -12,7 +12,7 @@ env.reset()
 frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1, origin=[0, 0, 0])
 done = False
 while not done:
-    obs, reward, done, info = env.step(np.array([-0.1, -0.1, -0.1]))
+    obs, reward, done, info = env.step(np.array([-0., -0., -0.]))
     env.render(mode='human')
 
     if env.t == 1 or env.t == 300 or env.t == 500:

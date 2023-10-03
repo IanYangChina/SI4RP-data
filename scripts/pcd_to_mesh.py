@@ -4,6 +4,8 @@ import numpy as np
 import open3d as o3d  # >= 0.14.1
 from pymeshfix import _meshfix
 import pyvista as pv
+import trimesh
+import pickle as pkl
 
 motion_ind = str(1)
 pcd_index = str(2)
@@ -22,10 +24,10 @@ _, ind = pcd.remove_radius_outlier(nb_points=7, radius=0.005)
 outliner = pcd.select_by_index(ind, invert=True).paint_uniform_color([1, 0, 0])
 pcd = pcd.select_by_index(ind).paint_uniform_color([0, 0.5, 0.5])
 
-o3d.visualization.draw_geometries([original_pcd, world_frame, bounding_box, outliner],
-                                  width=800, height=800,
-                                  mesh_show_back_face=True,
-                                  mesh_show_wireframe=True)
+# o3d.visualization.draw_geometries([original_pcd, world_frame, bounding_box, outliner],
+#                                   width=800, height=800,
+#                                   mesh_show_back_face=True,
+#                                   mesh_show_wireframe=True)
 
 pcd = pcd.voxel_down_sample(voxel_size=0.002)  # 0.003 is a good value for downsampling
 
@@ -43,22 +45,35 @@ mesh_to_fix = _meshfix.PyTMesh()
 mesh_to_fix.load_file(mesh_path)
 os.remove(mesh_path)
 mesh_to_fix.fill_small_boundaries()
+
 points, faces = mesh_to_fix.return_arrays()
 mesh_centre = (points.max(0) + points.min(0)) / 2
-print(mesh_centre)
+print(f"Original mesh centre: {mesh_centre}.")
 np.save(os.path.join(data_path, 'mesh_'+pcd_index+'_repaired_centre.npy'), mesh_centre)
 mesh_top_centre = mesh_centre.copy()
 mesh_top_centre[-1] = points.max(0)[-1]
-np.save(os.path.join(data_path, 'mesh_'+pcd_index+'_repaired_top_centre.npy'), mesh_top_centre)
+print(f"Original mesh top z: {points.max(0)[-1]}")
+print(f"Normalised mesh top z: {points.max(0)[-1] - mesh_centre[-1]}")
+np.save(os.path.join(data_path, 'mesh_'+pcd_index+'_repaired_centre_top.npy'), mesh_top_centre)
 
 end_effector_target_xyz = mesh_top_centre.copy()
 end_effector_target_xyz[-1] += 0.0935  # real robot eef link offset = 0.0935 m
-print(end_effector_target_xyz)
+print(f"Real end effector frame location: {end_effector_target_xyz}")
 repaired_mesh_path = os.path.join(data_path, 'mesh_'+pcd_index+'_repaired.obj')
 mesh_to_fix.save_file(repaired_mesh_path)
 
 repaired_mesh_0 = o3d.io.read_triangle_mesh(repaired_mesh_path)
-o3d.visualization.draw_geometries([pcd, world_frame, repaired_mesh_0, bounding_box, outliner],
-                                  width=800, height=800,
-                                  mesh_show_back_face=True,
-                                  mesh_show_wireframe=True)
+# o3d.visualization.draw_geometries([pcd, world_frame, repaired_mesh_0, bounding_box, outliner],
+#                                   width=800, height=800,
+#                                   mesh_show_back_face=True,
+#                                   mesh_show_wireframe=True)
+
+repaired_mesh_0_to_normalised = trimesh.load(repaired_mesh_path, force='mesh', skip_texture=True)
+repaired_mesh_0_to_normalised.vertices -= mesh_centre
+# repaired_mesh_0_to_normalised.show()
+normalised_mesh_path = os.path.join(data_path, 'mesh_'+pcd_index+'_repaired_normalised.obj')
+repaired_mesh_0_to_normalised.export(normalised_mesh_path, file_type='obj')
+normalised_mesh_top_centre = mesh_top_centre.copy() - mesh_centre
+print(f"Normalised mesh top centre: {normalised_mesh_top_centre}")
+print(f"Normalised mesh top centre z: {repaired_mesh_0_to_normalised.vertices.max(0)[-1]}")
+np.save(os.path.join(data_path, 'mesh_'+pcd_index+'_repaired_normalised_centre_top.npy'), normalised_mesh_top_centre)

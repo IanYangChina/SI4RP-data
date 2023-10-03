@@ -5,10 +5,9 @@ import open3d as o3d  # >= 0.14.1
 from pymeshfix import _meshfix
 import pyvista as pv
 import trimesh
-import pickle as pkl
 
 motion_ind = str(1)
-pcd_index = str(2)
+pcd_index = str(1)
 script_path = os.path.dirname(os.path.abspath(__file__))
 data_path = os.path.join(script_path, '..', 'data-motion-'+motion_ind, 'pcd_to_mesh')
 
@@ -57,16 +56,17 @@ print(f"Normalised mesh top z: {points.max(0)[-1] - mesh_centre[-1]}")
 np.save(os.path.join(data_path, 'mesh_'+pcd_index+'_repaired_centre_top.npy'), mesh_top_centre)
 
 end_effector_target_xyz = mesh_top_centre.copy()
-end_effector_target_xyz[-1] += 0.0935  # real robot eef link offset = 0.0935 m
+end_effector_target_xyz[0] += 0.008  # real robot eef link offset = 0.008 m
+end_effector_target_xyz[-1] += 0.094  # real robot eef link offset = 0.0935 m
 print(f"Real end effector frame location: {end_effector_target_xyz}")
 repaired_mesh_path = os.path.join(data_path, 'mesh_'+pcd_index+'_repaired.obj')
 mesh_to_fix.save_file(repaired_mesh_path)
 
 repaired_mesh_0 = o3d.io.read_triangle_mesh(repaired_mesh_path)
-# o3d.visualization.draw_geometries([pcd, world_frame, repaired_mesh_0, bounding_box, outliner],
-#                                   width=800, height=800,
-#                                   mesh_show_back_face=True,
-#                                   mesh_show_wireframe=True)
+o3d.visualization.draw_geometries([pcd, world_frame, repaired_mesh_0, bounding_box, outliner],
+                                  width=800, height=800,
+                                  mesh_show_back_face=True,
+                                  mesh_show_wireframe=True)
 
 repaired_mesh_0_to_normalised = trimesh.load(repaired_mesh_path, force='mesh', skip_texture=True)
 repaired_mesh_0_to_normalised.vertices -= mesh_centre

@@ -9,6 +9,11 @@
 # o3d.visualization.draw_geometries([pcd, world_frame], width=800, height=600)
 # mesh = pv.read(os.path.join(script_path, '..', 'data-motion-1', 'trial-2', 'mesh_0_repaired.obj'))
 # pv.plot([mesh], notebook=False, window_size=[800, 600])
-horizon = 15
-for i in range(horizon-1, -1, -1):
-    print(i)
+
+import taichi as ti
+
+ti.init(arch=ti.gpu)
+
+a = ti.field(dtype=ti.f64, shape=())
+a[None] = 20
+b = ti.sin(a[None])

@@ -8,30 +8,36 @@ from time import time
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 
-horizon = int(0.03 / 0.002)
+horizon_1 = int(0.03 / 0.002)
 v = 0.045 / 0.03  # 1.5 m/s
-trajectory_1 = np.zeros(shape=(horizon, 6))
+trajectory_1 = np.zeros(shape=(horizon_1, 6))
 trajectory_1[:5, 2] = -v
 trajectory_1[5:, 2] = v
 
+horizon_2 = int(0.04 / 0.002)
+v = 0.05 / 0.04  # 1.25 m/s
+trajectory_2 = np.zeros(shape=(horizon_2, 6))
+trajectory_2[:8, 2] = -v
+trajectory_2[8:, 2] = v
+
+horizon = horizon_1
 # Loading mesh
-data_path = os.path.join(script_path, '..', 'data-motion-1', 'trial-1')
-pcd_ind = str(0)
-pcd_ind_ = str(1)
-mesh_file_path = os.path.join(data_path, 'mesh_' + pcd_ind + '_repaired_normalised.obj')
-centre_real = np.load(os.path.join(data_path, 'mesh_' + pcd_ind + '_repaired_centre.npy'))
-centre_top_normalised = np.load(os.path.join(data_path, 'mesh_' + pcd_ind + '_repaired_normalised_centre_top.npy'))
-centre_top_normalised_ = np.load(os.path.join(data_path, 'mesh_' + pcd_ind_ + '_repaired_normalised_centre_top.npy'))
+data_path = os.path.join(script_path, '..', 'data-motion-1', 'eef-1')
+data_ind = str(0)
+mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_normalised.obj')
+centre_real = np.load(os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_centre.npy'))
+centre_top_normalised = np.load(os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_normalised_centre_top.npy'))
+centre_top_normalised_ = np.load(os.path.join(data_path, 'mesh_' + data_ind+str(1) + '_repaired_normalised_centre_top.npy'))
 
 # Building environment
 initial_pos = (0.25, 0.25, centre_top_normalised[-1] + 0.01)
 material_id = 2
 
-env = SysIDEnv(ptcl_density=2e7, horizon=horizon,
+env = SysIDEnv(ptcl_density=3e7, horizon=horizon,
                mesh_file=mesh_file_path, material_id=material_id, voxelise_res=1080, initial_pos=initial_pos,
-               target_pcd_file=os.path.join(data_path, 'pcd_' + pcd_ind_ + '.ply'),
+               target_pcd_file=os.path.join(data_path, 'pcd_' + data_ind+str(1) + '.ply'),
                pcd_offset=(-centre_real + initial_pos), mesh_offset=(0.25, 0.25, centre_top_normalised_[-1] + 0.01),
-               target_mesh_file=os.path.join(data_path, 'mesh_' + pcd_ind_ + '_repaired_normalised.obj'),
+               target_mesh_file=os.path.join(data_path, 'mesh_' + data_ind+str(1) + '_repaired_normalised.obj'),
                loss_weight=1.0, separate_param_grad=False)
 mpm_env = env.mpm_env
 # Update material parameters

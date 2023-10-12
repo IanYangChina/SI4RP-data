@@ -106,7 +106,7 @@ def main():
         np.random.seed(seed)
 
         def make_env(data_path, pcd_ind_start, pcd_ind_end, horizon):
-            ti.init(arch=ti.vulkan, device_memory_GB=5, default_fp=DTYPE_TI, fast_math=False, random_seed=seed)
+            ti.init(arch=ti.vulkan, device_memory_GB=8, default_fp=DTYPE_TI, fast_math=False, random_seed=seed)
             from doma.envs import SysIDEnv
 
             obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + pcd_ind_start + '_repaired_normalised.obj')
@@ -125,7 +125,7 @@ def main():
             # Building environment
             obj_start_initial_pos = np.array([0.25, 0.25, obj_start_centre_top_normalised[-1] + 0.01], dtype=DTYPE_NP)
 
-            env = SysIDEnv(ptcl_density=2e7, horizon=horizon, material_id=MATERIAL_ID, voxelise_res=1080,
+            env = SysIDEnv(ptcl_density=3e7, horizon=horizon, material_id=MATERIAL_ID, voxelise_res=1080,
                            mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
                            target_pcd_file=obj_end_pcd_file_path,
                            pcd_offset=(-obj_start_centre_real + obj_start_initial_pos),

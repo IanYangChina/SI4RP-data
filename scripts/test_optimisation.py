@@ -1,6 +1,8 @@
 import os
 import numpy as np
 import open3d as o3d
+import taichi as ti
+ti.init(arch=ti.vulkan, device_memory_GB=5, default_fp=ti.f32, fast_math=False)
 from doma.envs import SysIDEnv
 from time import time
 
@@ -14,8 +16,8 @@ trajectory_1[5:, 2] = v
 
 # Loading mesh
 data_path = os.path.join(script_path, '..', 'data-motion-1', 'trial-1')
-pcd_ind = str(1)
-pcd_ind_ = str(2)
+pcd_ind = str(0)
+pcd_ind_ = str(1)
 mesh_file_path = os.path.join(data_path, 'mesh_' + pcd_ind + '_repaired_normalised.obj')
 centre_real = np.load(os.path.join(data_path, 'mesh_' + pcd_ind + '_repaired_centre.npy'))
 centre_top_normalised = np.load(os.path.join(data_path, 'mesh_' + pcd_ind + '_repaired_normalised_centre_top.npy'))
@@ -25,7 +27,7 @@ centre_top_normalised_ = np.load(os.path.join(data_path, 'mesh_' + pcd_ind_ + '_
 initial_pos = (0.25, 0.25, centre_top_normalised[-1] + 0.01)
 material_id = 2
 
-env = SysIDEnv(ptcl_density=1e7, horizon=horizon,
+env = SysIDEnv(ptcl_density=2e7, horizon=horizon,
                mesh_file=mesh_file_path, material_id=material_id, voxelise_res=1080, initial_pos=initial_pos,
                target_pcd_file=os.path.join(data_path, 'pcd_' + pcd_ind_ + '.ply'),
                pcd_offset=(-centre_real + initial_pos), mesh_offset=(0.25, 0.25, centre_top_normalised_[-1] + 0.01),
@@ -35,8 +37,8 @@ mpm_env = env.mpm_env
 # Update material parameters
 # Initialising parameters
 e = np.array([100])  # Young's modulus
-nu = np.array([0.2])  # Poisson's ratio
-yield_stress = np.array([1])
+nu = np.array([0.02])  # Poisson's ratio
+yield_stress = np.array([4])
 mpm_env.simulator.system_param_tmp[None].yield_stress = yield_stress
 mpm_env.simulator.particle_param_tmp[material_id].E = e
 mpm_env.simulator.particle_param_tmp[material_id].nu = nu
@@ -80,13 +82,10 @@ for i in range(horizon - 1, -1, -1):
 t3 = time()
 print(f'=======> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
 
-param_grad = mpm_env.simulator.get_param_grad()
-print(param_grad['particle_param_grad'][:, material_id, :])
-print(mpm_env.loss.total_loss.grad)
-print(mpm_env.loss.step_loss.grad)
+# param_grad = mpm_env.simulator.get_param_grad()
+# print(param_grad['particle_param_grad'][:, material_id, :])
 print(mpm_env.loss.avg_point_distance_sr.grad)
 print(mpm_env.loss.avg_point_distance_rs.grad)
-print(mpm_env.loss.chamfer_loss.grad)
 print(mpm_env.simulator.system_param_tmp.grad[None].manipulator_friction)
 print(mpm_env.simulator.system_param_tmp.grad[None].ground_friction)
 print(mpm_env.simulator.system_param_tmp.grad[None].yield_stress)

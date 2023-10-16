@@ -8,19 +8,27 @@ from time import time
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 
-horizon_1 = int(0.03 / 0.002)
+# Trajectory 1 presses down 0.015 m and lifts for 0.03 m
+# In simulation we only takes the pressing down part
+real_horizon_1 = int(0.03 / 0.001)
 v = 0.045 / 0.03  # 1.5 m/s
+horizon_1 = int((0.015 / v) / 0.001)  # 5 steps
 trajectory_1 = np.zeros(shape=(horizon_1, 6))
-trajectory_1[:5, 2] = -v
-trajectory_1[5:, 2] = v
+trajectory_1[:, 2] = -v
+agent_1 = 'rectangle'
 
-horizon_2 = int(0.04 / 0.002)
+# Trajectory 2 presses down 0.02 m and lifts for 0.03 m
+# In simulation we only takes the pressing down part
+real_horizon_2 = int(0.04 / 0.001)
 v = 0.05 / 0.04  # 1.25 m/s
+horizon_2 = int((0.02 / v) / 0.001)  # 8 steps
 trajectory_2 = np.zeros(shape=(horizon_2, 6))
-trajectory_2[:8, 2] = -v
-trajectory_2[8:, 2] = v
+trajectory_2[:, 2] = -v
+agent_2 = 'round'
 
+agent = agent_1
 horizon = horizon_1
+trajectory = trajectory_1
 # Loading mesh
 data_path = os.path.join(script_path, '..', 'data-motion-1', 'eef-1')
 data_ind = str(0)
@@ -31,29 +39,26 @@ centre_top_normalised_ = np.load(os.path.join(data_path, 'mesh_' + data_ind+str(
 
 # Building environment
 initial_pos = (0.25, 0.25, centre_top_normalised[-1] + 0.01)
+agent_init_pos = (0.25, 0.25, 2*centre_top_normalised[-1]+0.01)
 material_id = 2
 
-env = SysIDEnv(ptcl_density=3e7, horizon=horizon,
+env = SysIDEnv(ptcl_density=1e7, horizon=horizon,
                mesh_file=mesh_file_path, material_id=material_id, voxelise_res=1080, initial_pos=initial_pos,
                target_pcd_file=os.path.join(data_path, 'pcd_' + data_ind+str(1) + '.ply'),
                pcd_offset=(-centre_real + initial_pos), mesh_offset=(0.25, 0.25, centre_top_normalised_[-1] + 0.01),
                target_mesh_file=os.path.join(data_path, 'mesh_' + data_ind+str(1) + '_repaired_normalised.obj'),
-               loss_weight=1.0, separate_param_grad=False)
+               loss_weight=1.0, separate_param_grad=False,
+               agent_cfg_file=agent+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 0))
 mpm_env = env.mpm_env
 # Update material parameters
 # Initialising parameters
-e = np.array([100])  # Young's modulus
-nu = np.array([0.02])  # Poisson's ratio
-yield_stress = np.array([4])
-mpm_env.simulator.system_param_tmp[None].yield_stress = yield_stress
-mpm_env.simulator.particle_param_tmp[material_id].E = e
-mpm_env.simulator.particle_param_tmp[material_id].nu = nu
-for s in range(horizon):
-    mpm_env.simulator.system_param[s].yield_stress = yield_stress
-    mpm_env.simulator.particle_param[s, material_id].E = e
-    mpm_env.simulator.particle_param[s, material_id].nu = nu
+e = np.array([100], dtype=np.float32)  # Young's modulus
+nu = np.array([0.02], dtype=np.float32)  # Poisson's ratio
+yield_stress = np.array([4], dtype=np.float32)
+mpm_env.simulator.system_param[None].yield_stress = yield_stress
+mpm_env.simulator.particle_param[material_id].E = e
+mpm_env.simulator.particle_param[material_id].nu = nu
 env.reset()
-print(mpm_env.simulator.n_particles_per_mat)
 print(mpm_env.loss.n_target_pcd_points)
 print(mpm_env.loss.n_target_particles_from_mesh)
 init_state = mpm_env.get_state()
@@ -67,9 +72,8 @@ init_state = mpm_env.get_state()
 # Forward
 t1 = time()
 mpm_env.set_state(init_state['state'], grad_enabled=True)
-# mpm_env.apply_agent_action_p(np.array([0.25, 0.25, 2*centre_top_normalised[-1]+0.01, 0, 0, 45]))
 for i in range(mpm_env.horizon):
-    action = trajectory_1[i]
+    action = trajectory[i]
     mpm_env.step(action)
     env.render(mode='human')
     print(f'Step {i} chamfer loss: {mpm_env.loss.step_loss[i]}')
@@ -81,20 +85,14 @@ t2 = time()
 mpm_env.reset_grad()
 mpm_env.get_final_loss_grad()
 for i in range(horizon - 1, -1, -1):
-    action = trajectory_1[i]
+    action = trajectory[i]
     mpm_env.step_grad(action=action)
-# mpm_env.apply_agent_action_p_grad(np.array([0.25, 0.25, 2*centre_top_normalised[-1]+0.01, 0, 0, 45]))
 
 t3 = time()
 print(f'=======> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
 
-# param_grad = mpm_env.simulator.get_param_grad()
-# print(param_grad['particle_param_grad'][:, material_id, :])
+param_grad = mpm_env.simulator.get_param_grad()
+print(param_grad['particle_param_grad'][material_id, :])
+print(param_grad['system_param_grad'])
 print(mpm_env.loss.avg_point_distance_sr.grad)
 print(mpm_env.loss.avg_point_distance_rs.grad)
-print(mpm_env.simulator.system_param_tmp.grad[None].manipulator_friction)
-print(mpm_env.simulator.system_param_tmp.grad[None].ground_friction)
-print(mpm_env.simulator.system_param_tmp.grad[None].yield_stress)
-print(mpm_env.simulator.particle_param_tmp.grad[material_id].E)
-print(mpm_env.simulator.particle_param_tmp.grad[material_id].nu)
-print(mpm_env.simulator.particle_param_tmp.grad[material_id].rho)

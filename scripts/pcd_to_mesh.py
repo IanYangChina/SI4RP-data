@@ -6,11 +6,11 @@ from pymeshfix import _meshfix
 import pyvista as pv
 import trimesh
 
-motion_ind = str(2)
-data_ind = str(4)
+motion_ind = str(1)
+data_ind = str(1)
 pcd_index = str(1)
 script_path = os.path.dirname(os.path.abspath(__file__))
-data_path = os.path.join(script_path, '..', 'data-motion-'+motion_ind, 'eef-2')
+data_path = os.path.join(script_path, '..', 'data-motion-'+motion_ind, 'eef-1')
 
 pcd_path = os.path.join(data_path, 'pcd_'+data_ind+pcd_index+'.ply')
 bounding_box_array = np.load(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'))
@@ -24,15 +24,21 @@ _, ind = pcd.remove_radius_outlier(nb_points=7, radius=0.005)
 outliner = pcd.select_by_index(ind, invert=True).paint_uniform_color([1, 0, 0])
 pcd = pcd.select_by_index(ind).paint_uniform_color([0, 0.5, 0.5])
 
-# o3d.visualization.draw_geometries([original_pcd, world_frame, bounding_box, outliner],
-#                                   width=800, height=800,
-#                                   mesh_show_back_face=True,
-#                                   mesh_show_wireframe=True)
+o3d.visualization.draw_geometries([original_pcd, world_frame, bounding_box, outliner],
+                                  width=800, height=800,
+                                  mesh_show_back_face=True,
+                                  mesh_show_wireframe=True)
 
-pcd = pcd.voxel_down_sample(voxel_size=0.002)  # 0.003 is a good value for downsampling
+pcd = pcd.voxel_down_sample(voxel_size=0.003)  # 0.003 is a good value for downsampling
+print(original_pcd)
+print(pcd)
 
 radii = [0.003]
 mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(pcd, o3d.utility.DoubleVector(radii))
+o3d.visualization.draw_geometries([pcd, world_frame, bounding_box, outliner, mesh],
+                                  width=800, height=800,
+                                  mesh_show_back_face=True,
+                                  mesh_show_wireframe=True)
 
 mesh_path = os.path.join(data_path, 'mesh_'+data_ind+pcd_index+'.obj')
 o3d.io.write_triangle_mesh(mesh_path, mesh)
@@ -51,9 +57,15 @@ mesh_centre = (points.max(0) + points.min(0)) / 2
 print(f"Original mesh centre: {mesh_centre}.")
 np.save(os.path.join(data_path, 'mesh_'+data_ind+pcd_index+'_repaired_centre.npy'), mesh_centre)
 mesh_top_centre = mesh_centre.copy()
-mesh_top_centre[-1] = points.max(0)[-1]
-print(f"Original mesh top z: {points.max(0)[-1]}")
-print(f"Normalised mesh top z: {points.max(0)[-1] - mesh_centre[-1]}")
+central_points = []
+for n in range(points.shape[0]):
+    if mesh_centre[0] + 0.01 > points[n][0] > mesh_centre[0] - 0.01:
+        if mesh_centre[1] + 0.01 > points[n][1] > mesh_centre[1] - 0.01:
+            central_points.append(points[n])
+central_points = np.array(central_points)
+mesh_top_centre[-1] = central_points.max(0)[-1]
+print(f"Original mesh central top z: {central_points.max(0)[-1]}")
+print(f"Normalised mesh top z: {central_points.max(0)[-1] - mesh_centre[-1]}")
 np.save(os.path.join(data_path, 'mesh_'+data_ind+pcd_index+'_repaired_centre_top.npy'), mesh_top_centre)
 
 end_effector_target_xyz = mesh_top_centre.copy()

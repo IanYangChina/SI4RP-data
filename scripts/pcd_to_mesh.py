@@ -6,11 +6,11 @@ from pymeshfix import _meshfix
 import pyvista as pv
 import trimesh
 
-motion_ind = str(1)
-data_ind = str(1)
+motion_ind = str(2)
+data_ind = str(8)
 pcd_index = str(1)
 script_path = os.path.dirname(os.path.abspath(__file__))
-data_path = os.path.join(script_path, '..', 'data-motion-'+motion_ind, 'eef-1')
+data_path = os.path.join(script_path, '..', 'data-motion-'+motion_ind, 'pcd_to_mesh')
 
 pcd_path = os.path.join(data_path, 'pcd_'+data_ind+pcd_index+'.ply')
 bounding_box_array = np.load(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'))
@@ -18,22 +18,33 @@ bounding_box_array = np.load(os.path.join(script_path, 'reconstruction_bounding_
 bounding_box = o3d.geometry.AxisAlignedBoundingBox.create_from_points(points=o3d.utility.Vector3dVector(bounding_box_array))
 bounding_box.color = [1, 0, 0]
 world_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1, origin=[0, 0, 0])
+
 pcd = o3d.io.read_point_cloud(pcd_path)
 original_pcd = copy.deepcopy(pcd)
+# o3d.visualization.draw_geometries([original_pcd, world_frame, bounding_box],
+#                                   width=800, height=800,
+#                                   mesh_show_back_face=True,
+#                                   mesh_show_wireframe=True)
+#
+# pcd_index_ = str(1)
+# pcd_path_ = os.path.join(data_path, 'pcd_'+data_ind+pcd_index_+'.ply')
+# pcd_ = o3d.io.read_point_cloud(pcd_path_)
+# original_pcd_ = copy.deepcopy(pcd_)
+# o3d.visualization.draw_geometries([original_pcd_, world_frame, bounding_box],
+#                                   width=800, height=800,
+#                                   mesh_show_back_face=True,
+#                                   mesh_show_wireframe=True)
+# exit()
+
 _, ind = pcd.remove_radius_outlier(nb_points=7, radius=0.005)
 outliner = pcd.select_by_index(ind, invert=True).paint_uniform_color([1, 0, 0])
 pcd = pcd.select_by_index(ind).paint_uniform_color([0, 0.5, 0.5])
-
-o3d.visualization.draw_geometries([original_pcd, world_frame, bounding_box, outliner],
-                                  width=800, height=800,
-                                  mesh_show_back_face=True,
-                                  mesh_show_wireframe=True)
 
 pcd = pcd.voxel_down_sample(voxel_size=0.003)  # 0.003 is a good value for downsampling
 print(original_pcd)
 print(pcd)
 
-radii = [0.003]
+radii = [0.003, 0.004]
 mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(pcd, o3d.utility.DoubleVector(radii))
 o3d.visualization.draw_geometries([pcd, world_frame, bounding_box, outliner, mesh],
                                   width=800, height=800,
@@ -57,19 +68,24 @@ mesh_centre = (points.max(0) + points.min(0)) / 2
 print(f"Original mesh centre: {mesh_centre}.")
 np.save(os.path.join(data_path, 'mesh_'+data_ind+pcd_index+'_repaired_centre.npy'), mesh_centre)
 mesh_top_centre = mesh_centre.copy()
-central_points = []
-for n in range(points.shape[0]):
-    if mesh_centre[0] + 0.01 > points[n][0] > mesh_centre[0] - 0.01:
-        if mesh_centre[1] + 0.01 > points[n][1] > mesh_centre[1] - 0.01:
-            central_points.append(points[n])
-central_points = np.array(central_points)
-mesh_top_centre[-1] = central_points.max(0)[-1]
-print(f"Original mesh central top z: {central_points.max(0)[-1]}")
-print(f"Normalised mesh top z: {central_points.max(0)[-1] - mesh_centre[-1]}")
+
+# central_points = []
+# for n in range(points.shape[0]):
+#     if mesh_centre[0] + 0.01 > points[n][0] > mesh_centre[0] - 0.01:
+#         if mesh_centre[1] + 0.01 > points[n][1] > mesh_centre[1] - 0.01:
+#             central_points.append(points[n])
+# central_points = np.array(central_points)
+# mesh_top_centre[-1] = central_points.max(0)[-1]
+# print(f"Original mesh central top z: {central_points.max(0)[-1]}")
+# print(f"Normalised mesh top z: {central_points.max(0)[-1] - mesh_centre[-1]}")
+
+mesh_top_centre[-1] = points.max(0)[-1]
+print(f"Original mesh central top z: {points.max(0)[-1]}")
+print(f"Normalised mesh top z: {points.max(0)[-1] - mesh_centre[-1]}")
 np.save(os.path.join(data_path, 'mesh_'+data_ind+pcd_index+'_repaired_centre_top.npy'), mesh_top_centre)
 
 end_effector_target_xyz = mesh_top_centre.copy()
-end_effector_target_xyz[0] += 0.008  # real robot eef link offset = 0.008 m
+end_effector_target_xyz[0] += 0.011  # real robot eef link offset = 0.008 m
 end_effector_target_xyz[-1] += 0.094  # real robot eef link offset = 0.0935 m
 print(f"Real end effector frame location: {end_effector_target_xyz}")
 repaired_mesh_path = os.path.join(data_path, 'mesh_'+data_ind+pcd_index+'_repaired.obj')

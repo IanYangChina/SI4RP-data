@@ -51,7 +51,7 @@ o3d.visualization.draw_geometries([pcd, world_frame, bounding_box, outliner, mes
                                   mesh_show_back_face=True,
                                   mesh_show_wireframe=True)
 
-mesh_path = os.path.join(data_path, 'mesh_'+data_ind+pcd_index+'.obj')
+mesh_path = os.path.join(data_path, 'mesh_'+data_ind+pcd_index+'.ply')
 o3d.io.write_triangle_mesh(mesh_path, mesh)
 mesh = pv.read(mesh_path)
 os.remove(mesh_path)

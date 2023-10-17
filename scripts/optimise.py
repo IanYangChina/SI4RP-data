@@ -85,7 +85,7 @@ def main():
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
-    ptcl_density = 2e7
+    ptcl_density = 3e7
 
     # Setting up horizon and trajectory
     dt = 0.001
@@ -100,7 +100,7 @@ def main():
     # Trajectory 2 presses down 0.02 m and lifts for 0.03 m
     # In simulation we only simulate the pressing down part
     real_horizon_2 = int(0.04 / dt)
-    v = 0.05 / 0.04  # 1.25 m/s
+    v = 0.05 / 0.045  # 1.25 m/s
     horizon_2 = int((0.02 / v) / dt)
     trajectory_2 = np.zeros(shape=(horizon_2, 6), dtype=DTYPE_NP)
     trajectory_2[:, 2] = -v
@@ -112,16 +112,17 @@ def main():
 
     # Parameter ranges
     E_range = (1, 500)
-    nu_range = (0.0001, 0.9999)
-    yield_stress_range = (0.0001, 4)
+    nu_range = (0.001, 0.5)
+    yield_stress_range = (0.01, 5)
 
     n_local_step = 10
     seeds = [0, 1, 2]
+    print(f"Optimising for {n_local_step*9*10*2} steps for {len(seeds)} random seeds.")
     for seed in seeds:
         # Setting up random seed
         np.random.seed(seed)
 
-        def make_env(data_path, data_ind, horizon, agent_name):
+        def make_env(data_path, data_ind, horizon, agent_name, agent_init_euler):
             ti.init(arch=ti.vulkan, device_memory_GB=8, default_fp=DTYPE_TI, fast_math=False, random_seed=seed)
             from doma.envs import SysIDEnv
 
@@ -148,7 +149,7 @@ def main():
                            target_mesh_file=obj_end_mesh_file_path,
                            mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
                            loss_weight=1.0, separate_param_grad=False,
-                           agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 0))
+                           agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=agent_init_euler)
             env.reset()
             mpm_env = env.mpm_env
             init_state = mpm_env.get_state()
@@ -156,7 +157,8 @@ def main():
             return mpm_env, init_state
 
         # Logger
-        log_dir = os.path.join(script_path, '..', 'data-motion-1', 'optimisation-logs', f'seed-{seed}')
+        motion_ind = str(1)
+        log_dir = os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'optimisation-logs', f'seed-{seed}')
         os.makedirs(log_dir, exist_ok=True)
         logger = SummaryWriter(log_dir=log_dir)
 
@@ -167,21 +169,24 @@ def main():
 
         global_step = 0
         for eef_id in [1, 2]:
-            data_path = os.path.join(script_path, '..', 'data-motion-1', f'eef-{eef_id}')
+            data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{eef_id}')
             if eef_id == 1:
                 agent = 'rectangle'
                 horizon = horizon_1
                 trajectory = trajectory_1
+                agent_init_euler = (0, 0, 45)
             elif eef_id == 2:
                 agent = 'round'
-                horizon = horizon_2
-                trajectory = trajectory_2
+                horizon = horizon_1
+                trajectory = trajectory_1
+                agent_init_euler = (0, 0, 0)
             else:
                 agent = None
                 horizon = None
                 trajectory = None
+                agent_init_euler = (0, 0, 0)
 
-            data_inds = np.arange(10).astype(int)
+            data_inds = np.arange(9).astype(int)
             data_inds = np.concatenate([data_inds for _ in range(10)])
             np.random.shuffle(data_inds)
             for data_ind in data_inds:
@@ -189,7 +194,7 @@ def main():
                     print('path not exist')
                     break
                 else:
-                    mpm_env, init_state = make_env(data_path, str(data_ind), horizon, agent)
+                    mpm_env, init_state = make_env(data_path, str(data_ind), horizon, agent, agent_init_euler)
                     if mpm_env is None:
                         continue
                     else:
@@ -197,7 +202,8 @@ def main():
                         e_, nu_, yield_stress_ = optimise(mpm_env, global_step=global_step, n_iter=n_local_step,
                                                           init_state=init_state, trajectory=trajectory,
                                                           E=e, nu=nu, yield_stress=yield_stress,
-                                                          E_range=E_range, nu_range=nu_range, yield_stress_range=yield_stress_range,
+                                                          E_range=E_range, nu_range=nu_range,
+                                                          yield_stress_range=yield_stress_range,
                                                           E_lr=e_lr, nu_lr=nu_lr, yield_stress_lr=yield_stress_lr,
                                                           logger=logger)
                         e = e_.copy()
@@ -207,28 +213,8 @@ def main():
                         global_step += n_local_step
                         del mpm_env, init_state
 
-        # Evaluation
-        # print(f'Perform evaluation with final parameters: E={e}, nu={nu}, yield_stress={yield_stress}')
-        # eef_id = np.random.randint(2) + 1
-        # data_ind = np.random.randint(10)
-        # if eef_id == 1:
-        #     agent = 'rectangle'
-        #     horizon = horizon_1
-        #     trajectory = trajectory_1
-        # elif eef_id == 2:
-        #     agent = 'round'
-        #     horizon = horizon_2
-        #     trajectory = trajectory_2
-        # else:
-        #     agent = None
-        #     horizon = None
-        #     trajectory = None
-        #
-        # data_path = os.path.join(script_path, '..', 'data-motion-1', f'eef-{eef_id}')
-        # mpm_env, init_state = make_env(data_path, data_ind, horizon, agent)
-        # print(f'Perform evaluation with eef-{eef_id} datapoint-{data_ind}')
-        # set_parameters(mpm_env, e, nu, yield_stress)
-        # forward_backward(mpm_env, init_state, trajectory, render=True, backward=False)
+        print(f"Final parameters: E={e}, nu={nu}, yield_stress={yield_stress}")
+        np.save(os.path.join(log_dir, 'final_params.npy'), np.array([e, nu, yield_stress], dtype=DTYPE_NP))
 
 
 if __name__ == '__main__':

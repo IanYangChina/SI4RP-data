@@ -12,11 +12,12 @@ plt.rcParams['font.family'] = 'serif'
 plt.rcParams['font.serif'] = ['Times New Roman'] + plt.rcParams['font.serif']
 plt.rcParams.update({'font.size': 12})
 script_path = os.path.dirname(os.path.realpath(__file__))
-data_path = os.path.join(script_path, '..', 'loss-landscapes')
+fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
 DTYPE_NP = np.float32
 
 
-def plot_loss_landscape(p1, p2, loss, x_label='p1', y_label='p2', z_label='Loss', show=False):
+def plot_loss_landscape(p1, p2, loss, fig_title='Fig', loss_type='bi-chamfer', file_suffix='', view='left',
+                        x_label='p1', y_label='p2', z_label='Loss', show=False):
     if not show:
         mpl.use('Agg')
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
@@ -28,7 +29,10 @@ def plot_loss_landscape(p1, p2, loss, x_label='p1', y_label='p2', z_label='Loss'
     ax.zaxis.set_major_locator(LinearLocator(5))
     # A StrMethodFormatter is used automatically
     ax.zaxis.set_major_formatter('{x:.02f}')
-    ax.view_init(elev=25., azim=-130)
+    if view == 'left':
+        ax.view_init(elev=25., azim=130)
+    else:
+        ax.view_init(elev=25., azim=-130)
     ax.tick_params(axis='x', pad=0)
     ax.tick_params(axis='y', pad=0)
     ax.tick_params(axis='z', pad=10)
@@ -38,22 +42,40 @@ def plot_loss_landscape(p1, p2, loss, x_label='p1', y_label='p2', z_label='Loss'
     ax.yaxis.labelpad = 5
     ax.set_zlabel(z_label)
     ax.zaxis.labelpad = 22
+    ax.set_title(label=fig_title)
 
     # Add a color bar which maps values to colors.
-    fig.colorbar(surf, shrink=0.5, aspect=5)
+    fig.colorbar(surf, shrink=0.5, aspect=5, location=view)
 
-    plt.savefig(os.path.join(data_path, "loss_landscape.pdf"), dpi=500, bbox_inches='tight')
+    plt.savefig(os.path.join(fig_data_path, f"{loss_type}-loss_landscape{file_suffix}.pdf"), dpi=500, bbox_inches='tight')
     if show:
         plt.show()
 
 
 E_list = np.arange(1, 600, 10).astype(DTYPE_NP)
-nu_list = np.arange(0.01, 0.99, 0.02).astype(DTYPE_NP)
-E, nu = np.meshgrid(E_list, nu_list)
-yield_stress = np.array([10.0], dtype=DTYPE_NP)
+nu_list = np.arange(0.01, 0.5, 0.01).astype(DTYPE_NP)
+yield_stress_list = np.arange(0, 5, 0.1).astype(DTYPE_NP)
 
-loss = np.load(os.path.join(data_path, 'loss.npy'))
-plot_loss_landscape(E, nu, loss, x_label='E', y_label='nu', z_label='Loss', show=True)
+E, nu = np.meshgrid(E_list, nu_list)
+# E = np.array([150], dtype=DTYPE_NP)
+# nu = np.array([0.2], dtype=DTYPE_NP)
+yield_stress = np.array([1.0], dtype=DTYPE_NP)
+xy_param = 'E-nu'
+cur_loss_type = 'bi-chamfer'
+fig_title = f'Loss landscape with ys = {yield_stress}'
+p_density = 3e7
+p_density_str = '3e7pd'
+
+loss = np.load(os.path.join(fig_data_path,
+                            f'{cur_loss_type}-loss_{xy_param}-{p_density_str}.npy'))
+plot_loss_landscape(E, nu, loss, fig_title=fig_title,
+                    loss_type=cur_loss_type,
+                    file_suffix=f'_{xy_param}-rightview-{p_density_str}', view='right',
+                    x_label='E', y_label='nu', z_label='Loss', show=False)
+plot_loss_landscape(E, nu, loss, fig_title=fig_title,
+                    loss_type=cur_loss_type,
+                    file_suffix=f'_{xy_param}-leftview-{p_density_str}', view='left',
+                    x_label='E', y_label='nu', z_label='Loss', show=False)
 exit()
 
 DTYPE_TI = ti.f32
@@ -78,7 +100,7 @@ def make_env(data_path, data_ind, horizon, agent_name):
     obj_start_initial_pos = np.array([0.25, 0.25, obj_start_centre_top_normalised[-1] + 0.01], dtype=DTYPE_NP)
     agent_init_pos = (0.25, 0.25, 2*obj_start_centre_top_normalised[-1] + 0.01)
 
-    env = SysIDEnv(ptcl_density=1e7, horizon=horizon, material_id=2, voxelise_res=1080,
+    env = SysIDEnv(ptcl_density=p_density, horizon=horizon, material_id=2, voxelise_res=1080,
                    mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
                    target_pcd_file=obj_end_pcd_file_path,
                    pcd_offset=(-obj_start_centre_real + obj_start_initial_pos),
@@ -112,13 +134,13 @@ agent = agent_1
 horizon = horizon_1
 trajectory = trajectory_1
 # Loading mesh
-data_path = os.path.join(script_path, '..', 'data-motion-1', 'eef-1')
+training_data_path = os.path.join(script_path, '..', 'data-motion-1', 'eef-1')
 data_ind = str(0)
 material_id = 2
-mpm_env, init_state = make_env(data_path, str(data_ind), horizon, agent)
-loss = np.zeros_like(E)
+mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent)
+loss = np.zeros_like(nu)
 t0 = time()
-print(f'Start calculating loss with grid size: {loss.shape}, yield stress: {yield_stress}')
+print(f'Start calculating {fig_title} with grid size: {loss.shape}')
 for i in range(len(E_list)):
     for j in range(len(nu_list)):
         set_parameters(mpm_env, E_list[i], nu_list[j], yield_stress)
@@ -131,5 +153,15 @@ for i in range(len(E_list)):
         loss[j, i] = mpm_env.loss.total_loss[None]
 
 print(f'Time taken: {time() - t0}')
-np.save('loss.npy', loss)
-plot_loss_landscape(E, nu, loss, 'E', 'nu', 'Chamfer loss',)
+
+np.save(os.path.join(fig_data_path, f'{cur_loss_type}-loss_{xy_param}-{p_density_str}.npy'), loss)
+plot_loss_landscape(E, nu, loss, fig_title=fig_title,
+                    loss_type=cur_loss_type,
+                    file_suffix=f'_{xy_param}-rightview-{p_density_str}',
+                    view='right',
+                    x_label='E', y_label='nu', z_label='Loss', show=False)
+plot_loss_landscape(E, nu, loss, fig_title=fig_title,
+                    loss_type=cur_loss_type,
+                    file_suffix=f'_{xy_param}-leftview-{p_density_str}',
+                    view='left',
+                    x_label='E', y_label='nu', z_label='Loss', show=False)

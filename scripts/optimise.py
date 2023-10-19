@@ -85,7 +85,7 @@ def main():
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
-    ptcl_density = 3e7
+    ptcl_density = 4e7
 
     # Setting up horizon and trajectory
     dt = 0.001
@@ -106,9 +106,9 @@ def main():
     trajectory_2[:, 2] = -v
 
     # Learning rates
-    e_lr = 10
+    e_lr = 100
     nu_lr = 0.0001
-    yield_stress_lr = 0.001
+    yield_stress_lr = 0.01
 
     # Parameter ranges
     E_range = (1, 500)
@@ -168,15 +168,13 @@ def main():
         yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]), dtype=DTYPE_NP)
 
         global_step = 0
-        for eef_id in [1, 2]:
-            data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{eef_id}')
-            if eef_id == 1:
-                agent = 'rectangle'
+        for agent in ['rectangle', 'round']:
+            data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
+            if agent == 'rectangle':
                 horizon = horizon_1
                 trajectory = trajectory_1
                 agent_init_euler = (0, 0, 45)
-            elif eef_id == 2:
-                agent = 'round'
+            elif agent == 'round':
                 horizon = horizon_1
                 trajectory = trajectory_1
                 agent_init_euler = (0, 0, 0)
@@ -198,7 +196,7 @@ def main():
                     if mpm_env is None:
                         continue
                     else:
-                        print(f'Optimising with eef-{eef_id} datapoint-{data_ind}')
+                        print(f'Optimising with eef-{agent} datapoint-{data_ind}')
                         e_, nu_, yield_stress_ = optimise(mpm_env, global_step=global_step, n_iter=n_local_step,
                                                           init_state=init_state, trajectory=trajectory,
                                                           E=e, nu=nu, yield_stress=yield_stress,

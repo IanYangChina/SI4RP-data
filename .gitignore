@@ -1,3 +1,8 @@
 /.idea
 imgui.ini
-
+/data-motion-1/eef-cylinder/*.vox
+/data-motion-1/eef-rectangle/*.vox
+/data-motion-1/eef-round/*.vox
+/data-motion-2/eef-cylinder/*.vox
+/data-motion-2/eef-rectangle/*.vox
+/data-motion-2/eef-round/*.vox

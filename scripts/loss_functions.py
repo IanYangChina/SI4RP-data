@@ -22,7 +22,6 @@ v = 0.045 / 0.03  # 1.5 m/s
 horizon_1 = int((0.015 / v) / 0.001)  # 5 steps
 trajectory_1 = np.zeros(shape=(horizon_1, 6))
 trajectory_1[:, 2] = -v
-agent_1 = 'rectangle'
 
 # Trajectory 2 presses down 0.02 m and lifts for 0.03 m
 # In simulation we only takes the pressing down part
@@ -31,6 +30,8 @@ v = 0.05 / 0.04  # 1.25 m/s
 horizon_2 = int((0.02 / v) / 0.001)  # 8 steps
 trajectory_2 = np.zeros(shape=(horizon_2, 6))
 trajectory_2[:, 2] = -v
+
+agent_1 = 'rectangle'
 agent_2 = 'round'
 
 horizon = horizon_1
@@ -73,20 +74,6 @@ for agent in [agent_1, agent_2]:
         mpm_env.simulator.particle_param[material_id].E = np.array(e, dtype=np.float32)
         mpm_env.simulator.particle_param[material_id].nu = np.array(nu, dtype=np.float32)
         env.reset()
-
-        # real_pcd = o3d.io.read_point_cloud(os.path.join(data_path, 'pcd_' + str(data_ind)+str(1) + '.ply'))
-        # real_pcd_points = np.asarray(real_pcd.points) + np.array((-centre_real + initial_pos))
-        # real_pcd = o3d.geometry.PointCloud(o3d.utility.Vector3dVector(real_pcd_points)).paint_uniform_color([1, 0, 0])
-
-        # x, x_ = env.render(mode='point_cloud')
-        # obj_vec = o3d.utility.Vector3dVector(x)
-        # sim_pcd = o3d.geometry.PointCloud(obj_vec).paint_uniform_color([0, 1, 0])
-        # frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1, origin=[0, 0, 0])
-        # o3d.visualization.draw_geometries([
-        #     sim_pcd,
-        #     # real_pcd,
-        #     frame
-        # ])
 
         d_pcd_sr = np.zeros(shape=(horizon,))
         d_pcd_rs = np.zeros(shape=(horizon,))
@@ -147,28 +134,3 @@ plt.ylabel('Avg. Losses')
 plt.xlabel('Time Step')
 plt.legend(['d_pcd_sr', 'd_pcd_rs', 'd_pcd_total', 'd_particle_sr', 'd_particle_rs', 'd_particle_total'], loc='upper right')
 plt.savefig(os.path.join(script_path, '..', 'loss-comparison', 'exponential-chamfer-tr-1.pdf'), bbox_inches='tight', dpi=500)
-
-# x, x_ = env.render(mode='point_cloud')
-# obj_vec = o3d.utility.Vector3dVector(x)
-# sim_pcd = o3d.geometry.PointCloud(obj_vec).paint_uniform_color([0, 1, 0])
-# o3d.visualization.draw_geometries([
-#     sim_pcd,
-#     # real_pcd,
-#     frame
-# ])
-
-# backward
-# mpm_env.reset_grad()
-# mpm_env.get_final_loss_grad()
-# for i in range(horizon - 1, -1, -1):
-#     action = trajectory[i]
-#     mpm_env.step_grad(action=action)
-#
-# t3 = time()
-# print(f'=======> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
-#
-# param_grad = mpm_env.simulator.get_param_grad()
-# print(param_grad['particle_param_grad'][material_id, :])
-# print(param_grad['system_param_grad'])
-# print(mpm_env.loss.avg_point_distance_sr.grad)
-# print(mpm_env.loss.avg_point_distance_rs.grad)

@@ -16,7 +16,7 @@ fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
 DTYPE_NP = np.float32
 
 
-def plot_loss_landscape(p1, p2, loss, fig_title='Fig', loss_type='bi-chamfer', file_suffix='', view='left',
+def plot_loss_landscape(p1, p2, loss, fig_title='Fig', loss_type='bi_chamfer_loss', file_suffix='', view='left',
                         x_label='p1', y_label='p2', z_label='Loss', show=False):
     if not show:
         mpl.use('Agg')
@@ -47,7 +47,7 @@ def plot_loss_landscape(p1, p2, loss, fig_title='Fig', loss_type='bi-chamfer', f
     # Add a color bar which maps values to colors.
     fig.colorbar(surf, shrink=0.5, aspect=5, location=view)
 
-    plt.savefig(os.path.join(fig_data_path, f"{loss_type}-loss_landscape{file_suffix}.pdf"), dpi=500, bbox_inches='tight')
+    plt.savefig(os.path.join(fig_data_path, f"{loss_type}_landscape{file_suffix}.pdf"), dpi=500, bbox_inches='tight')
     if show:
         plt.show()
 
@@ -61,22 +61,20 @@ E, nu = np.meshgrid(E_list, nu_list)
 # nu = np.array([0.2], dtype=DTYPE_NP)
 yield_stress = np.array([1.0], dtype=DTYPE_NP)
 xy_param = 'E-nu'
-cur_loss_type = 'bi-chamfer'
-fig_title = f'Loss landscape with ys = {yield_stress}'
-p_density = 3e7
-p_density_str = '3e7pd'
+p_density = 2e7
+p_density_str = '2e7pd'
 
-loss = np.load(os.path.join(fig_data_path,
-                            f'{cur_loss_type}-loss_{xy_param}-{p_density_str}.npy'))
-plot_loss_landscape(E, nu, loss, fig_title=fig_title,
-                    loss_type=cur_loss_type,
-                    file_suffix=f'_{xy_param}-rightview-{p_density_str}', view='right',
-                    x_label='E', y_label='nu', z_label='Loss', show=False)
-plot_loss_landscape(E, nu, loss, fig_title=fig_title,
-                    loss_type=cur_loss_type,
-                    file_suffix=f'_{xy_param}-leftview-{p_density_str}', view='left',
-                    x_label='E', y_label='nu', z_label='Loss', show=False)
-exit()
+# loss = np.load(os.path.join(fig_data_path,
+#                             f'{cur_loss_type}-loss_{xy_param}-{p_density_str}.npy'))
+# plot_loss_landscape(E, nu, loss, fig_title=fig_title,
+#                     loss_type=cur_loss_type,
+#                     file_suffix=f'_{xy_param}-rightview-{p_density_str}', view='right',
+#                     x_label='E', y_label='nu', z_label='Loss', show=False)
+# plot_loss_landscape(E, nu, loss, fig_title=fig_title,
+#                     loss_type=cur_loss_type,
+#                     file_suffix=f'_{xy_param}-leftview-{p_density_str}', view='left',
+#                     x_label='E', y_label='nu', z_label='Loss', show=False)
+# exit()
 
 DTYPE_TI = ti.f32
 ti.init(arch=ti.vulkan, device_memory_GB=8, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
@@ -107,7 +105,7 @@ def make_env(data_path, data_ind, horizon, agent_name):
                    target_mesh_file=obj_end_mesh_file_path,
                    mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
                    loss_weight=1.0, separate_param_grad=False,
-                   agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 0))
+                   agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 45))
     env.reset()
     mpm_env = env.mpm_env
     init_state = mpm_env.get_state()
@@ -138,9 +136,15 @@ training_data_path = os.path.join(script_path, '..', 'data-motion-1', 'eef-1')
 data_ind = str(0)
 material_id = 2
 mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent)
-loss = np.zeros_like(nu)
+d_pcd_sr_loss = np.zeros_like(nu)
+d_pcd_rs_loss = np.zeros_like(nu)
+d_pcd_total = np.zeros_like(nu)
+d_particle_sr_loss = np.zeros_like(nu)
+d_particle_rs_loss = np.zeros_like(nu)
+d_particle_total = np.zeros_like(nu)
+
 t0 = time()
-print(f'Start calculating {fig_title} with grid size: {loss.shape}')
+print(f'Start calculating losses with grid size: {d_pcd_sr_loss.shape}')
 for i in range(len(E_list)):
     for j in range(len(nu_list)):
         set_parameters(mpm_env, E_list[i], nu_list[j], yield_stress)
@@ -148,20 +152,29 @@ for i in range(len(E_list)):
         for k in range(mpm_env.horizon):
             action = trajectory[k]
             mpm_env.step(action)
-        mpm_env.get_final_loss()
-        print(f'Final chamfer loss: {mpm_env.loss.total_loss[None]}')
-        loss[j, i] = mpm_env.loss.total_loss[None]
+        loss_info = mpm_env.get_final_loss()
+        d_pcd_sr_loss[i, j] = loss_info['avg_point_distance_sr']
+        d_pcd_rs_loss[i, j] = loss_info['avg_point_distance_rs']
+        d_pcd_total[i, j] = loss_info['chamfer_loss_pcd']
+        d_particle_sr_loss[i, j] = loss_info['avg_particle_distance_sr']
+        d_particle_rs_loss[i] = loss_info['avg_particle_distance_rs']
+        d_particle_total[i] = loss_info['chamfer_loss_particle']
 
 print(f'Time taken: {time() - t0}')
 
-np.save(os.path.join(fig_data_path, f'{cur_loss_type}-loss_{xy_param}-{p_density_str}.npy'), loss)
-plot_loss_landscape(E, nu, loss, fig_title=fig_title,
-                    loss_type=cur_loss_type,
-                    file_suffix=f'_{xy_param}-rightview-{p_density_str}',
-                    view='right',
-                    x_label='E', y_label='nu', z_label='Loss', show=False)
-plot_loss_landscape(E, nu, loss, fig_title=fig_title,
-                    loss_type=cur_loss_type,
-                    file_suffix=f'_{xy_param}-leftview-{p_density_str}',
-                    view='left',
-                    x_label='E', y_label='nu', z_label='Loss', show=False)
+losses = [d_pcd_sr_loss, d_pcd_rs_loss, d_pcd_total, d_particle_sr_loss, d_particle_rs_loss, d_particle_total]
+loss_types = ['d_pcd_sr_loss', 'd_pcd_rs_loss', 'd_pcd_total', 'd_particle_sr_loss', 'd_particle_rs_loss', 'd_particle_total']
+
+for i in range(len(losses)):
+    np.save(os.path.join(fig_data_path, f'd_pcd_sr_loss_{xy_param}-{p_density_str}.npy'), losses[i])
+    fig_title = f'{loss_types[i]} with ys = {yield_stress}'
+    plot_loss_landscape(E, nu, losses[i], fig_title=fig_title,
+                        loss_type=loss_types[i],
+                        file_suffix=f'_{xy_param}-rightview-{p_density_str}',
+                        view='right',
+                        x_label='E', y_label='nu', z_label='Loss', show=False)
+    plot_loss_landscape(E, nu, losses[i], fig_title=fig_title,
+                        loss_type=loss_types[i],
+                        file_suffix=f'_{xy_param}-leftview-{p_density_str}',
+                        view='left',
+                        x_label='E', y_label='nu', z_label='Loss', show=False)

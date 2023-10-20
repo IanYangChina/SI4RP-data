@@ -6,7 +6,7 @@ from pymeshfix import _meshfix
 import pyvista as pv
 import trimesh
 
-motion_ind = str(2)
+motion_ind = str(1)
 data_ind = str(8)
 pcd_index = str(1)
 script_path = os.path.dirname(os.path.abspath(__file__))
@@ -40,11 +40,11 @@ _, ind = pcd.remove_radius_outlier(nb_points=7, radius=0.005)
 outliner = pcd.select_by_index(ind, invert=True).paint_uniform_color([1, 0, 0])
 pcd = pcd.select_by_index(ind).paint_uniform_color([0, 0.5, 0.5])
 
-pcd = pcd.voxel_down_sample(voxel_size=0.003)  # 0.003 is a good value for downsampling
+pcd = pcd.voxel_down_sample(voxel_size=0.004)  # 0.003 is a good value for downsampling
 print(original_pcd)
 print(pcd)
 
-radii = [0.003, 0.004]
+radii = [0.004, 0.1]
 mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(pcd, o3d.utility.DoubleVector(radii))
 o3d.visualization.draw_geometries([pcd, world_frame, bounding_box, outliner, mesh],
                                   width=800, height=800,
@@ -61,6 +61,7 @@ mesh.save(mesh_path)
 mesh_to_fix = _meshfix.PyTMesh()
 mesh_to_fix.load_file(mesh_path)
 os.remove(mesh_path)
+# mesh_to_fix.join_closest_components()
 mesh_to_fix.fill_small_boundaries()
 
 points, faces = mesh_to_fix.return_arrays()

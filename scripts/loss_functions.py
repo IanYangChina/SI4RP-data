@@ -59,7 +59,7 @@ for agent in [agent_1, agent_2]:
 
         ti.init(arch=ti.vulkan, device_memory_GB=5, default_fp=ti.f32, fast_math=False)
         from doma.envs import SysIDEnv
-        env = SysIDEnv(ptcl_density=3e7, horizon=horizon,
+        env = SysIDEnv(ptcl_density=5e7, horizon=horizon,
                        mesh_file=mesh_file_path, material_id=material_id, voxelise_res=1080, initial_pos=initial_pos,
                        target_pcd_file=os.path.join(data_path, 'pcd_' + str(data_ind)+str(1) + '.ply'),
                        pcd_offset=(-centre_real + initial_pos), mesh_offset=(0.25, 0.25, centre_top_normalised_[-1] + 0.01),

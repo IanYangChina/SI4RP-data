@@ -106,9 +106,9 @@ def main():
     trajectory_2[:, 2] = -v
 
     # Learning rates
-    e_lr = 1.0
-    nu_lr = 0.0001
-    yield_stress_lr = 0.01
+    e_lr = 1e4
+    nu_lr = 0.1
+    yield_stress_lr = 10
 
     # Parameter ranges
     E_range = (1, 500)

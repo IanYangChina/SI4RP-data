@@ -50,19 +50,20 @@ def plot_loss_landscape(p1, p2, loss, fig_title='Fig', loss_type='bi_chamfer_los
     plt.savefig(os.path.join(fig_data_path, f"{loss_type}_landscape{file_suffix}.pdf"), dpi=500, bbox_inches='tight')
     if show:
         plt.show()
+    plt.close()
 
 
-E_list = np.arange(1, 600, 10).astype(DTYPE_NP)
-nu_list = np.arange(0.01, 0.5, 0.01).astype(DTYPE_NP)
-yield_stress_list = np.arange(0, 5, 0.1).astype(DTYPE_NP)
+E_list = np.arange(10000, 100000, 2000).astype(DTYPE_NP)
+nu_list = np.arange(0.05, 0.48, 0.01).astype(DTYPE_NP)
+yield_stress_list = np.arange(100, 500, 10).astype(DTYPE_NP)
 
-E, nu = np.meshgrid(E_list, nu_list)
-# E = np.array([150], dtype=DTYPE_NP)
-# nu = np.array([0.2], dtype=DTYPE_NP)
-yield_stress = np.array([1.0], dtype=DTYPE_NP)
-xy_param = 'E-nu'
-p_density = 2e7
-p_density_str = '2e7pd'
+E, yield_stress = np.meshgrid(E_list, yield_stress_list)
+# E = np.array([30000], dtype=DTYPE_NP)
+nu = np.array([0.45], dtype=DTYPE_NP)
+# yield_stress = np.array([250.0], dtype=DTYPE_NP)
+xy_param = 'E-ys'
+p_density = 3e7
+p_density_str = '3e7pd'
 
 # loss = np.load(os.path.join(fig_data_path,
 #                             f'{cur_loss_type}-loss_{xy_param}-{p_density_str}.npy'))
@@ -117,64 +118,69 @@ def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.system_param[None].yield_stress = yield_stress.copy()
     mpm_env.simulator.particle_param[2].E = E.copy()
     mpm_env.simulator.particle_param[2].nu = nu.copy()
+    mpm_env.simulator.particle_param[2].rho = 400
 
 
 # Trajectory 1 presses down 0.015 m and lifts for 0.03 m
 # In simulation we only takes the pressing down part
 real_horizon_1 = int(0.03 / 0.001)
 v = 0.045 / 0.03  # 1.5 m/s
-horizon_1 = int((0.015 / v) / 0.001)  # 5 steps
-trajectory_1 = np.zeros(shape=(horizon_1, 6))
-trajectory_1[:, 2] = -v
-agent_1 = 'rectangle'
+horizon_down = int((0.015 / v) / 0.001)  # 5 steps
+horizon_up = int((0.03 / v) / 0.001)  # 5 steps
+horizon = horizon_down + horizon_up
+trajectory = np.zeros(shape=(horizon, 6))
+trajectory[:horizon_down, 2] = -v
+trajectory[horizon_down:, 2] = v
+agent = 'rectangle'
 
-agent = agent_1
-horizon = horizon_1
-trajectory = trajectory_1
 # Loading mesh
-training_data_path = os.path.join(script_path, '..', 'data-motion-1', 'eef-1')
-data_ind = str(0)
+training_data_path = os.path.join(script_path, '..', 'data-motion-1', f'eef-{agent}')
+data_ind = str(5)
 material_id = 2
 mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent)
-d_pcd_sr_loss = np.zeros_like(nu)
-d_pcd_rs_loss = np.zeros_like(nu)
-d_pcd_total = np.zeros_like(nu)
-d_particle_sr_loss = np.zeros_like(nu)
-d_particle_rs_loss = np.zeros_like(nu)
-d_particle_total = np.zeros_like(nu)
+d_pcd_sr_loss = np.zeros_like(E)
+d_pcd_rs_loss = np.zeros_like(E)
+d_pcd_total = np.zeros_like(E)
+d_particle_sr_loss = np.zeros_like(E)
+d_particle_rs_loss = np.zeros_like(E)
+d_particle_total = np.zeros_like(E)
 
 t0 = time()
 print(f'Start calculating losses with grid size: {d_pcd_sr_loss.shape}')
 for i in range(len(E_list)):
-    for j in range(len(nu_list)):
-        set_parameters(mpm_env, E_list[i], nu_list[j], yield_stress)
+    for j in range(len(yield_stress_list)):
+        set_parameters(mpm_env, E_list[i], nu, yield_stress_list[j])
         mpm_env.set_state(init_state['state'], grad_enabled=False)
         for k in range(mpm_env.horizon):
             action = trajectory[k]
             mpm_env.step(action)
         loss_info = mpm_env.get_final_loss()
-        d_pcd_sr_loss[i, j] = loss_info['avg_point_distance_sr']
-        d_pcd_rs_loss[i, j] = loss_info['avg_point_distance_rs']
-        d_pcd_total[i, j] = loss_info['chamfer_loss_pcd']
-        d_particle_sr_loss[i, j] = loss_info['avg_particle_distance_sr']
-        d_particle_rs_loss[i] = loss_info['avg_particle_distance_rs']
-        d_particle_total[i] = loss_info['chamfer_loss_particle']
+        print(f'The {i}, {j}-th loss is:')
+        for b, v in loss_info.items():
+            print(f'{b}: {v:.4f}')
+        d_pcd_sr_loss[j, i] = loss_info['avg_point_distance_sr']
+        d_pcd_rs_loss[j, i] = loss_info['avg_point_distance_rs']
+        d_pcd_total[j, i] = loss_info['chamfer_loss_pcd']
+        d_particle_sr_loss[j, i] = loss_info['avg_particle_distance_sr']
+        d_particle_rs_loss[j, i] = loss_info['avg_particle_distance_rs']
+        d_particle_total[j, i] = loss_info['chamfer_loss_particle']
 
 print(f'Time taken: {time() - t0}')
 
+distance_type = 'exponential'
 losses = [d_pcd_sr_loss, d_pcd_rs_loss, d_pcd_total, d_particle_sr_loss, d_particle_rs_loss, d_particle_total]
 loss_types = ['d_pcd_sr_loss', 'd_pcd_rs_loss', 'd_pcd_total', 'd_particle_sr_loss', 'd_particle_rs_loss', 'd_particle_total']
 
 for i in range(len(losses)):
-    np.save(os.path.join(fig_data_path, f'd_pcd_sr_loss_{xy_param}-{p_density_str}.npy'), losses[i])
-    fig_title = f'{loss_types[i]} with ys = {yield_stress}'
-    plot_loss_landscape(E, nu, losses[i], fig_title=fig_title,
-                        loss_type=loss_types[i],
+    np.save(os.path.join(fig_data_path, f'{loss_types[i]}_{distance_type}_{xy_param}-{p_density_str}.npy'), losses[i])
+    fig_title = f'{loss_types[i]} with nu = {nu}'
+    plot_loss_landscape(E, yield_stress, losses[i], fig_title=fig_title,
+                        loss_type=f'{loss_types[i]}_{distance_type}',
                         file_suffix=f'_{xy_param}-rightview-{p_density_str}',
                         view='right',
-                        x_label='E', y_label='nu', z_label='Loss', show=False)
-    plot_loss_landscape(E, nu, losses[i], fig_title=fig_title,
-                        loss_type=loss_types[i],
+                        x_label='E', y_label='ys', z_label='Loss', show=False)
+    plot_loss_landscape(E, yield_stress, losses[i], fig_title=fig_title,
+                        loss_type=f'{loss_types[i]}_{distance_type}',
                         file_suffix=f'_{xy_param}-leftview-{p_density_str}',
                         view='left',
-                        x_label='E', y_label='nu', z_label='Loss', show=False)
+                        x_label='E', y_label='ys', z_label='Loss', show=False)

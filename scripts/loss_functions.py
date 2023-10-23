@@ -33,6 +33,7 @@ trajectory_2[:, 2] = -v
 
 agent_1 = 'rectangle'
 agent_2 = 'round'
+agent_3 = 'cylinder'
 
 horizon = horizon_1
 trajectory = trajectory_1
@@ -43,9 +44,12 @@ d_pcd_total_list = []
 d_particle_sr_list = []
 d_particle_rs_list = []
 d_particle_total_list = []
-for agent in [agent_1, agent_2]:
+for agent in [agent_1, agent_2, agent_3]:
     # Loading mesh
     data_path = os.path.join(script_path, '..', 'data-motion-1', f'eef-{agent}')
+    agent_init_euler = (0, 0, 0)
+    if agent == agent_1:
+        agent_init_euler = (0, 0, 45)
     for data_ind in range(9):
         mesh_file_path = os.path.join(data_path, 'mesh_' + str(data_ind)+str(0) + '_repaired_normalised.obj')
         centre_real = np.load(os.path.join(data_path, 'mesh_' + str(data_ind)+str(0) + '_repaired_centre.npy'))
@@ -59,14 +63,14 @@ for agent in [agent_1, agent_2]:
 
         ti.init(arch=ti.vulkan, device_memory_GB=5, default_fp=ti.f32, fast_math=False)
         from doma.envs import SysIDEnv
-        env = SysIDEnv(ptcl_density=5e7, horizon=horizon,
+        env = SysIDEnv(ptcl_density=2e7, horizon=horizon,
                        mesh_file=mesh_file_path, material_id=material_id, voxelise_res=1080, initial_pos=initial_pos,
                        target_pcd_file=os.path.join(data_path, 'pcd_' + str(data_ind)+str(1) + '.ply'),
                        pcd_offset=(-centre_real + initial_pos), mesh_offset=(0.25, 0.25, centre_top_normalised_[-1] + 0.01),
                        target_mesh_file=os.path.join(data_path, 'mesh_' + str(data_ind)+str(1) + '_repaired_normalised.obj'),
                        loss_weight=1.0, separate_param_grad=False,
                        render_agent=True,
-                       agent_cfg_file=agent+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 45))
+                       agent_cfg_file=agent+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=agent_init_euler)
         mpm_env = env.mpm_env
 
         # Initialising parameters

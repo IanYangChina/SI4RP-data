@@ -8,35 +8,22 @@ import taichi as ti
 from time import time, sleep
 
 script_path = os.path.dirname(os.path.realpath(__file__))
-# Load parameters
-params = np.load(os.path.join(script_path, '..', 'data-motion-1', 'optimisation-logs-vanilla-chamfer', 'seed-2', 'final_params.npy'))
-print(f'Initial parameters e, nu, ys: {params}')
-e = params[0]  # Young's modulus
-nu = params[1]  # Poisson's ratio
-yield_stress = params[2]
 
-# Trajectory 1 presses down 0.015 m and lifts for 0.03 m
+# Trajectory 1 presses down 0.015 m and lifts for 0.03 m for 0.03 s
+# Trajectory 2 presses down 0.02 m and lifts for 0.03 m for 0.04 s
 # In simulation we only takes the pressing down part
-real_horizon_1 = int(0.03 / 0.001)
-v = 0.045 / 0.03  # 1.5 m/s
-horizon_1 = int((0.015 / v) / 0.001)  # 5 steps
-trajectory_1 = np.zeros(shape=(horizon_1, 6))
-trajectory_1[:, 2] = -v
-
-# Trajectory 2 presses down 0.02 m and lifts for 0.03 m
-# In simulation we only takes the pressing down part
-real_horizon_2 = int(0.04 / 0.001)
-v = 0.05 / 0.04  # 1.25 m/s
-horizon_2 = int((0.02 / v) / 0.001)  # 8 steps
-trajectory_2 = np.zeros(shape=(horizon_2, 6))
-trajectory_2[:, 2] = -v
-
+v = 0.05 / 0.04
+horizon_down = int((0.02 / v) / 0.001)
+horizon_up = int((0.03 / v) / 0.001)
+horizon = horizon_down + horizon_up
+trajectory = np.zeros(shape=(horizon, 6))
+trajectory[:horizon_down, 2] = -v
+trajectory[horizon_down:, 2] = v
 agent_1 = 'rectangle'
 agent_2 = 'round'
 agent_3 = 'cylinder'
 
-horizon = horizon_1
-trajectory = trajectory_1
+motion_id = 2
 
 d_pcd_sr_list = []
 d_pcd_rs_list = []
@@ -46,7 +33,7 @@ d_particle_rs_list = []
 d_particle_total_list = []
 for agent in [agent_1, agent_2, agent_3]:
     # Loading mesh
-    data_path = os.path.join(script_path, '..', 'data-motion-1', f'eef-{agent}')
+    data_path = os.path.join(script_path, '..', f'data-motion-{motion_id}', f'eef-{agent}')
     agent_init_euler = (0, 0, 0)
     if agent == agent_1:
         agent_init_euler = (0, 0, 45)
@@ -63,7 +50,7 @@ for agent in [agent_1, agent_2, agent_3]:
 
         ti.init(arch=ti.vulkan, device_memory_GB=5, default_fp=ti.f32, fast_math=False)
         from doma.envs import SysIDEnv
-        env = SysIDEnv(ptcl_density=2e7, horizon=horizon,
+        env = SysIDEnv(ptcl_density=3e7, horizon=horizon,
                        mesh_file=mesh_file_path, material_id=material_id, voxelise_res=1080, initial_pos=initial_pos,
                        target_pcd_file=os.path.join(data_path, 'pcd_' + str(data_ind)+str(1) + '.ply'),
                        pcd_offset=(-centre_real + initial_pos), mesh_offset=(0.25, 0.25, centre_top_normalised_[-1] + 0.01),
@@ -74,9 +61,9 @@ for agent in [agent_1, agent_2, agent_3]:
         mpm_env = env.mpm_env
 
         # Initialising parameters
-        mpm_env.simulator.system_param[None].yield_stress = np.array(yield_stress, dtype=np.float32)
-        mpm_env.simulator.particle_param[material_id].E = np.array(e, dtype=np.float32)
-        mpm_env.simulator.particle_param[material_id].nu = np.array(nu, dtype=np.float32)
+        mpm_env.simulator.system_param[None].yield_stress = np.array(400, dtype=np.float32)
+        mpm_env.simulator.particle_param[material_id].E = np.array(40000, dtype=np.float32)
+        mpm_env.simulator.particle_param[material_id].nu = np.array(0.48, dtype=np.float32)
         env.reset()
 
         d_pcd_sr = np.zeros(shape=(horizon,))
@@ -104,6 +91,8 @@ for agent in [agent_1, agent_2, agent_3]:
             # sleep(0.5)
 
         final_loss_info = mpm_env.get_final_loss()
+        for i, v in final_loss_info.items():
+            print(f'{i}: {v:.4f}')
         t2 = time()
 
         d_pcd_sr_list.append(d_pcd_sr.copy())
@@ -133,8 +122,8 @@ for i in range(len(data_dict_list)):
     # plt.fill_between(x, case_data["upper"], case_data["lower"], alpha=0.3, color=colors[i], label='_nolegend_')
     plt.plot(x, case_data["mean"], color=colors[i])
 
-plt.title('Different loss over manipulation trajectory')
+plt.title(f'Different loss over manipulation trajectory {motion_id}')
 plt.ylabel('Avg. Losses')
 plt.xlabel('Time Step')
 plt.legend(['d_pcd_sr', 'd_pcd_rs', 'd_pcd_total', 'd_particle_sr', 'd_particle_rs', 'd_particle_total'], loc='upper right')
-plt.savefig(os.path.join(script_path, '..', 'loss-comparison', 'exponential-chamfer-tr-1.pdf'), bbox_inches='tight', dpi=500)
+plt.savefig(os.path.join(script_path, '..', 'loss-comparison', f'exponential-chamfer-tr-{motion_id}.pdf'), bbox_inches='tight', dpi=500)

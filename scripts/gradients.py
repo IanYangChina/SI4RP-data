@@ -4,6 +4,9 @@ import taichi as ti
 from time import time, sleep
 import open3d as o3d
 from vedo import Points, show, Mesh
+import matplotlib as mpl
+mpl.use('TkAgg')
+import matplotlib.pylab as plt
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
@@ -21,8 +24,8 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True,
     if render_init_pcd:
         x, _ = mpm_env.render(mode='point_cloud')
         RGBA = np.zeros((len(x), 4))
+        RGBA[:, 0] = x[:, 2] / x[:, 2].max() * 255
         RGBA[:, 1] = x[:, 2] / x[:, 2].max() * 255
-        RGBA[:, 2] = x[:, 2] / x[:, 2].max() * 255
         RGBA[:, -1] = 255
         pts = Points(x, r=6, c=RGBA)
 
@@ -43,26 +46,43 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True,
 
         show([pts, real_pcd_pts, mesh], __doc__, axes=True).close()    # Forward
 
+    # plt.imshow(mpm_env.loss.height_map_pcd_target[None].to_numpy(), cmap='Greys')
+    # plt.show()
+    # plt.imshow(mpm_env.loss.height_map_particles_target[None].to_numpy(), cmap='Greys')
+    # plt.show()
+
     t1 = time()
     mpm_env.set_state(init_state['state'], grad_enabled=True)
     for i in range(mpm_env.horizon):
         action = trajectory[i]
         mpm_env.step(action)
+        # height_map = mpm_env.loss.height_maps[i].to_numpy()
+        # plt.imshow(height_map, cmap='Greys')
+        # plt.show()
         if render:
             mpm_env.render(mode='human')
+            # img = mpm_env.render(mode='depth_array')
+            # plt.imshow(img)
+            # plt.show()
             sleep(0.1)
     loss_info = mpm_env.get_final_loss()
     for i, v in loss_info.items():
-        print(f'{i}: {v:.4f}')
+        if i != 'final_height_map':
+            print(f'{i}: {v:.4f}')
+        else:
+            pass
+            # plt.imshow(v.to_numpy(), cmap='Greys')
+            # plt.show()
+
     t2 = time()
 
     if render_end_pcd:
         x, _ = mpm_env.render(mode='point_cloud')
         RGBA = np.zeros((len(x), 4))
+        RGBA[:, -1] = 255
         RGBA[:, 0] = 250  # x[:, 0] / x[:, 0].max() * 255
         # RGBA[:, 0] = x[:, 1] / x[:, 1].max() * 255
         RGBA[:, 2] = x[:, 2] / x[:, 2].max() * 255
-        RGBA[:, -1] = 255
         pts = Points(x, r=6, c=RGBA)
 
         x_ = mpm_env.loss.target_pcd_points.to_numpy() / 1000
@@ -103,7 +123,7 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True,
         print(f'=======> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
 
 
-def make_env(data_path, data_ind, horizon, agent_name, material_id):
+def make_env(data_path, data_ind, horizon, agent_name, material_id, cam_cfg):
     obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_normalised.obj')
     if not os.path.exists(obj_start_mesh_file_path):
         return None, None
@@ -127,7 +147,8 @@ def make_env(data_path, data_ind, horizon, agent_name, material_id):
                    target_mesh_file=obj_end_mesh_file_path,
                    mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
                    loss_weight=1.0, separate_param_grad=False,
-                   agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 45))
+                   agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 0),
+                   render_agent=False, camera_cfg=cam_cfg)
     env.reset()
     mpm_env = env.mpm_env
     init_state = mpm_env.get_state()
@@ -145,7 +166,7 @@ def set_parameters(mpm_env, E, nu, yield_stress, theta_c, theta_s, rho=None):
         mpm_env.simulator.particle_param[2].rho = rho
 
 
-# Trajectory 1 presses down 0.02 m and lifts for 0.03 m
+# Trajectory 2 presses down 0.02 m and lifts for 0.03 m
 # In simulation we only takes the pressing down part
 real_horizon_2 = int(0.04 / 0.001)
 v = 0.05 / 0.04  # 1.25 m/s
@@ -155,24 +176,31 @@ horizon = horizon_down + horizon_up
 trajectory = np.zeros(shape=(horizon, 6))
 trajectory[:horizon_down, 2] = -v
 trajectory[horizon_down:, 2] = v
-agent = 'rectangle'
+agent = 'round'
 # Loading mesh
 training_data_path = os.path.join(script_path, '..', 'data-motion-2', f'eef-{agent}')
 data_ind = str(5)
 material_id = 2
-env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent, material_id)
+cam_cfg = {
+    'pos': (0.25, 0.24, 0.3),
+    'lookat': (0.25, 0.25, 0.05),
+    'fov': 30,
+    'lights': [{'pos': (0.5, -1.5, 0.5), 'color': (0.5, 0.5, 0.5)},
+               {'pos': (0.5, -1.5, 1.5), 'color': (0.5, 0.5, 0.5)}]
+}
+env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent, material_id, cam_cfg)
 print(mpm_env.loss.n_target_pcd_points)
 print(mpm_env.loss.n_target_particles_from_mesh)
 
-E = np.array([40000], dtype=DTYPE_NP)
+E = np.array([100000], dtype=DTYPE_NP)
 nu = np.array([0.48], dtype=DTYPE_NP)
-yield_stress = np.array([400], dtype=DTYPE_NP)
+yield_stress = np.array([1500], dtype=DTYPE_NP)
 theta_c = np.array([0.015], dtype=DTYPE_NP)
 theta_s = np.array([0.0025], dtype=DTYPE_NP)
-set_parameters(mpm_env, E, nu, yield_stress, theta_c, theta_s, rho=400)
+set_parameters(mpm_env, E, nu, yield_stress, theta_c, theta_s, rho=1000)
 
 forward_backward(mpm_env, init_state, trajectory, backward=False, render=True,
-                 render_init_pcd=False, render_end_pcd=True,
+                 render_init_pcd=False, render_end_pcd=False,
                  init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
                  init_pcd_offset=env.pcd_offset,
                  init_mesh_path=env.mesh_file,

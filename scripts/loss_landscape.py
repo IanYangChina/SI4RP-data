@@ -14,6 +14,7 @@ plt.rcParams.update({'font.size': 12})
 script_path = os.path.dirname(os.path.realpath(__file__))
 fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
 DTYPE_NP = np.float32
+DTYPE_TI = ti.f32
 
 
 def plot_loss_landscape(p1, p2, loss, fig_title='Fig', loss_type='bi_chamfer_loss', file_suffix='', view='left',
@@ -65,19 +66,24 @@ xy_param = 'E-nu'
 p_density = 3e7
 p_density_str = '3e7pd'
 
-# loss = np.load(os.path.join(fig_data_path,
-#                             f'{cur_loss_type}-loss_{xy_param}-{p_density_str}.npy'))
-# plot_loss_landscape(E, nu, loss, fig_title=fig_title,
-#                     loss_type=cur_loss_type,
-#                     file_suffix=f'_{xy_param}-rightview-{p_density_str}', view='right',
-#                     x_label='E', y_label='nu', z_label='Loss', show=False)
-# plot_loss_landscape(E, nu, loss, fig_title=fig_title,
-#                     loss_type=cur_loss_type,
-#                     file_suffix=f'_{xy_param}-leftview-{p_density_str}', view='left',
-#                     x_label='E', y_label='nu', z_label='Loss', show=False)
-# exit()
+distance_type = 'exponential'
+loss_types = ['d_pcd_sr_loss', 'd_pcd_rs_loss', 'd_pcd_total', 'd_particle_sr_loss', 'd_particle_rs_loss', 'd_particle_total']
 
-DTYPE_TI = ti.f32
+for i in range(len(loss_types)):
+    loss = np.load(os.path.join(fig_data_path, f'{loss_types[i]}_{distance_type}_{xy_param}-{p_density_str}.npy'))
+    fig_title = f'{loss_types[i]} with yield_stress = {yield_stress}'
+    plot_loss_landscape(E, nu, loss, fig_title=fig_title,
+                        loss_type=f'{loss_types[i]}_{distance_type}',
+                        file_suffix=f'_{xy_param}-rightview-{p_density_str}',
+                        view='right',
+                        x_label='E', y_label='nu', z_label='Loss', show=False)
+    plot_loss_landscape(E, nu, loss, fig_title=fig_title,
+                        loss_type=f'{loss_types[i]}_{distance_type}',
+                        file_suffix=f'_{xy_param}-leftview-{p_density_str}',
+                        view='left',
+                        x_label='E', y_label='nu', z_label='Loss', show=False)
+exit()
+
 ti.init(arch=ti.vulkan, device_memory_GB=8, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
 from doma.envs import SysIDEnv
 
@@ -148,8 +154,8 @@ d_particle_total = np.zeros_like(E)
 t0 = time()
 print(f'Start calculating losses with grid size: {d_pcd_sr_loss.shape}')
 for i in range(len(E_list)):
-    for j in range(len(nu_list)):
-        set_parameters(mpm_env, E_list[i], nu_list[j], yield_stress)
+    for j in range(len(yield_stress_list)):
+        set_parameters(mpm_env, E_list[i], nu, yield_stress_list[j])
         mpm_env.set_state(init_state['state'], grad_enabled=False)
         for k in range(mpm_env.horizon):
             action = trajectory[k]
@@ -174,12 +180,12 @@ loss_types = ['d_pcd_sr_loss', 'd_pcd_rs_loss', 'd_pcd_total', 'd_particle_sr_lo
 for i in range(len(losses)):
     np.save(os.path.join(fig_data_path, f'{loss_types[i]}_{distance_type}_{xy_param}-{p_density_str}.npy'), losses[i])
     fig_title = f'{loss_types[i]} with yield_stress = {yield_stress}'
-    plot_loss_landscape(E, nu, losses[i], fig_title=fig_title,
+    plot_loss_landscape(E, yield_stress, losses[i], fig_title=fig_title,
                         loss_type=f'{loss_types[i]}_{distance_type}',
                         file_suffix=f'_{xy_param}-rightview-{p_density_str}',
                         view='right',
                         x_label='E', y_label='ys', z_label='Loss', show=False)
-    plot_loss_landscape(E, nu, losses[i], fig_title=fig_title,
+    plot_loss_landscape(E, yield_stress, losses[i], fig_title=fig_title,
                         loss_type=f'{loss_types[i]}_{distance_type}',
                         file_suffix=f'_{xy_param}-leftview-{p_density_str}',
                         view='left',

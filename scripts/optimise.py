@@ -131,11 +131,15 @@ def main():
         E = np.random.uniform(E_range[0], E_range[1])  # Young's modulus
         nu = np.random.uniform(nu_range[0], nu_range[1])  # Poisson's ratio
         yield_stress = np.random.uniform(yield_stress_range[0], yield_stress_range[1])  # Yield stress
-        parameters = np.array([E, nu, yield_stress], dtype=DTYPE_NP)
+
         print(f"Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}")
         # Optimiser: Adam
-        adam = Adam(parameters_shape=parameters.shape,
-                    cfg={'lr': 0.01, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+        adam_E = Adam(parameters_shape=E.shape,
+                      cfg={'lr': 1e6, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+        adam_nu = Adam(parameters_shape=nu.shape,
+                       cfg={'lr': 0.01, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+        adam_yield_stress = Adam(parameters_shape=yield_stress.shape,
+                                 cfg={'lr': 1e4, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
 
         motion_inds = ['1', '2']
         agents = ['rectangle', 'round', 'cylinder']
@@ -160,7 +164,7 @@ def main():
 
                     for data_ind in data_inds:
                         mpm_env, init_state = make_env(data_path, str(data_ind), horizon, agent, agent_init_euler)
-                        set_parameters(mpm_env, parameters[0], parameters[1], parameters[2])
+                        set_parameters(mpm_env, E.copy(), nu.copy(), yield_stress.copy())
                         forward_backward(mpm_env, init_state, trajectory, render=False)
                         loss += mpm_env.loss.total_loss[None]
                         grads += np.array([mpm_env.simulator.particle_param.grad[MATERIAL_ID].E,
@@ -170,20 +174,22 @@ def main():
             loss = loss / (len(data_inds) * len(agents) * len(motion_inds))
             grads = grads / (len(data_inds) * len(agents) * len(motion_inds))
 
-            parameters = adam.step(parameters.copy(), grads.copy())
+            E = adam_E.step(E.copy(), grads[0])
+            nu = adam_nu.step(nu.copy(), grads[1])
+            yield_stress = adam_yield_stress.step(yield_stress.copy(), grads[2])
 
             logger.add_scalar(tag='Loss/chamfer', scalar_value=loss, global_step=epoch)
-            logger.add_scalar(tag='Param/E', scalar_value=parameters[0], global_step=epoch)
+            logger.add_scalar(tag='Param/E', scalar_value=E, global_step=epoch)
             logger.add_scalar(tag='Grad/E', scalar_value=grads[0], global_step=epoch)
-            logger.add_scalar(tag='Param/nu', scalar_value=parameters[1], global_step=epoch)
+            logger.add_scalar(tag='Param/nu', scalar_value=nu, global_step=epoch)
             logger.add_scalar(tag='Grad/nu', scalar_value=grads[1], global_step=epoch)
-            logger.add_scalar(tag='Param/yield_stress', scalar_value=parameters[2], global_step=epoch)
+            logger.add_scalar(tag='Param/yield_stress', scalar_value=yield_stress, global_step=epoch)
             logger.add_scalar(tag='Grad/yield_stress', scalar_value=grads[2], global_step=epoch)
             print(f"Epoch {epoch}: time={time() - t1}\n"
-                  f"loss={loss}, E={parameters[0]}, nu={parameters[1]}, yield_stress={parameters[2]}")
+                  f"loss={loss}, E={E}, nu={nu}, yield_stress={yield_stress}")
 
-        print(f"Final parameters: E={parameters[0]}, nu={parameters[1]}, yield_stress={parameters[2]}")
-        np.save(os.path.join(log_dir, 'final_params.npy'), parameters)
+        print(f"Final parameters: E={E}, nu={nu}, yield_stress={yield_stress}")
+        np.save(os.path.join(log_dir, 'final_params.npy'), np.array([E, nu, yield_stress], dtype=DTYPE_NP))
 
 
 if __name__ == '__main__':

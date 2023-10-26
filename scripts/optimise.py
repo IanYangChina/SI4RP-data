@@ -3,6 +3,7 @@ import taichi as ti
 import numpy as np
 from time import time
 from torch.utils.tensorboard import SummaryWriter
+from doma.optimiser.adam import Adam
 
 MATERIAL_ID = 2
 # Optimisation scheme: Adam
@@ -39,85 +40,50 @@ def forward_backward(mpm_env, init_state, trajectory, render, backward=True):
 
 
 def set_parameters(mpm_env, E, nu, yield_stress):
-    mpm_env.simulator.system_param[None].yield_stress = yield_stress.copy()
-    mpm_env.simulator.particle_param[MATERIAL_ID].E = E.copy()
-    mpm_env.simulator.particle_param[MATERIAL_ID].nu = nu.copy()
-
-
-def optimise(mpm_env, global_step, n_iter, init_state, trajectory,
-             E, nu, yield_stress, E_range, nu_range, yield_stress_range,
-             E_lr, nu_lr, yield_stress_lr, logger):
-    E_ = E.copy()
-    nu_ = nu.copy()
-    yield_stress_ = yield_stress.copy()
-    for i in range(n_iter):
-        set_parameters(mpm_env, E_, nu_, yield_stress_)
-        forward_backward(mpm_env, init_state, trajectory, render=False)
-        logger.add_scalar(tag='Loss/chamfer', scalar_value=mpm_env.loss.total_loss[None],
-                          global_step=global_step + i)
-
-        logger.add_scalar(tag='Param/E', scalar_value=E_,
-                          global_step=global_step + i)
-        E_ = E_ - E_lr * mpm_env.simulator.particle_param.grad[MATERIAL_ID].E
-        E_ = np.clip(E_, E_range[0], E_range[1])
-        logger.add_scalar(tag='Grad/E', scalar_value=mpm_env.simulator.particle_param.grad[MATERIAL_ID].E,
-                          global_step=global_step + i)
-
-        logger.add_scalar(tag='Param/nu', scalar_value=nu_,
-                          global_step=global_step + i)
-        nu_ = nu_ - nu_lr * mpm_env.simulator.particle_param.grad[MATERIAL_ID].nu
-        nu_ = np.clip(nu_, nu_range[0], nu_range[1])
-        logger.add_scalar(tag='Grad/nu', scalar_value=mpm_env.simulator.particle_param.grad[MATERIAL_ID].nu,
-                          global_step=global_step + i)
-
-        logger.add_scalar(tag='Param/yield_stress', scalar_value=yield_stress_,
-                          global_step=global_step + i)
-        yield_stress_ = yield_stress_ - yield_stress_lr * mpm_env.simulator.system_param.grad[None].yield_stress
-        yield_stress_ = np.clip(yield_stress_, yield_stress_range[0], yield_stress_range[1])
-        logger.add_scalar(tag='Grad/yield_stress',
-                          scalar_value=mpm_env.simulator.system_param.grad[None].yield_stress,
-                          global_step=global_step + i)
-
-    return E_, nu_, yield_stress_
+    mpm_env.simulator.system_param[None].yield_stress = yield_stress
+    mpm_env.simulator.particle_param[MATERIAL_ID].E = E
+    mpm_env.simulator.particle_param[MATERIAL_ID].nu = nu
 
 
 def main():
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
-    ptcl_density = 4e7
+    ptcl_density = 2e7
 
     # Setting up horizon and trajectory
     dt = 0.001
-    # Trajectory 1 presses down 0.015 m and lifts for 0.03 m
+    # Trajectory 1 press down 0.015 m and lifts for 0.03 m
     # In simulation we only simulate the pressing down part
     real_horizon_1 = int(0.03 / dt)
     v = 0.045 / 0.03  # 1.5 m/s
-    horizon_1 = int((0.015 / v) / dt)
+    horizon_1_up = int((0.015 / v) / dt)  # 0.01 s
+    horizon_1_down = int((0.03 / v) / dt)  # 0.02 s
+    horizon_1 = horizon_1_up + horizon_1_down  # 30 steps
     trajectory_1 = np.zeros(shape=(horizon_1, 6), dtype=DTYPE_NP)
-    trajectory_1[:, 2] = -v
+    trajectory_1[:horizon_1_up, 2] = -v
+    trajectory_1[horizon_1_up:, 2] = v
 
-    # Trajectory 2 presses down 0.02 m and lifts for 0.03 m
+    # Trajectory 2 press down 0.02 m and lifts for 0.03 m
     # In simulation we only simulate the pressing down part
     real_horizon_2 = int(0.04 / dt)
-    v = 0.05 / 0.045  # 1.25 m/s
-    horizon_2 = int((0.02 / v) / dt)
+    v = 0.05 / 0.045  # 1.11111111 m/s
+    horizon_2_up = int((0.02 / v) / dt)  # 0.018 s
+    horizon_2_down = int((0.03 / v) / dt)  # 0.027 s
+    horizon_2 = horizon_2_up + horizon_2_down  # 45 steps
     trajectory_2 = np.zeros(shape=(horizon_2, 6), dtype=DTYPE_NP)
-    trajectory_2[:, 2] = -v
+    trajectory_2[:horizon_2_up, 2] = -v
+    trajectory_2[horizon_2_up:, 2] = v
 
-    # Learning rates
-    e_lr = 1e4
-    nu_lr = 0.1
-    yield_stress_lr = 10
 
     # Parameter ranges
-    E_range = (1, 500)
-    nu_range = (0.001, 0.5)
-    yield_stress_range = (0.01, 5)
+    E_range = (10000, 100000)
+    nu_range = (0.001, 0.49)
+    yield_stress_range = (50, 2000)
 
-    n_local_step = 10
+    n_epoch = 100
     seeds = [0, 1, 2]
-    print(f"Optimising for {n_local_step*9*10*2} steps for {len(seeds)} random seeds.")
+    print(f"Optimising for {n_epoch} epochs for {len(seeds)} random seeds.")
     for seed in seeds:
         # Setting up random seed
         np.random.seed(seed)
@@ -157,62 +123,67 @@ def main():
             return mpm_env, init_state
 
         # Logger
-        motion_ind = str(1)
-        log_dir = os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'optimisation-logs', f'seed-{seed}')
+        log_dir = os.path.join(script_path, '..', 'optimisation-logs', f'seed-{seed}')
         os.makedirs(log_dir, exist_ok=True)
         logger = SummaryWriter(log_dir=log_dir)
 
         # Initialising parameters
-        e = np.asarray(np.random.uniform(E_range[0], E_range[1]), dtype=DTYPE_NP)  # Young's modulus
-        nu = np.asarray(np.random.uniform(nu_range[0], nu_range[1]), dtype=DTYPE_NP)  # Poisson's ratio
-        yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]), dtype=DTYPE_NP)
+        E = np.random.uniform(E_range[0], E_range[1])  # Young's modulus
+        nu = np.random.uniform(nu_range[0], nu_range[1])  # Poisson's ratio
+        yield_stress = np.random.uniform(yield_stress_range[0], yield_stress_range[1])  # Yield stress
+        parameters = np.array([E, nu, yield_stress], dtype=DTYPE_NP)
+        print(f"Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}")
+        # Optimiser: Adam
+        adam = Adam(parameters_shape=parameters.shape,
+                    cfg={'lr': 0.01, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
 
-        global_step = 0
-        for agent in ['rectangle', 'round']:
-            data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
-            if agent == 'rectangle':
-                horizon = horizon_1
-                trajectory = trajectory_1
-                agent_init_euler = (0, 0, 45)
-            elif agent == 'round':
-                horizon = horizon_1
-                trajectory = trajectory_1
-                agent_init_euler = (0, 0, 0)
-            else:
-                agent = None
-                horizon = None
-                trajectory = None
-                agent_init_euler = (0, 0, 0)
+        motion_inds = ['1', '2']
+        agents = ['rectangle', 'round', 'cylinder']
+        data_inds = np.arange(9).astype(int)
 
-            data_inds = np.arange(9).astype(int)
-            data_inds = np.concatenate([data_inds for _ in range(10)])
-            np.random.shuffle(data_inds)
-            for data_ind in data_inds:
-                if not os.path.exists(data_path):
-                    print('path not exist')
-                    break
+        for epoch in range(n_epoch):
+            t1 = time()
+            loss = 0.0
+            grads = np.zeros(shape=(3,), dtype=DTYPE_NP)
+            for motion_ind in motion_inds:
+                if motion_ind == '1':
+                    horizon = horizon_1
+                    trajectory = trajectory_1
                 else:
-                    mpm_env, init_state = make_env(data_path, str(data_ind), horizon, agent, agent_init_euler)
-                    if mpm_env is None:
-                        continue
-                    else:
-                        print(f'Optimising with eef-{agent} datapoint-{data_ind}')
-                        e_, nu_, yield_stress_ = optimise(mpm_env, global_step=global_step, n_iter=n_local_step,
-                                                          init_state=init_state, trajectory=trajectory,
-                                                          E=e, nu=nu, yield_stress=yield_stress,
-                                                          E_range=E_range, nu_range=nu_range,
-                                                          yield_stress_range=yield_stress_range,
-                                                          E_lr=e_lr, nu_lr=nu_lr, yield_stress_lr=yield_stress_lr,
-                                                          logger=logger)
-                        e = e_.copy()
-                        nu = nu_.copy()
-                        yield_stress = yield_stress_.copy()
+                    horizon = horizon_2
+                    trajectory = trajectory_2
+                for agent in agents:
+                    agent_init_euler = (0, 0, 0)
+                    data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
+                    if agent == 'rectangle':
+                        agent_init_euler = (0, 0, 45)
 
-                        global_step += n_local_step
-                        del mpm_env, init_state
+                    for data_ind in data_inds:
+                        mpm_env, init_state = make_env(data_path, str(data_ind), horizon, agent, agent_init_euler)
+                        set_parameters(mpm_env, parameters[0], parameters[1], parameters[2])
+                        forward_backward(mpm_env, init_state, trajectory, render=False)
+                        loss += mpm_env.loss.total_loss[None]
+                        grads += np.array([mpm_env.simulator.particle_param.grad[MATERIAL_ID].E,
+                                           mpm_env.simulator.particle_param.grad[MATERIAL_ID].nu,
+                                           mpm_env.simulator.system_param.grad[None].yield_stress], dtype=DTYPE_NP)
 
-        print(f"Final parameters: E={e}, nu={nu}, yield_stress={yield_stress}")
-        np.save(os.path.join(log_dir, 'final_params.npy'), np.array([e, nu, yield_stress], dtype=DTYPE_NP))
+            loss = loss / (len(data_inds) * len(agents) * len(motion_inds))
+            grads = grads / (len(data_inds) * len(agents) * len(motion_inds))
+
+            parameters = adam.step(parameters.copy(), grads.copy())
+
+            logger.add_scalar(tag='Loss/chamfer', scalar_value=loss, global_step=epoch)
+            logger.add_scalar(tag='Param/E', scalar_value=parameters[0], global_step=epoch)
+            logger.add_scalar(tag='Grad/E', scalar_value=grads[0], global_step=epoch)
+            logger.add_scalar(tag='Param/nu', scalar_value=parameters[1], global_step=epoch)
+            logger.add_scalar(tag='Grad/nu', scalar_value=grads[1], global_step=epoch)
+            logger.add_scalar(tag='Param/yield_stress', scalar_value=parameters[2], global_step=epoch)
+            logger.add_scalar(tag='Grad/yield_stress', scalar_value=grads[2], global_step=epoch)
+            print(f"Epoch {epoch}: time={time() - t1}\n"
+                  f"loss={loss}, E={parameters[0]}, nu={parameters[1]}, yield_stress={parameters[2]}")
+
+        print(f"Final parameters: E={parameters[0]}, nu={parameters[1]}, yield_stress={parameters[2]}")
+        np.save(os.path.join(log_dir, 'final_params.npy'), parameters)
 
 
 if __name__ == '__main__':

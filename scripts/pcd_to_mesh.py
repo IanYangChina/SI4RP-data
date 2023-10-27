@@ -7,10 +7,11 @@ import pyvista as pv
 import trimesh
 
 motion_ind = str(1)
-data_ind = str(8)
+agent = 'rectangle'
+data_ind = str(6)
 pcd_index = str(1)
 script_path = os.path.dirname(os.path.abspath(__file__))
-data_path = os.path.join(script_path, '..', 'data-motion-'+motion_ind, 'pcd_to_mesh')
+data_path = os.path.join(script_path, '..', 'data-motion-'+motion_ind, f'eef-{agent}')
 
 pcd_path = os.path.join(data_path, 'pcd_'+data_ind+pcd_index+'.ply')
 bounding_box_array = np.load(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'))
@@ -40,11 +41,11 @@ _, ind = pcd.remove_radius_outlier(nb_points=7, radius=0.005)
 outliner = pcd.select_by_index(ind, invert=True).paint_uniform_color([1, 0, 0])
 pcd = pcd.select_by_index(ind).paint_uniform_color([0, 0.5, 0.5])
 
-pcd = pcd.voxel_down_sample(voxel_size=0.004)  # 0.003 is a good value for downsampling
+pcd = pcd.voxel_down_sample(voxel_size=0.002)  # 0.003 is a good value for downsampling
 print(original_pcd)
 print(pcd)
 
-radii = [0.004, 0.1]
+radii = [0.002, 0.01, 0.1]
 mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(pcd, o3d.utility.DoubleVector(radii))
 o3d.visualization.draw_geometries([pcd, world_frame, bounding_box, outliner, mesh],
                                   width=800, height=800,

@@ -75,7 +75,6 @@ def main():
     trajectory_2[:horizon_2_up, 2] = -v
     trajectory_2[horizon_2_up:, 2] = v
 
-
     # Parameter ranges
     E_range = (10000, 100000)
     nu_range = (0.001, 0.49)
@@ -128,9 +127,9 @@ def main():
         logger = SummaryWriter(log_dir=log_dir)
 
         # Initialising parameters
-        E = np.random.uniform(E_range[0], E_range[1])  # Young's modulus
-        nu = np.random.uniform(nu_range[0], nu_range[1])  # Poisson's ratio
-        yield_stress = np.random.uniform(yield_stress_range[0], yield_stress_range[1])  # Yield stress
+        E = np.asarray(np.random.uniform(E_range[0], E_range[1]), dtype=DTYPE_NP).reshape((1,))  # Young's modulus
+        nu = np.asarray(np.random.uniform(nu_range[0], nu_range[1]), dtype=DTYPE_NP).reshape((1,))  # Poisson's ratio
+        yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]), dtype=DTYPE_NP).reshape((1,))  # Yield stress
 
         print(f"Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}")
         # Optimiser: Adam

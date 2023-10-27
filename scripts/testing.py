@@ -11,16 +11,27 @@
 # mesh = pv.read(os.path.join(script_path, '..', 'data-motion-1', 'trial-2', 'mesh_0_repaired.obj'))
 # pv.plot([mesh], notebook=False, window_size=[800, 600])
 
-import trimesh
+# import trimesh
+#
+# # obj = pkl.load(open(os.path.join(script_path, '..', 'data-motion-1', 'eef-1', 'mesh_00_repaired_normalised-1080.vox'), 'rb'))
+# # obj.show()
+#
+#
+# import taichi as ti
+# ti.init(arch=ti.vulkan)
+# a = ti.Vector.field(n=3, m=3, dtype=ti.f32, shape=())
+# b = ti.Vector.field(n=3, m=3, dtype=ti.f32, shape=())
+# a.fill(1)
+# b.fill(2)
+# print(a[None] / b[None])
 
-# obj = pkl.load(open(os.path.join(script_path, '..', 'data-motion-1', 'eef-1', 'mesh_00_repaired_normalised-1080.vox'), 'rb'))
-# obj.show()
+import numpy as np
 
+x = np.linspace(0, 1, 100)
+y = np.linspace(0, 1, 100)
+z = np.linspace(0, 1, 100)
+X, Y, Z = np.meshgrid(x, y, z, indexing='ij')
+print(X.shape, Y.shape, Z.shape)
 
-import taichi as ti
-ti.init(arch=ti.vulkan)
-a = ti.Vector.field(n=3, m=3, dtype=ti.f32, shape=())
-b = ti.Vector.field(n=3, m=3, dtype=ti.f32, shape=())
-a.fill(1)
-b.fill(2)
-print(a[None] / b[None])
+p = np.stack(np.meshgrid(x, y, z, indexing='ij'), -1)
+print(p.shape)

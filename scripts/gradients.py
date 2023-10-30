@@ -156,10 +156,8 @@ def make_env(data_path, data_ind, horizon, agent_name, material_id, cam_cfg):
     return env, mpm_env, init_state
 
 
-def set_parameters(mpm_env, E, nu, yield_stress, theta_c, theta_s, rho=None):
+def set_parameters(mpm_env, E, nu, yield_stress, rho=None):
     mpm_env.simulator.system_param[None].yield_stress = yield_stress.copy()
-    mpm_env.simulator.system_param[None].theta_c = theta_c
-    mpm_env.simulator.system_param[None].theta_s = theta_s
     mpm_env.simulator.particle_param[2].E = E.copy()
     mpm_env.simulator.particle_param[2].nu = nu.copy()
     if rho is not None:
@@ -176,13 +174,13 @@ horizon = horizon_down + horizon_up
 trajectory = np.zeros(shape=(horizon, 6))
 trajectory[:horizon_down, 2] = -v
 trajectory[horizon_down:, 2] = v
-agent = 'round'
+agent = 'cylinder'
 # Loading mesh
 training_data_path = os.path.join(script_path, '..', 'data-motion-2', f'eef-{agent}')
 data_ind = str(5)
 material_id = 2
 cam_cfg = {
-    'pos': (0.25, 0.24, 0.3),
+    'pos': (0.25, -0.45, 0.2),
     'lookat': (0.25, 0.25, 0.05),
     'fov': 30,
     'lights': [{'pos': (0.5, -1.5, 0.5), 'color': (0.5, 0.5, 0.5)},
@@ -194,12 +192,11 @@ print(mpm_env.loss.n_target_particles_from_mesh)
 
 E = np.array([100000], dtype=DTYPE_NP)
 nu = np.array([0.48], dtype=DTYPE_NP)
-yield_stress = np.array([1500], dtype=DTYPE_NP)
-theta_c = np.array([0.015], dtype=DTYPE_NP)
-theta_s = np.array([0.0025], dtype=DTYPE_NP)
-set_parameters(mpm_env, E, nu, yield_stress, theta_c, theta_s, rho=1000)
+yield_stress = np.array([900], dtype=DTYPE_NP)
 
-forward_backward(mpm_env, init_state, trajectory, backward=False, render=True,
+set_parameters(mpm_env, E, nu, yield_stress, rho=1000)
+
+forward_backward(mpm_env, init_state, trajectory, backward=True, render=False,
                  render_init_pcd=False, render_end_pcd=False,
                  init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
                  init_pcd_offset=env.pcd_offset,
@@ -209,7 +206,5 @@ print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[material_id].E}")
 print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[material_id].nu}")
 print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[material_id].rho}")
 print(f"Gradient of yield stress: {mpm_env.simulator.system_param.grad[None].yield_stress}")
-print(f"Gradient of theta_c: {mpm_env.simulator.system_param.grad[None].theta_c}")
-print(f"Gradient of theta_s: {mpm_env.simulator.system_param.grad[None].theta_s}")
 print(f"Gradient of manipulator friction: {mpm_env.simulator.system_param.grad[None].manipulator_friction}")
 print(f"Gradient of ground friction: {mpm_env.simulator.system_param.grad[None].ground_friction}")

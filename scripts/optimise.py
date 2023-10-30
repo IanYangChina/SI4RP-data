@@ -41,6 +41,7 @@ def forward_backward(mpm_env, init_state, trajectory, render, backward=True):
 
 def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.system_param[None].yield_stress = yield_stress
+    mpm_env.simulator.particle_param[MATERIAL_ID].rho = 1000
     mpm_env.simulator.particle_param[MATERIAL_ID].E = E
     mpm_env.simulator.particle_param[MATERIAL_ID].nu = nu
 
@@ -49,7 +50,7 @@ def main():
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
-    ptcl_density = 2e7
+    ptcl_density = 3e7
 
     # Setting up horizon and trajectory
     dt = 0.001
@@ -136,9 +137,9 @@ def main():
         adam_E = Adam(parameters_shape=E.shape,
                       cfg={'lr': 1e6, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
         adam_nu = Adam(parameters_shape=nu.shape,
-                       cfg={'lr': 0.01, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                       cfg={'lr': 0.000001, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
         adam_yield_stress = Adam(parameters_shape=yield_stress.shape,
-                                 cfg={'lr': 1e4, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                                 cfg={'lr': 10, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
 
         motion_inds = ['1', '2']
         agents = ['rectangle', 'round', 'cylinder']

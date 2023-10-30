@@ -55,34 +55,34 @@ def plot_loss_landscape(p1, p2, loss, fig_title='Fig', loss_type='bi_chamfer_los
 
 
 E_list = np.arange(10000, 100000, 2000).astype(DTYPE_NP)
-nu_list = np.arange(0.05, 0.48, 0.01).astype(DTYPE_NP)
-yield_stress_list = np.arange(100, 500, 10).astype(DTYPE_NP)
+nu_list = np.arange(0.01, 0.48, 0.01).astype(DTYPE_NP)
+yield_stress_list = np.arange(50, 2050, 40).astype(DTYPE_NP)
 
-E, nu = np.meshgrid(E_list, nu_list)
+E, yield_stress = np.meshgrid(E_list, yield_stress_list)
 # E = np.array([30000], dtype=DTYPE_NP)
-# nu = np.array([0.45], dtype=DTYPE_NP)
-yield_stress = np.array([300.0], dtype=DTYPE_NP)
-xy_param = 'E-nu'
+nu = np.array([0.45], dtype=DTYPE_NP)
+# yield_stress = np.array([300.0], dtype=DTYPE_NP)
+xy_param = 'E-ys'
 p_density = 3e7
 p_density_str = '3e7pd'
 
 distance_type = 'exponential'
 loss_types = ['d_pcd_sr_loss', 'd_pcd_rs_loss', 'd_pcd_total', 'd_particle_sr_loss', 'd_particle_rs_loss', 'd_particle_total']
 
-for i in range(len(loss_types)):
-    loss = np.load(os.path.join(fig_data_path, f'{loss_types[i]}_{distance_type}_{xy_param}-{p_density_str}.npy'))
-    fig_title = f'{loss_types[i]} with yield_stress = {yield_stress}'
-    plot_loss_landscape(E, nu, loss, fig_title=fig_title,
-                        loss_type=f'{loss_types[i]}_{distance_type}',
-                        file_suffix=f'_{xy_param}-rightview-{p_density_str}',
-                        view='right',
-                        x_label='E', y_label='nu', z_label='Loss', show=False)
-    plot_loss_landscape(E, nu, loss, fig_title=fig_title,
-                        loss_type=f'{loss_types[i]}_{distance_type}',
-                        file_suffix=f'_{xy_param}-leftview-{p_density_str}',
-                        view='left',
-                        x_label='E', y_label='nu', z_label='Loss', show=False)
-exit()
+# for i in range(len(loss_types)):
+#     loss = np.load(os.path.join(fig_data_path, f'{loss_types[i]}_{distance_type}_{xy_param}-{p_density_str}.npy'))
+#     fig_title = f'{loss_types[i]} with yield_stress = {yield_stress}'
+#     plot_loss_landscape(E, nu, loss, fig_title=fig_title,
+#                         loss_type=f'{loss_types[i]}_{distance_type}',
+#                         file_suffix=f'_{xy_param}-rightview-{p_density_str}',
+#                         view='right',
+#                         x_label='E', y_label='nu', z_label='Loss', show=False)
+#     plot_loss_landscape(E, nu, loss, fig_title=fig_title,
+#                         loss_type=f'{loss_types[i]}_{distance_type}',
+#                         file_suffix=f'_{xy_param}-leftview-{p_density_str}',
+#                         view='left',
+#                         x_label='E', y_label='nu', z_label='Loss', show=False)
+# exit()
 
 ti.init(arch=ti.vulkan, device_memory_GB=8, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
 from doma.envs import SysIDEnv
@@ -124,7 +124,7 @@ def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.system_param[None].yield_stress = yield_stress.copy()
     mpm_env.simulator.particle_param[2].E = E.copy()
     mpm_env.simulator.particle_param[2].nu = nu.copy()
-    mpm_env.simulator.particle_param[2].rho = 400
+    mpm_env.simulator.particle_param[2].rho = 1000
 
 
 # Trajectory 1 presses down 0.015 m and lifts for 0.03 m
@@ -179,7 +179,7 @@ loss_types = ['d_pcd_sr_loss', 'd_pcd_rs_loss', 'd_pcd_total', 'd_particle_sr_lo
 
 for i in range(len(losses)):
     np.save(os.path.join(fig_data_path, f'{loss_types[i]}_{distance_type}_{xy_param}-{p_density_str}.npy'), losses[i])
-    fig_title = f'{loss_types[i]} with yield_stress = {yield_stress}'
+    fig_title = f'{loss_types[i]} with nu = {nu}'
     plot_loss_landscape(E, yield_stress, losses[i], fig_title=fig_title,
                         loss_type=f'{loss_types[i]}_{distance_type}',
                         file_suffix=f'_{xy_param}-rightview-{p_density_str}',

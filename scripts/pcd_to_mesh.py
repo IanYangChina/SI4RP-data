@@ -6,6 +6,10 @@ from pymeshfix import _meshfix
 import pyvista as pv
 import trimesh
 
+box_mesh = o3d.geometry.TriangleMesh.create_box(width=0.1, height=0.1, depth=0.02)
+box_mesh = box_mesh.translate((0.0, 0.0, -0.0199))
+box_mesh = box_mesh.subdivide_midpoint(number_of_iterations=5)
+
 motion_ind = str(1)
 agent = 'rectangle'
 data_ind = str(6)
@@ -47,10 +51,17 @@ print(pcd)
 
 radii = [0.002, 0.01, 0.1]
 mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(pcd, o3d.utility.DoubleVector(radii))
-o3d.visualization.draw_geometries([pcd, world_frame, bounding_box, outliner, mesh],
+# local_bbx = mesh.get_axis_aligned_bounding_box()
+# mesh_centre = mesh.get_center()
+# box_mesh = box_mesh.translate((mesh_centre[0]-0.05, mesh_centre[1]-0.05, 0.0))
+# mesh = mesh + box_mesh
+# mesh = mesh.crop(bounding_box)
+
+o3d.visualization.draw_geometries([pcd, world_frame, bounding_box,  outliner, mesh],
                                   width=800, height=800,
                                   mesh_show_back_face=True,
                                   mesh_show_wireframe=True)
+# exit()
 
 mesh_path = os.path.join(data_path, 'mesh_'+data_ind+pcd_index+'.ply')
 o3d.io.write_triangle_mesh(mesh_path, mesh)
@@ -64,6 +75,7 @@ mesh_to_fix.load_file(mesh_path)
 os.remove(mesh_path)
 # mesh_to_fix.join_closest_components()
 mesh_to_fix.fill_small_boundaries()
+# mesh_to_fix.clean(max_iters=1, inner_loops=1)
 
 points, faces = mesh_to_fix.return_arrays()
 mesh_centre = (points.max(0) + points.min(0)) / 2

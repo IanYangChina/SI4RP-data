@@ -12,7 +12,7 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
-p_density = 2e7
+p_density = 3e7
 
 ti.init(arch=ti.vulkan, device_memory_GB=8, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
 from doma.envs import SysIDEnv
@@ -27,16 +27,16 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True,
         RGBA[:, 0] = x[:, 2] / x[:, 2].max() * 255
         RGBA[:, 1] = x[:, 2] / x[:, 2].max() * 255
         RGBA[:, -1] = 255
-        pts = Points(x, r=6, c=RGBA)
+        pts = Points(x, r=12, c=RGBA)
 
-        real_pcd_pts = Points(init_pcd_path, r=6, c='r')
+        real_pcd_pts = Points(init_pcd_path, r=12, c='r')
         x_ = real_pcd_pts.points() + init_pcd_offset
         x_[:, 0] += (x[:, 0].max() - x[:, 0].min() + 0.002)
         RGBA = np.zeros((len(x_), 4))
         RGBA[:, -1] = 255
         RGBA[:, 0] = x_[:, 2] / x_[:, 2].max() * 255
         RGBA[:, 1] = x_[:, 2] / x_[:, 2].max() * 255
-        real_pcd_pts = Points(x_, r=6, c=RGBA)
+        real_pcd_pts = Points(x_, r=12, c=RGBA)
 
         mesh = Mesh(init_mesh_path)
         coords = mesh.points()
@@ -83,7 +83,7 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True,
         RGBA[:, 0] = 250  # x[:, 0] / x[:, 0].max() * 255
         # RGBA[:, 0] = x[:, 1] / x[:, 1].max() * 255
         RGBA[:, 2] = x[:, 2] / x[:, 2].max() * 255
-        pts = Points(x, r=6, c=RGBA)
+        pts = Points(x, r=12, c=RGBA)
 
         x_ = mpm_env.loss.target_pcd_points.to_numpy() / 1000
         x_[:, 0] += (x[:, 0].max() - x[:, 0].min() + 0.002)
@@ -92,7 +92,7 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True,
         RGBA[:, 0] = 250  # x_[:, 0] / x_[:, 0].max() * 255
         # RGBA[:, 0] = x_[:, 1] / x_[:, 1].max() * 255
         RGBA[:, 2] = x_[:, 2] / x_[:, 2].max() * 255
-        real_pcd_pts = Points(x_, r=6, c=RGBA)
+        real_pcd_pts = Points(x_, r=12, c=RGBA)
 
         x__ = mpm_env.loss.target_particles_from_mesh.to_numpy() / 1000
         x__[:, 0] += (x[:, 0].max() - x[:, 0].min() + 0.002 + x_[:, 0].max() - x_[:, 0].min() + 0.002)
@@ -101,7 +101,7 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True,
         RGBA[:, 0] = 250  # x__[:, 0] / x__[:, 0].max() * 255
         # RGBA[:, 0] = x__[:, 1] / x__[:, 1].max() * 255
         RGBA[:, 2] = x__[:, 2] / x__[:, 2].max() * 255
-        real_particle_pts = Points(x__, r=6, c=RGBA)
+        real_particle_pts = Points(x__, r=12, c=RGBA)
 
         mesh = Mesh(mpm_env.loss.target_mesh_path)
         coords = mesh.points()
@@ -147,8 +147,8 @@ def make_env(data_path, data_ind, horizon, agent_name, material_id, cam_cfg):
                    target_mesh_file=obj_end_mesh_file_path,
                    mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
                    loss_weight=1.0, separate_param_grad=False,
-                   agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 0),
-                   render_agent=False, camera_cfg=cam_cfg)
+                   agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 45),
+                   render_agent=True, camera_cfg=cam_cfg)
     env.reset()
     mpm_env = env.mpm_env
     init_state = mpm_env.get_state()
@@ -174,13 +174,13 @@ horizon = horizon_down + horizon_up
 trajectory = np.zeros(shape=(horizon, 6))
 trajectory[:horizon_down, 2] = -v
 trajectory[horizon_down:, 2] = v
-agent = 'cylinder'
+agent = 'rectangle'
 # Loading mesh
 training_data_path = os.path.join(script_path, '..', 'data-motion-2', f'eef-{agent}')
-data_ind = str(5)
+data_ind = str(3)
 material_id = 2
 cam_cfg = {
-    'pos': (0.25, -0.45, 0.2),
+    'pos': (0.25, -0.1, 0.2),
     'lookat': (0.25, 0.25, 0.05),
     'fov': 30,
     'lights': [{'pos': (0.5, -1.5, 0.5), 'color': (0.5, 0.5, 0.5)},
@@ -192,12 +192,12 @@ print(mpm_env.loss.n_target_particles_from_mesh)
 
 E = np.array([100000], dtype=DTYPE_NP)
 nu = np.array([0.48], dtype=DTYPE_NP)
-yield_stress = np.array([900], dtype=DTYPE_NP)
+yield_stress = np.array([1500], dtype=DTYPE_NP)
 
 set_parameters(mpm_env, E, nu, yield_stress, rho=1000)
 
-forward_backward(mpm_env, init_state, trajectory, backward=True, render=False,
-                 render_init_pcd=False, render_end_pcd=False,
+forward_backward(mpm_env, init_state, trajectory, backward=False, render=True,
+                 render_init_pcd=True, render_end_pcd=True,
                  init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
                  init_pcd_offset=env.pcd_offset,
                  init_mesh_path=env.mesh_file,

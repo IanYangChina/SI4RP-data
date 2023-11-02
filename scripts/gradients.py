@@ -17,7 +17,6 @@ p_density = 3e7
 ti.init(arch=ti.vulkan, device_memory_GB=8, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
 from doma.envs import SysIDEnv
 
-
 def forward_backward(mpm_env, init_state, trajectory, backward=True,
                      render=False, render_init_pcd=False, render_end_pcd=False,
                      init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
@@ -190,14 +189,14 @@ env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, 
 print(mpm_env.loss.n_target_pcd_points)
 print(mpm_env.loss.n_target_particles_from_mesh)
 
-E = np.array([100000], dtype=DTYPE_NP)
-nu = np.array([0.48], dtype=DTYPE_NP)
+E = np.array([40000], dtype=DTYPE_NP)
+nu = np.array([0.45], dtype=DTYPE_NP)
 yield_stress = np.array([1500], dtype=DTYPE_NP)
 
 set_parameters(mpm_env, E, nu, yield_stress, rho=1000)
 
-forward_backward(mpm_env, init_state, trajectory, backward=False, render=True,
-                 render_init_pcd=True, render_end_pcd=True,
+forward_backward(mpm_env, init_state, trajectory, backward=True, render=False,
+                 render_init_pcd=False, render_end_pcd=False,
                  init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
                  init_pcd_offset=env.pcd_offset,
                  init_mesh_path=env.mesh_file,

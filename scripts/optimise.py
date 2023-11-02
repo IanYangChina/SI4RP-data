@@ -89,7 +89,7 @@ def main():
         np.random.seed(seed)
 
         def make_env(data_path, data_ind, horizon, agent_name, agent_init_euler):
-            ti.init(arch=ti.vulkan, device_memory_GB=8, default_fp=DTYPE_TI, fast_math=False, random_seed=seed)
+            ti.init(arch=ti.vulkan, device_memory_GB=10, default_fp=DTYPE_TI, fast_math=False, random_seed=seed)
             from doma.envs import SysIDEnv
 
             obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_normalised.obj')

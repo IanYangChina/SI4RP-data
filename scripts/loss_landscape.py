@@ -63,8 +63,8 @@ E, nu = np.meshgrid(E_list, nu_list)
 # nu = np.array([0.45], dtype=DTYPE_NP)
 yield_stress = np.array([1500.0], dtype=DTYPE_NP)
 xy_param = 'E-nu'
-p_density = 3e7
-p_density_str = '3e7pd'
+p_density = 6e7
+p_density_str = '6e7pd'
 
 distance_type = 'exponential'
 loss_types = ['d_pcd_sr_loss', 'd_pcd_rs_loss', 'd_pcd_total', 'd_particle_sr_loss', 'd_particle_rs_loss', 'd_particle_total']
@@ -84,11 +84,13 @@ loss_types = ['d_pcd_sr_loss', 'd_pcd_rs_loss', 'd_pcd_total', 'd_particle_sr_lo
 #                         x_label='E', y_label='nu', z_label='Loss', show=False)
 # exit()
 
-ti.init(arch=ti.vulkan, device_memory_GB=8, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
+
+ti.init(arch=ti.vulkan, device_memory_GB=10, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
 from doma.envs import SysIDEnv
 
 
 def make_env(data_path, data_ind, horizon, agent_name):
+
     obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_normalised.obj')
     if not os.path.exists(obj_start_mesh_file_path):
         return None, None
@@ -142,9 +144,7 @@ agent = 'round'
 
 # Loading mesh
 training_data_path = os.path.join(script_path, '..', 'data-motion-2', f'eef-{agent}')
-data_ind = str(5)
 material_id = 2
-mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent)
 d_pcd_sr_loss = np.zeros_like(E)
 d_pcd_rs_loss = np.zeros_like(E)
 d_pcd_total = np.zeros_like(E)
@@ -152,30 +152,38 @@ d_particle_sr_loss = np.zeros_like(E)
 d_particle_rs_loss = np.zeros_like(E)
 d_particle_total = np.zeros_like(E)
 
-t0 = time()
-print(f'Start calculating losses with grid size: {d_pcd_sr_loss.shape}')
-for i in range(len(E_list)):
-    for j in range(len(nu_list)):
-        set_parameters(mpm_env, E_list[i], nu_list[j], yield_stress)
-        mpm_env.set_state(init_state['state'], grad_enabled=False)
-        for k in range(mpm_env.horizon):
-            action = trajectory[k]
-            mpm_env.step(action)
-        loss_info = mpm_env.get_final_loss()
-        print(f'The {i}, {j}-th loss is:')
-        for b, v in loss_info.items():
-            print(f'{b}: {v:.4f}')
-        d_pcd_sr_loss[j, i] = loss_info['avg_point_distance_sr']
-        d_pcd_rs_loss[j, i] = loss_info['avg_point_distance_rs']
-        d_pcd_total[j, i] = loss_info['chamfer_loss_pcd']
-        d_particle_sr_loss[j, i] = loss_info['avg_particle_distance_sr']
-        d_particle_rs_loss[j, i] = loss_info['avg_particle_distance_rs']
-        d_particle_total[j, i] = loss_info['chamfer_loss_particle']
-
-print(f'Time taken: {time() - t0}')
+n_datapoints = 9
+for data_ind in range(n_datapoints):
+    mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent)
+    t0 = time()
+    print(f'Start calculating losses with grid size: {d_pcd_sr_loss.shape}')
+    for i in range(len(E_list)):
+        for j in range(len(nu_list)):
+            set_parameters(mpm_env, E_list[i], nu_list[j], yield_stress)
+            mpm_env.set_state(init_state['state'], grad_enabled=False)
+            for k in range(mpm_env.horizon):
+                action = trajectory[k]
+                mpm_env.step(action)
+            loss_info = mpm_env.get_final_loss()
+            print(f'The {i}, {j}-th loss is:')
+            for b, v in loss_info.items():
+                print(f'{b}: {v:.4f}')
+            d_pcd_sr_loss[j, i] = loss_info['avg_point_distance_sr']
+            d_pcd_rs_loss[j, i] = loss_info['avg_point_distance_rs']
+            d_pcd_total[j, i] = loss_info['chamfer_loss_pcd']
+            d_particle_sr_loss[j, i] = loss_info['avg_particle_distance_sr']
+            d_particle_rs_loss[j, i] = loss_info['avg_particle_distance_rs']
+            d_particle_total[j, i] = loss_info['chamfer_loss_particle']
+    del mpm_env, init_state
+    print(f'Time taken for data point {data_ind}: {time() - t0}')
 
 distance_type = 'exponential'
-losses = [d_pcd_sr_loss, d_pcd_rs_loss, d_pcd_total, d_particle_sr_loss, d_particle_rs_loss, d_particle_total]
+losses = [d_pcd_sr_loss / n_datapoints,
+          d_pcd_rs_loss / n_datapoints,
+          d_pcd_total / n_datapoints,
+          d_particle_sr_loss / n_datapoints,
+          d_particle_rs_loss / n_datapoints,
+          d_particle_total / n_datapoints]
 loss_types = ['d_pcd_sr_loss', 'd_pcd_rs_loss', 'd_pcd_total', 'd_particle_sr_loss', 'd_particle_rs_loss', 'd_particle_total']
 
 for i in range(len(losses)):

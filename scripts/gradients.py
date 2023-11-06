@@ -14,7 +14,7 @@ DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
 p_density = 3e7
 
-ti.init(arch=ti.vulkan, device_memory_GB=8, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
+ti.init(arch=ti.vulkan, device_memory_GB=10, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
 from doma.envs import SysIDEnv
 
 def forward_backward(mpm_env, init_state, trajectory, backward=True,
@@ -142,11 +142,11 @@ def make_env(data_path, data_ind, horizon, agent_name, material_id, cam_cfg):
     env = SysIDEnv(ptcl_density=p_density, horizon=horizon, material_id=material_id, voxelise_res=1080,
                    mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
                    target_pcd_file=obj_end_pcd_file_path,
-                   pcd_offset=(-obj_start_centre_real + obj_start_initial_pos),
+                   pcd_offset=(-obj_start_centre_real + obj_start_initial_pos), down_sample_voxel_size=0.0035,
                    target_mesh_file=obj_end_mesh_file_path,
                    mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
                    loss_weight=1.0, separate_param_grad=False,
-                   agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 45),
+                   agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 0),
                    render_agent=True, camera_cfg=cam_cfg)
     env.reset()
     mpm_env = env.mpm_env
@@ -173,10 +173,10 @@ horizon = horizon_down + horizon_up
 trajectory = np.zeros(shape=(horizon, 6))
 trajectory[:horizon_down, 2] = -v
 trajectory[horizon_down:, 2] = v
-agent = 'rectangle'
+agent = 'cylinder'
 # Loading mesh
 training_data_path = os.path.join(script_path, '..', 'data-motion-2', f'eef-{agent}')
-data_ind = str(3)
+data_ind = str(7)
 material_id = 2
 cam_cfg = {
     'pos': (0.25, -0.1, 0.2),

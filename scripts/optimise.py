@@ -6,11 +6,6 @@ from torch.utils.tensorboard import SummaryWriter
 from doma.optimiser.adam import Adam
 
 MATERIAL_ID = 2
-# Optimisation scheme: Adam
-# Optimisation objective: Chamfer distance
-# Schedule:
-#       compute forward-backward 5 times for each object configuration
-#       update parameters once every forward simulation trajectory, lr = 0.001
 
 
 def forward_backward(mpm_env, init_state, trajectory, render, backward=True):
@@ -110,7 +105,7 @@ def main():
 
             env = SysIDEnv(ptcl_density=ptcl_density, horizon=horizon, material_id=MATERIAL_ID, voxelise_res=1080,
                            mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
-                           target_pcd_file=obj_end_pcd_file_path,
+                           target_pcd_file=obj_end_pcd_file_path, down_sample_voxel_size=0.0035,
                            pcd_offset=(-obj_start_centre_real + obj_start_initial_pos),
                            target_mesh_file=obj_end_mesh_file_path,
                            mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
@@ -135,11 +130,11 @@ def main():
         print(f"Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}")
         # Optimiser: Adam
         adam_E = Adam(parameters_shape=E.shape,
-                      cfg={'lr': 1e6, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                      cfg={'lr': 1e8, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
         adam_nu = Adam(parameters_shape=nu.shape,
-                       cfg={'lr': 0.000001, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                       cfg={'lr': 0.0001, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
         adam_yield_stress = Adam(parameters_shape=yield_stress.shape,
-                                 cfg={'lr': 10, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                                 cfg={'lr': 1e5, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
 
         motion_inds = ['1', '2']
         agents = ['rectangle', 'round', 'cylinder']
@@ -170,6 +165,7 @@ def main():
                         grads += np.array([mpm_env.simulator.particle_param.grad[MATERIAL_ID].E,
                                            mpm_env.simulator.particle_param.grad[MATERIAL_ID].nu,
                                            mpm_env.simulator.system_param.grad[None].yield_stress], dtype=DTYPE_NP)
+                        del mpm_env, init_state
 
             loss = loss / (len(data_inds) * len(agents) * len(motion_inds))
             grads = grads / (len(data_inds) * len(agents) * len(motion_inds))

@@ -84,7 +84,7 @@ def main():
         np.random.seed(seed)
 
         def make_env(data_path, data_ind, horizon, agent_name, agent_init_euler):
-            ti.init(arch=ti.vulkan, device_memory_GB=10, default_fp=DTYPE_TI, fast_math=False, random_seed=seed)
+            ti.init(arch=ti.vulkan, device_memory_GB=12, default_fp=DTYPE_TI, fast_math=False, random_seed=seed)
             from doma.envs import SysIDEnv
 
             obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_normalised.obj')
@@ -115,7 +115,7 @@ def main():
             mpm_env = env.mpm_env
             init_state = mpm_env.get_state()
 
-            return mpm_env, init_state
+            return env, mpm_env, init_state
 
         # Logger
         log_dir = os.path.join(script_path, '..', 'optimisation-logs', f'seed-{seed}')
@@ -158,14 +158,14 @@ def main():
                         agent_init_euler = (0, 0, 45)
 
                     for data_ind in data_inds:
-                        mpm_env, init_state = make_env(data_path, str(data_ind), horizon, agent, agent_init_euler)
+                        env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon, agent, agent_init_euler)
                         set_parameters(mpm_env, E.copy(), nu.copy(), yield_stress.copy())
                         forward_backward(mpm_env, init_state, trajectory, render=False)
                         loss += mpm_env.loss.total_loss[None]
                         grads += np.array([mpm_env.simulator.particle_param.grad[MATERIAL_ID].E,
                                            mpm_env.simulator.particle_param.grad[MATERIAL_ID].nu,
                                            mpm_env.simulator.system_param.grad[None].yield_stress], dtype=DTYPE_NP)
-                        del mpm_env, init_state
+                        del env, mpm_env, init_state
 
             loss = loss / (len(data_inds) * len(agents) * len(motion_inds))
             grads = grads / (len(data_inds) * len(agents) * len(motion_inds))

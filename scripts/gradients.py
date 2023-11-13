@@ -7,6 +7,7 @@ from vedo import Points, show, Mesh
 import matplotlib as mpl
 mpl.use('TkAgg')
 import matplotlib.pylab as plt
+from doma.engine.utils.misc import get_gpu_memory
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
@@ -14,7 +15,7 @@ DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
 p_density = 3e7
 
-ti.init(arch=ti.vulkan, device_memory_GB=10, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
+ti.init(arch=ti.vulkan, device_memory_GB=6, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
 from doma.envs import SysIDEnv
 
 def forward_backward(mpm_env, init_state, trajectory, backward=True,
@@ -185,9 +186,12 @@ cam_cfg = {
     'lights': [{'pos': (0.5, -1.5, 0.5), 'color': (0.5, 0.5, 0.5)},
                {'pos': (0.5, -1.5, 1.5), 'color': (0.5, 0.5, 0.5)}]
 }
+print(f'===> GPU memory before create env: {get_gpu_memory()}')
 env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent, material_id, cam_cfg)
-print(mpm_env.loss.n_target_pcd_points)
-print(mpm_env.loss.n_target_particles_from_mesh)
+print(f'===> Num. simulation particles: {mpm_env.loss.n_particles_matching_mat}')
+print(f'===> Num. target pcd points: {mpm_env.loss.n_target_pcd_points}')
+print(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')
+print(f'===> GPU memory after create env: {get_gpu_memory()}')
 
 E = np.array([40000], dtype=DTYPE_NP)
 nu = np.array([0.45], dtype=DTYPE_NP)
@@ -195,12 +199,14 @@ yield_stress = np.array([1500], dtype=DTYPE_NP)
 
 set_parameters(mpm_env, E, nu, yield_stress, rho=1000)
 
-forward_backward(mpm_env, init_state, trajectory, backward=True, render=False,
+forward_backward(mpm_env, init_state, trajectory, backward=True, render=True,
                  render_init_pcd=False, render_end_pcd=False,
                  init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
                  init_pcd_offset=env.pcd_offset,
                  init_mesh_path=env.mesh_file,
                  init_mesh_pos=env.initial_pos)
+print(f'GPU memory after forward-backward: {get_gpu_memory()}')
+
 print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[material_id].E}")
 print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[material_id].nu}")
 print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[material_id].rho}")

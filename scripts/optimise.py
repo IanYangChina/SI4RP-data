@@ -1,4 +1,3 @@
-import subprocess as sp
 import os
 import argparse
 import taichi as ti
@@ -6,15 +5,9 @@ import numpy as np
 from time import time
 from torch.utils.tensorboard import SummaryWriter
 from doma.optimiser.adam import Adam, SGD
+from doma.engine.utils.misc import get_gpu_memory
 
 MATERIAL_ID = 2
-
-
-def get_gpu_memory():
-    command = "nvidia-smi --query-gpu=memory.free --format=csv"
-    memory_free_info = sp.check_output(command.split()).decode('ascii').split('\n')[:-1][1:]
-    memory_free_values = [int(x.split()[0]) for i, x in enumerate(memory_free_info)]
-    return memory_free_values
 
 
 def forward_backward(mpm_env, init_state, trajectory, render, backward=True):
@@ -86,7 +79,7 @@ def main(arguments):
 
     n_epoch = 100
     seeds = [0, 1, 2]
-    print(f"Optimising for {n_epoch} epochs for {len(seeds)} random seeds.")
+    print(f"=====> Optimising for {n_epoch} epochs for {len(seeds)} random seeds.")
     for seed in seeds:
         # Setting up random seed
         np.random.seed(seed)
@@ -134,7 +127,7 @@ def main(arguments):
         nu = np.asarray(np.random.uniform(nu_range[0], nu_range[1]), dtype=DTYPE_NP).reshape((1,))  # Poisson's ratio
         yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]), dtype=DTYPE_NP).reshape((1,))  # Yield stress
 
-        print(f"Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}")
+        print(f"=====> Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}")
         if arguments['adam']:
             # Optimiser: Adam
             optim_E = Adam(parameters_shape=E.shape,
@@ -142,7 +135,7 @@ def main(arguments):
             optim_nu = Adam(parameters_shape=nu.shape,
                            cfg={'lr': 0.0001, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
             optim_yield_stress = Adam(parameters_shape=yield_stress.shape,
-                                     cfg={'lr': 1e5, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                                     cfg={'lr': 1e4, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
         else:
             # Optimiser: SGD
             optim_E = SGD(parameters_shape=E.shape,
@@ -150,7 +143,7 @@ def main(arguments):
             optim_nu = SGD(parameters_shape=nu.shape,
                           cfg={'lr': 0.0001})
             optim_yield_stress = SGD(parameters_shape=yield_stress.shape,
-                                    cfg={'lr': 1e5})
+                                    cfg={'lr': 1e4})
 
         motion_inds = ['1', '2']
         agents = ['rectangle', 'round', 'cylinder']
@@ -185,8 +178,8 @@ def main(arguments):
                         grad = np.array([mpm_env.simulator.particle_param.grad[MATERIAL_ID].E,
                                            mpm_env.simulator.particle_param.grad[MATERIAL_ID].nu,
                                            mpm_env.simulator.system_param.grad[None].yield_stress], dtype=DTYPE_NP)
-                        print(f'=====>Loss: {mpm_env.loss.total_loss[None]}')
-                        print(f'=====>Grad: {grad}')
+                        print(f'=====> Loss: {mpm_env.loss.total_loss[None]}')
+                        print(f'=====> Grad: {grad}')
                         grads += grad
 #                        print(f'GPU memory after forward-backward computation: {get_gpu_memory()}')
 #                        del env, mpm_env, init_state
@@ -209,8 +202,8 @@ def main(arguments):
             logger.add_scalar(tag='Grad/nu', scalar_value=grads[1], global_step=epoch)
             logger.add_scalar(tag='Param/yield_stress', scalar_value=yield_stress, global_step=epoch)
             logger.add_scalar(tag='Grad/yield_stress', scalar_value=grads[2], global_step=epoch)
-            print(f"Epoch {epoch}: time={time() - t1}\n"
-                  f"loss={loss}, E={E}, nu={nu}, yield_stress={yield_stress}")
+            print(f"========> Epoch {epoch}: time={time() - t1}\n"
+                  f"========> loss={loss}, E={E}, nu={nu}, yield_stress={yield_stress}")
 
         print(f"Final parameters: E={E}, nu={nu}, yield_stress={yield_stress}")
         np.save(os.path.join(log_dir, 'final_params.npy'), np.array([E, nu, yield_stress], dtype=DTYPE_NP))

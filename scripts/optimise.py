@@ -1,3 +1,4 @@
+import subprocess as sp
 import os
 import argparse
 import taichi as ti
@@ -7,6 +8,13 @@ from torch.utils.tensorboard import SummaryWriter
 from doma.optimiser.adam import Adam, SGD
 
 MATERIAL_ID = 2
+
+
+def get_gpu_memory():
+    command = "nvidia-smi --query-gpu=memory.free --format=csv"
+    memory_free_info = sp.check_output(command.split()).decode('ascii').split('\n')[:-1][1:]
+    memory_free_values = [int(x.split()[0]) for i, x in enumerate(memory_free_info)]
+    return memory_free_values
 
 
 def forward_backward(mpm_env, init_state, trajectory, render, backward=True):
@@ -19,8 +27,7 @@ def forward_backward(mpm_env, init_state, trajectory, render, backward=True):
         if render:
             mpm_env.render(mode='human')
     mpm_env.get_final_loss()
-    print(
-        f'Final chamfer loss: {mpm_env.loss.total_loss[None]}')
+
     t2 = time()
 
     if backward:
@@ -32,7 +39,7 @@ def forward_backward(mpm_env, init_state, trajectory, render, backward=True):
             mpm_env.step_grad(action=action)
 
         t3 = time()
-        print(f'=======> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
+        print(f'=====> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
 
 
 def set_parameters(mpm_env, E, nu, yield_stress):
@@ -83,10 +90,10 @@ def main(arguments):
     for seed in seeds:
         # Setting up random seed
         np.random.seed(seed)
-        ti.init(arch=ti.vulkan, device_memory_GB=12, default_fp=DTYPE_TI, fast_math=False, random_seed=seed)
-        from doma.envs import SysIDEnv
 
         def make_env(data_path, data_ind, horizon, agent_name, agent_init_euler):
+            ti.init(arch=ti.vulkan, device_memory_GB=10, default_fp=DTYPE_TI, fast_math=False, random_seed=seed)
+            from doma.envs import SysIDEnv
             obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_normalised.obj')
             if not os.path.exists(obj_start_mesh_file_path):
                 return None, None
@@ -168,16 +175,22 @@ def main(arguments):
                         agent_init_euler = (0, 0, 45)
 
                     for data_ind in data_inds:
+                        print(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
+#                        print(f'GPU memory before creating an env: {get_gpu_memory()}')
                         env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon, agent, agent_init_euler)
+#                        print(f'GPU memory after creating an env: {get_gpu_memory()}')
                         set_parameters(mpm_env, E.copy(), nu.copy(), yield_stress.copy())
                         forward_backward(mpm_env, init_state, trajectory, render=False)
                         loss += mpm_env.loss.total_loss[None]
                         grad = np.array([mpm_env.simulator.particle_param.grad[MATERIAL_ID].E,
                                            mpm_env.simulator.particle_param.grad[MATERIAL_ID].nu,
                                            mpm_env.simulator.system_param.grad[None].yield_stress], dtype=DTYPE_NP)
-                        print(f'Grad: {grad}')
+                        print(f'=====>Loss: {mpm_env.loss.total_loss[None]}')
+                        print(f'=====>Grad: {grad}')
                         grads += grad
-                        del env, mpm_env, init_state
+#                        print(f'GPU memory after forward-backward computation: {get_gpu_memory()}')
+#                        del env, mpm_env, init_state
+#                        print(f'GPU memory after deleting env: {get_gpu_memory()}')
 
             loss = loss / num_datapoints
             grads = grads / num_datapoints

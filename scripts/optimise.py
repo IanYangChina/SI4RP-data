@@ -1,9 +1,10 @@
 import os
+import argparse
 import taichi as ti
 import numpy as np
 from time import time
 from torch.utils.tensorboard import SummaryWriter
-from doma.optimiser.adam import Adam
+from doma.optimiser.adam import Adam, SGD
 
 MATERIAL_ID = 2
 
@@ -41,7 +42,7 @@ def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.particle_param[MATERIAL_ID].nu = nu
 
 
-def main():
+def main(arguments):
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
@@ -82,11 +83,10 @@ def main():
     for seed in seeds:
         # Setting up random seed
         np.random.seed(seed)
+        ti.init(arch=ti.vulkan, device_memory_GB=12, default_fp=DTYPE_TI, fast_math=False, random_seed=seed)
+        from doma.envs import SysIDEnv
 
         def make_env(data_path, data_ind, horizon, agent_name, agent_init_euler):
-            ti.init(arch=ti.vulkan, device_memory_GB=12, default_fp=DTYPE_TI, fast_math=False, random_seed=seed)
-            from doma.envs import SysIDEnv
-
             obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_normalised.obj')
             if not os.path.exists(obj_start_mesh_file_path):
                 return None, None
@@ -128,17 +128,27 @@ def main():
         yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]), dtype=DTYPE_NP).reshape((1,))  # Yield stress
 
         print(f"Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}")
-        # Optimiser: Adam
-        adam_E = Adam(parameters_shape=E.shape,
-                      cfg={'lr': 1e8, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
-        adam_nu = Adam(parameters_shape=nu.shape,
-                       cfg={'lr': 0.0001, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
-        adam_yield_stress = Adam(parameters_shape=yield_stress.shape,
-                                 cfg={'lr': 1e5, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+        if arguments['adam']:
+            # Optimiser: Adam
+            optim_E = Adam(parameters_shape=E.shape,
+                          cfg={'lr': 1e8, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+            optim_nu = Adam(parameters_shape=nu.shape,
+                           cfg={'lr': 0.0001, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+            optim_yield_stress = Adam(parameters_shape=yield_stress.shape,
+                                     cfg={'lr': 1e5, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+        else:
+            # Optimiser: SGD
+            optim_E = SGD(parameters_shape=E.shape,
+                         cfg={'lr': 1e8})
+            optim_nu = SGD(parameters_shape=nu.shape,
+                          cfg={'lr': 0.0001})
+            optim_yield_stress = SGD(parameters_shape=yield_stress.shape,
+                                    cfg={'lr': 1e5})
 
         motion_inds = ['1', '2']
         agents = ['rectangle', 'round', 'cylinder']
         data_inds = np.arange(9).astype(int)
+        num_datapoints = len(data_inds) * len(agents) * len(motion_inds)
 
         for epoch in range(n_epoch):
             t1 = time()
@@ -162,17 +172,22 @@ def main():
                         set_parameters(mpm_env, E.copy(), nu.copy(), yield_stress.copy())
                         forward_backward(mpm_env, init_state, trajectory, render=False)
                         loss += mpm_env.loss.total_loss[None]
-                        grads += np.array([mpm_env.simulator.particle_param.grad[MATERIAL_ID].E,
+                        grad = np.array([mpm_env.simulator.particle_param.grad[MATERIAL_ID].E,
                                            mpm_env.simulator.particle_param.grad[MATERIAL_ID].nu,
                                            mpm_env.simulator.system_param.grad[None].yield_stress], dtype=DTYPE_NP)
+                        print(f'Grad: {grad}')
+                        grads += grad
                         del env, mpm_env, init_state
 
-            loss = loss / (len(data_inds) * len(agents) * len(motion_inds))
-            grads = grads / (len(data_inds) * len(agents) * len(motion_inds))
+            loss = loss / num_datapoints
+            grads = grads / num_datapoints
 
-            E = adam_E.step(E.copy(), grads[0])
-            nu = adam_nu.step(nu.copy(), grads[1])
-            yield_stress = adam_yield_stress.step(yield_stress.copy(), grads[2])
+            E = optim_E.step(E.copy(), grads[0])
+            E = np.clip(E, E_range[0], E_range[1])
+            nu = optim_nu.step(nu.copy(), grads[1])
+            nu = np.clip(nu, nu_range[0], nu_range[1])
+            yield_stress = optim_yield_stress.step(yield_stress.copy(), grads[2])
+            yield_stress = np.clip(yield_stress, yield_stress_range[0], yield_stress_range[1])
 
             logger.add_scalar(tag='Loss/chamfer', scalar_value=loss, global_step=epoch)
             logger.add_scalar(tag='Param/E', scalar_value=E, global_step=epoch)
@@ -189,4 +204,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--adam', dest='adam', default=False, action='store_true')
+    args = vars(parser.parse_args())
+    main(args)

@@ -18,9 +18,11 @@ p_density = 3e7
 ti.init(arch=ti.vulkan, device_memory_GB=6, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
 from doma.envs import SysIDEnv
 
+
 def forward_backward(mpm_env, init_state, trajectory, backward=True,
                      render=False, render_init_pcd=False, render_end_pcd=False,
                      init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
+    cmap = 'Oranges'
     if render_init_pcd:
         x, _ = mpm_env.render(mode='point_cloud')
         RGBA = np.zeros((len(x), 4))
@@ -46,19 +48,11 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True,
 
         show([pts, real_pcd_pts, mesh], __doc__, axes=True).close()    # Forward
 
-    # plt.imshow(mpm_env.loss.height_map_pcd_target[None].to_numpy(), cmap='Greys')
-    # plt.show()
-    # plt.imshow(mpm_env.loss.height_map_particles_target[None].to_numpy(), cmap='Greys')
-    # plt.show()
-
     t1 = time()
     mpm_env.set_state(init_state['state'], grad_enabled=True)
     for i in range(mpm_env.horizon):
         action = trajectory[i]
         mpm_env.step(action)
-        # height_map = mpm_env.loss.height_maps[i].to_numpy()
-        # plt.imshow(height_map, cmap='Greys')
-        # plt.show()
         if render:
             mpm_env.render(mode='human')
             # img = mpm_env.render(mode='depth_array')
@@ -71,8 +65,15 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True,
             print(f'{i}: {v:.4f}')
         else:
             pass
-            # plt.imshow(v.to_numpy(), cmap='Greys')
-            # plt.show()
+            fig = plt.figure(figsize=(10, 3))
+            fig.add_subplot(1, 3, 1)
+            plt.imshow(mpm_env.loss.height_map_pcd_target.to_numpy(), cmap=cmap)
+            fig.add_subplot(1, 3, 2)
+            plt.imshow(mpm_env.loss.height_map_particles_target.to_numpy(), cmap=cmap)
+            fig.add_subplot(1, 3, 3)
+            plt.imshow(v, cmap=cmap)
+            # plt.colorbar()
+            plt.show()
 
     t2 = time()
 
@@ -143,10 +144,11 @@ def make_env(data_path, data_ind, horizon, agent_name, material_id, cam_cfg):
     env = SysIDEnv(ptcl_density=p_density, horizon=horizon, material_id=material_id, voxelise_res=1080,
                    mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
                    target_pcd_file=obj_end_pcd_file_path,
-                   pcd_offset=(-obj_start_centre_real + obj_start_initial_pos), down_sample_voxel_size=0.0035,
+                   pcd_offset=(-obj_start_centre_real + obj_start_initial_pos), down_sample_voxel_size=0.003,
                    target_mesh_file=obj_end_mesh_file_path,
                    mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
                    loss_weight=1.0, separate_param_grad=False,
+                   height_map_loss=True, height_map_res=32, height_map_size=0.1,
                    agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 0),
                    render_agent=True, camera_cfg=cam_cfg)
     env.reset()
@@ -177,7 +179,7 @@ trajectory[horizon_down:, 2] = v
 agent = 'cylinder'
 # Loading mesh
 training_data_path = os.path.join(script_path, '..', 'data-motion-2', f'eef-{agent}')
-data_ind = str(7)
+data_ind = str(3)
 material_id = 2
 cam_cfg = {
     'pos': (0.25, -0.1, 0.2),
@@ -200,7 +202,7 @@ yield_stress = np.array([1500], dtype=DTYPE_NP)
 set_parameters(mpm_env, E, nu, yield_stress, rho=1000)
 
 forward_backward(mpm_env, init_state, trajectory, backward=True, render=False,
-                 render_init_pcd=False, render_end_pcd=False,
+                 render_init_pcd=False, render_end_pcd=True,
                  init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
                  init_pcd_offset=env.pcd_offset,
                  init_mesh_path=env.mesh_file,

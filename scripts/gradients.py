@@ -199,7 +199,7 @@ yield_stress = np.array([1500], dtype=DTYPE_NP)
 
 set_parameters(mpm_env, E, nu, yield_stress, rho=1000)
 
-forward_backward(mpm_env, init_state, trajectory, backward=True, render=True,
+forward_backward(mpm_env, init_state, trajectory, backward=True, render=False,
                  render_init_pcd=False, render_end_pcd=False,
                  init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
                  init_pcd_offset=env.pcd_offset,

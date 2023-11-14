@@ -135,7 +135,7 @@ def main(arguments):
             optim_nu = Adam(parameters_shape=nu.shape,
                            cfg={'lr': 0.0001, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
             optim_yield_stress = Adam(parameters_shape=yield_stress.shape,
-                                     cfg={'lr': 1e4, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                                     cfg={'lr': 1e7, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
         else:
             # Optimiser: SGD
             optim_E = SGD(parameters_shape=E.shape,
@@ -143,7 +143,7 @@ def main(arguments):
             optim_nu = SGD(parameters_shape=nu.shape,
                           cfg={'lr': 0.0001})
             optim_yield_stress = SGD(parameters_shape=yield_stress.shape,
-                                    cfg={'lr': 1e4})
+                                    cfg={'lr': 1e7})
 
         motion_inds = ['1', '2']
         agents = ['rectangle', 'round', 'cylinder']

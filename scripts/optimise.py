@@ -46,7 +46,7 @@ def main(arguments):
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
-    ptcl_density = 3e7
+    ptcl_density = 4e7
 
     # Setting up horizon and trajectory
     dt = 0.001
@@ -131,19 +131,19 @@ def main(arguments):
         if arguments['adam']:
             # Optimiser: Adam
             optim_E = Adam(parameters_shape=E.shape,
-                          cfg={'lr': 1e8, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                          cfg={'lr': 1e9, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
             optim_nu = Adam(parameters_shape=nu.shape,
-                           cfg={'lr': 0.0001, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                           cfg={'lr': 0.1, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
             optim_yield_stress = Adam(parameters_shape=yield_stress.shape,
-                                     cfg={'lr': 1e7, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                                     cfg={'lr': 1e6, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
         else:
             # Optimiser: SGD
             optim_E = SGD(parameters_shape=E.shape,
-                         cfg={'lr': 1e8})
+                         cfg={'lr': 1e9})
             optim_nu = SGD(parameters_shape=nu.shape,
-                          cfg={'lr': 0.0001})
+                          cfg={'lr': 0.1})
             optim_yield_stress = SGD(parameters_shape=yield_stress.shape,
-                                    cfg={'lr': 1e7})
+                                    cfg={'lr': 1e6})
 
         motion_inds = ['1', '2']
         agents = ['rectangle', 'round', 'cylinder']

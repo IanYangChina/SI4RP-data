@@ -7,6 +7,7 @@ from vedo import Points, show, Mesh
 import matplotlib as mpl
 mpl.use('TkAgg')
 import matplotlib.pylab as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 from doma.engine.utils.misc import get_gpu_memory
 
 script_path = os.path.dirname(os.path.realpath(__file__))
@@ -20,9 +21,9 @@ from doma.envs import SysIDEnv
 
 
 def forward_backward(mpm_env, init_state, trajectory, backward=True,
-                     render=False, render_init_pcd=False, render_end_pcd=False,
+                     render=False, render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
                      init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
-    cmap = 'Oranges'
+    cmap = 'Greys'
     if render_init_pcd:
         x, _ = mpm_env.render(mode='point_cloud')
         RGBA = np.zeros((len(x), 4))
@@ -62,18 +63,26 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True,
     loss_info = mpm_env.get_final_loss()
     for i, v in loss_info.items():
         if i != 'final_height_map':
-            print(f'{i}: {v:.4f}')
+            print(f'===> {i}: {v:.4f}')
         else:
             pass
-            fig = plt.figure(figsize=(10, 3))
-            fig.add_subplot(1, 3, 1)
-            plt.imshow(mpm_env.loss.height_map_pcd_target.to_numpy(), cmap=cmap)
-            fig.add_subplot(1, 3, 2)
-            plt.imshow(mpm_env.loss.height_map_particles_target.to_numpy(), cmap=cmap)
-            fig.add_subplot(1, 3, 3)
-            plt.imshow(v, cmap=cmap)
-            # plt.colorbar()
-            plt.show()
+    if render_heightmap:
+        fig = plt.figure(figsize=(10, 4))
+        ax1 = fig.add_subplot(2, 1, 1)
+        ax1.set_title('Target PCD\nheight map')
+        im1 = ax1.imshow(mpm_env.loss.height_map_pcd_target.to_numpy(), cmap=cmap)
+        divider = make_axes_locatable(ax1)
+        cax = divider.append_axes('right', size='2%', pad=0.05)
+        fig.colorbar(im1, cax=cax, orientation='vertical')
+
+        ax2 = fig.add_subplot(2, 1, 2)
+        ax2.set_title('Simulated particle\nheight map')
+        im2 = ax2.imshow(loss_info['final_height_map'], cmap=cmap)
+        divider = make_axes_locatable(ax2)
+        cax = divider.append_axes('right', size='2%', pad=0.05)
+        fig.colorbar(im2, cax=cax, orientation='vertical')
+
+        plt.show()
 
     t2 = time()
 
@@ -121,7 +130,7 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True,
             mpm_env.step_grad(action=action)
 
         t3 = time()
-        print(f'=======> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
+        print(f'===> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
 
 
 def make_env(data_path, data_ind, horizon, agent_name, material_id, cam_cfg):
@@ -148,7 +157,7 @@ def make_env(data_path, data_ind, horizon, agent_name, material_id, cam_cfg):
                    target_mesh_file=obj_end_mesh_file_path,
                    mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
                    loss_weight=1.0, separate_param_grad=False,
-                   height_map_loss=True, height_map_res=32, height_map_size=0.1,
+                   height_map_loss=True, height_map_res=32, height_map_size=0.08,
                    agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 0),
                    render_agent=True, camera_cfg=cam_cfg)
     env.reset()
@@ -179,7 +188,7 @@ trajectory[horizon_down:, 2] = v
 agent = 'cylinder'
 # Loading mesh
 training_data_path = os.path.join(script_path, '..', 'data-motion-2', f'eef-{agent}')
-data_ind = str(3)
+data_ind = str(8)
 material_id = 2
 cam_cfg = {
     'pos': (0.25, -0.1, 0.2),
@@ -202,13 +211,13 @@ yield_stress = np.array([1500], dtype=DTYPE_NP)
 set_parameters(mpm_env, E, nu, yield_stress, rho=1000)
 
 forward_backward(mpm_env, init_state, trajectory, backward=True, render=False,
-                 render_init_pcd=False, render_end_pcd=True,
+                 render_init_pcd=False, render_end_pcd=False, render_heightmap=True,
                  init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
                  init_pcd_offset=env.pcd_offset,
                  init_mesh_path=env.mesh_file,
                  init_mesh_pos=env.initial_pos)
-print(f'GPU memory after forward-backward: {get_gpu_memory()}')
-
+print(f'===> GPU memory after forward-backward: {get_gpu_memory()}')
+print('===> Gradients:')
 print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[material_id].E}")
 print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[material_id].nu}")
 print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[material_id].rho}")

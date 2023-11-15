@@ -87,21 +87,24 @@ def main(arguments):
         def make_env(data_path, data_ind, horizon, agent_name, agent_init_euler):
             ti.init(arch=ti.vulkan, device_memory_GB=10, default_fp=DTYPE_TI, fast_math=False, random_seed=seed)
             from doma.envs import SysIDEnv
-            obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_normalised.obj')
+            obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised.obj')
             if not os.path.exists(obj_start_mesh_file_path):
                 return None, None
-            obj_start_centre_real = np.load(os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_centre.npy')).astype(DTYPE_NP)
+            obj_start_centre_real = np.load(
+                os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_centre.npy')).astype(DTYPE_NP)
             obj_start_centre_top_normalised = np.load(
-                os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_normalised_centre_top.npy')).astype(DTYPE_NP)
+                os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised_centre_top.npy')).astype(
+                DTYPE_NP)
 
-            obj_end_pcd_file_path = os.path.join(data_path, 'pcd_' + data_ind+str(1) + '.ply')
-            obj_end_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind+str(1) + '_repaired_normalised.obj')
+            obj_end_pcd_file_path = os.path.join(data_path, 'pcd_' + data_ind + str(1) + '.ply')
+            obj_end_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(1) + '_repaired_normalised.obj')
             obj_end_centre_top_normalised = np.load(
-                os.path.join(data_path, 'mesh_' + data_ind+str(1) + '_repaired_normalised_centre_top.npy')).astype(DTYPE_NP)
+                os.path.join(data_path, 'mesh_' + data_ind + str(1) + '_repaired_normalised_centre_top.npy')).astype(
+                DTYPE_NP)
 
             # Building environment
             obj_start_initial_pos = np.array([0.25, 0.25, obj_start_centre_top_normalised[-1] + 0.01], dtype=DTYPE_NP)
-            agent_init_pos = (0.25, 0.25, 2*obj_start_centre_top_normalised[-1] + 0.01)
+            agent_init_pos = (0.25, 0.25, 2 * obj_start_centre_top_normalised[-1] + 0.01)
 
             env = SysIDEnv(ptcl_density=ptcl_density, horizon=horizon, material_id=MATERIAL_ID, voxelise_res=1080,
                            mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
@@ -110,7 +113,9 @@ def main(arguments):
                            target_mesh_file=obj_end_mesh_file_path,
                            mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
                            loss_weight=1.0, separate_param_grad=False,
-                           agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=agent_init_euler)
+                           height_map_loss=True, height_map_res=32, height_map_size=0.08,
+                           agent_cfg_file=agent_name + '_eef.yaml', agent_init_pos=agent_init_pos,
+                           agent_init_euler=agent_init_euler)
             env.reset()
             mpm_env = env.mpm_env
             init_state = mpm_env.get_state()
@@ -125,25 +130,26 @@ def main(arguments):
         # Initialising parameters
         E = np.asarray(np.random.uniform(E_range[0], E_range[1]), dtype=DTYPE_NP).reshape((1,))  # Young's modulus
         nu = np.asarray(np.random.uniform(nu_range[0], nu_range[1]), dtype=DTYPE_NP).reshape((1,))  # Poisson's ratio
-        yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]), dtype=DTYPE_NP).reshape((1,))  # Yield stress
+        yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]),
+                                  dtype=DTYPE_NP).reshape((1,))  # Yield stress
 
         print(f"=====> Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}")
         if arguments['adam']:
             # Optimiser: Adam
             optim_E = Adam(parameters_shape=E.shape,
-                          cfg={'lr': 1e9, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                           cfg={'lr': 1e7, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
             optim_nu = Adam(parameters_shape=nu.shape,
-                           cfg={'lr': 0.1, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                            cfg={'lr': 0.001, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
             optim_yield_stress = Adam(parameters_shape=yield_stress.shape,
-                                     cfg={'lr': 1e6, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                                      cfg={'lr': 1e4, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
         else:
             # Optimiser: SGD
             optim_E = SGD(parameters_shape=E.shape,
-                         cfg={'lr': 1e9})
+                          cfg={'lr': 1e7})
             optim_nu = SGD(parameters_shape=nu.shape,
-                          cfg={'lr': 0.1})
+                           cfg={'lr': 0.001})
             optim_yield_stress = SGD(parameters_shape=yield_stress.shape,
-                                    cfg={'lr': 1e6})
+                                     cfg={'lr': 1e4})
 
         motion_inds = ['1', '2']
         agents = ['rectangle', 'round', 'cylinder']
@@ -169,21 +175,21 @@ def main(arguments):
 
                     for data_ind in data_inds:
                         print(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
-#                        print(f'GPU memory before creating an env: {get_gpu_memory()}')
+                        #                        print(f'GPU memory before creating an env: {get_gpu_memory()}')
                         env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon, agent, agent_init_euler)
-#                        print(f'GPU memory after creating an env: {get_gpu_memory()}')
+                        #                        print(f'GPU memory after creating an env: {get_gpu_memory()}')
                         set_parameters(mpm_env, E.copy(), nu.copy(), yield_stress.copy())
                         forward_backward(mpm_env, init_state, trajectory, render=False)
                         loss += mpm_env.loss.total_loss[None]
                         grad = np.array([mpm_env.simulator.particle_param.grad[MATERIAL_ID].E,
-                                           mpm_env.simulator.particle_param.grad[MATERIAL_ID].nu,
-                                           mpm_env.simulator.system_param.grad[None].yield_stress], dtype=DTYPE_NP)
+                                         mpm_env.simulator.particle_param.grad[MATERIAL_ID].nu,
+                                         mpm_env.simulator.system_param.grad[None].yield_stress], dtype=DTYPE_NP)
                         print(f'=====> Loss: {mpm_env.loss.total_loss[None]}')
                         print(f'=====> Grad: {grad}')
                         grads += grad
-#                        print(f'GPU memory after forward-backward computation: {get_gpu_memory()}')
-#                        del env, mpm_env, init_state
-#                        print(f'GPU memory after deleting env: {get_gpu_memory()}')
+            #                        print(f'GPU memory after forward-backward computation: {get_gpu_memory()}')
+            #                        del env, mpm_env, init_state
+            #                        print(f'GPU memory after deleting env: {get_gpu_memory()}')
 
             loss = loss / num_datapoints
             grads = grads / num_datapoints

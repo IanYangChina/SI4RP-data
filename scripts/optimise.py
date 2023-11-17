@@ -19,7 +19,7 @@ def forward_backward(mpm_env, init_state, trajectory, render, backward=True):
         mpm_env.step(action)
         if render:
             mpm_env.render(mode='human')
-    mpm_env.get_final_loss()
+    loss_info = mpm_env.get_final_loss()
 
     t2 = time()
 
@@ -32,7 +32,9 @@ def forward_backward(mpm_env, init_state, trajectory, render, backward=True):
             mpm_env.step_grad(action=action)
 
         t3 = time()
-        print(f'=====> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
+        # print(f'=====> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
+
+    return loss_info
 
 
 def set_parameters(mpm_env, E, nu, yield_stress):
@@ -46,7 +48,7 @@ def main(arguments):
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
-    ptcl_density = 4e7
+    ptcl_density = 3e7
 
     # Setting up horizon and trajectory
     dt = 0.001
@@ -137,19 +139,19 @@ def main(arguments):
         if arguments['adam']:
             # Optimiser: Adam
             optim_E = Adam(parameters_shape=E.shape,
-                           cfg={'lr': 1e7, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                           cfg={'lr': 1e9, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
             optim_nu = Adam(parameters_shape=nu.shape,
                             cfg={'lr': 0.001, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
             optim_yield_stress = Adam(parameters_shape=yield_stress.shape,
-                                      cfg={'lr': 1e4, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                                      cfg={'lr': 1e5, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
         else:
             # Optimiser: SGD
             optim_E = SGD(parameters_shape=E.shape,
-                          cfg={'lr': 1e7})
+                          cfg={'lr': 1e9})
             optim_nu = SGD(parameters_shape=nu.shape,
                            cfg={'lr': 0.001})
             optim_yield_stress = SGD(parameters_shape=yield_stress.shape,
-                                     cfg={'lr': 1e4})
+                                     cfg={'lr': 1e5})
 
         motion_inds = ['1', '2']
         agents = ['rectangle', 'round', 'cylinder']
@@ -158,7 +160,14 @@ def main(arguments):
 
         for epoch in range(n_epoch):
             t1 = time()
-            loss = 0.0
+            loss = {
+                'avg_point_distance_sr': 0.0,
+                'avg_point_distance_rs': 0.0,
+                'avg_particle_distance_sr': 0.0,
+                'avg_particle_distance_rs': 0.0,
+                'height_map_loss_pcd': 0.0,
+                'total_loss': 0.0
+            }
             grads = np.zeros(shape=(3,), dtype=DTYPE_NP)
             for motion_ind in motion_inds:
                 if motion_ind == '1':
@@ -179,19 +188,21 @@ def main(arguments):
                         env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon, agent, agent_init_euler)
                         #                        print(f'GPU memory after creating an env: {get_gpu_memory()}')
                         set_parameters(mpm_env, E.copy(), nu.copy(), yield_stress.copy())
-                        forward_backward(mpm_env, init_state, trajectory, render=False)
-                        loss += mpm_env.loss.total_loss[None]
+                        loss_info = forward_backward(mpm_env, init_state, trajectory, render=False)
+                        for i, v in loss.items():
+                            loss[i] += loss_info[i]
                         grad = np.array([mpm_env.simulator.particle_param.grad[MATERIAL_ID].E,
                                          mpm_env.simulator.particle_param.grad[MATERIAL_ID].nu,
                                          mpm_env.simulator.system_param.grad[None].yield_stress], dtype=DTYPE_NP)
-                        print(f'=====> Loss: {mpm_env.loss.total_loss[None]}')
+                        print(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
                         print(f'=====> Grad: {grad}')
                         grads += grad
             #                        print(f'GPU memory after forward-backward computation: {get_gpu_memory()}')
             #                        del env, mpm_env, init_state
             #                        print(f'GPU memory after deleting env: {get_gpu_memory()}')
 
-            loss = loss / num_datapoints
+            for i, v in loss.items():
+                loss[i] = v / num_datapoints
             grads = grads / num_datapoints
 
             E = optim_E.step(E.copy(), grads[0])
@@ -201,7 +212,8 @@ def main(arguments):
             yield_stress = optim_yield_stress.step(yield_stress.copy(), grads[2])
             yield_stress = np.clip(yield_stress, yield_stress_range[0], yield_stress_range[1])
 
-            logger.add_scalar(tag='Loss/chamfer', scalar_value=loss, global_step=epoch)
+            for i, v in loss.items():
+                logger.add_scalar(tag=f'Loss/{i}', scalar_value=v, global_step=epoch)
             logger.add_scalar(tag='Param/E', scalar_value=E, global_step=epoch)
             logger.add_scalar(tag='Grad/E', scalar_value=grads[0], global_step=epoch)
             logger.add_scalar(tag='Param/nu', scalar_value=nu, global_step=epoch)
@@ -209,7 +221,9 @@ def main(arguments):
             logger.add_scalar(tag='Param/yield_stress', scalar_value=yield_stress, global_step=epoch)
             logger.add_scalar(tag='Grad/yield_stress', scalar_value=grads[2], global_step=epoch)
             print(f"========> Epoch {epoch}: time={time() - t1}\n"
-                  f"========> loss={loss}, E={E}, nu={nu}, yield_stress={yield_stress}")
+                  f"========> E={E}, nu={nu}, yield_stress={yield_stress}")
+            for i, v in loss.items():
+                print(f"========> Loss: {i}: {v}\n")
 
         print(f"Final parameters: E={E}, nu={nu}, yield_stress={yield_stress}")
         np.save(os.path.join(log_dir, 'final_params.npy'), np.array([E, nu, yield_stress], dtype=DTYPE_NP))

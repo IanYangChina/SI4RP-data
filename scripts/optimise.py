@@ -48,7 +48,7 @@ def main(arguments):
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
-    ptcl_density = 3e7
+    ptcl_density = 4e7
 
     # Setting up horizon and trajectory
     dt = 0.001

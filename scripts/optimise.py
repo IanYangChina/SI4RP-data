@@ -6,7 +6,10 @@ from time import time
 from torch.utils.tensorboard import SummaryWriter
 from doma.optimiser.adam import Adam, SGD
 from doma.engine.utils.misc import get_gpu_memory
+from doma.envs import SysIDEnv
+import psutil
 
+process = psutil.Process(os.getpid())
 MATERIAL_ID = 2
 
 
@@ -48,7 +51,7 @@ def main(arguments):
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
-    ptcl_density = 4e7
+    ptcl_density = 3e7
 
     # Setting up horizon and trajectory
     dt = 0.001
@@ -85,10 +88,10 @@ def main(arguments):
     for seed in seeds:
         # Setting up random seed
         np.random.seed(seed)
+        ti.reset()
+        ti.init(arch=ti.vulkan, default_fp=DTYPE_TI, fast_math=False, random_seed=seed)
 
         def make_env(data_path, data_ind, horizon, agent_name, agent_init_euler):
-            ti.init(arch=ti.vulkan, device_memory_GB=6, default_fp=DTYPE_TI, fast_math=False, random_seed=seed)
-            from doma.envs import SysIDEnv
             obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised.obj')
             if not os.path.exists(obj_start_mesh_file_path):
                 return None, None
@@ -184,9 +187,7 @@ def main(arguments):
 
                     for data_ind in data_inds:
                         print(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
-                        #                        print(f'GPU memory before creating an env: {get_gpu_memory()}')
                         env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon, agent, agent_init_euler)
-                        #                        print(f'GPU memory after creating an env: {get_gpu_memory()}')
                         set_parameters(mpm_env, E.copy(), nu.copy(), yield_stress.copy())
                         loss_info = forward_backward(mpm_env, init_state, trajectory, render=False)
                         for i, v in loss.items():
@@ -197,9 +198,6 @@ def main(arguments):
                         print(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
                         print(f'=====> Grad: {grad}')
                         grads += grad
-            #                        print(f'GPU memory after forward-backward computation: {get_gpu_memory()}')
-            #                        del env, mpm_env, init_state
-            #                        print(f'GPU memory after deleting env: {get_gpu_memory()}')
 
             for i, v in loss.items():
                 loss[i] = v / num_datapoints
@@ -220,6 +218,8 @@ def main(arguments):
             logger.add_scalar(tag='Grad/nu', scalar_value=grads[1], global_step=epoch)
             logger.add_scalar(tag='Param/yield_stress', scalar_value=yield_stress, global_step=epoch)
             logger.add_scalar(tag='Grad/yield_stress', scalar_value=grads[2], global_step=epoch)
+            logger.add_scalar(tag='Mem/GPU', scalar_value=get_gpu_memory()[-1], global_step=epoch)
+            logger.add_scalar(tag='Mem/RAM', scalar_value=process.memory_percent(), global_step=epoch)
             print(f"========> Epoch {epoch}: time={time() - t1}\n"
                   f"========> E={E}, nu={nu}, yield_stress={yield_stress}")
             for i, v in loss.items():

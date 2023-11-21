@@ -9,16 +9,16 @@ mpl.use('TkAgg')
 import matplotlib.pylab as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from doma.engine.utils.misc import get_gpu_memory
+import psutil
 
+process = psutil.Process(os.getpid())
 script_path = os.path.dirname(os.path.realpath(__file__))
 fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
-p_density = 3e7
+p_density = 2e7
 
-ti.init(arch=ti.vulkan, device_memory_GB=6, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
 from doma.envs import SysIDEnv
-
 
 def forward_backward(mpm_env, init_state, trajectory, backward=True,
                      render=False, render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
@@ -83,6 +83,8 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True,
         fig.colorbar(im2, cax=cax, orientation='vertical')
 
         plt.show()
+        plt.close()
+        del fig, ax1, ax2, im1, im2, cax, divider
 
     t2 = time()
 
@@ -188,7 +190,6 @@ trajectory[horizon_down:, 2] = v
 agent = 'cylinder'
 # Loading mesh
 training_data_path = os.path.join(script_path, '..', 'data-motion-2', f'eef-{agent}')
-data_ind = str(8)
 material_id = 2
 cam_cfg = {
     'pos': (0.25, -0.1, 0.2),
@@ -197,30 +198,37 @@ cam_cfg = {
     'lights': [{'pos': (0.5, -1.5, 0.5), 'color': (0.5, 0.5, 0.5)},
                {'pos': (0.5, -1.5, 1.5), 'color': (0.5, 0.5, 0.5)}]
 }
-print(f'===> GPU memory before create env: {get_gpu_memory()}')
-env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent, material_id, cam_cfg)
-print(f'===> Num. simulation particles: {mpm_env.loss.n_particles_matching_mat}')
-print(f'===> Num. target pcd points: {mpm_env.loss.n_target_pcd_points}')
-print(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')
-print(f'===> GPU memory after create env: {get_gpu_memory()}')
 
-E = np.array([40000], dtype=DTYPE_NP)
-nu = np.array([0.45], dtype=DTYPE_NP)
-yield_stress = np.array([1500], dtype=DTYPE_NP)
+for data_ind in [str(_) for _ in range(9)]:
+    ti.reset()
+    ti.init(arch=ti.vulkan, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
+    print(f'===> CPU memory occupied before create env: {process.memory_percent()} %')
+    print(f'===> GPU memory before create env: {get_gpu_memory()}')
+    env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent, material_id, cam_cfg)
+    print(f'===> Num. simulation particles: {mpm_env.loss.n_particles_matching_mat}')
+    print(f'===> Num. target pcd points: {mpm_env.loss.n_target_pcd_points}')
+    print(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')
+    print(f'===> CPU memory occupied after create env: {process.memory_percent()} %')
+    print(f'===> GPU memory after create env: {get_gpu_memory()}')
 
-set_parameters(mpm_env, E, nu, yield_stress, rho=1000)
+    E = np.array([40000], dtype=DTYPE_NP)
+    nu = np.array([0.45], dtype=DTYPE_NP)
+    yield_stress = np.array([1500], dtype=DTYPE_NP)
 
-forward_backward(mpm_env, init_state, trajectory, backward=True, render=False,
-                 render_init_pcd=False, render_end_pcd=False, render_heightmap=True,
-                 init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
-                 init_pcd_offset=env.pcd_offset,
-                 init_mesh_path=env.mesh_file,
-                 init_mesh_pos=env.initial_pos)
-print(f'===> GPU memory after forward-backward: {get_gpu_memory()}')
-print('===> Gradients:')
-print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[material_id].E}")
-print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[material_id].nu}")
-print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[material_id].rho}")
-print(f"Gradient of yield stress: {mpm_env.simulator.system_param.grad[None].yield_stress}")
-print(f"Gradient of manipulator friction: {mpm_env.simulator.system_param.grad[None].manipulator_friction}")
-print(f"Gradient of ground friction: {mpm_env.simulator.system_param.grad[None].ground_friction}")
+    set_parameters(mpm_env, E, nu, yield_stress, rho=1000)
+
+    forward_backward(mpm_env, init_state, trajectory, backward=True, render=False,
+                     render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
+                     init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
+                     init_pcd_offset=env.pcd_offset,
+                     init_mesh_path=env.mesh_file,
+                     init_mesh_pos=env.initial_pos)
+    print(f'===> CPU memory occupied after forward-backward: {process.memory_percent()} %')
+    print(f'===> GPU memory after forward-backward: {get_gpu_memory()}')
+    print('===> Gradients:')
+    print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[material_id].E}")
+    print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[material_id].nu}")
+    print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[material_id].rho}")
+    print(f"Gradient of yield stress: {mpm_env.simulator.system_param.grad[None].yield_stress}")
+    print(f"Gradient of manipulator friction: {mpm_env.simulator.system_param.grad[None].manipulator_friction}")
+    print(f"Gradient of ground friction: {mpm_env.simulator.system_param.grad[None].ground_friction}")

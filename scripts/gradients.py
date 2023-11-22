@@ -16,7 +16,7 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
-p_density = 3e7
+p_density = 2e7
 
 from doma.envs import SysIDEnv
 
@@ -155,11 +155,11 @@ def make_env(data_path, data_ind, horizon, agent_name, material_id, cam_cfg):
     env = SysIDEnv(ptcl_density=p_density, horizon=horizon, material_id=material_id, voxelise_res=1080,
                    mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
                    target_pcd_file=obj_end_pcd_file_path,
-                   pcd_offset=(-obj_start_centre_real + obj_start_initial_pos), down_sample_voxel_size=0.003,
+                   pcd_offset=(-obj_start_centre_real + obj_start_initial_pos), down_sample_voxel_size=0.004,
                    target_mesh_file=obj_end_mesh_file_path,
                    mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
                    loss_weight=1.0, separate_param_grad=False,
-                   height_map_loss=True, height_map_res=32, height_map_size=0.08,
+                   height_map_loss=True, height_map_res=32, height_map_size=0.09,
                    agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 0),
                    render_agent=True, camera_cfg=cam_cfg)
     env.reset()
@@ -203,9 +203,10 @@ for data_ind in [str(_) for _ in range(9)]:
     ti.reset()
     ti.init(arch=ti.cuda,
             device_memory_GB=2, ad_stack_size=1024,
+            # offline_cache=True, log_level=ti.TRACE,
             default_fp=DTYPE_TI, default_ip=ti.i32,
             fast_math=False, random_seed=1,
-            debug=False, check_out_of_bound=False)
+            debug=False, check_out_of_bound=True)
     print(f'===> CPU memory occupied before create env: {process.memory_percent()} %')
     print(f'===> GPU memory before create env: {get_gpu_memory()}')
     env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent, material_id, cam_cfg)

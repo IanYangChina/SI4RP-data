@@ -6,6 +6,7 @@ from time import time
 from torch.utils.tensorboard import SummaryWriter
 from doma.optimiser.adam import Adam, SGD
 from doma.engine.utils.misc import get_gpu_memory
+from doma.envs import SysIDEnv
 import psutil
 
 process = psutil.Process(os.getpid())
@@ -46,11 +47,50 @@ def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.particle_param[MATERIAL_ID].nu = nu
 
 
+def make_env(data_path, data_ind, horizon,
+             ptcl_density, dtype_np,
+             agent_name, agent_init_euler):
+    obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised.obj')
+    if not os.path.exists(obj_start_mesh_file_path):
+        return None, None
+    obj_start_centre_real = np.load(
+        os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_centre.npy')).astype(dtype_np)
+    obj_start_centre_top_normalised = np.load(
+        os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised_centre_top.npy')).astype(
+        dtype_np)
+
+    obj_end_pcd_file_path = os.path.join(data_path, 'pcd_' + data_ind + str(1) + '.ply')
+    obj_end_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(1) + '_repaired_normalised.obj')
+    obj_end_centre_top_normalised = np.load(
+        os.path.join(data_path, 'mesh_' + data_ind + str(1) + '_repaired_normalised_centre_top.npy')).astype(
+        dtype_np)
+
+    # Building environment
+    obj_start_initial_pos = np.array([0.25, 0.25, obj_start_centre_top_normalised[-1] + 0.01], dtype=dtype_np)
+    agent_init_pos = (0.25, 0.25, 2 * obj_start_centre_top_normalised[-1] + 0.01)
+
+    env = SysIDEnv(ptcl_density=ptcl_density, horizon=horizon, material_id=MATERIAL_ID, voxelise_res=1080,
+                   mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
+                   target_pcd_file=obj_end_pcd_file_path, down_sample_voxel_size=0.0035,
+                   pcd_offset=(-obj_start_centre_real + obj_start_initial_pos),
+                   target_mesh_file=obj_end_mesh_file_path,
+                   mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
+                   loss_weight=1.0, separate_param_grad=False,
+                   height_map_loss=True, height_map_res=32, height_map_size=0.08,
+                   agent_cfg_file=agent_name + '_eef.yaml', agent_init_pos=agent_init_pos,
+                   agent_init_euler=agent_init_euler)
+    env.reset()
+    mpm_env = env.mpm_env
+    init_state = mpm_env.get_state()
+
+    return env, mpm_env, init_state
+
+
 def main(arguments):
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
-    ptcl_density = 3e7
+    particle_density = 3e7
 
     # Setting up horizon and trajectory
     dt = 0.001
@@ -87,45 +127,6 @@ def main(arguments):
     for seed in seeds:
         # Setting up random seed
         np.random.seed(seed)
-
-        def make_env(data_path, data_ind, horizon, agent_name, agent_init_euler):
-            ti.reset()
-            ti.init(arch=ti.vulkan, default_fp=DTYPE_TI, fast_math=False, random_seed=seed)
-            from doma.envs import SysIDEnv
-            obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised.obj')
-            if not os.path.exists(obj_start_mesh_file_path):
-                return None, None
-            obj_start_centre_real = np.load(
-                os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_centre.npy')).astype(DTYPE_NP)
-            obj_start_centre_top_normalised = np.load(
-                os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised_centre_top.npy')).astype(
-                DTYPE_NP)
-
-            obj_end_pcd_file_path = os.path.join(data_path, 'pcd_' + data_ind + str(1) + '.ply')
-            obj_end_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(1) + '_repaired_normalised.obj')
-            obj_end_centre_top_normalised = np.load(
-                os.path.join(data_path, 'mesh_' + data_ind + str(1) + '_repaired_normalised_centre_top.npy')).astype(
-                DTYPE_NP)
-
-            # Building environment
-            obj_start_initial_pos = np.array([0.25, 0.25, obj_start_centre_top_normalised[-1] + 0.01], dtype=DTYPE_NP)
-            agent_init_pos = (0.25, 0.25, 2 * obj_start_centre_top_normalised[-1] + 0.01)
-
-            env = SysIDEnv(ptcl_density=ptcl_density, horizon=horizon, material_id=MATERIAL_ID, voxelise_res=1080,
-                           mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
-                           target_pcd_file=obj_end_pcd_file_path, down_sample_voxel_size=0.0035,
-                           pcd_offset=(-obj_start_centre_real + obj_start_initial_pos),
-                           target_mesh_file=obj_end_mesh_file_path,
-                           mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
-                           loss_weight=1.0, separate_param_grad=False,
-                           height_map_loss=True, height_map_res=32, height_map_size=0.08,
-                           agent_cfg_file=agent_name + '_eef.yaml', agent_init_pos=agent_init_pos,
-                           agent_init_euler=agent_init_euler)
-            env.reset()
-            mpm_env = env.mpm_env
-            init_state = mpm_env.get_state()
-
-            return env, mpm_env, init_state
 
         # Logger
         log_dir = os.path.join(script_path, '..', 'optimisation-logs', f'seed-{seed}')
@@ -186,8 +187,13 @@ def main(arguments):
                         agent_init_euler = (0, 0, 45)
 
                     for data_ind in data_inds:
+                        ti.reset()
+                        ti.init(arch=ti.vulkan, default_fp=DTYPE_TI, fast_math=False, random_seed=seed,
+                                debug=True, validate_autodiff=True, check_out_of_bound=True, advanced_optimization=False)
                         print(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
-                        env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon, agent, agent_init_euler)
+                        env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon,
+                                                            particle_density, DTYPE_NP,
+                                                            agent, agent_init_euler)
                         set_parameters(mpm_env, E.copy(), nu.copy(), yield_stress.copy())
                         loss_info = forward_backward(mpm_env, init_state, trajectory, render=False)
                         for i, v in loss.items():

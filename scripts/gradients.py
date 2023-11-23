@@ -16,7 +16,7 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
-p_density = 2e7
+p_density = 4e7
 
 from doma.envs import SysIDEnv
 
@@ -201,12 +201,12 @@ cam_cfg = {
 
 for data_ind in [str(_) for _ in range(9)]:
     ti.reset()
-    ti.init(arch=ti.cuda,
+    ti.init(arch=ti.vulkan,
             device_memory_GB=2, ad_stack_size=1024,
             # offline_cache=True, log_level=ti.TRACE,
             default_fp=DTYPE_TI, default_ip=ti.i32,
             fast_math=False, random_seed=1,
-            debug=False, check_out_of_bound=True)
+            debug=True, check_out_of_bound=True)
     print(f'===> CPU memory occupied before create env: {process.memory_percent()} %')
     print(f'===> GPU memory before create env: {get_gpu_memory()}')
     env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent, material_id, cam_cfg)

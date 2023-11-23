@@ -90,7 +90,7 @@ def main(arguments):
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
-    particle_density = 3e7
+    particle_density = 4e7
 
     # Setting up horizon and trajectory
     dt = 0.001
@@ -188,8 +188,8 @@ def main(arguments):
 
                     for data_ind in data_inds:
                         ti.reset()
-                        ti.init(arch=ti.vulkan, default_fp=DTYPE_TI, fast_math=False, random_seed=seed,
-                                debug=True, validate_autodiff=True, check_out_of_bound=True, advanced_optimization=False)
+                        ti.init(arch=ti.vulkan, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=False, random_seed=seed,
+                                debug=True, check_out_of_bound=True)
                         print(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
                         env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon,
                                                             particle_density, DTYPE_NP,

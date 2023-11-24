@@ -19,7 +19,7 @@ ti.init(arch=ti.opengl,
 
 def run(args):
     height_map_res = args['hmr']
-    height_map_size = 0.09  # meter
+    height_map_size = 0.11  # meter
     height_map_xy_offset = (0.25 * 1000, 0.25 * 1000)
     height_map_pixel_size = height_map_size * 1000 / height_map_res
     height_map_pcd_target = ti.field(dtype=DTYPE_TI, shape=(height_map_res, height_map_res), needs_grad=True)
@@ -37,7 +37,11 @@ def run(args):
         for agent in ['rectangle', 'round', 'cylinder']:
             for data_ind in [str(_) for _ in range(9)]:
                 data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
-                # hm = np.load(os.path.join(data_path, f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(down_sample_voxel_size)}.npy'), allow_pickle=True)
+                hm = np.load(os.path.join(data_path, f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(down_sample_voxel_size)}.npy'))
+                plt.imshow(hm, cmap='Greys')
+                plt.show()
+                plt.close()
+                continue
 
                 target_pcd_path = os.path.join(data_path, f'pcd_{data_ind}1.ply')
                 obj_start_centre_real = np.load(os.path.join(data_path, f'mesh_{data_ind}0_repaired_centre.npy')).astype(DTYPE_NP)

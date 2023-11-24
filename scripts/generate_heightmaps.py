@@ -69,10 +69,10 @@ def run(args):
 
                 compute_height_map_pcd()
                 height_map_pcd = height_map_pcd_target.to_numpy()
-                plt.imshow(height_map_pcd, cmap='Greys')
-                plt.savefig(
-                    os.path.join(data_path, f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(down_sample_voxel_size)}.npy'))
-                plt.close()
+                #plt.imshow(height_map_pcd, cmap='Greys')
+                np.save(
+                    os.path.join(data_path, f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(down_sample_voxel_size)}.npy'), height_map_pcd)
+                #plt.close()
                 print(f'height map saved as:\n'
                       f'{os.path.join(data_path, f"target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(down_sample_voxel_size)}.npy")}')
 

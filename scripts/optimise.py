@@ -66,6 +66,7 @@ def make_env(data_path, data_ind, horizon,
     # Building environment
     obj_start_initial_pos = np.array([0.25, 0.25, obj_start_centre_top_normalised[-1] + 0.01], dtype=dtype_np)
     agent_init_pos = (0.25, 0.25, 2 * obj_start_centre_top_normalised[-1] + 0.01)
+    height_map_res = loss_config['height_map_res']
     loss_config.update({
         'target_pcd_path': obj_end_pcd_file_path,
         'pcd_offset': (-obj_start_centre_real + obj_start_initial_pos),

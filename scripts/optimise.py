@@ -71,7 +71,7 @@ def make_env(data_path, data_ind, horizon,
 
     env = SysIDEnv(ptcl_density=ptcl_density, horizon=horizon, material_id=MATERIAL_ID, voxelise_res=1080,
                    mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
-                   target_pcd_file=obj_end_pcd_file_path, down_sample_voxel_size=0.0035,
+                   target_pcd_file=obj_end_pcd_file_path, down_sample_voxel_size=0.0015,
                    pcd_offset=(-obj_start_centre_real + obj_start_initial_pos),
                    target_mesh_file=obj_end_mesh_file_path,
                    mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
@@ -90,7 +90,7 @@ def main(arguments):
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
-    particle_density = 4e7
+    particle_density = 1e8
 
     # Setting up horizon and trajectory
     dt = 0.001
@@ -143,19 +143,19 @@ def main(arguments):
         if arguments['adam']:
             # Optimiser: Adam
             optim_E = Adam(parameters_shape=E.shape,
-                           cfg={'lr': 1e9, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                           cfg={'lr': 1e7, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
             optim_nu = Adam(parameters_shape=nu.shape,
                             cfg={'lr': 0.001, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
             optim_yield_stress = Adam(parameters_shape=yield_stress.shape,
-                                      cfg={'lr': 1e5, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                                      cfg={'lr': 1e4, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
         else:
             # Optimiser: SGD
             optim_E = SGD(parameters_shape=E.shape,
-                          cfg={'lr': 1e9})
+                          cfg={'lr': 1e7})
             optim_nu = SGD(parameters_shape=nu.shape,
                            cfg={'lr': 0.001})
             optim_yield_stress = SGD(parameters_shape=yield_stress.shape,
-                                     cfg={'lr': 1e5})
+                                     cfg={'lr': 1e4})
 
         motion_inds = ['1', '2']
         agents = ['rectangle', 'round', 'cylinder']
@@ -188,7 +188,7 @@ def main(arguments):
 
                     for data_ind in data_inds:
                         ti.reset()
-                        ti.init(arch=ti.vulkan, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=False, random_seed=seed,
+                        ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=False, random_seed=seed,
                                 debug=True, check_out_of_bound=True)
                         print(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
                         env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon,

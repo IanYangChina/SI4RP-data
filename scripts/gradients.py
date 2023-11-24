@@ -16,7 +16,7 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
-p_density = 4e7
+p_density = 1e8
 
 from doma.envs import SysIDEnv
 
@@ -155,7 +155,7 @@ def make_env(data_path, data_ind, horizon, agent_name, material_id, cam_cfg):
     env = SysIDEnv(ptcl_density=p_density, horizon=horizon, material_id=material_id, voxelise_res=1080,
                    mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
                    target_pcd_file=obj_end_pcd_file_path,
-                   pcd_offset=(-obj_start_centre_real + obj_start_initial_pos), down_sample_voxel_size=0.004,
+                   pcd_offset=(-obj_start_centre_real + obj_start_initial_pos), down_sample_voxel_size=0.0015,
                    target_mesh_file=obj_end_mesh_file_path,
                    mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
                    loss_weight=1.0, separate_param_grad=False,
@@ -199,10 +199,10 @@ cam_cfg = {
                {'pos': (0.5, -1.5, 1.5), 'color': (0.5, 0.5, 0.5)}]
 }
 
-for data_ind in [str(_) for _ in range(9)]:
+for data_ind in ['8', '5', '0']:
     ti.reset()
-    ti.init(arch=ti.vulkan,
-            device_memory_GB=2, ad_stack_size=1024,
+    ti.init(arch=ti.opengl,
+            # device_memory_GB=2, ad_stack_size=1024,
             # offline_cache=True, log_level=ti.TRACE,
             default_fp=DTYPE_TI, default_ip=ti.i32,
             fast_math=False, random_seed=1,

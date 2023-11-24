@@ -5,11 +5,9 @@ import numpy as np
 from time import time
 from torch.utils.tensorboard import SummaryWriter
 from doma.optimiser.adam import Adam, SGD
-from doma.engine.utils.misc import get_gpu_memory
 from doma.envs import SysIDEnv
-import psutil
+import json
 
-process = psutil.Process(os.getpid())
 MATERIAL_ID = 2
 
 
@@ -49,7 +47,7 @@ def set_parameters(mpm_env, E, nu, yield_stress):
 
 def make_env(data_path, data_ind, horizon,
              ptcl_density, dtype_np,
-             agent_name, agent_init_euler):
+             agent_name, agent_init_euler, loss_config):
     obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised.obj')
     if not os.path.exists(obj_start_mesh_file_path):
         return None, None
@@ -68,16 +66,20 @@ def make_env(data_path, data_ind, horizon,
     # Building environment
     obj_start_initial_pos = np.array([0.25, 0.25, obj_start_centre_top_normalised[-1] + 0.01], dtype=dtype_np)
     agent_init_pos = (0.25, 0.25, 2 * obj_start_centre_top_normalised[-1] + 0.01)
+    loss_config.update({
+        'target_pcd_path': obj_end_pcd_file_path,
+        'pcd_offset': (-obj_start_centre_real + obj_start_initial_pos),
+        'target_mesh_file': obj_end_mesh_file_path,
+        'mesh_offset': (0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
+        'target_pcd_height_map_path': os.path.join(data_path,
+                                                   f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(0.001)}.npy'),
+    })
 
     env = SysIDEnv(ptcl_density=ptcl_density, horizon=horizon, material_id=MATERIAL_ID, voxelise_res=1080,
                    mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
-                   target_pcd_file=obj_end_pcd_file_path, down_sample_voxel_size=0.0015,
-                   pcd_offset=(-obj_start_centre_real + obj_start_initial_pos),
-                   target_mesh_file=obj_end_mesh_file_path,
-                   mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
-                   loss_weight=1.0, separate_param_grad=False,
-                   height_map_loss=True, height_map_res=32, height_map_size=0.08,
-                   agent_cfg_file=agent_name + '_eef.yaml', agent_init_pos=agent_init_pos,
+                   loss_cfg=loss_config,
+                   agent_cfg_file=agent_name + '_eef.yaml',
+                   agent_init_pos=agent_init_pos,
                    agent_init_euler=agent_init_euler)
     env.reset()
     mpm_env = env.mpm_env
@@ -90,8 +92,21 @@ def main(arguments):
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
-    particle_density = 1e8
-
+    particle_density = 4e8
+    assert arguments['hm_res'] in [32, 64], 'height map resolution must be 32 or 64'
+    loss_cfg = {
+        'point_distance_rs_loss': arguments['pd_rs_loss'],
+        'point_distance_sr_loss': arguments['pd_sr_loss'],
+        'down_sample_voxel_size': 0.0015,
+        'particle_distance_rs_loss': arguments['prd_rs_loss'],
+        'particle_distance_sr_loss': arguments['prd_sr_loss'],
+        'voxelise_res': 1080,
+        'ptcl_density': particle_density,
+        'load_height_map': True,
+        'height_map_loss': arguments['hm_loss'],
+        'height_map_res': arguments['hm_res'],
+        'height_map_size': 0.11,
+    }
     # Setting up horizon and trajectory
     dt = 0.001
     # Trajectory 1 press down 0.015 m and lifts for 0.03 m
@@ -124,12 +139,22 @@ def main(arguments):
     n_epoch = 100
     seeds = [0, 1, 2]
     print(f"=====> Optimising for {n_epoch} epochs for {len(seeds)} random seeds.")
+    n = 0
+    while True:
+        log_p_dir = os.path.join(script_path, '..', f'optimisation-run{n}-logs')
+        if os.path.exists(log_p_dir):
+            n += 1
+        else:
+            break
+    os.makedirs(log_p_dir, exist_ok=True)
+    with open(os.path.join(log_p_dir, 'loss_config.json'), 'w') as f_ac:
+        json.dump(loss_cfg, f_ac)
+
     for seed in seeds:
         # Setting up random seed
         np.random.seed(seed)
-
         # Logger
-        log_dir = os.path.join(script_path, '..', 'optimisation-logs', f'seed-{seed}')
+        log_dir = os.path.join(log_p_dir, f'seed-{seed}')
         os.makedirs(log_dir, exist_ok=True)
         logger = SummaryWriter(log_dir=log_dir)
 
@@ -167,8 +192,10 @@ def main(arguments):
             loss = {
                 'avg_point_distance_sr': 0.0,
                 'avg_point_distance_rs': 0.0,
+                'chamfer_loss_pcd': 0.0,
                 'avg_particle_distance_sr': 0.0,
                 'avg_particle_distance_rs': 0.0,
+                'chamfer_loss_particle': 0.0,
                 'height_map_loss_pcd': 0.0,
                 'total_loss': 0.0
             }
@@ -193,7 +220,7 @@ def main(arguments):
                         print(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
                         env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon,
                                                             particle_density, DTYPE_NP,
-                                                            agent, agent_init_euler)
+                                                            agent, agent_init_euler, loss_cfg.copy())
                         set_parameters(mpm_env, E.copy(), nu.copy(), yield_stress.copy())
                         loss_info = forward_backward(mpm_env, init_state, trajectory, render=False)
                         for i, v in loss.items():
@@ -230,7 +257,7 @@ def main(arguments):
             print(f"========> Epoch {epoch}: time={time() - t1}\n"
                   f"========> E={E}, nu={nu}, yield_stress={yield_stress}")
             for i, v in loss.items():
-                print(f"========> Loss: {i}: {v}\n")
+                print(f"========> Loss: {i}: {v}")
 
         logger.close()
         print(f"Final parameters: E={E}, nu={nu}, yield_stress={yield_stress}")
@@ -240,5 +267,11 @@ def main(arguments):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--adam', dest='adam', default=False, action='store_true')
+    parser.add_argument('--pd_rs_loss', dest='pd_rs_loss', default=False, action='store_true')
+    parser.add_argument('--pd_sr_loss', dest='pd_sr_loss', default=False, action='store_true')
+    parser.add_argument('--prd_rs_loss', dest='prd_rs_loss', default=False, action='store_true')
+    parser.add_argument('--prd_sr_loss', dest='prd_sr_loss', default=False, action='store_true')
+    parser.add_argument('--hm_loss', dest='hm_loss', default=False, action='store_true')
+    parser.add_argument('--hm_res', dest='hm_res', default=32, type=int)
     args = vars(parser.parse_args())
     main(args)

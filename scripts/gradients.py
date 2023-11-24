@@ -16,7 +16,20 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
-p_density = 1e8
+p_density = 2e7
+loss_cfg = {
+    'point_distance_rs_loss': True,
+    'point_distance_sr_loss': False,
+    'down_sample_voxel_size': 0.003,
+    'particle_distance_rs_loss': False,
+    'particle_distance_sr_loss': True,
+    'voxelise_res': 1080,
+    'ptcl_density': p_density,
+    'load_height_map': True,
+    'height_map_loss': True,
+    'height_map_res': 64,
+    'height_map_size': 0.11,
+}
 
 from doma.envs import SysIDEnv
 
@@ -135,7 +148,7 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True,
         print(f'===> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
 
 
-def make_env(data_path, data_ind, horizon, agent_name, material_id, cam_cfg):
+def make_env(data_path, data_ind, horizon, agent_name, material_id, cam_cfg, loss_config):
     obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_normalised.obj')
     if not os.path.exists(obj_start_mesh_file_path):
         return None, None
@@ -151,15 +164,19 @@ def make_env(data_path, data_ind, horizon, agent_name, material_id, cam_cfg):
     # Building environment
     obj_start_initial_pos = np.array([0.25, 0.25, obj_start_centre_top_normalised[-1] + 0.01], dtype=DTYPE_NP)
     agent_init_pos = (0.25, 0.25, 2*obj_start_centre_top_normalised[-1] + 0.01)
+    height_map_res = loss_config['height_map_res']
+    loss_config.update({
+        'target_pcd_path': obj_end_pcd_file_path,
+        'pcd_offset': (-obj_start_centre_real + obj_start_initial_pos),
+        'target_mesh_file': obj_end_mesh_file_path,
+        'mesh_offset': (0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
+        'target_pcd_height_map_path': os.path.join(data_path,
+                                                   f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(0.001)}.npy'),
+    })
 
     env = SysIDEnv(ptcl_density=p_density, horizon=horizon, material_id=material_id, voxelise_res=1080,
                    mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
-                   target_pcd_file=obj_end_pcd_file_path,
-                   pcd_offset=(-obj_start_centre_real + obj_start_initial_pos), down_sample_voxel_size=0.0015,
-                   target_mesh_file=obj_end_mesh_file_path,
-                   mesh_offset=(0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
-                   loss_weight=1.0, separate_param_grad=False,
-                   height_map_loss=True, height_map_res=32, height_map_size=0.09,
+                   loss_cfg=loss_config,
                    agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 0),
                    render_agent=True, camera_cfg=cam_cfg)
     env.reset()
@@ -209,7 +226,7 @@ for data_ind in ['8', '5', '0']:
             debug=True, check_out_of_bound=True)
     print(f'===> CPU memory occupied before create env: {process.memory_percent()} %')
     print(f'===> GPU memory before create env: {get_gpu_memory()}')
-    env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent, material_id, cam_cfg)
+    env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent, material_id, cam_cfg, loss_cfg.copy())
     print(f'===> Num. simulation particles: {mpm_env.loss.n_particles_matching_mat}')
     print(f'===> Num. target pcd points: {mpm_env.loss.n_target_pcd_points}')
     print(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')
@@ -222,7 +239,7 @@ for data_ind in ['8', '5', '0']:
 
     set_parameters(mpm_env, E, nu, yield_stress, rho=1000)
 
-    forward_backward(mpm_env, init_state, trajectory, backward=True, render=False,
+    forward_backward(mpm_env, init_state, trajectory, backward=True, render=True,
                      render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
                      init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
                      init_pcd_offset=env.pcd_offset,

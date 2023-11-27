@@ -16,11 +16,11 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
-p_density = 1e8
+p_density = 2e7
 loss_cfg = {
     'point_distance_rs_loss': True,
     'point_distance_sr_loss': False,
-    'down_sample_voxel_size': 0.0015,
+    'down_sample_voxel_size': 0.004,
     'particle_distance_rs_loss': False,
     'particle_distance_sr_loss': True,
     'voxelise_res': 1080,
@@ -29,6 +29,7 @@ loss_cfg = {
     'height_map_loss': True,
     'height_map_res': 32,
     'height_map_size': 0.11,
+    'emd_point_distance_rs_loss': True,
 }
 
 from doma.envs import SysIDEnv
@@ -246,6 +247,7 @@ for data_ind in ['8', '5', '0']:
                      init_pcd_offset=env.pcd_offset,
                      init_mesh_path=env.mesh_file,
                      init_mesh_pos=env.initial_pos)
+
     print(f'===> CPU memory occupied after forward-backward: {process.memory_percent()} %')
     print(f'===> GPU memory after forward-backward: {get_gpu_memory()}')
     print('===> Gradients:')
@@ -255,3 +257,5 @@ for data_ind in ['8', '5', '0']:
     print(f"Gradient of yield stress: {mpm_env.simulator.system_param.grad[None].yield_stress}")
     print(f"Gradient of manipulator friction: {mpm_env.simulator.system_param.grad[None].manipulator_friction}")
     print(f"Gradient of ground friction: {mpm_env.simulator.system_param.grad[None].ground_friction}")
+
+    mpm_env.simulator.clear_ckpt()

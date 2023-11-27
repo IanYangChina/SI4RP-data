@@ -110,6 +110,7 @@ def main(arguments):
         'height_map_loss': arguments['hm_loss'],
         'height_map_res': arguments['hm_res'],
         'height_map_size': 0.11,
+        'emd_point_distance_rs_loss': False,
     }
     # Setting up horizon and trajectory
     dt = 0.001
@@ -201,6 +202,7 @@ def main(arguments):
                 'avg_particle_distance_rs': 0.0,
                 'chamfer_loss_particle': 0.0,
                 'height_map_loss_pcd': 0.0,
+                'emd_loss': 0.0,
                 'total_loss': 0.0
             }
             grads = np.zeros(shape=(3,), dtype=DTYPE_NP)

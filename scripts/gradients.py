@@ -16,18 +16,18 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
-p_density = 2e7
+p_density = 1e8
 loss_cfg = {
     'point_distance_rs_loss': True,
     'point_distance_sr_loss': False,
-    'down_sample_voxel_size': 0.003,
+    'down_sample_voxel_size': 0.0015,
     'particle_distance_rs_loss': False,
     'particle_distance_sr_loss': True,
     'voxelise_res': 1080,
     'ptcl_density': p_density,
     'load_height_map': True,
     'height_map_loss': True,
-    'height_map_res': 64,
+    'height_map_res': 32,
     'height_map_size': 0.11,
 }
 
@@ -218,12 +218,13 @@ cam_cfg = {
 
 for data_ind in ['8', '5', '0']:
     ti.reset()
-    ti.init(arch=ti.opengl,
+    ti.init(arch=ti.vulkan,
             # device_memory_GB=2, ad_stack_size=1024,
             # offline_cache=True, log_level=ti.TRACE,
             default_fp=DTYPE_TI, default_ip=ti.i32,
             fast_math=False, random_seed=1,
-            debug=True, check_out_of_bound=True)
+            # debug=True, check_out_of_bound=True
+            )
     print(f'===> CPU memory occupied before create env: {process.memory_percent()} %')
     print(f'===> GPU memory before create env: {get_gpu_memory()}')
     env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent, material_id, cam_cfg, loss_cfg.copy())
@@ -239,7 +240,7 @@ for data_ind in ['8', '5', '0']:
 
     set_parameters(mpm_env, E, nu, yield_stress, rho=1000)
 
-    forward_backward(mpm_env, init_state, trajectory, backward=True, render=True,
+    forward_backward(mpm_env, init_state, trajectory, backward=True, render=False,
                      render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
                      init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
                      init_pcd_offset=env.pcd_offset,

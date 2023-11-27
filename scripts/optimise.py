@@ -6,9 +6,12 @@ from time import time
 from torch.utils.tensorboard import SummaryWriter
 from doma.optimiser.adam import Adam, SGD
 from doma.envs import SysIDEnv
+from doma.engine.utils.misc import get_gpu_memory
+import psutil
 import json
 
 MATERIAL_ID = 2
+process = psutil.Process(os.getpid())
 
 
 def forward_backward(mpm_env, init_state, trajectory, render, backward=True):
@@ -93,7 +96,7 @@ def main(arguments):
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
-    particle_density = 4e8
+    particle_density = 1e8
     assert arguments['hm_res'] in [32, 64], 'height map resolution must be 32 or 64'
     loss_cfg = {
         'point_distance_rs_loss': arguments['pd_rs_loss'],
@@ -217,7 +220,7 @@ def main(arguments):
                     for data_ind in data_inds:
                         ti.reset()
                         ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=False, random_seed=seed,
-                                debug=True, check_out_of_bound=True)
+                                debug=False, check_out_of_bound=False)
                         print(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
                         env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon,
                                                             particle_density, DTYPE_NP,
@@ -252,13 +255,14 @@ def main(arguments):
             logger.add_scalar(tag='Grad/nu', scalar_value=grads[1], global_step=epoch)
             logger.add_scalar(tag='Param/yield_stress', scalar_value=yield_stress, global_step=epoch)
             logger.add_scalar(tag='Grad/yield_stress', scalar_value=grads[2], global_step=epoch)
-            logger.add_scalar(tag='Mem/GPU', scalar_value=get_gpu_memory()[-1], global_step=epoch)
+            logger.add_scalar(tag='Mem/GPU', scalar_value=get_gpu_memory()[0], global_step=epoch)
             logger.add_scalar(tag='Mem/RAM', scalar_value=process.memory_percent(), global_step=epoch)
-            logger.flush()
+
             print(f"========> Epoch {epoch}: time={time() - t1}\n"
                   f"========> E={E}, nu={nu}, yield_stress={yield_stress}")
             for i, v in loss.items():
                 print(f"========> Loss: {i}: {v}")
+            print(f"========> Avg. grads: {grads}")
 
         logger.close()
         print(f"Final parameters: E={E}, nu={nu}, yield_stress={yield_stress}")

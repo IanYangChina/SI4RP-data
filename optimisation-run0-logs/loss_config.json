@@ -1,0 +1,1 @@
+{"point_distance_rs_loss": true, "point_distance_sr_loss": false, "down_sample_voxel_size": 0.0015, "particle_distance_rs_loss": false, "particle_distance_sr_loss": true, "voxelise_res": 1080, "ptcl_density": 100000000.0, "load_height_map": true, "height_map_loss": true, "height_map_res": 32, "height_map_size": 0.11}

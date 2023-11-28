@@ -13,7 +13,6 @@ import psutil
 
 process = psutil.Process(os.getpid())
 script_path = os.path.dirname(os.path.realpath(__file__))
-fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
 p_density = 2e7

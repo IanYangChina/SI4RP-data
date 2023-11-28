@@ -115,9 +115,8 @@ def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.particle_param[2].rho = 1000
 
 
-xy_param = 'E-nu'
 p_density = 1e7
-p_density_str = '3e7pd'
+p_density_str = '1e7pd'
 
 loss_cfg = {
     'point_distance_rs_loss': True,
@@ -161,14 +160,12 @@ trajectory_2 = np.zeros(shape=(horizon_2, 6), dtype=DTYPE_NP)
 trajectory_2[:horizon_2_up, 2] = -v
 trajectory_2[horizon_2_up:, 2] = v
 
+xy_param = 'E-yieldstress'
 E_list = np.arange(10000, 100000, 2000).astype(DTYPE_NP)
-nu_list = np.arange(0.01, 0.49, 0.01).astype(DTYPE_NP)
 yield_stress_list = np.arange(50, 2050, 40).astype(DTYPE_NP)
 
-E, nu = np.meshgrid(E_list, nu_list)
-# E = np.array([30000], dtype=DTYPE_NP)
-# nu = np.array([0.45], dtype=DTYPE_NP)
-yield_stress = np.array([1500.0], dtype=DTYPE_NP)
+E, yield_stress = np.meshgrid(E_list, yield_stress_list)
+nu = np.array([0.45], dtype=DTYPE_NP)
 
 avg_point_distance_sr = np.zeros_like(E)
 avg_point_distance_rs = np.zeros_like(E)
@@ -192,8 +189,8 @@ for agent in ['rectangle', 'round', 'cylinder']:
         t0 = time()
         print(f'Start calculating losses with grid size: {avg_point_distance_sr.shape}')
         for i in range(len(E_list)):
-            for j in range(len(nu_list)):
-                set_parameters(mpm_env, E_list[i], nu_list[j], yield_stress)
+            for j in range(len(yield_stress_list)):
+                set_parameters(mpm_env, E_list[i], nu, yield_stress_list[j])
                 mpm_env.set_state(init_state['state'], grad_enabled=False)
                 for k in range(mpm_env.horizon):
                     action = trajectory_1[k]
@@ -205,14 +202,14 @@ for agent in ['rectangle', 'round', 'cylinder']:
                     if b == 'final_height_map':
                         continue
                     print(f'{b}: {v:.4f}')
-                avg_point_distance_sr[j, i] = loss_info['avg_point_distance_sr']
-                avg_point_distance_rs[j, i] = loss_info['avg_point_distance_rs']
-                chamfer_loss_pcd[j, i] = loss_info['chamfer_loss_pcd']
-                avg_particle_distance_sr[j, i] = loss_info['avg_particle_distance_sr']
-                avg_particle_distance_rs[j, i] = loss_info['avg_particle_distance_rs']
-                chamfer_loss_particle[j, i] = loss_info['chamfer_loss_particle']
-                height_map_loss_pcd[j, i] = loss_info['height_map_loss_pcd']
-                emd_loss[j, i] = loss_info['emd_loss']
+                avg_point_distance_sr[j, i] += loss_info['avg_point_distance_sr']
+                avg_point_distance_rs[j, i] += loss_info['avg_point_distance_rs']
+                chamfer_loss_pcd[j, i] += loss_info['chamfer_loss_pcd']
+                avg_particle_distance_sr[j, i] += loss_info['avg_particle_distance_sr']
+                avg_particle_distance_rs[j, i] += loss_info['avg_particle_distance_rs']
+                chamfer_loss_particle[j, i] += loss_info['chamfer_loss_particle']
+                height_map_loss_pcd[j, i] += loss_info['height_map_loss_pcd']
+                emd_loss[j, i] += loss_info['emd_loss']
                 
         mpm_env.simulator.clear_ckpt()
         print(f'Time taken for data point {data_ind}: {time() - t0}')
@@ -233,14 +230,14 @@ loss_types = ['avg_point_distance_sr', 'avg_point_distance_rs', 'chamfer_loss_pc
 
 for i in range(len(losses)):
     np.save(os.path.join(fig_data_path, f'{loss_types[i]}_{distance_type}_{xy_param}-{p_density_str}.npy'), losses[i])
-    fig_title = f'{loss_types[i]} with yield_stress = {yield_stress}'
-    plot_loss_landscape(E, nu, losses[i], fig_title=fig_title,
+    fig_title = f'{loss_types[i]} with nu = {nu}'
+    plot_loss_landscape(E, yield_stress, losses[i], fig_title=fig_title,
                         loss_type=f'{loss_types[i]}_{distance_type}',
                         file_suffix=f'_{xy_param}-rightview-{p_density_str}',
                         view='right',
-                        x_label='E', y_label='nu', z_label='Loss', show=False)
-    plot_loss_landscape(E, nu, losses[i], fig_title=fig_title,
+                        x_label='E', y_label='yield_stress', z_label='Loss', show=False)
+    plot_loss_landscape(E, yield_stress, losses[i], fig_title=fig_title,
                         loss_type=f'{loss_types[i]}_{distance_type}',
                         file_suffix=f'_{xy_param}-leftview-{p_density_str}',
                         view='left',
-                        x_label='E', y_label='nu', z_label='Loss', show=False)
+                        x_label='E', y_label='yield_stress', z_label='Loss', show=False)

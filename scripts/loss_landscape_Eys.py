@@ -112,16 +112,16 @@ def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.system_param[None].yield_stress = yield_stress.copy()
     mpm_env.simulator.particle_param[2].E = E.copy()
     mpm_env.simulator.particle_param[2].nu = nu.copy()
-    mpm_env.simulator.particle_param[2].rho = 1000
+    mpm_env.simulator.particle_param[2].rho = 1300
 
 
-p_density = 1e7
-p_density_str = '1e7pd'
+p_density = 1e8
+p_density_str = '1e8pd'
 
 loss_cfg = {
     'point_distance_rs_loss': True,
     'point_distance_sr_loss': False,
-    'down_sample_voxel_size': 0.005,
+    'down_sample_voxel_size': 0.0015,
     'particle_distance_rs_loss': False,
     'particle_distance_sr_loss': True,
     'voxelise_res': 1080,
@@ -161,8 +161,8 @@ trajectory_2[:horizon_2_up, 2] = -v
 trajectory_2[horizon_2_up:, 2] = v
 
 xy_param = 'E-yieldstress'
-E_list = np.arange(10000, 100000, 2000).astype(DTYPE_NP)
-yield_stress_list = np.arange(50, 2050, 40).astype(DTYPE_NP)
+E_list = np.arange(2000, 100000, 2000).astype(DTYPE_NP)
+yield_stress_list = np.arange(100, 8100, 160).astype(DTYPE_NP)
 
 E, yield_stress = np.meshgrid(E_list, yield_stress_list)
 nu = np.array([0.45], dtype=DTYPE_NP)

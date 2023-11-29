@@ -15,11 +15,11 @@ process = psutil.Process(os.getpid())
 script_path = os.path.dirname(os.path.realpath(__file__))
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
-p_density = 2e7
+p_density = 1e7
 loss_cfg = {
     'point_distance_rs_loss': True,
     'point_distance_sr_loss': False,
-    'down_sample_voxel_size': 0.004,
+    'down_sample_voxel_size': 0.005,
     'particle_distance_rs_loss': False,
     'particle_distance_sr_loss': True,
     'voxelise_res': 1080,
@@ -186,12 +186,11 @@ def make_env(data_path, data_ind, horizon, agent_name, material_id, cam_cfg, los
     return env, mpm_env, init_state
 
 
-def set_parameters(mpm_env, E, nu, yield_stress, rho=None):
+def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.system_param[None].yield_stress = yield_stress.copy()
     mpm_env.simulator.particle_param[2].E = E.copy()
     mpm_env.simulator.particle_param[2].nu = nu.copy()
-    if rho is not None:
-        mpm_env.simulator.particle_param[2].rho = rho
+    mpm_env.simulator.particle_param[2].rho = 1300
 
 
 # Trajectory 2 presses down 0.02 m and lifts for 0.03 m
@@ -204,7 +203,7 @@ horizon = horizon_down + horizon_up
 trajectory = np.zeros(shape=(horizon, 6))
 trajectory[:horizon_down, 2] = -v
 trajectory[horizon_down:, 2] = v
-agent = 'cylinder'
+agent = 'round'
 # Loading mesh
 training_data_path = os.path.join(script_path, '..', 'data-motion-2', f'eef-{agent}')
 material_id = 2
@@ -234,14 +233,14 @@ for data_ind in ['8', '5', '0']:
     print(f'===> CPU memory occupied after create env: {process.memory_percent()} %')
     print(f'===> GPU memory after create env: {get_gpu_memory()}')
 
-    E = np.array([40000], dtype=DTYPE_NP)
-    nu = np.array([0.45], dtype=DTYPE_NP)
-    yield_stress = np.array([1500], dtype=DTYPE_NP)
+    E = np.array([50000], dtype=DTYPE_NP)
+    nu = np.array([0.48], dtype=DTYPE_NP)
+    yield_stress = np.array([3000], dtype=DTYPE_NP)
 
-    set_parameters(mpm_env, E, nu, yield_stress, rho=1000)
+    set_parameters(mpm_env, E, nu, yield_stress)
 
-    forward_backward(mpm_env, init_state, trajectory, backward=True, render=False,
-                     render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
+    forward_backward(mpm_env, init_state, trajectory, backward=False, render=True,
+                     render_init_pcd=False, render_end_pcd=True, render_heightmap=True,
                      init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
                      init_pcd_offset=env.pcd_offset,
                      init_mesh_path=env.mesh_file,
@@ -256,5 +255,7 @@ for data_ind in ['8', '5', '0']:
     print(f"Gradient of yield stress: {mpm_env.simulator.system_param.grad[None].yield_stress}")
     print(f"Gradient of manipulator friction: {mpm_env.simulator.system_param.grad[None].manipulator_friction}")
     print(f"Gradient of ground friction: {mpm_env.simulator.system_param.grad[None].ground_friction}")
+    print(f"Gradient of theta_c: {mpm_env.simulator.system_param.grad[None].theta_c}")
+    print(f"Gradient of theta_s: {mpm_env.simulator.system_param.grad[None].theta_s}")
 
     mpm_env.simulator.clear_ckpt()

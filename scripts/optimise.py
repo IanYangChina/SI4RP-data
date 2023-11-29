@@ -43,7 +43,7 @@ def forward_backward(mpm_env, init_state, trajectory, render, backward=True):
 
 def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.system_param[None].yield_stress = yield_stress
-    mpm_env.simulator.particle_param[MATERIAL_ID].rho = 1000
+    mpm_env.simulator.particle_param[MATERIAL_ID].rho = 1300
     mpm_env.simulator.particle_param[MATERIAL_ID].E = E
     mpm_env.simulator.particle_param[MATERIAL_ID].nu = nu
 
@@ -139,7 +139,7 @@ def main(arguments):
     # Parameter ranges
     E_range = (10000, 100000)
     nu_range = (0.001, 0.49)
-    yield_stress_range = (50, 2000)
+    yield_stress_range = (50, 8000)
 
     n_epoch = 100
     seeds = [0, 1, 2]
@@ -173,7 +173,7 @@ def main(arguments):
         if arguments['adam']:
             # Optimiser: Adam
             optim_E = Adam(parameters_shape=E.shape,
-                           cfg={'lr': 1e7, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                           cfg={'lr': 1e8, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
             optim_nu = Adam(parameters_shape=nu.shape,
                             cfg={'lr': 0.001, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
             optim_yield_stress = Adam(parameters_shape=yield_stress.shape,
@@ -181,7 +181,7 @@ def main(arguments):
         else:
             # Optimiser: SGD
             optim_E = SGD(parameters_shape=E.shape,
-                          cfg={'lr': 1e7})
+                          cfg={'lr': 1e8})
             optim_nu = SGD(parameters_shape=nu.shape,
                            cfg={'lr': 0.001})
             optim_yield_stress = SGD(parameters_shape=yield_stress.shape,

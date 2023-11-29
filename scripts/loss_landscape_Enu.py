@@ -112,16 +112,16 @@ def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.system_param[None].yield_stress = yield_stress.copy()
     mpm_env.simulator.particle_param[2].E = E.copy()
     mpm_env.simulator.particle_param[2].nu = nu.copy()
-    mpm_env.simulator.particle_param[2].rho = 1000
+    mpm_env.simulator.particle_param[2].rho = 1300
 
 
-p_density = 1e7
-p_density_str = '1e7pd'
+p_density = 1e8
+p_density_str = '1e8pd'
 
 loss_cfg = {
     'point_distance_rs_loss': True,
     'point_distance_sr_loss': False,
-    'down_sample_voxel_size': 0.005,
+    'down_sample_voxel_size': 0.0015,
     'particle_distance_rs_loss': False,
     'particle_distance_sr_loss': True,
     'voxelise_res': 1080,
@@ -165,7 +165,7 @@ nu_list = np.arange(0.01, 0.49, 0.01).astype(DTYPE_NP)
 
 xy_param = 'E-nu'
 E, nu = np.meshgrid(E_list, nu_list)
-yield_stress = np.array([1500.0], dtype=DTYPE_NP)
+yield_stress = np.array([2500.0], dtype=DTYPE_NP)
 
 avg_point_distance_sr = np.zeros_like(E)
 avg_point_distance_rs = np.zeros_like(E)

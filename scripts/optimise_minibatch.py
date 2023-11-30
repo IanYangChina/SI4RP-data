@@ -146,7 +146,10 @@ def main(arguments):
     print(f"=====> Optimising for {n_epoch} epochs for {len(seeds)} random seeds.")
     n = 0
     while True:
-        log_p_dir = os.path.join(script_path, '..', f'optimisation-run{n}-logs')
+        if arguments['adam']:
+            log_p_dir = os.path.join(script_path, '..', f'optimisation-mb-adam-run{n}-logs')
+        else:
+            log_p_dir = os.path.join(script_path, '..', f'optimisation-mb-sgd-run{n}-logs')
         if os.path.exists(log_p_dir):
             n += 1
         else:
@@ -187,10 +190,8 @@ def main(arguments):
             optim_yield_stress = GD(parameters_shape=yield_stress.shape,
                                     cfg={'lr': 1e4})
 
-        motion_inds = ['1', '2']
         agents = ['rectangle', 'round', 'cylinder']
-        data_inds = np.arange(9).astype(int)
-        num_datapoints = len(data_inds) * len(agents) * len(motion_inds)
+        mini_batch_size = arguments['batchsize']
 
         for epoch in range(n_epoch):
             t1 = time()
@@ -206,41 +207,48 @@ def main(arguments):
                 'total_loss': 0.0
             }
             grads = np.zeros(shape=(3,), dtype=DTYPE_NP)
-            for motion_ind in motion_inds:
+            motion_ids = np.random.randint(2, size=mini_batch_size, dtype=np.int32).tolist()
+            agent_ids = np.random.randint(3, size=mini_batch_size, dtype=np.int32).tolist()
+            data_ids = np.random.randint(9, size=mini_batch_size, dtype=np.int32).tolist()
+
+            for i in range(mini_batch_size):
+                motion_ind = motion_ids[i]
                 if motion_ind == '1':
                     horizon = horizon_1
                     trajectory = trajectory_1
                 else:
                     horizon = horizon_2
                     trajectory = trajectory_2
-                for agent in agents:
-                    agent_init_euler = (0, 0, 0)
-                    data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
-                    if agent == 'rectangle':
-                        agent_init_euler = (0, 0, 45)
 
-                    for data_ind in data_inds:
-                        ti.reset()
-                        ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=False, random_seed=seed,
-                                debug=False, check_out_of_bound=False)
-                        print(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
-                        env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon,
-                                                            particle_density, DTYPE_NP,
-                                                            agent, agent_init_euler, loss_cfg.copy())
-                        set_parameters(mpm_env, E.copy(), nu.copy(), yield_stress.copy())
-                        loss_info = forward_backward(mpm_env, init_state, trajectory, render=False)
-                        for i, v in loss.items():
-                            loss[i] += loss_info[i]
-                        grad = np.array([mpm_env.simulator.particle_param.grad[MATERIAL_ID].E,
-                                         mpm_env.simulator.particle_param.grad[MATERIAL_ID].nu,
-                                         mpm_env.simulator.system_param.grad[None].yield_stress], dtype=DTYPE_NP)
-                        print(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
-                        print(f'=====> Grad: {grad}')
-                        grads += grad
+                agent = agents[agent_ids[i]]
+                agent_init_euler = (0, 0, 0)
+                data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
+                if agent == 'rectangle':
+                    agent_init_euler = (0, 0, 45)
+
+                data_ind = data_ids[i]
+
+                ti.reset()
+                ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=False, random_seed=seed,
+                        debug=False, check_out_of_bound=False)
+                print(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
+                env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon,
+                                                    particle_density, DTYPE_NP,
+                                                    agent, agent_init_euler, loss_cfg.copy())
+                set_parameters(mpm_env, E.copy(), nu.copy(), yield_stress.copy())
+                loss_info = forward_backward(mpm_env, init_state, trajectory, render=False)
+                for i, v in loss.items():
+                    loss[i] += loss_info[i]
+                grad = np.array([mpm_env.simulator.particle_param.grad[MATERIAL_ID].E,
+                                 mpm_env.simulator.particle_param.grad[MATERIAL_ID].nu,
+                                 mpm_env.simulator.system_param.grad[None].yield_stress], dtype=DTYPE_NP)
+                print(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
+                print(f'=====> Grad: {grad}')
+                grads += grad
 
             for i, v in loss.items():
-                loss[i] = v / num_datapoints
-            grads = grads / num_datapoints
+                loss[i] = v / mini_batch_size
+            grads = grads / mini_batch_size
 
             E = optim_E.step(E.copy(), grads[0])
             E = np.clip(E, E_range[0], E_range[1])
@@ -280,5 +288,6 @@ if __name__ == '__main__':
     parser.add_argument('--prd_sr_loss', dest='prd_sr_loss', default=False, action='store_true')
     parser.add_argument('--hm_loss', dest='hm_loss', default=False, action='store_true')
     parser.add_argument('--hm_res', dest='hm_res', default=32, type=int)
+    parser.add_argument('--bs', dest='batchsize', default=10, type=int)
     args = vars(parser.parse_args())
     main(args)

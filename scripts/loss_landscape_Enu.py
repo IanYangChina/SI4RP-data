@@ -115,13 +115,13 @@ def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.particle_param[2].rho = 1300
 
 
-p_density = 3e7
-p_density_str = '3e7pd'
+p_density = 6e7
+p_density_str = '6e7pd'
 
 loss_cfg = {
     'point_distance_rs_loss': True,
     'point_distance_sr_loss': False,
-    'down_sample_voxel_size': 0.0035,
+    'down_sample_voxel_size': 0.0025,
     'particle_distance_rs_loss': False,
     'particle_distance_sr_loss': True,
     'voxelise_res': 1080,
@@ -132,9 +132,6 @@ loss_cfg = {
     'height_map_size': 0.11,
     'emd_point_distance_rs_loss': True,
 }
-
-# Trajectory 1 presses down 0.015 m and lifts for 0.03 m
-# Trajectory 2 presses down 0.02 m and lifts for 0.03 m
 
 # Setting up horizon and trajectory
 dt = 0.001

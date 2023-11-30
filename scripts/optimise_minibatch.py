@@ -207,12 +207,12 @@ def main(arguments):
                 'total_loss': 0.0
             }
             grads = np.zeros(shape=(3,), dtype=DTYPE_NP)
-            motion_ids = np.random.randint(2, size=mini_batch_size, dtype=np.int32).tolist()
+            motion_ids = np.random.randint(1, 2, size=mini_batch_size, dtype=np.int32).tolist()
             agent_ids = np.random.randint(3, size=mini_batch_size, dtype=np.int32).tolist()
             data_ids = np.random.randint(9, size=mini_batch_size, dtype=np.int32).tolist()
 
             for i in range(mini_batch_size):
-                motion_ind = motion_ids[i]
+                motion_ind = str(motion_ids[i])
                 if motion_ind == '1':
                     horizon = horizon_1
                     trajectory = trajectory_1

@@ -19,55 +19,65 @@ DTYPE_TI = ti.f32
 
 
 def plot_loss_landscape(p1, p2, loss, fig_title='Fig', loss_type='bi_chamfer_loss', file_suffix='', view='left',
-                        x_label='p1', y_label='p2', z_label='Loss', show=False):
+                        x_label='p1', y_label='p2', z_label='Loss', hm=False, show=False, save=True):
+    cmap = 'GnBu'
     if not show:
         mpl.use('Agg')
-    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
-    # Plot the surface.
-    surf = ax.plot_surface(p1, p2, loss, cmap=cm.gist_earth,
-                           linewidth=0, antialiased=False)
+    if hm:
+        loss = np.flip(loss, axis=0)
+        fig, ax = plt.subplots()
+        im = ax.imshow(loss, cmap=cmap)
+        fig.colorbar(im, ax=ax)
+        x_ticks = np.linspace(0, p1.shape[1] - 1, 5).astype(np.int32)
+        x_labels = np.round(np.linspace(p1[0, 0], p1[0, -1], 5), 2)
 
-    # Customize the z axis.
-    ax.zaxis.set_major_locator(LinearLocator(5))
-    # A StrMethodFormatter is used automatically
-    ax.zaxis.set_major_formatter('{x:.02f}')
-    if view == 'left':
-        ax.view_init(elev=25., azim=130)
+        y_ticks = np.linspace(0, p1.shape[0] - 1, 5).astype(np.int32)
+        y_labels = np.round(np.linspace(p2[0, 0], p2[-1, 0], 5), 2).tolist()
+        y_labels.reverse()
+        ax.set_xticks(x_ticks)
+        ax.set_xticklabels(x_labels)
+        ax.set_yticks(y_ticks)
+        ax.set_yticklabels(y_labels)
+        ax.set_xlabel(x_label)
+        ax.set_ylabel(y_label)
+        ax.set_title(label=fig_title)
+        if save:
+            plt.savefig(os.path.join(fig_data_path, f"{loss_type}_landscape{file_suffix}.pdf"), dpi=500, bbox_inches='tight')
+        if show:
+            plt.show()
+        plt.close()
     else:
-        ax.view_init(elev=25., azim=-130)
-    ax.tick_params(axis='x', pad=0)
-    ax.tick_params(axis='y', pad=0)
-    ax.tick_params(axis='z', pad=10)
-    ax.set_xlabel(x_label)
-    ax.xaxis.labelpad = 5
-    ax.set_ylabel(y_label)
-    ax.yaxis.labelpad = 5
-    ax.set_zlabel(z_label)
-    ax.zaxis.labelpad = 22
-    ax.set_title(label=fig_title)
+        fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+        # Plot the surface.
+        surf = ax.plot_surface(p1, p2, loss, cmap=cmap,
+                               linewidth=0, antialiased=False)
 
-    # Add a color bar which maps values to colors.
-    fig.colorbar(surf, shrink=0.5, aspect=5, location=view)
+        # Customize the z axis.
+        ax.zaxis.set_major_locator(LinearLocator(5))
+        # A StrMethodFormatter is used automatically
+        ax.zaxis.set_major_formatter('{x:.02f}')
+        if view == 'left':
+            ax.view_init(elev=25., azim=130)
+        else:
+            ax.view_init(elev=25., azim=-130)
+        ax.tick_params(axis='x', pad=0)
+        ax.tick_params(axis='y', pad=0)
+        ax.tick_params(axis='z', pad=10)
+        ax.set_xlabel(x_label)
+        ax.xaxis.labelpad = 5
+        ax.set_ylabel(y_label)
+        ax.yaxis.labelpad = 5
+        ax.set_zlabel(z_label)
+        ax.zaxis.labelpad = 22
+        ax.set_title(label=fig_title)
 
-    plt.savefig(os.path.join(fig_data_path, f"{loss_type}_landscape{file_suffix}.pdf"), dpi=500, bbox_inches='tight')
-    if show:
-        plt.show()
-    plt.close()
-
-# for i in range(len(loss_types)):
-#     loss = np.load(os.path.join(fig_data_path, f'{loss_types[i]}_{distance_type}_{xy_param}-{p_density_str}.npy'))
-#     fig_title = f'{loss_types[i]} with yield_stress = {yield_stress}'
-#     plot_loss_landscape(E, nu, loss, fig_title=fig_title,
-#                         loss_type=f'{loss_types[i]}_{distance_type}',
-#                         file_suffix=f'_{xy_param}-rightview-{p_density_str}',
-#                         view='right',
-#                         x_label='E', y_label='nu', z_label='Loss', show=False)
-#     plot_loss_landscape(E, nu, loss, fig_title=fig_title,
-#                         loss_type=f'{loss_types[i]}_{distance_type}',
-#                         file_suffix=f'_{xy_param}-leftview-{p_density_str}',
-#                         view='left',
-#                         x_label='E', y_label='nu', z_label='Loss', show=False)
-# exit()
+        # Add a color bar which maps values to colors.
+        fig.colorbar(surf, shrink=0.5, aspect=5, location=view)
+        if save:
+            plt.savefig(os.path.join(fig_data_path, f"{loss_type}_landscape{file_suffix}.pdf"), dpi=500, bbox_inches='tight')
+        if show:
+            plt.show()
+        plt.close()
 
 
 def make_env(data_path, data_ind, horizon, agent_name, loss_config, cam_cfg=None):
@@ -115,8 +125,8 @@ def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.particle_param[2].rho = 1300
 
 
-p_density = 6e7
-p_density_str = '6e7pd'
+p_density = 3e7
+p_density_str = '3e7pd'
 
 loss_cfg = {
     'point_distance_rs_loss': True,
@@ -163,6 +173,30 @@ yield_stress_list = np.arange(100, 8100, 160).astype(DTYPE_NP)
 
 E, yield_stress = np.meshgrid(E_list, yield_stress_list)
 nu = np.array([0.45], dtype=DTYPE_NP)
+
+# distance_type = 'exponential'
+# loss_types = ['avg_point_distance_sr', 'avg_point_distance_rs', 'chamfer_loss_pcd',
+#               'avg_particle_distance_sr', 'avg_particle_distance_rs', 'chamfer_loss_particle',
+#               'height_map_loss_pcd', 'emd_loss']
+# for i in range(len(loss_types)):
+#     loss = np.load(os.path.join(fig_data_path, f'{loss_types[i]}_{distance_type}_{xy_param}-{p_density_str}.npy'))
+#     fig_title = (f'{loss_types[i]}\n'
+#                  f'nu = {nu}')
+#     plot_loss_landscape(E, yield_stress, loss, fig_title=fig_title,
+#                         loss_type=f'{loss_types[i]}_{distance_type}',
+#                         file_suffix=f'_{xy_param}-leftview-{p_density_str}',
+#                         view='left',
+#                         x_label='E', y_label='yield_stress', z_label='Loss', show=False)
+#     plot_loss_landscape(E, yield_stress, loss, fig_title=fig_title,
+#                         loss_type=f'{loss_types[i]}_{distance_type}',
+#                         file_suffix=f'_{xy_param}-rightview-{p_density_str}',
+#                         view='right',
+#                         x_label='E', y_label='yield_stress', z_label='Loss', hm=False, show=False, save=True)
+#     plot_loss_landscape(E, yield_stress, loss, fig_title=fig_title,
+#                         loss_type=f'{loss_types[i]}_{distance_type}',
+#                         file_suffix=f'_{xy_param}-topview-{p_density_str}',
+#                         x_label='E', y_label='yield_stress', z_label='Loss', hm=True, show=False, save=True)
+# exit()
 
 avg_point_distance_sr = np.zeros_like(E)
 avg_point_distance_rs = np.zeros_like(E)

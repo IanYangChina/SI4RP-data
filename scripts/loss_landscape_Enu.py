@@ -1,6 +1,5 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from matplotlib import cm
 from matplotlib.ticker import LinearLocator
 import numpy as np
 import os
@@ -125,8 +124,8 @@ def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.particle_param[2].rho = 1300
 
 
-p_density = 3e7
-p_density_str = '3e7pd'
+p_density = 6e7
+p_density_str = '6e7pd'
 
 loss_cfg = {
     'point_distance_rs_loss': True,
@@ -174,7 +173,7 @@ xy_param = 'E-nu'
 E, nu = np.meshgrid(E_list, nu_list)
 yield_stress = np.array([2500.0], dtype=DTYPE_NP)
 
-# distance_type = 'exponential'
+distance_type = 'euclidean'
 # loss_types = ['avg_point_distance_sr', 'avg_point_distance_rs', 'chamfer_loss_pcd',
 #               'avg_particle_distance_sr', 'avg_particle_distance_rs', 'chamfer_loss_particle',
 #               'height_map_loss_pcd', 'emd_loss']
@@ -204,8 +203,8 @@ chamfer_loss_pcd = np.zeros_like(E)
 avg_particle_distance_sr = np.zeros_like(E)
 avg_particle_distance_rs = np.zeros_like(E)
 chamfer_loss_particle = np.zeros_like(E)
-height_map_loss_pcd = np.zeros_like(E)
-emd_loss = np.zeros_like(E)
+#height_map_loss_pcd = np.zeros_like(E)
+#emd_loss = np.zeros_like(E)
 
 n_datapoints = 9
 for agent in ['rectangle', 'round', 'cylinder']:
@@ -239,8 +238,8 @@ for agent in ['rectangle', 'round', 'cylinder']:
                 avg_particle_distance_sr[j, i] += loss_info['avg_particle_distance_sr']
                 avg_particle_distance_rs[j, i] += loss_info['avg_particle_distance_rs']
                 chamfer_loss_particle[j, i] += loss_info['chamfer_loss_particle']
-                height_map_loss_pcd[j, i] += loss_info['height_map_loss_pcd']
-                emd_loss[j, i] += loss_info['emd_loss']
+                #height_map_loss_pcd[j, i] += loss_info['height_map_loss_pcd']
+                #emd_loss[j, i] += loss_info['emd_loss']
                 
         mpm_env.simulator.clear_ckpt()
         print(f'Time taken for data point {data_ind}: {time() - t0}')
@@ -251,12 +250,14 @@ losses = [avg_point_distance_sr / (3 * n_datapoints),
           avg_particle_distance_sr / (3 * n_datapoints),
           avg_particle_distance_rs / (3 * n_datapoints),
           chamfer_loss_particle / (3 * n_datapoints),
-          height_map_loss_pcd / (3 * n_datapoints),
-          emd_loss / (3 * n_datapoints)]
+          #height_map_loss_pcd / (3 * n_datapoints),
+          #emd_loss / (3 * n_datapoints)
+          ]
 
 loss_types = ['avg_point_distance_sr', 'avg_point_distance_rs', 'chamfer_loss_pcd',
               'avg_particle_distance_sr', 'avg_particle_distance_rs', 'chamfer_loss_particle',
-              'height_map_loss_pcd', 'emd_loss']
+              #'height_map_loss_pcd', 'emd_loss'
+              ]
 
 for i in range(len(losses)):
     np.save(os.path.join(fig_data_path, f'{loss_types[i]}_{distance_type}_{xy_param}-{p_density_str}.npy'), losses[i])

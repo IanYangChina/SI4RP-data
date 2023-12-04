@@ -99,6 +99,7 @@ def main(arguments):
     particle_density = 1e8
     assert arguments['hm_res'] in [32, 64], 'height map resolution must be 32 or 64'
     loss_cfg = {
+        'exponential_distance': arguments['exp_dist'],
         'point_distance_rs_loss': arguments['pd_rs_loss'],
         'point_distance_sr_loss': arguments['pd_sr_loss'],
         'down_sample_voxel_size': 0.0015,
@@ -158,6 +159,18 @@ def main(arguments):
     with open(os.path.join(log_p_dir, 'loss_config.json'), 'w') as f_ac:
         json.dump(loss_cfg, f_ac)
 
+    training_config = {
+        'adam': arguments['adam'],
+        'lr_E': 1e3 if arguments['adam'] else 1e8,
+        'lr_nu': 1e-2 if arguments['adam'] else 1e-3,
+        'lr_yield_stress': 1e2 if arguments['adam'] else 1e4,
+        'batch_size': arguments['batchsize'],
+        'n_epoch': n_epoch,
+        'seeds': seeds,
+    }
+    with open(os.path.join(log_p_dir, 'training_config.json'), 'w') as f_ac:
+        json.dump(training_config, f_ac)
+
     for seed in seeds:
         # Setting up random seed
         np.random.seed(seed)
@@ -176,19 +189,19 @@ def main(arguments):
         if arguments['adam']:
             # Optimiser: Adam
             optim_E = Adam(parameters_shape=E.shape,
-                           cfg={'lr': 1e3, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                           cfg={'lr': training_config['lr_E'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
             optim_nu = Adam(parameters_shape=nu.shape,
-                            cfg={'lr': 1e-2, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                            cfg={'lr': training_config['lr_nu'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
             optim_yield_stress = Adam(parameters_shape=yield_stress.shape,
-                                      cfg={'lr': 1e2, 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+                                      cfg={'lr': training_config['lr_yield_stress'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
         else:
             # Optimiser: SGD
             optim_E = GD(parameters_shape=E.shape,
-                         cfg={'lr': 1e8})
+                         cfg={'lr': training_config['lr_E']})
             optim_nu = GD(parameters_shape=nu.shape,
-                          cfg={'lr': 1e-3})
+                          cfg={'lr': training_config['lr_nu']})
             optim_yield_stress = GD(parameters_shape=yield_stress.shape,
-                                    cfg={'lr': 1e4})
+                                    cfg={'lr': training_config['lr_yield_stress']})
 
         agents = ['rectangle', 'round', 'cylinder']
         mini_batch_size = arguments['batchsize']
@@ -282,12 +295,13 @@ def main(arguments):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--adam', dest='adam', default=False, action='store_true')
+    parser.add_argument('--exp_dist', dest='exp_dist', default=False, action='store_true')
     parser.add_argument('--pd_rs_loss', dest='pd_rs_loss', default=False, action='store_true')
     parser.add_argument('--pd_sr_loss', dest='pd_sr_loss', default=False, action='store_true')
     parser.add_argument('--prd_rs_loss', dest='prd_rs_loss', default=False, action='store_true')
     parser.add_argument('--prd_sr_loss', dest='prd_sr_loss', default=False, action='store_true')
     parser.add_argument('--hm_loss', dest='hm_loss', default=False, action='store_true')
     parser.add_argument('--hm_res', dest='hm_res', default=32, type=int)
-    parser.add_argument('--bs', dest='batchsize', default=10, type=int)
+    parser.add_argument('--bs', dest='batchsize', default=20, type=int)
     args = vars(parser.parse_args())
     main(args)

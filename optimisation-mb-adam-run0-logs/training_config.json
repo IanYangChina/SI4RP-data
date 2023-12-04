@@ -1,0 +1,9 @@
+{
+  "adam": true,
+  "lr_E": 1000,
+  "lr_nu": 0.01,
+  "lr_yield_stress": 100,
+  "batch_size": 20,
+  "n_epoch": 100,
+  "seeds": [0, 1, 2]
+}

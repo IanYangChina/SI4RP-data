@@ -17,6 +17,7 @@ DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
 p_density = 1e7
 loss_cfg = {
+    'exponential_distance': True,
     'point_distance_rs_loss': True,
     'point_distance_sr_loss': False,
     'down_sample_voxel_size': 0.005,
@@ -239,8 +240,8 @@ for data_ind in ['8', '5', '0']:
 
     set_parameters(mpm_env, E, nu, yield_stress)
 
-    forward_backward(mpm_env, init_state, trajectory, backward=False, render=True,
-                     render_init_pcd=False, render_end_pcd=True, render_heightmap=True,
+    forward_backward(mpm_env, init_state, trajectory, backward=True, render=True,
+                     render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
                      init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
                      init_pcd_offset=env.pcd_offset,
                      init_mesh_path=env.mesh_file,

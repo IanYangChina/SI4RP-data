@@ -128,6 +128,7 @@ p_density = 6e7
 p_density_str = '6e7pd'
 
 loss_cfg = {
+    'exponential_distance': False,
     'point_distance_rs_loss': True,
     'point_distance_sr_loss': False,
     'down_sample_voxel_size': 0.0025,

@@ -245,7 +245,6 @@ for agent in ['rectangle', 'round', 'cylinder']:
         mpm_env.simulator.clear_ckpt()
         print(f'Time taken for data point {data_ind}: {time() - t0}')
 
-distance_type = 'exponential'
 losses = [avg_point_distance_sr / (3 * n_datapoints),
           avg_point_distance_rs / (3 * n_datapoints),
           chamfer_loss_pcd / (3 * n_datapoints),

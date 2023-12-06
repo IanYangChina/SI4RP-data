@@ -26,12 +26,26 @@
 # print(a[None] / b[None])
 
 import numpy as np
+import os
+import matplotlib.pyplot as plt
+# x = np.linspace(0, 1, 100)
+# y = np.linspace(0, 1, 100)
+# z = np.linspace(0, 1, 100)
+# X, Y, Z = np.meshgrid(x, y, z, indexing='ij')
+# print(X.shape, Y.shape, Z.shape)
+#
+# p = np.stack(np.meshgrid(x, y, z, indexing='ij'), -1)
+# print(p.shape)
 
-x = np.linspace(0, 1, 100)
-y = np.linspace(0, 1, 100)
-z = np.linspace(0, 1, 100)
-X, Y, Z = np.meshgrid(x, y, z, indexing='ij')
-print(X.shape, Y.shape, Z.shape)
-
-p = np.stack(np.meshgrid(x, y, z, indexing='ij'), -1)
-print(p.shape)
+script_path = os.path.dirname(os.path.realpath(__file__))
+trajectory = np.load(os.path.join(script_path, '..', 'data-motion-2', 'trajectory', 'eef_v_3.npy'))
+horizon = trajectory.shape[0]
+time_frames = np.load(os.path.join(script_path, '..', 'data-motion-2', 'trajectory', 'time_frames_3.npy'))
+print(time_frames[-1] / horizon)
+# dts = []
+# for i in range(horizon-1):
+#     dts.append(time_frames[i+1] - time_frames[i])
+#
+# plt.plot(time_frames)
+# plt.show()
+exit()

@@ -48,7 +48,7 @@ def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.particle_param[MATERIAL_ID].nu = nu
 
 
-def make_env(data_path, data_ind, horizon,
+def make_env(data_path, data_ind, horizon, dt_global,
              ptcl_density, dtype_np,
              agent_name, agent_init_euler, loss_config):
     obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised.obj')
@@ -79,7 +79,7 @@ def make_env(data_path, data_ind, horizon,
                                                    f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(0.001)}.npy'),
     })
 
-    env = SysIDEnv(ptcl_density=ptcl_density, horizon=horizon, material_id=MATERIAL_ID, voxelise_res=1080,
+    env = SysIDEnv(ptcl_density=ptcl_density, horizon=horizon, dt_global=dt_global, material_id=MATERIAL_ID, voxelise_res=1080,
                    mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
                    loss_cfg=loss_config,
                    agent_cfg_file=agent_name + '_eef.yaml',
@@ -113,29 +113,15 @@ def main(arguments):
         'height_map_size': 0.11,
         'emd_point_distance_rs_loss': False,
     }
-    # Setting up horizon and trajectory
-    dt = 0.001
-    # Trajectory 1 press down 0.015 m and lifts for 0.03 m
-    # In simulation we only simulate the pressing down part
-    real_horizon_1 = int(0.03 / dt)
-    v = 0.045 / 0.03  # 1.5 m/s
-    horizon_1_up = int((0.015 / v) / dt)  # 0.01 s
-    horizon_1_down = int((0.03 / v) / dt)  # 0.02 s
-    horizon_1 = horizon_1_up + horizon_1_down  # 30 steps
-    trajectory_1 = np.zeros(shape=(horizon_1, 6), dtype=DTYPE_NP)
-    trajectory_1[:horizon_1_up, 2] = -v
-    trajectory_1[horizon_1_up:, 2] = v
 
-    # Trajectory 2 press down 0.02 m and lifts for 0.03 m
-    # In simulation we only simulate the pressing down part
-    real_horizon_2 = int(0.04 / dt)
-    v = 0.05 / 0.045  # 1.11111111 m/s
-    horizon_2_up = int((0.02 / v) / dt)  # 0.018 s
-    horizon_2_down = int((0.03 / v) / dt)  # 0.027 s
-    horizon_2 = horizon_2_up + horizon_2_down  # 45 steps
-    trajectory_2 = np.zeros(shape=(horizon_2, 6), dtype=DTYPE_NP)
-    trajectory_2[:horizon_2_up, 2] = -v
-    trajectory_2[horizon_2_up:, 2] = v
+    # Setting up horizon and trajectory.
+    # Trajectory 1 press down 0.015 m and lifts for 0.03 m.
+    # Trajectory 2 press down 0.02 m and lifts for 0.03 m.
+    horizon = 400
+    trajectory_1 = np.load(os.path.join(script_path, '..', 'data-motion-1', 'eef_v_trajectory.npy'))
+    trajectory_2 = np.load(os.path.join(script_path, '..', 'data-motion-2', 'eef_v_trajectory.npy'))
+    dt_global_1 = 1.03 / trajectory_1.shape[0]
+    dt_global_2 = 1.04 / trajectory_2.shape[0]
 
     # Parameter ranges
     E_range = (10000, 100000)
@@ -147,10 +133,7 @@ def main(arguments):
     print(f"=====> Optimising for {n_epoch} epochs for {len(seeds)} random seeds.")
     n = 0
     while True:
-        if arguments['adam']:
-            log_p_dir = os.path.join(script_path, '..', f'optimisation-mb-adam-run{n}-logs')
-        else:
-            log_p_dir = os.path.join(script_path, '..', f'optimisation-mb-sgd-run{n}-logs')
+        log_p_dir = os.path.join(script_path, '..', f'optimisation-run{n}-logs')
         if os.path.exists(log_p_dir):
             n += 1
         else:
@@ -160,10 +143,9 @@ def main(arguments):
         json.dump(loss_cfg, f_ac)
 
     training_config = {
-        'adam': arguments['adam'],
-        'lr_E': 1e3 if arguments['adam'] else 1e8,
-        'lr_nu': 1e-2 if arguments['adam'] else 1e-3,
-        'lr_yield_stress': 1e2 if arguments['adam'] else 1e4,
+        'lr_E': 5e3,
+        'lr_nu': 1e-2,
+        'lr_yield_stress': 5e2,
         'batch_size': arguments['batchsize'],
         'n_epoch': n_epoch,
         'seeds': seeds,
@@ -186,22 +168,13 @@ def main(arguments):
                                   dtype=DTYPE_NP).reshape((1,))  # Yield stress
 
         print(f"=====> Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}")
-        if arguments['adam']:
-            # Optimiser: Adam
-            optim_E = Adam(parameters_shape=E.shape,
-                           cfg={'lr': training_config['lr_E'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
-            optim_nu = Adam(parameters_shape=nu.shape,
-                            cfg={'lr': training_config['lr_nu'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
-            optim_yield_stress = Adam(parameters_shape=yield_stress.shape,
-                                      cfg={'lr': training_config['lr_yield_stress'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
-        else:
-            # Optimiser: SGD
-            optim_E = GD(parameters_shape=E.shape,
-                         cfg={'lr': training_config['lr_E']})
-            optim_nu = GD(parameters_shape=nu.shape,
-                          cfg={'lr': training_config['lr_nu']})
-            optim_yield_stress = GD(parameters_shape=yield_stress.shape,
-                                    cfg={'lr': training_config['lr_yield_stress']})
+        # Optimiser: Adam
+        optim_E = Adam(parameters_shape=E.shape,
+                       cfg={'lr': training_config['lr_E'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+        optim_nu = Adam(parameters_shape=nu.shape,
+                        cfg={'lr': training_config['lr_nu'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+        optim_yield_stress = Adam(parameters_shape=yield_stress.shape,
+                                  cfg={'lr': training_config['lr_yield_stress'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
 
         agents = ['rectangle', 'round', 'cylinder']
         mini_batch_size = arguments['batchsize']
@@ -227,11 +200,11 @@ def main(arguments):
             for i in range(mini_batch_size):
                 motion_ind = str(motion_ids[i])
                 if motion_ind == '1':
-                    horizon = horizon_1
                     trajectory = trajectory_1
+                    dt_global = dt_global_1
                 else:
-                    horizon = horizon_2
                     trajectory = trajectory_2
+                    dt_global = dt_global_2
 
                 agent = agents[agent_ids[i]]
                 agent_init_euler = (0, 0, 0)
@@ -245,7 +218,7 @@ def main(arguments):
                 ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=False, random_seed=seed,
                         debug=False, check_out_of_bound=False)
                 print(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
-                env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon,
+                env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon, dt_global,
                                                     particle_density, DTYPE_NP,
                                                     agent, agent_init_euler, loss_cfg.copy())
                 set_parameters(mpm_env, E.copy(), nu.copy(), yield_stress.copy())
@@ -294,7 +267,6 @@ def main(arguments):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--adam', dest='adam', default=False, action='store_true')
     parser.add_argument('--exp_dist', dest='exp_dist', default=False, action='store_true')
     parser.add_argument('--pd_rs_loss', dest='pd_rs_loss', default=False, action='store_true')
     parser.add_argument('--pd_sr_loss', dest='pd_sr_loss', default=False, action='store_true')

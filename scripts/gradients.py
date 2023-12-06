@@ -73,7 +73,7 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True,
             # img = mpm_env.render(mode='depth_array')
             # plt.imshow(img)
             # plt.show()
-            sleep(0.1)
+            # sleep(0.1)
     loss_info = mpm_env.get_final_loss()
     for i, v in loss_info.items():
         if i != 'final_height_map':
@@ -149,7 +149,7 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True,
         print(f'===> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
 
 
-def make_env(data_path, data_ind, horizon, agent_name, material_id, cam_cfg, loss_config):
+def make_env(data_path, data_ind, horizon, dt_global, agent_name, material_id, cam_cfg, loss_config):
     obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_normalised.obj')
     if not os.path.exists(obj_start_mesh_file_path):
         return None, None
@@ -175,7 +175,7 @@ def make_env(data_path, data_ind, horizon, agent_name, material_id, cam_cfg, los
                                                    f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(0.001)}.npy'),
     })
 
-    env = SysIDEnv(ptcl_density=p_density, horizon=horizon, material_id=material_id, voxelise_res=1080,
+    env = SysIDEnv(ptcl_density=p_density, horizon=horizon, dt_global=dt_global, material_id=material_id, voxelise_res=1080,
                    mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
                    loss_cfg=loss_config,
                    agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 0),
@@ -196,15 +196,20 @@ def set_parameters(mpm_env, E, nu, yield_stress):
 
 # Trajectory 2 presses down 0.02 m and lifts for 0.03 m
 # In simulation we only takes the pressing down part
-real_horizon_2 = int(0.04 / 0.001)
-v = 0.05 / 0.04  # 1.25 m/s
-horizon_down = int((0.02 / v) / 0.001)  # 8 steps
-horizon_up = int((0.03 / v) / 0.001)  # 12 steps
-horizon = horizon_down + horizon_up
-trajectory = np.zeros(shape=(horizon, 6))
-trajectory[:horizon_down, 2] = -v
-trajectory[horizon_down:, 2] = v
-agent = 'round'
+# real_horizon_2 = int(0.04 / 0.001)
+# v = 0.05 / 0.04  # 1.25 m/s
+# horizon_down = int((0.02 / v) / 0.001)  # 8 steps
+# horizon_up = int((0.03 / v) / 0.001)  # 12 steps
+# horizon = horizon_down + horizon_up
+# trajectory = np.zeros(shape=(horizon, 6))
+# trajectory[:horizon_down, 2] = -v
+# trajectory[horizon_down:, 2] = v
+
+trajectory = np.load(os.path.join(script_path, '..', 'data-motion-2', 'eef_v_trajectory.npy'))
+horizon = 400
+dt_global = 1.04 / trajectory.shape[0]
+
+agent = 'cylinder'
 # Loading mesh
 training_data_path = os.path.join(script_path, '..', 'data-motion-2', f'eef-{agent}')
 material_id = 2
@@ -218,7 +223,7 @@ cam_cfg = {
 
 for data_ind in ['8', '5', '0']:
     ti.reset()
-    ti.init(arch=ti.vulkan,
+    ti.init(arch=ti.opengl,
             # device_memory_GB=2, ad_stack_size=1024,
             # offline_cache=True, log_level=ti.TRACE,
             default_fp=DTYPE_TI, default_ip=ti.i32,
@@ -227,7 +232,7 @@ for data_ind in ['8', '5', '0']:
             )
     print(f'===> CPU memory occupied before create env: {process.memory_percent()} %')
     print(f'===> GPU memory before create env: {get_gpu_memory()}')
-    env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, agent, material_id, cam_cfg, loss_cfg.copy())
+    env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, dt_global, agent, material_id, cam_cfg, loss_cfg.copy())
     print(f'===> Num. simulation particles: {mpm_env.loss.n_particles_matching_mat}')
     print(f'===> Num. target pcd points: {mpm_env.loss.n_target_pcd_points}')
     print(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')
@@ -240,7 +245,7 @@ for data_ind in ['8', '5', '0']:
 
     set_parameters(mpm_env, E, nu, yield_stress)
 
-    forward_backward(mpm_env, init_state, trajectory, backward=True, render=True,
+    forward_backward(mpm_env, init_state, trajectory, backward=True, render=False,
                      render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
                      init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
                      init_pcd_offset=env.pcd_offset,

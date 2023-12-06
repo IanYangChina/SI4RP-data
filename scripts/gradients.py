@@ -15,12 +15,12 @@ process = psutil.Process(os.getpid())
 script_path = os.path.dirname(os.path.realpath(__file__))
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
-p_density = 1e7
+p_density = 3e7
 loss_cfg = {
     'exponential_distance': True,
     'point_distance_rs_loss': True,
     'point_distance_sr_loss': False,
-    'down_sample_voxel_size': 0.005,
+    'down_sample_voxel_size': 0.003,
     'particle_distance_rs_loss': False,
     'particle_distance_sr_loss': True,
     'voxelise_res': 1080,
@@ -245,7 +245,7 @@ for data_ind in ['8', '5', '0']:
 
     set_parameters(mpm_env, E, nu, yield_stress)
 
-    forward_backward(mpm_env, init_state, trajectory, backward=True, render=False,
+    forward_backward(mpm_env, init_state, trajectory.copy(), backward=True, render=False,
                      render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
                      init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
                      init_pcd_offset=env.pcd_offset,

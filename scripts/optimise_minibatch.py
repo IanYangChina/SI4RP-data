@@ -96,13 +96,13 @@ def main(arguments):
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
-    particle_density = 1e8
+    particle_density = 3e7
     assert arguments['hm_res'] in [32, 64], 'height map resolution must be 32 or 64'
     loss_cfg = {
         'exponential_distance': arguments['exp_dist'],
         'point_distance_rs_loss': arguments['pd_rs_loss'],
         'point_distance_sr_loss': arguments['pd_sr_loss'],
-        'down_sample_voxel_size': 0.0015,
+        'down_sample_voxel_size': 0.003,
         'particle_distance_rs_loss': arguments['prd_rs_loss'],
         'particle_distance_sr_loss': arguments['prd_sr_loss'],
         'voxelise_res': 1080,

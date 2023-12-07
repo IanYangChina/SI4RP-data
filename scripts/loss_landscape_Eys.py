@@ -124,14 +124,14 @@ def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.particle_param[2].rho = 1300
 
 
-p_density = 6e7
-p_density_str = '6e7pd'
+p_density = 3e7
+p_density_str = '3e7pd'
 
 loss_cfg = {
     'exponential_distance': False,
     'point_distance_rs_loss': True,
     'point_distance_sr_loss': False,
-    'down_sample_voxel_size': 0.0025,
+    'down_sample_voxel_size': 0.003,
     'particle_distance_rs_loss': False,
     'particle_distance_sr_loss': True,
     'voxelise_res': 1080,
@@ -146,15 +146,15 @@ loss_cfg = {
 # Setting up horizon and trajectory.
 # Trajectory 1 press down 0.015 m and lifts for 0.03 m.
 # Trajectory 2 press down 0.02 m and lifts for 0.03 m.
-horizon = 400
+horizon = 200
 # trajectory_1 = np.load(os.path.join(script_path, '..', 'data-motion-1', 'eef_v_trajectory.npy'))
-trajectory_2 = np.load(os.path.join(script_path, '..', 'data-motion-2', 'eef_v_trajectory.npy'))
+trajectory_2 = np.load(os.path.join(script_path, '..', 'data-motion-2', 'eef_v_trajectory_.npy'))
 # dt_global_1 = 1.03 / trajectory_1.shape[0]
 dt_global_2 = 1.04 / trajectory_2.shape[0]
 
 xy_param = 'E-yieldstress'
-E_list = np.arange(2000, 100000, 2000).astype(DTYPE_NP)
-yield_stress_list = np.arange(100, 8100, 160).astype(DTYPE_NP)
+E_list = np.arange(10000, 100000, 2000).astype(DTYPE_NP)
+yield_stress_list = np.arange(50, 3050, 60).astype(DTYPE_NP)
 
 E, yield_stress = np.meshgrid(E_list, yield_stress_list)
 nu = np.array([0.45], dtype=DTYPE_NP)

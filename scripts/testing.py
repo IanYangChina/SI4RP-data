@@ -38,14 +38,16 @@ import matplotlib.pyplot as plt
 # print(p.shape)
 
 script_path = os.path.dirname(os.path.realpath(__file__))
-trajectory = np.load(os.path.join(script_path, '..', 'data-motion-2', 'trajectory', 'eef_v_3.npy'))
-horizon = trajectory.shape[0]
-time_frames = np.load(os.path.join(script_path, '..', 'data-motion-2', 'trajectory', 'time_frames_3.npy'))
-print(time_frames[-1] / horizon)
-# dts = []
-# for i in range(horizon-1):
-#     dts.append(time_frames[i+1] - time_frames[i])
-#
-# plt.plot(time_frames)
-# plt.show()
+trajectory = np.load(os.path.join(script_path, '..', 'data-motion-1', 'eef_v_trajectory.npy'))
+trajectory_ = np.zeros(shape=trajectory.shape, dtype=np.float32)[int(trajectory.shape[0]/2):, :]
+for i in range(int(trajectory.shape[0] / 2)):
+    try:
+        trajectory_[i] = trajectory[2*i+1]
+    except:
+        print(2*i+1, ' out of bound')
+horizon = trajectory_.shape[0]
+np.save(os.path.join(script_path, '..', 'data-motion-1', 'eef_v_trajectory_.npy'), trajectory_)
+
+plt.plot(trajectory_)
+plt.show()
 exit()

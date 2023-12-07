@@ -10,26 +10,30 @@ import matplotlib.pylab as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from doma.engine.utils.misc import get_gpu_memory
 import psutil
+import json
 
 process = psutil.Process(os.getpid())
 script_path = os.path.dirname(os.path.realpath(__file__))
+gradient_file_path = os.path.join(script_path, '..', 'gradients')
+os.makedirs(gradient_file_path, exist_ok=True)
+
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
 p_density = 3e7
 loss_cfg = {
-    'exponential_distance': True,
+    'exponential_distance': False,
     'point_distance_rs_loss': True,
     'point_distance_sr_loss': False,
     'down_sample_voxel_size': 0.003,
     'particle_distance_rs_loss': False,
-    'particle_distance_sr_loss': True,
+    'particle_distance_sr_loss': False,
     'voxelise_res': 1080,
     'ptcl_density': p_density,
     'load_height_map': True,
-    'height_map_loss': True,
+    'height_map_loss': False,
     'height_map_res': 32,
     'height_map_size': 0.11,
-    'emd_point_distance_rs_loss': True,
+    'emd_point_distance_rs_loss': False,
 }
 
 from doma.envs import SysIDEnv
@@ -195,23 +199,14 @@ def set_parameters(mpm_env, E, nu, yield_stress):
 
 
 # Trajectory 2 presses down 0.02 m and lifts for 0.03 m
-# In simulation we only takes the pressing down part
-# real_horizon_2 = int(0.04 / 0.001)
-# v = 0.05 / 0.04  # 1.25 m/s
-# horizon_down = int((0.02 / v) / 0.001)  # 8 steps
-# horizon_up = int((0.03 / v) / 0.001)  # 12 steps
-# horizon = horizon_down + horizon_up
-# trajectory = np.zeros(shape=(horizon, 6))
-# trajectory[:horizon_down, 2] = -v
-# trajectory[horizon_down:, 2] = v
 
-trajectory = np.load(os.path.join(script_path, '..', 'data-motion-2', 'eef_v_trajectory.npy'))
-horizon = 400
-dt_global = 1.04 / trajectory.shape[0]
+trajectory = np.load(os.path.join(script_path, '..', 'data-motion-1', 'eef_v_trajectory_.npy'))
+horizon = 150
+dt_global = 1.03 / trajectory.shape[0]
 
 agent = 'cylinder'
 # Loading mesh
-training_data_path = os.path.join(script_path, '..', 'data-motion-2', f'eef-{agent}')
+training_data_path = os.path.join(script_path, '..', 'data-motion-1', f'eef-{agent}')
 material_id = 2
 cam_cfg = {
     'pos': (0.25, -0.1, 0.2),
@@ -221,7 +216,13 @@ cam_cfg = {
                {'pos': (0.5, -1.5, 1.5), 'color': (0.5, 0.5, 0.5)}]
 }
 
-for data_ind in ['8', '5', '0']:
+E_range = (10000, 100000)
+nu_range = (0.001, 0.49)
+yield_stress_range = (50, 3000)
+
+avg_grads = np.zeros(shape=(5,), dtype=DTYPE_NP)
+
+for data_ind in range(9):
     ti.reset()
     ti.init(arch=ti.opengl,
             # device_memory_GB=2, ad_stack_size=1024,
@@ -239,29 +240,56 @@ for data_ind in ['8', '5', '0']:
     print(f'===> CPU memory occupied after create env: {process.memory_percent()} %')
     print(f'===> GPU memory after create env: {get_gpu_memory()}')
 
-    E = np.array([50000], dtype=DTYPE_NP)
-    nu = np.array([0.48], dtype=DTYPE_NP)
-    yield_stress = np.array([3000], dtype=DTYPE_NP)
+    for _ in range(5):
+        E = np.asarray(np.random.uniform(E_range[0], E_range[1]), dtype=DTYPE_NP).reshape((1,))  # Young's modulus
+        nu = np.asarray(np.random.uniform(nu_range[0], nu_range[1]), dtype=DTYPE_NP).reshape((1,))  # Poisson's ratio
+        yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]),
+                                  dtype=DTYPE_NP).reshape((1,))  # Yield stress
 
-    set_parameters(mpm_env, E, nu, yield_stress)
+        set_parameters(mpm_env, E, nu, yield_stress)
 
-    forward_backward(mpm_env, init_state, trajectory.copy(), backward=True, render=False,
-                     render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
-                     init_pcd_path=os.path.join(training_data_path, 'pcd_' + data_ind+str(0) + '.ply'),
-                     init_pcd_offset=env.pcd_offset,
-                     init_mesh_path=env.mesh_file,
-                     init_mesh_pos=env.initial_pos)
+        forward_backward(mpm_env, init_state, trajectory.copy(), backward=True, render=False,
+                         render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
+                         init_pcd_path=os.path.join(training_data_path, 'pcd_' + str(data_ind)+str(0) + '.ply'),
+                         init_pcd_offset=env.pcd_offset,
+                         init_mesh_path=env.mesh_file,
+                         init_mesh_pos=env.initial_pos)
 
-    print(f'===> CPU memory occupied after forward-backward: {process.memory_percent()} %')
-    print(f'===> GPU memory after forward-backward: {get_gpu_memory()}')
-    print('===> Gradients:')
-    print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[material_id].E}")
-    print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[material_id].nu}")
-    print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[material_id].rho}")
-    print(f"Gradient of yield stress: {mpm_env.simulator.system_param.grad[None].yield_stress}")
-    print(f"Gradient of manipulator friction: {mpm_env.simulator.system_param.grad[None].manipulator_friction}")
-    print(f"Gradient of ground friction: {mpm_env.simulator.system_param.grad[None].ground_friction}")
-    print(f"Gradient of theta_c: {mpm_env.simulator.system_param.grad[None].theta_c}")
-    print(f"Gradient of theta_s: {mpm_env.simulator.system_param.grad[None].theta_s}")
+        print(f'===> CPU memory occupied after forward-backward: {process.memory_percent()} %')
+        print(f'===> GPU memory after forward-backward: {get_gpu_memory()}')
+        print('===> Gradients:')
+        print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[material_id].E}")
+        print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[material_id].nu}")
+        print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[material_id].rho}")
+        print(f"Gradient of yield stress: {mpm_env.simulator.system_param.grad[None].yield_stress}")
+        print(f"Gradient of manipulator friction: {mpm_env.simulator.system_param.grad[None].manipulator_friction}")
+        print(f"Gradient of ground friction: {mpm_env.simulator.system_param.grad[None].ground_friction}")
+        print(f"Gradient of theta_c: {mpm_env.simulator.system_param.grad[None].theta_c}")
+        print(f"Gradient of theta_s: {mpm_env.simulator.system_param.grad[None].theta_s}")
+        grad = np.array([mpm_env.simulator.particle_param.grad[material_id].E,
+                         mpm_env.simulator.particle_param.grad[material_id].nu,
+                         mpm_env.simulator.system_param.grad[None].yield_stress,
+                         mpm_env.simulator.system_param.grad[None].manipulator_friction,
+                         mpm_env.simulator.system_param.grad[None].ground_friction], dtype=DTYPE_NP)
+        avg_grads += grad.copy()
 
     mpm_env.simulator.clear_ckpt()
+
+avg_grads /= 45
+print('===> Avg. Gradients:')
+print(f"Avg. gradient of E: {avg_grads[0]}")
+print(f"Avg. gradient of nu: {avg_grads[1]}")
+print(f"Avg. gradient of yield stress: {avg_grads[2]}")
+print(f"Avg. gradient of manipulator friction: {avg_grads[3]}")
+print(f"Avg. gradient of ground friction: {avg_grads[4]}")
+n = 0
+while True:
+    grad_file_name = os.path.join(gradient_file_path, f'grads-{str(n)}.npy')
+    config_file_name = os.path.join(gradient_file_path, f'loss-config-{str(n)}.json')
+    if not os.path.exists(grad_file_name):
+        break
+    n += 1
+
+np.save(grad_file_name, avg_grads)
+with open(os.path.join(gradient_file_path, f'loss-config-{str(n)}.json'), 'w') as f_ac:
+    json.dump(loss_cfg, f_ac)

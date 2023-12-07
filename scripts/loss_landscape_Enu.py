@@ -146,9 +146,9 @@ loss_cfg = {
 # Setting up horizon and trajectory.
 # Trajectory 1 press down 0.015 m and lifts for 0.03 m.
 # Trajectory 2 press down 0.02 m and lifts for 0.03 m.
-horizon = 400
+horizon = 200
 # trajectory_1 = np.load(os.path.join(script_path, '..', 'data-motion-1', 'eef_v_trajectory.npy'))
-trajectory_2 = np.load(os.path.join(script_path, '..', 'data-motion-2', 'eef_v_trajectory.npy'))
+trajectory_2 = np.load(os.path.join(script_path, '..', 'data-motion-2', 'eef_v_trajectory_.npy'))
 # dt_global_1 = 1.03 / trajectory_1.shape[0]
 dt_global_2 = 1.04 / trajectory_2.shape[0]
 

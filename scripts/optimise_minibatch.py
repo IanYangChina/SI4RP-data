@@ -117,16 +117,17 @@ def main(arguments):
     # Setting up horizon and trajectory.
     # Trajectory 1 press down 0.015 m and lifts for 0.03 m.
     # Trajectory 2 press down 0.02 m and lifts for 0.03 m.
-    horizon = 400
-    trajectory_1 = np.load(os.path.join(script_path, '..', 'data-motion-1', 'eef_v_trajectory.npy'))
-    trajectory_2 = np.load(os.path.join(script_path, '..', 'data-motion-2', 'eef_v_trajectory.npy'))
+    trajectory_1 = np.load(os.path.join(script_path, '..', 'data-motion-1', 'eef_v_trajectory_.npy'))
+    horizon_1 = 150
+    trajectory_2 = np.load(os.path.join(script_path, '..', 'data-motion-2', 'eef_v_trajectory_.npy'))
+    horizon_2 = 200
     dt_global_1 = 1.03 / trajectory_1.shape[0]
     dt_global_2 = 1.04 / trajectory_2.shape[0]
 
     # Parameter ranges
     E_range = (10000, 100000)
     nu_range = (0.001, 0.49)
-    yield_stress_range = (50, 8000)
+    yield_stress_range = (50, 3000)
 
     n_epoch = 100
     seeds = [0, 1, 2]
@@ -145,7 +146,7 @@ def main(arguments):
     training_config = {
         'lr_E': 5e3,
         'lr_nu': 1e-2,
-        'lr_yield_stress': 5e2,
+        'lr_yield_stress': 1e2,
         'batch_size': arguments['batchsize'],
         'n_epoch': n_epoch,
         'seeds': seeds,
@@ -202,9 +203,11 @@ def main(arguments):
                 if motion_ind == '1':
                     trajectory = trajectory_1
                     dt_global = dt_global_1
+                    horizon = horizon_1
                 else:
                     trajectory = trajectory_2
                     dt_global = dt_global_2
+                    horizon = horizon_2
 
                 agent = agents[agent_ids[i]]
                 agent_init_euler = (0, 0, 0)
@@ -230,7 +233,8 @@ def main(arguments):
                                  mpm_env.simulator.system_param.grad[None].yield_stress], dtype=DTYPE_NP)
                 print(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
                 print(f'=====> Grad: {grad}')
-                grads += grad
+                grads += grad.copy()
+                mpm_env.simulator.clear_ckpt()
 
             for i, v in loss.items():
                 loss[i] = v / mini_batch_size

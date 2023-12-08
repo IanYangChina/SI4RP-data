@@ -102,7 +102,7 @@ def main(arguments):
         'exponential_distance': arguments['exp_dist'],
         'point_distance_rs_loss': arguments['pd_rs_loss'],
         'point_distance_sr_loss': arguments['pd_sr_loss'],
-        'down_sample_voxel_size': 0.003,
+        'down_sample_voxel_size': 0.006,
         'particle_distance_rs_loss': arguments['prd_rs_loss'],
         'particle_distance_sr_loss': arguments['prd_sr_loss'],
         'voxelise_res': 1080,
@@ -144,7 +144,7 @@ def main(arguments):
         json.dump(loss_cfg, f_ac)
 
     training_config = {
-        'lr_E': 5e3,
+        'lr_E': 1e3,
         'lr_nu': 1e-2,
         'lr_yield_stress': 1e2,
         'batch_size': arguments['batchsize'],
@@ -194,7 +194,7 @@ def main(arguments):
                 'total_loss': 0.0
             }
             grads = np.zeros(shape=(3,), dtype=DTYPE_NP)
-            motion_ids = np.random.randint(1, 2, size=mini_batch_size, dtype=np.int32).tolist()
+            motion_ids = np.random.randint(1, 3, size=mini_batch_size, dtype=np.int32).tolist()
             agent_ids = np.random.randint(3, size=mini_batch_size, dtype=np.int32).tolist()
             data_ids = np.random.randint(9, size=mini_batch_size, dtype=np.int32).tolist()
 

@@ -1,0 +1,1 @@
+{"lr_E": 1000.0, "lr_nu": 0.01, "lr_yield_stress": 100.0, "batch_size": 20, "n_epoch": 100, "seeds": [0, 1, 2]}

@@ -124,14 +124,14 @@ def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.particle_param[2].rho = 1300
 
 
-p_density = 3e7
-p_density_str = '3e7pd'
+p_density = 6e7
+p_density_str = '6e7pd'
 
 loss_cfg = {
     'exponential_distance': False,
     'point_distance_rs_loss': True,
     'point_distance_sr_loss': False,
-    'down_sample_voxel_size': 0.003,
+    'down_sample_voxel_size': 0.005,
     'particle_distance_rs_loss': False,
     'particle_distance_sr_loss': True,
     'voxelise_res': 1080,

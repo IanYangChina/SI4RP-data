@@ -100,6 +100,7 @@ def main(arguments):
     assert arguments['hm_res'] in [32, 64], 'height map resolution must be 32 or 64'
     loss_cfg = {
         'exponential_distance': arguments['exp_dist'],
+        'averaging_loss': arguments['averaging_loss'],
         'point_distance_rs_loss': arguments['pd_rs_loss'],
         'point_distance_sr_loss': arguments['pd_sr_loss'],
         'down_sample_voxel_size': 0.006,
@@ -272,6 +273,7 @@ def main(arguments):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--exp_dist', dest='exp_dist', default=False, action='store_true')
+    parser.add_argument('--avg_loss', dest='averaging_loss', default=False, action='store_true')
     parser.add_argument('--pd_rs_loss', dest='pd_rs_loss', default=False, action='store_true')
     parser.add_argument('--pd_sr_loss', dest='pd_sr_loss', default=False, action='store_true')
     parser.add_argument('--prd_rs_loss', dest='prd_rs_loss', default=False, action='store_true')

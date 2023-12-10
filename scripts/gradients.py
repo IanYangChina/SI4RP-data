@@ -120,6 +120,7 @@ def main(args):
     p_density = args['ptcl_density']
     loss_cfg = {
         'exponential_distance': args['exponential_distance'],
+        'averaging_loss': args['averaging_loss'],
         'point_distance_rs_loss': args['point_distance_rs_loss'],
         'point_distance_sr_loss': args['point_distance_sr_loss'],
         'down_sample_voxel_size': args['down_sample_voxel_size'],
@@ -185,8 +186,7 @@ def main(args):
                     print(f"Gradient of theta_c: {mpm_env.simulator.system_param.grad[None].theta_c}")
                     print(f"Gradient of theta_s: {mpm_env.simulator.system_param.grad[None].theta_s}")
 
-                    if (loss_dict['total_loss'] < 1e-20) or (loss_dict['total_loss'] > 100) or (
-                            mpm_env.simulator.particle_param.grad[material_id].E < 1e-20):
+                    if (loss_dict['total_loss'] < 1e-20) or ((loss_dict['total_loss'] > 100) and args['averaging_loss']):
                         print(f'===> [Warning] Loss too small or too large: {loss_dict["total_loss"]:.4f}')
                         print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
                         print(f'===> [Warning] Motion: {moition_ind}, agent: {agent}, data: {data_ind}')
@@ -227,6 +227,7 @@ if __name__ == '__main__':
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=3e7)
     parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.004)
     parser.add_argument('--exp_dist', dest='exponential_distance', default=False, action='store_true')
+    parser.add_argument('--avg_loss', dest='averaging_loss', default=False, action='store_true')
     parser.add_argument('--pd_rs_loss', dest='point_distance_rs_loss', default=False, action='store_true')
     parser.add_argument('--pd_sr_loss', dest='point_distance_sr_loss', default=False, action='store_true')
     parser.add_argument('--prd_rs_loss', dest='particle_distance_rs_loss', default=False, action='store_true')

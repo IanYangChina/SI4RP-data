@@ -176,7 +176,7 @@ for agent in ['rectangle', 'round', 'cylinder']:
     for data_ind in range(n_datapoints):
         ti.reset()
         ti.init(arch=ti.opengl, default_ip=ti.i32, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
-        env, mpm_env, init_state = make_env(training_data_path, str(data_ind), dt_global_2, horizon, agent, loss_cfg)
+        env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, dt_global_2, agent, loss_cfg)
         print(f'===> Num. simulation particles: {mpm_env.loss.n_particles_matching_mat}')
         print(f'===> Num. target pcd points: {mpm_env.loss.n_target_pcd_points}')
         print(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')

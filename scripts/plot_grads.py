@@ -18,8 +18,8 @@ while True:
         break
 
     loss_cfg = json.load(open(os.path.join(data_path, f'loss-config-{n}.json'), 'r'))
-    means = np.load(os.path.join(data_path, f'grads-mean-{n}.npy'))[i]
-    stds = np.load(os.path.join(data_path, f'grads-std-{n}.npy'))[i]
+    mean = np.load(os.path.join(data_path, f'grads-mean-{n}.npy'))[i]
+    std = np.load(os.path.join(data_path, f'grads-std-{n}.npy'))[i]
 
     legend = ''
     if loss_cfg['averaging_loss']:
@@ -39,8 +39,8 @@ while True:
     if loss_cfg['emd_point_distance_loss']:
         legend += 'emd'
 
-    plt.errorbar(np.arange(len(means)), means, yerr=stds, fmt='o')
+    print(f'Loss {n}: {legend}')
+    print(f'Mean: {mean}')
+    print(f'Std: {std}')
 
     n += 1
-
-plt.show()

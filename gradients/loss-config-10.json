@@ -1,8 +1,8 @@
 {
   "exponential_distance": false,
   "averaging_loss": false,
-  "point_distance_rs_loss": true,
-  "point_distance_sr_loss": false,
+  "point_distance_rs_loss": false,
+  "point_distance_sr_loss": true,
   "particle_distance_rs_loss": false,
   "particle_distance_sr_loss": false,
   "height_map_loss": false,

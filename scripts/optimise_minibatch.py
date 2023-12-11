@@ -131,6 +131,7 @@ def main(arguments):
     yield_stress_range = (50, 3000)
 
     n_epoch = 100
+    n_aborted_data = 0
     seeds = [0, 1, 2]
     print(f"=====> Optimising for {n_epoch} epochs for {len(seeds)} random seeds.")
     n = 0
@@ -184,17 +185,17 @@ def main(arguments):
         for epoch in range(n_epoch):
             t1 = time()
             loss = {
-                'avg_point_distance_sr': 0.0,
-                'avg_point_distance_rs': 0.0,
-                'chamfer_loss_pcd': 0.0,
-                'avg_particle_distance_sr': 0.0,
-                'avg_particle_distance_rs': 0.0,
-                'chamfer_loss_particle': 0.0,
-                'height_map_loss_pcd': 0.0,
-                'emd_loss': 0.0,
-                'total_loss': 0.0
+                'avg_point_distance_sr': [],
+                'avg_point_distance_rs': [],
+                'chamfer_loss_pcd': [],
+                'avg_particle_distance_sr': [],
+                'avg_particle_distance_rs': [],
+                'chamfer_loss_particle': [],
+                'height_map_loss_pcd': [],
+                'emd_loss': [],
+                'total_loss': []
             }
-            grads = np.zeros(shape=(3,), dtype=DTYPE_NP)
+            grads = []
             motion_ids = np.random.randint(1, 3, size=mini_batch_size, dtype=np.int32).tolist()
             agent_ids = np.random.randint(3, size=mini_batch_size, dtype=np.int32).tolist()
             data_ids = np.random.randint(9, size=mini_batch_size, dtype=np.int32).tolist()
@@ -227,37 +228,53 @@ def main(arguments):
                                                     agent, agent_init_euler, loss_cfg.copy())
                 set_parameters(mpm_env, E.copy(), nu.copy(), yield_stress.copy())
                 loss_info = forward_backward(mpm_env, init_state, trajectory, render=False)
-                for i, v in loss.items():
-                    loss[i] += loss_info[i]
+                abort = False
+                if loss_info['total_loss'] < 1e-20:
+                    abort = True
+                if (loss_info['total_loss'] > 100) and arguments['averaging_loss']:
+                    abort = True
+                if (loss_info['total_loss'] > 40000) and (not arguments['averaging_loss']):
+                    abort = True
+                if (np.isinf(loss_info['height_map_loss_pcd'])) or (np.isnan(loss_info['emd_loss'])):
+                    abort = True
+
                 grad = np.array([mpm_env.simulator.particle_param.grad[MATERIAL_ID].E,
                                  mpm_env.simulator.particle_param.grad[MATERIAL_ID].nu,
                                  mpm_env.simulator.system_param.grad[None].yield_stress], dtype=DTYPE_NP)
                 print(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
                 print(f'=====> Grad: {grad}')
-                grads += grad.copy()
+
+                if not abort:
+                    for i, v in loss.items():
+                        loss[i].append(loss_info[i])
+                    grads.append(grad.copy())
+                else:
+                    n_aborted_data += 1
+                    print(f'=====> Aborting datapoint: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
                 mpm_env.simulator.clear_ckpt()
 
             for i, v in loss.items():
-                loss[i] = v / mini_batch_size
-            grads = grads / mini_batch_size
+                loss[i] = np.mean(v)
+            avg_grad = np.mean(grads, axis=0)
 
-            E = optim_E.step(E.copy(), grads[0])
+            E = optim_E.step(E.copy(), avg_grad[0])
             E = np.clip(E, E_range[0], E_range[1])
-            nu = optim_nu.step(nu.copy(), grads[1])
+            nu = optim_nu.step(nu.copy(), avg_grad[1])
             nu = np.clip(nu, nu_range[0], nu_range[1])
-            yield_stress = optim_yield_stress.step(yield_stress.copy(), grads[2])
+            yield_stress = optim_yield_stress.step(yield_stress.copy(), avg_grad[2])
             yield_stress = np.clip(yield_stress, yield_stress_range[0], yield_stress_range[1])
 
             for i, v in loss.items():
                 logger.add_scalar(tag=f'Loss/{i}', scalar_value=v, global_step=epoch)
             logger.add_scalar(tag='Param/E', scalar_value=E, global_step=epoch)
-            logger.add_scalar(tag='Grad/E', scalar_value=grads[0], global_step=epoch)
+            logger.add_scalar(tag='Grad/E', scalar_value=avg_grad[0], global_step=epoch)
             logger.add_scalar(tag='Param/nu', scalar_value=nu, global_step=epoch)
-            logger.add_scalar(tag='Grad/nu', scalar_value=grads[1], global_step=epoch)
+            logger.add_scalar(tag='Grad/nu', scalar_value=avg_grad[1], global_step=epoch)
             logger.add_scalar(tag='Param/yield_stress', scalar_value=yield_stress, global_step=epoch)
-            logger.add_scalar(tag='Grad/yield_stress', scalar_value=grads[2], global_step=epoch)
+            logger.add_scalar(tag='Grad/yield_stress', scalar_value=avg_grad[2], global_step=epoch)
             logger.add_scalar(tag='Mem/GPU', scalar_value=get_gpu_memory()[0], global_step=epoch)
             logger.add_scalar(tag='Mem/RAM', scalar_value=process.memory_percent(), global_step=epoch)
+            logger.add_scalar(tag='Aborted', scalar_value=n_aborted_data, global_step=epoch)
 
             print(f"========> Epoch {epoch}: time={time() - t1}\n"
                   f"========> E={E}, nu={nu}, yield_stress={yield_stress}")

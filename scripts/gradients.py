@@ -172,7 +172,7 @@ def main(args):
 
                     set_parameters(mpm_env, E, nu, yield_stress)
 
-                    loss_dict = forward_backward(mpm_env, init_state, trajectory.copy(), backward=True)
+                    loss_info = forward_backward(mpm_env, init_state, trajectory.copy(), backward=True)
 
                     print(f'===> CPU memory occupied after forward-backward: {process.memory_percent()} %')
                     print(f'===> GPU memory after forward-backward: {get_gpu_memory()}')
@@ -185,10 +185,26 @@ def main(args):
                     print(f"Gradient of ground friction: {mpm_env.simulator.system_param.grad[None].ground_friction}")
                     print(f"Gradient of theta_c: {mpm_env.simulator.system_param.grad[None].theta_c}")
                     print(f"Gradient of theta_s: {mpm_env.simulator.system_param.grad[None].theta_s}")
-                
-                    if ((loss_dict['total_loss'] < 1e-20) or ((loss_dict['total_loss'] > 100) and args['averaging_loss']) or
-                            (np.isinf(loss_dict['height_map_loss_pcd']))) or (np.isnan(loss_dict['emd_loss'])):
-                        print(f'===> [Warning] Strange loss')
+
+                    abort = False
+                    if loss_info['total_loss'] < 1e-20:
+                        abort = True
+                    if (loss_info['total_loss'] > 100) and args['averaging_loss']:
+                        abort = True
+                    if (loss_info['total_loss'] > 40000) and (not args['averaging_loss']):
+                        abort = True
+                    if (np.isinf(loss_info['height_map_loss_pcd'])) or (np.isnan(loss_info['emd_loss'])):
+                        abort = True
+                    grad = np.array([mpm_env.simulator.particle_param.grad[material_id].E,
+                                     mpm_env.simulator.particle_param.grad[material_id].nu,
+                                     mpm_env.simulator.system_param.grad[None].yield_stress,
+                                     mpm_env.simulator.system_param.grad[None].manipulator_friction,
+                                     mpm_env.simulator.system_param.grad[None].ground_friction], dtype=DTYPE_NP)
+                    if np.any(np.isnan(grad)) or np.any(np.isinf(grad)):
+                        abort = True
+
+                    if abort:
+                        print(f'===> [Warning] Strange loss or gradient.')
                         print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
                         print(f'===> [Warning] Motion: {moition_ind}, agent: {agent}, data: {data_ind}')
                         abn = {
@@ -208,11 +224,6 @@ def main(args):
                         with open(abnormal_file_name, 'w') as f_abn:
                             json.dump(abn, f_abn, indent=2)
                     else:
-                        grad = np.array([mpm_env.simulator.particle_param.grad[material_id].E,
-                                         mpm_env.simulator.particle_param.grad[material_id].nu,
-                                         mpm_env.simulator.system_param.grad[None].yield_stress,
-                                         mpm_env.simulator.system_param.grad[None].manipulator_friction,
-                                         mpm_env.simulator.system_param.grad[None].ground_friction], dtype=DTYPE_NP)
                         grads.append(grad.copy())
 
                 mpm_env.simulator.clear_ckpt()

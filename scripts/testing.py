@@ -25,9 +25,9 @@
 # b.fill(2)
 # print(a[None] / b[None])
 
-import numpy as np
+# import numpy as np
 import os
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 # x = np.linspace(0, 1, 100)
 # y = np.linspace(0, 1, 100)
 # z = np.linspace(0, 1, 100)
@@ -38,16 +38,16 @@ import matplotlib.pyplot as plt
 # print(p.shape)
 
 script_path = os.path.dirname(os.path.realpath(__file__))
-trajectory = np.load(os.path.join(script_path, '..', 'data-motion-1', 'eef_v_trajectory.npy'))
-trajectory_ = np.zeros(shape=trajectory.shape, dtype=np.float32)[int(trajectory.shape[0]/2):, :]
-for i in range(int(trajectory.shape[0] / 2)):
-    try:
-        trajectory_[i] = trajectory[2*i+1]
-    except:
-        print(2*i+1, ' out of bound')
-horizon = trajectory_.shape[0]
-np.save(os.path.join(script_path, '..', 'data-motion-1', 'eef_v_trajectory_.npy'), trajectory_)
-
-plt.plot(trajectory_)
-plt.show()
-exit()
+# trajectory = np.load(os.path.join(script_path, '..', 'data-motion-1', 'eef_v_trajectory.npy'))
+# trajectory_ = np.zeros(shape=trajectory.shape, dtype=np.float32)[int(trajectory.shape[0]/2):, :]
+# for i in range(int(trajectory.shape[0] / 2)):
+#     try:
+#         trajectory_[i] = trajectory[2*i+1]
+#     except:
+#         print(2*i+1, ' out of bound')
+# horizon = trajectory_.shape[0]
+# np.save(os.path.join(script_path, '..', 'data-motion-1', 'eef_v_trajectory_.npy'), trajectory_)
+#
+# plt.plot(trajectory_)
+# plt.show()
+# exit()

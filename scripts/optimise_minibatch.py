@@ -142,7 +142,7 @@ def main(arguments):
             break
     os.makedirs(log_p_dir, exist_ok=True)
     with open(os.path.join(log_p_dir, 'loss_config.json'), 'w') as f_ac:
-        json.dump(loss_cfg, f_ac)
+        json.dump(loss_cfg, f_ac, indent=2)
 
     training_config = {
         'lr_E': 1e3,
@@ -153,7 +153,7 @@ def main(arguments):
         'seeds': seeds,
     }
     with open(os.path.join(log_p_dir, 'training_config.json'), 'w') as f_ac:
-        json.dump(training_config, f_ac)
+        json.dump(training_config, f_ac, indent=2)
 
     for seed in seeds:
         # Setting up random seed

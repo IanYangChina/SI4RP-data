@@ -1,1 +1,16 @@
-{"exponential_distance": false, "averaging_loss": false, "point_distance_rs_loss": false, "point_distance_sr_loss": false, "down_sample_voxel_size": 0.004, "particle_distance_rs_loss": false, "particle_distance_sr_loss": false, "voxelise_res": 1080, "ptcl_density": 30000000.0, "load_height_map": true, "height_map_loss": true, "height_map_res": 32, "height_map_size": 0.11, "emd_point_distance_rs_loss": false}
+{
+  "exponential_distance": false,
+  "averaging_loss": false,
+  "point_distance_rs_loss": false,
+  "point_distance_sr_loss": false,
+  "particle_distance_rs_loss": false,
+  "particle_distance_sr_loss": false,
+  "height_map_loss": true,
+  "emd_point_distance_rs_loss": false,
+  "ptcl_density": 30000000.0,
+  "down_sample_voxel_size": 0.004,
+  "voxelise_res": 1080,
+  "load_height_map": true,
+  "height_map_res": 32,
+  "height_map_size": 0.11
+}

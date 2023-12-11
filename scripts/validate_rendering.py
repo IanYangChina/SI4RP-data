@@ -84,7 +84,6 @@ def forward_backward(mpm_env, init_state, trajectory,
         fig.colorbar(im2, cax=cax, orientation='vertical')
 
         plt.show()
-        plt.close()
         del fig, ax1, ax2, im1, im2, cax, divider
 
     if render_end_pcd:
@@ -193,6 +192,7 @@ def main(args):
     p_density = args['ptcl_density']
     loss_cfg = {
         'exponential_distance': False,
+        'averaging_loss': True,
         'point_distance_rs_loss': False,
         'point_distance_sr_loss': False,
         'down_sample_voxel_size': args['down_sample_voxel_size'],
@@ -249,8 +249,8 @@ def main(args):
                          init_mesh_path=env.mesh_file,
                          init_mesh_pos=env.initial_pos)
 
-        print(f'===> CPU memory occupied after forward-backward: {process.memory_percent()} %')
-        print(f'===> GPU memory after forward-backward: {get_gpu_memory()}')
+        print(f'===> CPU memory occupied after forward: {process.memory_percent()} %')
+        print(f'===> GPU memory after forward: {get_gpu_memory()}')
 
         mpm_env.simulator.clear_ckpt()
 

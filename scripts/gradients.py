@@ -123,16 +123,16 @@ def main(args):
         'averaging_loss': args['averaging_loss'],
         'point_distance_rs_loss': args['point_distance_rs_loss'],
         'point_distance_sr_loss': args['point_distance_sr_loss'],
-        'down_sample_voxel_size': args['down_sample_voxel_size'],
         'particle_distance_rs_loss': args['particle_distance_rs_loss'],
         'particle_distance_sr_loss': args['particle_distance_sr_loss'],
-        'voxelise_res': 1080,
-        'ptcl_density': p_density,
-        'load_height_map': True,
         'height_map_loss': args['height_map_loss'],
+        'emd_point_distance_rs_loss': args['emd_point_distance_rs_loss'],
+        'ptcl_density': p_density,
+        'down_sample_voxel_size': args['down_sample_voxel_size'],
+        'voxelise_res': 1080,
+        'load_height_map': True,
         'height_map_res': 32,
         'height_map_size': 0.11,
-        'emd_point_distance_rs_loss': args['emd_point_distance_rs_loss'],
     }
 
     grads = []
@@ -190,6 +190,22 @@ def main(args):
                         print(f'===> [Warning] Loss too small or too large: {loss_dict["total_loss"]:.4f}')
                         print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
                         print(f'===> [Warning] Motion: {moition_ind}, agent: {agent}, data: {data_ind}')
+                        abn = {
+                            'E': E,
+                            'nu': nu,
+                            'yield_stress': yield_stress,
+                            'motion': moition_ind,
+                            'agent': agent,
+                            'data': data_ind,
+                        }
+                        m = 0
+                        while True:
+                            abnormal_file_name = os.path.join(gradient_file_path, f'abnormal-{str(m)}.json')
+                            if not os.path.exists(abnormal_file_name):
+                                break
+                            m += 1
+                        with open(abnormal_file_name, 'w') as f_abn:
+                            json.dump(abn, f_abn, indent=2)
                     else:
                         grad = np.array([mpm_env.simulator.particle_param.grad[material_id].E,
                                          mpm_env.simulator.particle_param.grad[material_id].nu,
@@ -219,7 +235,7 @@ def main(args):
     np.save(grad_mean_file_name, grad_mean)
     np.save(grad_std_file_name, grad_std)
     with open(os.path.join(gradient_file_path, f'loss-config-{str(n)}.json'), 'w') as f_ac:
-        json.dump(loss_cfg, f_ac)
+        json.dump(loss_cfg, f_ac, indent=2)
 
 
 if __name__ == '__main__':

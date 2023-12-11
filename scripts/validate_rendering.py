@@ -15,11 +15,12 @@ import argparse
 
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
+script_path = os.path.dirname(os.path.realpath(__file__))
 
 from doma.envs import SysIDEnv
 
 def forward_backward(mpm_env, init_state, trajectory,
-                     render=False, render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
+                     render=False, save_img=False, render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
                      init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
     cmap = 'Greys'
     if render_init_pcd:
@@ -48,14 +49,25 @@ def forward_backward(mpm_env, init_state, trajectory,
         show([pts, real_pcd_pts, mesh], __doc__, axes=True).close()    # Forward
         del x, pts, real_pcd_pts, mesh, RGBA, x_, coords
 
+    if save_img:
+        k = 0
+        while True:
+            img_dir = os.path.join(script_path, '..', 'demo_files', f'imgs-{k}')
+            if not os.path.exists(img_dir):
+                os.makedirs(img_dir)
+                break
+            k += 1
     t1 = time()
     mpm_env.set_state(init_state['state'], grad_enabled=True)
     for i in range(mpm_env.horizon):
         action = trajectory[i]
         mpm_env.step(action)
+        if save_img:
+            if i % 4 == 0:
+                img = mpm_env.render(mode='rgb_array')
+                np.save(os.path.join(img_dir, f'img_{i//4}.npy'), img)
         if render:
             mpm_env.render(mode='human')
-            # img = mpm_env.render(mode='depth_array')
             # plt.imshow(img)
             # plt.show()
             # sleep(0.1)
@@ -178,8 +190,8 @@ def main(args):
 
     material_id = 2
     cam_cfg = {
-        'pos': (0.25, -0.1, 0.2),
-        'lookat': (0.25, 0.25, 0.05),
+        'pos': (0.2, 0.05, 0.25),
+        'lookat': (0.24, 0.23, 0.05),
         'fov': 30,
         'lights': [{'pos': (0.5, -1.5, 0.5), 'color': (0.5, 0.5, 0.5)},
                    {'pos': (0.5, -1.5, 1.5), 'color': (0.5, 0.5, 0.5)}]
@@ -208,13 +220,18 @@ def main(args):
     }
 
     moition_ind = str(args['motion_ind'])
-    trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{moition_ind}', 'eef_v_trajectory_test.npy'))
+    trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{moition_ind}', 'eef_v_trajectory_.npy'))
     if moition_ind == '1':
         horizon = 150
         dt_global = 1.03 / trajectory.shape[0]
     else:
-        horizon = 300
+        horizon = 200
         dt_global = 1.04 / trajectory.shape[0]
+
+    if args['demo']:
+        trajectory = np.load(os.path.join(script_path, '..', 'demo_files', 'eef_v_trajectory_test.npy'))
+        horizon = 800
+        dt_global = 0.003
 
     assert args['agent_ind'] in [0, 1, 2]
     agents = ['rectangle', 'round', 'cylinder']
@@ -242,7 +259,8 @@ def main(args):
 
         set_parameters(mpm_env, E, nu, yield_stress)
         forward_backward(mpm_env, init_state, trajectory.copy(),
-                         render=args['render_human'], render_init_pcd=args['render_init_pcd'],
+                         render=args['render_human'], save_img=args['save_img'],
+                         render_init_pcd=args['render_init_pcd'],
                          render_end_pcd=args['render_end_pcd'], render_heightmap=args['render_heightmap'],
                          init_pcd_path=os.path.join(training_data_path, 'pcd_' + str(data_ind) + str(0) + '.ply'),
                          init_pcd_offset=env.pcd_offset,
@@ -259,9 +277,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=3e7)
     parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.004)
+    parser.add_argument('--demo', dest='demo', default=False, action='store_true')
     parser.add_argument('--m_id', dest='motion_ind', type=int, default=1)
     parser.add_argument('--agent_ind', dest='agent_ind', type=int, default=0)
     parser.add_argument('--r_human', dest='render_human', default=False, action='store_true')
+    parser.add_argument('--save_img', dest='save_img', default=False, action='store_true')
     parser.add_argument('--r_init_pcd', dest='render_init_pcd', default=False, action='store_true')
     parser.add_argument('--r_end_pcd', dest='render_end_pcd', default=False, action='store_true')
     parser.add_argument('--r_hm', dest='render_heightmap', default=False, action='store_true')

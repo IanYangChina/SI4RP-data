@@ -112,7 +112,7 @@ def main(arguments):
         'height_map_loss': arguments['hm_loss'],
         'height_map_res': arguments['hm_res'],
         'height_map_size': 0.11,
-        'emd_point_distance_rs_loss': False,
+        'emd_point_distance_loss': arguments['emd_point_distance_loss'],
     }
 
     # Setting up horizon and trajectory.
@@ -278,6 +278,7 @@ if __name__ == '__main__':
     parser.add_argument('--pd_sr_loss', dest='pd_sr_loss', default=False, action='store_true')
     parser.add_argument('--prd_rs_loss', dest='prd_rs_loss', default=False, action='store_true')
     parser.add_argument('--prd_sr_loss', dest='prd_sr_loss', default=False, action='store_true')
+    parser.add_argument('--emd_loss', dest='emd_point_distance_loss', default=False, action='store_true')
     parser.add_argument('--hm_loss', dest='hm_loss', default=False, action='store_true')
     parser.add_argument('--hm_res', dest='hm_res', default=32, type=int)
     parser.add_argument('--bs', dest='batchsize', default=20, type=int)

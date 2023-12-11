@@ -141,7 +141,7 @@ loss_cfg = {
     'height_map_loss': True,
     'height_map_res': 32,
     'height_map_size': 0.11,
-    'emd_point_distance_rs_loss': True,
+    'emd_point_distance_loss': True,
 }
 
 # Setting up horizon and trajectory.

@@ -129,6 +129,7 @@ p_density_str = '6e7pd'
 
 loss_cfg = {
     'exponential_distance': False,
+    'averaging_loss': False,
     'point_distance_rs_loss': True,
     'point_distance_sr_loss': False,
     'down_sample_voxel_size': 0.005,
@@ -140,7 +141,7 @@ loss_cfg = {
     'height_map_loss': True,
     'height_map_res': 32,
     'height_map_size': 0.11,
-    'emd_point_distance_rs_loss': True,
+    'emd_point_distance_loss': True,
 }
 
 # Setting up horizon and trajectory.

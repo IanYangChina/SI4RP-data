@@ -126,7 +126,7 @@ def main(args):
         'particle_distance_rs_loss': args['particle_distance_rs_loss'],
         'particle_distance_sr_loss': args['particle_distance_sr_loss'],
         'height_map_loss': args['height_map_loss'],
-        'emd_point_distance_rs_loss': args['emd_point_distance_rs_loss'],
+        'emd_point_distance_loss': args['emd_point_distance_loss'],
         'ptcl_density': p_density,
         'down_sample_voxel_size': args['down_sample_voxel_size'],
         'voxelise_res': 1080,
@@ -185,15 +185,16 @@ def main(args):
                     print(f"Gradient of ground friction: {mpm_env.simulator.system_param.grad[None].ground_friction}")
                     print(f"Gradient of theta_c: {mpm_env.simulator.system_param.grad[None].theta_c}")
                     print(f"Gradient of theta_s: {mpm_env.simulator.system_param.grad[None].theta_s}")
-
-                    if (loss_dict['total_loss'] < 1e-20) or ((loss_dict['total_loss'] > 100) and args['averaging_loss']):
-                        print(f'===> [Warning] Loss too small or too large: {loss_dict["total_loss"]:.4f}')
+                
+                    if ((loss_dict['total_loss'] < 1e-20) or ((loss_dict['total_loss'] > 100) and args['averaging_loss']) or
+                            (np.isinf(loss_dict['height_map_loss_pcd']))) or (np.isnan(loss_dict['emd_loss'])):
+                        print(f'===> [Warning] Strange loss')
                         print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
                         print(f'===> [Warning] Motion: {moition_ind}, agent: {agent}, data: {data_ind}')
                         abn = {
-                            'E': E,
-                            'nu': nu,
-                            'yield_stress': yield_stress,
+                            'E': float(E),
+                            'nu': float(nu),
+                            'yield_stress': float(yield_stress),
                             'motion': moition_ind,
                             'agent': agent,
                             'data': data_ind,
@@ -249,6 +250,6 @@ if __name__ == '__main__':
     parser.add_argument('--prd_rs_loss', dest='particle_distance_rs_loss', default=False, action='store_true')
     parser.add_argument('--prd_sr_loss', dest='particle_distance_sr_loss', default=False, action='store_true')
     parser.add_argument('--hm_loss', dest='height_map_loss', default=False, action='store_true')
-    parser.add_argument('--emd_rs_loss', dest='emd_point_distance_rs_loss', default=False, action='store_true')
+    parser.add_argument('--emd_loss', dest='emd_point_distance_loss', default=False, action='store_true')
     args = vars(parser.parse_args())
     main(args)

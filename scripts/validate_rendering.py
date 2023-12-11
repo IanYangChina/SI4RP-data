@@ -204,20 +204,20 @@ def main(args):
         'height_map_loss': False,
         'height_map_res': 32,
         'height_map_size': 0.11,
-        'emd_point_distance_rs_loss': False,
+        'emd_point_distance_loss': False,
     }
 
     moition_ind = str(args['motion_ind'])
-    trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{moition_ind}', 'eef_v_trajectory_.npy'))
+    trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{moition_ind}', 'eef_v_trajectory_test.npy'))
     if moition_ind == '1':
         horizon = 150
         dt_global = 1.03 / trajectory.shape[0]
     else:
-        horizon = 200
+        horizon = 300
         dt_global = 1.04 / trajectory.shape[0]
 
     assert args['agent_ind'] in [0, 1, 2]
-    agents = ['rectangle','round', 'cylinder']
+    agents = ['rectangle', 'round', 'cylinder']
     agent = agents[args['agent_ind']]
     training_data_path = os.path.join(script_path, '..', f'data-motion-{moition_ind}', f'eef-{agent}')
     data_ids = ['2', '4', '8']

@@ -38,17 +38,27 @@ import matplotlib.pyplot as plt
 # print(p.shape)
 
 script_path = os.path.dirname(os.path.realpath(__file__))
-trajectory = np.zeros(shape=(800, 6), dtype=np.float32)
+# trajectory = np.zeros(shape=(800, 6), dtype=np.float32)
+#
+# trajectory[:100, 2] = -0.075
+# trajectory[100:200, 0] = 0.075
+# trajectory[200:400, 0] = -0.075
+# trajectory[400:500, 0] = 0.075
+# trajectory[500:600, 1] = -0.075
+# trajectory[600:800, 1] = 0.075
 
-trajectory[:100, 2] = -0.075
-trajectory[100:200, 0] = 0.075
-trajectory[200:400, 0] = -0.075
-trajectory[400:500, 0] = 0.075
-trajectory[500:600, 1] = -0.075
-trajectory[600:800, 1] = 0.075
+# np.save(os.path.join(script_path, '..', 'demo_files', 'eef_v_trajectory_test.npy'), trajectory)
 
-np.save(os.path.join(script_path, '..', 'demo_files', 'eef_v_trajectory_test.npy'), trajectory)
-
-# plt.plot(trajectory)
+# tr = np.load(os.path.join(script_path, '..', 'data-motion-3', 'eef_v_trajectory.npy'))
+# plt.plot(tr)
 # plt.show()
+bbox = np.load(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'))
+print(bbox)
+bbox[4:, 2] = -0.002
+bbox[1, 0] = -0.63
+bbox[3, 0] = -0.63
+bbox[5, 0] = -0.63
+bbox[7, 0] = -0.63
+print(bbox)
+np.save(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'), bbox)
 exit()

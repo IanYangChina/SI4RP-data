@@ -135,7 +135,7 @@ def forward_backward(mpm_env, init_state, trajectory,
         del x, _, x_, x__, pts, real_pcd_pts, real_particle_pts, mesh, RGBA, coords
 
 
-def make_env(data_path, data_ind, horizon, dt_global, agent_name, material_id, cam_cfg, loss_config):
+def make_env(data_path, data_ind, horizon, dt_global, n_substeps, agent_name, material_id, cam_cfg, loss_config):
     obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised.obj')
     if not os.path.exists(obj_start_mesh_file_path):
         return None, None
@@ -162,7 +162,7 @@ def make_env(data_path, data_ind, horizon, dt_global, agent_name, material_id, c
                                                    f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(0.001)}.npy'),
     })
 
-    env = SysIDEnv(ptcl_density=loss_config['ptcl_density'], horizon=horizon, dt_global=dt_global,
+    env = SysIDEnv(ptcl_density=loss_config['ptcl_density'], horizon=horizon, dt_global=dt_global, n_substeps=n_substeps,
                    material_id=material_id, voxelise_res=1080,
                    mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
                    loss_cfg=loss_config,
@@ -180,6 +180,8 @@ def set_parameters(mpm_env, E, nu, yield_stress):
     mpm_env.simulator.particle_param[2].E = E
     mpm_env.simulator.particle_param[2].nu = nu
     mpm_env.simulator.particle_param[2].rho = 1300
+    mpm_env.simulator.system_param[None].ground_friction = 0.5
+    mpm_env.simulator.system_param[None].manipulator_friction = 0.2
 
 
 def main(args):
@@ -220,24 +222,31 @@ def main(args):
     }
 
     moition_ind = str(args['motion_ind'])
-    trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{moition_ind}', 'eef_v_trajectory_.npy'))
+    trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{moition_ind}', 'eef_v_trajectory.npy'))
     if moition_ind == '1':
-        horizon = 150
-        dt_global = 1.03 / trajectory.shape[0]
+        horizon = 50
+        dt_global = 1.0 / trajectory.shape[0]
+        n_substeps = 50
+    elif moition_ind == '2':
+        horizon = 50
+        dt_global = 1.0 / trajectory.shape[0]
+        n_substeps = 50
     else:
-        horizon = 200
-        dt_global = 1.04 / trajectory.shape[0]
+        horizon = 100
+        dt_global = 1.06 / trajectory.shape[0]
+        n_substeps = 50
 
     if args['demo']:
         trajectory = np.load(os.path.join(script_path, '..', 'demo_files', 'eef_v_trajectory_test.npy'))
         horizon = 800
         dt_global = 0.003
+        n_substeps = 10
 
     assert args['agent_ind'] in [0, 1, 2]
     agents = ['rectangle', 'round', 'cylinder']
     agent = agents[args['agent_ind']]
-    training_data_path = os.path.join(script_path, '..', f'data-motion-{moition_ind}', f'eef-{agent}')
-    data_ids = ['2', '4', '8']
+    training_data_path = os.path.join(script_path, '..', f'data-motion-2', f'eef-{agent}')
+    data_ids = ['2', '3', '7']
 
     E = 68400
     nu = 0.49
@@ -249,7 +258,7 @@ def main(args):
                 fast_math=False, random_seed=1)
         print(f'===> CPU memory occupied before create env: {process.memory_percent()} %')
         print(f'===> GPU memory before create env: {get_gpu_memory()}')
-        env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, dt_global, agent,
+        env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, dt_global, n_substeps, agent,
                                             material_id, cam_cfg, loss_cfg.copy())
         print(f'===> Num. simulation particles: {mpm_env.loss.n_particles_matching_mat}')
         print(f'===> Num. target pcd points: {mpm_env.loss.n_target_pcd_points}')

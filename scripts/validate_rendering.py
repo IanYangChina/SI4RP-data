@@ -72,7 +72,7 @@ def forward_backward(mpm_env, init_state, trajectory,
             # plt.show()
             # sleep(0.1)
         if i == 0:
-            input('Press to step')
+            input('Press any key to proceed')
 
     loss_info = mpm_env.get_final_loss()
     for i, v in loss_info.items():
@@ -224,23 +224,10 @@ def main(args):
     }
 
     moition_ind = str(args['motion_ind'])
-    trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{moition_ind}', 'eef_v_trajectory.npy'))
-    if moition_ind == '1':
-        horizon = 50
-        dt_global = 1.0 / trajectory.shape[0]
-        n_substeps = 50
-    elif moition_ind == '2':
-        horizon = 50
-        dt_global = 1.0 / trajectory.shape[0]
-        n_substeps = 50
-    elif moition_ind == '3':
-        horizon = 130
-        dt_global = 1.068 / trajectory.shape[0]
-        n_substeps = 50
-    else:
-        horizon = 100
-        dt_global = 1.066 / trajectory.shape[0]
-        n_substeps = 50
+    trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{moition_ind}', 'tr_eef_v.npy'))
+    dt_global = np.load(os.path.join(script_path, '..', f'data-motion-{moition_ind}', 'tr_dt.npy'))
+    horizon = trajectory.shape[0]
+    n_substeps = 50
 
     if args['demo']:
         trajectory = np.load(os.path.join(script_path, '..', 'demo_files', 'eef_v_trajectory_test.npy'))

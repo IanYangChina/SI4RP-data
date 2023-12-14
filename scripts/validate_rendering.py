@@ -71,6 +71,8 @@ def forward_backward(mpm_env, init_state, trajectory,
             # plt.imshow(img)
             # plt.show()
             # sleep(0.1)
+        if i == 0:
+            input('Press to step')
 
     loss_info = mpm_env.get_final_loss()
     for i, v in loss_info.items():
@@ -192,8 +194,8 @@ def main(args):
 
     material_id = 2
     cam_cfg = {
-        'pos': (0.2, 0.05, 0.25),
-        'lookat': (0.24, 0.23, 0.05),
+        'pos': (0.2, 0.02, 0.07),
+        'lookat': (0.24, 0.23, 0.07),
         'fov': 30,
         'lights': [{'pos': (0.5, -1.5, 0.5), 'color': (0.5, 0.5, 0.5)},
                    {'pos': (0.5, -1.5, 1.5), 'color': (0.5, 0.5, 0.5)}]
@@ -231,9 +233,13 @@ def main(args):
         horizon = 50
         dt_global = 1.0 / trajectory.shape[0]
         n_substeps = 50
+    elif moition_ind == '3':
+        horizon = 130
+        dt_global = 1.068 / trajectory.shape[0]
+        n_substeps = 50
     else:
         horizon = 100
-        dt_global = 1.06 / trajectory.shape[0]
+        dt_global = 1.066 / trajectory.shape[0]
         n_substeps = 50
 
     if args['demo']:
@@ -245,8 +251,8 @@ def main(args):
     assert args['agent_ind'] in [0, 1, 2]
     agents = ['rectangle', 'round', 'cylinder']
     agent = agents[args['agent_ind']]
-    training_data_path = os.path.join(script_path, '..', f'data-motion-2', f'eef-{agent}')
-    data_ids = ['2', '3', '7']
+    training_data_path = os.path.join(script_path, '..', f'data-motion-{moition_ind}', f'eef-{agent}')
+    data_ids = ['2', '3', '4']
 
     E = 68400
     nu = 0.49

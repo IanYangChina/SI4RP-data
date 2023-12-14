@@ -10,9 +10,9 @@ box_mesh = o3d.geometry.TriangleMesh.create_box(width=0.1, height=0.1, depth=0.0
 box_mesh = box_mesh.translate((0.0, 0.0, -0.0199))
 box_mesh = box_mesh.subdivide_midpoint(number_of_iterations=5)
 
-motion_ind = str(3)
+motion_ind = str(4)
 agent = 'cylinder'
-data_ind = '0'
+data_ind = '4'
 pcd_index = '1'
 
 script_path = os.path.dirname(os.path.abspath(__file__))

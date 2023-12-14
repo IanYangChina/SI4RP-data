@@ -49,16 +49,22 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 
 # np.save(os.path.join(script_path, '..', 'demo_files', 'eef_v_trajectory_test.npy'), trajectory)
 
-# tr = np.load(os.path.join(script_path, '..', 'data-motion-3', 'eef_v_trajectory.npy'))
-# plt.plot(tr)
-# plt.show()
-bbox = np.load(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'))
-print(bbox)
-bbox[4:, 2] = -0.002
-bbox[1, 0] = -0.63
-bbox[3, 0] = -0.63
-bbox[5, 0] = -0.63
-bbox[7, 0] = -0.63
-print(bbox)
-np.save(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'), bbox)
+tr = np.load(os.path.join(script_path, '..', 'data-motion-4', 'tr4_eef_v_0.npy'))
+timestamps = np.load(os.path.join(script_path, '..', 'data-motion-4', 'tr4_timestamps_0.npy'))
+tds = np.diff(timestamps)
+d = 2
+p = [0.0]
+for n in range(tr.shape[0] - 1):
+    p.append(p[-1] + tr[n][d] * tds[n])
+plt.plot(p)
+plt.show()
+# bbox = np.load(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'))
+# print(bbox)
+# bbox[4:, 2] = -0.002
+# bbox[1, 0] = -0.63
+# bbox[3, 0] = -0.63
+# bbox[5, 0] = -0.63
+# bbox[7, 0] = -0.63
+# print(bbox)
+# np.save(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'), bbox)
 exit()

@@ -6,3 +6,9 @@ imgui.ini
 /data-motion-2/eef-cylinder/*.vox
 /data-motion-2/eef-rectangle/*.vox
 /data-motion-2/eef-round/*.vox
+/data-motion-3/eef-cylinder/*.vox
+/data-motion-3/eef-rectangle/*.vox
+/data-motion-3/eef-round/*.vox
+/data-motion-4/eef-cylinder/*.vox
+/data-motion-4/eef-rectangle/*.vox
+/data-motion-4/eef-round/*.vox

@@ -66,7 +66,7 @@ def main(args):
     p_density = args['ptcl_density']
     loss_cfg = {
         'exponential_distance': args['exponential_distance'],
-        'averaging_loss': args['averaging_loss'],
+        'averaging_loss': False,
         'point_distance_rs_loss': args['point_distance_rs_loss'],
         'point_distance_sr_loss': args['point_distance_sr_loss'],
         'particle_distance_rs_loss': args['particle_distance_rs_loss'],
@@ -231,7 +231,6 @@ if __name__ == '__main__':
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
     parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.005)
     parser.add_argument('--exp_dist', dest='exponential_distance', default=False, action='store_true')
-    parser.add_argument('--avg_loss', dest='averaging_loss', default=False, action='store_true')
     parser.add_argument('--pd_rs_loss', dest='point_distance_rs_loss', default=False, action='store_true')
     parser.add_argument('--pd_sr_loss', dest='point_distance_sr_loss', default=False, action='store_true')
     parser.add_argument('--prd_rs_loss', dest='particle_distance_rs_loss', default=False, action='store_true')

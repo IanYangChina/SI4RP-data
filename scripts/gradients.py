@@ -150,11 +150,9 @@ def main(args):
                     abort = False
                     if loss_info['point_distance_rs'] < 1e-20:
                         abort = True
-                    if (loss_info['point_distance_sr'] > 100) and args['averaging_loss']:
+                    if loss_info['point_distance_rs'] > 20000:
                         abort = True
-                    if (loss_info['point_distance_sr'] > 20000) and (not args['averaging_loss']):
-                        abort = True
-                    if (np.isinf(loss_info['point_distance_sr'])) or (np.isnan(loss_info['point_distance_sr'])):
+                    if (np.isinf(loss_info['point_distance_rs'])) or (np.isnan(loss_info['point_distance_rs'])):
                         abort = True
                     grad = np.array([mpm_env.simulator.particle_param.grad[material_id].E,
                                      mpm_env.simulator.particle_param.grad[material_id].nu,
@@ -164,6 +162,13 @@ def main(args):
                                      mpm_env.simulator.system_param.grad[None].ground_friction], dtype=DTYPE_NP)
                     if np.any(np.isnan(grad)) or np.any(np.isinf(grad)):
                         abort = True
+
+                    num_zero_grad = 0
+                    for n in range(6):
+                        if grad[n] == 0.0:
+                            num_zero_grad += 1
+                    if num_zero_grad > 4:
+                       abort = True
 
                     if abort:
                         print(f'===> [Warning] Strange loss or gradient.')
@@ -177,18 +182,17 @@ def main(args):
                             'agent': agent,
                             'data': data_ind,
                         }
-                        x_np = np.zeros((mpm_env.simualtor.n_particles, 3), dtype=DTYPE_NP)
-                        v_np = np.zeros((mpm_env.simualtor.n_particles, 3), dtype=DTYPE_NP)
-                        C_np = np.zeros((mpm_env.simualtor.n_particles, 3, 3), dtype=DTYPE_NP)
-                        F_np = np.zeros((mpm_env.simualtor.n_particles, 3, 3), dtype=DTYPE_NP)
-                        used_np = np.zeros((mpm_env.simualtor.n_particles,), dtype=np.int32)
-                        mpm_env.simualtor.readframe(mpm_env.simualtor.cur_substep_local, x_np, v_np, C_np, F_np, used_np)
-                        abn['x'] = x_np
-                        abn['v'] = v_np
-                        abn['C'] = C_np
-                        abn['F'] = F_np
-                        abn['used'] = used_np
-                        abn['actions'] = mpm_env.simualtor.actions_buffer
+                        x_np = np.zeros((mpm_env.simulator.n_particles, 3), dtype=DTYPE_NP)
+                        v_np = np.zeros((mpm_env.simulator.n_particles, 3), dtype=DTYPE_NP)
+                        C_np = np.zeros((mpm_env.simulator.n_particles, 3, 3), dtype=DTYPE_NP)
+                        F_np = np.zeros((mpm_env.simulator.n_particles, 3, 3), dtype=DTYPE_NP)
+                        used_np = np.zeros((mpm_env.simulator.n_particles,), dtype=np.int32)
+                        mpm_env.simulator.readframe(mpm_env.simulator.cur_substep_local, x_np, v_np, C_np, F_np, used_np)
+                        abn['x'] = x_np.tolist()
+                        abn['v'] = v_np.tolist()
+                        abn['C'] = C_np.tolist()
+                        abn['F'] = F_np.tolist()
+                        abn['used'] = used_np.tolist()
 
                         m = 0
                         while True:

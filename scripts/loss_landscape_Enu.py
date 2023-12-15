@@ -112,7 +112,7 @@ E_list = np.arange(10000, 100000, 2000).astype(DTYPE_NP)
 nu_list = np.arange(0.01, 0.49, 0.01).astype(DTYPE_NP)
 
 E, nu = np.meshgrid(E_list, nu_list)
-yield_stress = np.array([500.0], dtype=DTYPE_NP)
+yield_stress = np.array([800.0], dtype=DTYPE_NP)
 
 distance_type = 'euclidean'
 

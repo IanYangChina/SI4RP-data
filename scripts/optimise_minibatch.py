@@ -5,7 +5,7 @@ import numpy as np
 from time import time
 from torch.utils.tensorboard import SummaryWriter
 from doma.optimiser.adam import Adam, GD
-from doma.envs import SysIDEnv
+from doma.envs.sys_id_env import make_env, set_parameters
 from doma.engine.utils.misc import get_gpu_memory
 import psutil
 import json
@@ -40,58 +40,6 @@ def forward_backward(mpm_env, init_state, trajectory, render, backward=True):
 
     return loss_info
 
-
-def set_parameters(mpm_env, E, nu, yield_stress):
-    mpm_env.simulator.system_param[None].yield_stress = yield_stress
-    mpm_env.simulator.particle_param[MATERIAL_ID].rho = 1300
-    mpm_env.simulator.particle_param[MATERIAL_ID].E = E
-    mpm_env.simulator.particle_param[MATERIAL_ID].nu = nu
-
-
-def make_env(data_path, data_ind, horizon, dt_global,
-             ptcl_density, dtype_np,
-             agent_name, agent_init_euler, loss_config):
-    obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised.obj')
-    if not os.path.exists(obj_start_mesh_file_path):
-        return None, None
-    obj_start_centre_real = np.load(
-        os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_centre.npy')).astype(dtype_np)
-    obj_start_centre_top_normalised = np.load(
-        os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised_centre_top.npy')).astype(
-        dtype_np)
-
-    obj_end_pcd_file_path = os.path.join(data_path, 'pcd_' + data_ind + str(1) + '.ply')
-    obj_end_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(1) + '_repaired_normalised.obj')
-    obj_end_centre_top_normalised = np.load(
-        os.path.join(data_path, 'mesh_' + data_ind + str(1) + '_repaired_normalised_centre_top.npy')).astype(
-        dtype_np)
-
-    # Building environment
-    obj_start_initial_pos = np.array([0.25, 0.25, obj_start_centre_top_normalised[-1] + 0.01], dtype=dtype_np)
-    agent_init_pos = (0.25, 0.25, 2 * obj_start_centre_top_normalised[-1] + 0.01)
-    height_map_res = loss_config['height_map_res']
-    loss_config.update({
-        'target_pcd_path': obj_end_pcd_file_path,
-        'pcd_offset': (-obj_start_centre_real + obj_start_initial_pos),
-        'target_mesh_file': obj_end_mesh_file_path,
-        'mesh_offset': (0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
-        'target_pcd_height_map_path': os.path.join(data_path,
-                                                   f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(0.001)}.npy'),
-    })
-
-    env = SysIDEnv(ptcl_density=ptcl_density, horizon=horizon, dt_global=dt_global, material_id=MATERIAL_ID, voxelise_res=1080,
-                   mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
-                   loss_cfg=loss_config,
-                   agent_cfg_file=agent_name + '_eef.yaml',
-                   agent_init_pos=agent_init_pos,
-                   agent_init_euler=agent_init_euler)
-    env.reset()
-    mpm_env = env.mpm_env
-    init_state = mpm_env.get_state()
-
-    return env, mpm_env, init_state
-
-
 def main(arguments):
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
@@ -116,14 +64,6 @@ def main(arguments):
     }
 
     # Setting up horizon and trajectory.
-    # Trajectory 1 press down 0.015 m and lifts for 0.03 m.
-    # Trajectory 2 press down 0.02 m and lifts for 0.03 m.
-    trajectory_1 = np.load(os.path.join(script_path, '..', 'data-motion-1', 'eef_v_trajectory_.npy'))
-    horizon_1 = 150
-    trajectory_2 = np.load(os.path.join(script_path, '..', 'data-motion-2', 'eef_v_trajectory_.npy'))
-    horizon_2 = 200
-    dt_global_1 = 1.03 / trajectory_1.shape[0]
-    dt_global_2 = 1.04 / trajectory_2.shape[0]
 
     # Parameter ranges
     E_range = (10000, 100000)
@@ -202,18 +142,14 @@ def main(arguments):
 
             for i in range(mini_batch_size):
                 motion_ind = str(motion_ids[i])
-                if motion_ind == '1':
-                    trajectory = trajectory_1
-                    dt_global = dt_global_1
-                    horizon = horizon_1
-                else:
-                    trajectory = trajectory_2
-                    dt_global = dt_global_2
-                    horizon = horizon_2
+                trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'tr_eef_v.npy'))
+                dt_global = np.load(os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'tr_dt.npy'))
+                horizon = trajectory.shape[0]
+                n_substeps = 50
 
                 agent = agents[agent_ids[i]]
                 agent_init_euler = (0, 0, 0)
-                data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
+                training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
                 if agent == 'rectangle':
                     agent_init_euler = (0, 0, 45)
 
@@ -222,11 +158,23 @@ def main(arguments):
                 ti.reset()
                 ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=False, random_seed=seed,
                         debug=False, check_out_of_bound=False)
+                data_cfg = {
+                    'data_path': training_data_path,
+                    'data_ind': str(data_ind),
+                }
+                env_cfg = {
+                    'p_density': particle_density,
+                    'horizon': horizon,
+                    'dt_global': dt_global,
+                    'n_substeps': n_substeps,
+                    'material_id': 2,
+                    'agent_name': agent,
+                    'agent_init_euler': agent_init_euler,
+                }
                 print(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
-                env, mpm_env, init_state = make_env(data_path, str(data_ind), horizon, dt_global,
-                                                    particle_density, DTYPE_NP,
-                                                    agent, agent_init_euler, loss_cfg.copy())
-                set_parameters(mpm_env, E.copy(), nu.copy(), yield_stress.copy())
+                env, mpm_env, init_state = make_env(data_cfg, env_cfg, loss_cfg)
+                set_parameters(mpm_env, env_cfg['material_id'],
+                               E.copy(), nu.copy(), yield_stress.copy(), rho=1000)
                 loss_info = forward_backward(mpm_env, init_state, trajectory, render=False)
                 abort = False
                 if loss_info['total_loss'] < 1e-20:

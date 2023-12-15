@@ -1,19 +1,12 @@
 import numpy as np
 import os
 import taichi as ti
-from time import time, sleep
-import open3d as o3d
-from vedo import Points, show, Mesh
-import matplotlib as mpl
-
-mpl.use('TkAgg')
-import matplotlib.pylab as plt
-from mpl_toolkits.axes_grid1 import make_axes_locatable
+from time import time
 from doma.engine.utils.misc import get_gpu_memory
 import psutil
 import json
 import argparse
-from doma.envs import SysIDEnv
+from doma.envs.sys_id_env import make_env, set_parameters
 
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
@@ -51,53 +44,6 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True):
     return loss_info
 
 
-def make_env(data_path, data_ind, horizon, dt_global, agent_name, material_id, cam_cfg, loss_config):
-    obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised.obj')
-    if not os.path.exists(obj_start_mesh_file_path):
-        return None, None
-    obj_start_centre_real = np.load(
-        os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_centre.npy')).astype(DTYPE_NP)
-    obj_start_centre_top_normalised = np.load(
-        os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised_centre_top.npy')).astype(DTYPE_NP)
-
-    obj_end_pcd_file_path = os.path.join(data_path, 'pcd_' + data_ind + str(1) + '.ply')
-    obj_end_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(1) + '_repaired_normalised.obj')
-    obj_end_centre_top_normalised = np.load(
-        os.path.join(data_path, 'mesh_' + data_ind + str(1) + '_repaired_normalised_centre_top.npy')).astype(DTYPE_NP)
-
-    # Building environment
-    obj_start_initial_pos = np.array([0.25, 0.25, obj_start_centre_top_normalised[-1] + 0.01], dtype=DTYPE_NP)
-    agent_init_pos = (0.25, 0.25, 2 * obj_start_centre_top_normalised[-1] + 0.01)
-    height_map_res = loss_config['height_map_res']
-    loss_config.update({
-        'target_pcd_path': obj_end_pcd_file_path,
-        'pcd_offset': (-obj_start_centre_real + obj_start_initial_pos),
-        'target_mesh_file': obj_end_mesh_file_path,
-        'mesh_offset': (0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
-        'target_pcd_height_map_path': os.path.join(data_path,
-                                                   f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(0.001)}.npy'),
-    })
-
-    env = SysIDEnv(ptcl_density=loss_config['ptcl_density'], horizon=horizon, dt_global=dt_global,
-                   material_id=material_id, voxelise_res=1080,
-                   mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
-                   loss_cfg=loss_config,
-                   agent_cfg_file=agent_name + '_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 0),
-                   render_agent=True, camera_cfg=cam_cfg)
-    env.reset()
-    mpm_env = env.mpm_env
-    init_state = mpm_env.get_state()
-
-    return env, mpm_env, init_state
-
-
-def set_parameters(mpm_env, E, nu, yield_stress):
-    mpm_env.simulator.system_param[None].yield_stress = yield_stress.copy()
-    mpm_env.simulator.particle_param[2].E = E.copy()
-    mpm_env.simulator.particle_param[2].nu = nu.copy()
-    mpm_env.simulator.particle_param[2].rho = 1300
-
-
 def main(args):
     process = psutil.Process(os.getpid())
     script_path = os.path.dirname(os.path.realpath(__file__))
@@ -127,6 +73,7 @@ def main(args):
         'particle_distance_sr_loss': args['particle_distance_sr_loss'],
         'height_map_loss': args['height_map_loss'],
         'emd_point_distance_loss': args['emd_point_distance_loss'],
+        'emd_particle_distance_loss': args['emd_particle_distance_loss'],
         'ptcl_density': p_density,
         'down_sample_voxel_size': args['down_sample_voxel_size'],
         'voxelise_res': 1080,
@@ -137,25 +84,39 @@ def main(args):
 
     grads = []
 
-    for moition_ind in ['1', '2']:
-        trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{moition_ind}', 'eef_v_trajectory_.npy'))
-        if moition_ind == '1':
-            horizon = 150
-            dt_global = 1.03 / trajectory.shape[0]
-        else:
-            horizon = 200
-            dt_global = 1.04 / trajectory.shape[0]
+    for motion_ind in ['1', '2']:
+        trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'tr_eef_v.npy'))
+        dt_global = np.load(os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'tr_dt.npy'))
+        horizon = trajectory.shape[0]
+        n_substeps = 50
+
         for agent in ['rectangle', 'round', 'cylinder']:
-            training_data_path = os.path.join(script_path, '..', f'data-motion-{moition_ind}', f'eef-{agent}')
+            if agent == 'rectangle':
+                agent_init_euler = (0, 0, 45)
+            else:
+                agent_init_euler = (0, 0, 0)
+            training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
             data_ids = np.random.randint(9, size=3, dtype=np.int32).tolist()
             for data_ind in data_ids:
                 ti.reset()
                 ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32,
                         fast_math=False, random_seed=1)
+                data_cfg = {
+                    'data_path': training_data_path,
+                    'data_ind': str(data_ind),
+                }
+                env_cfg = {
+                    'p_density': p_density,
+                    'horizon': horizon,
+                    'dt_global': dt_global,
+                    'n_substeps': n_substeps,
+                    'material_id': 2,
+                    'agent_name': agent,
+                    'agent_init_euler': agent_init_euler,
+                }
                 print(f'===> CPU memory occupied before create env: {process.memory_percent()} %')
                 print(f'===> GPU memory before create env: {get_gpu_memory()}')
-                env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, dt_global, agent,
-                                                    material_id, cam_cfg, loss_cfg.copy())
+                env, mpm_env, init_state = make_env(data_cfg, env_cfg, loss_cfg)
                 print(f'===> Num. simulation particles: {mpm_env.loss.n_particles_matching_mat}')
                 print(f'===> Num. target pcd points: {mpm_env.loss.n_target_pcd_points}')
                 print(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')
@@ -170,7 +131,7 @@ def main(args):
                     yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]),
                                               dtype=DTYPE_NP).reshape((1,))  # Yield stress
 
-                    set_parameters(mpm_env, E, nu, yield_stress)
+                    set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress)
 
                     loss_info = forward_backward(mpm_env, init_state, trajectory.copy(), backward=True)
 
@@ -187,17 +148,18 @@ def main(args):
                     print(f"Gradient of theta_s: {mpm_env.simulator.system_param.grad[None].theta_s}")
 
                     abort = False
-                    if loss_info['total_loss'] < 1e-20:
+                    if loss_info['point_distance_rs'] < 1e-20:
                         abort = True
-                    if (loss_info['total_loss'] > 100) and args['averaging_loss']:
+                    if (loss_info['point_distance_sr'] > 100) and args['averaging_loss']:
                         abort = True
-                    if (loss_info['total_loss'] > 40000) and (not args['averaging_loss']):
+                    if (loss_info['point_distance_sr'] > 20000) and (not args['averaging_loss']):
                         abort = True
-                    if (np.isinf(loss_info['height_map_loss_pcd'])) or (np.isnan(loss_info['emd_loss'])):
+                    if (np.isinf(loss_info['point_distance_sr'])) or (np.isnan(loss_info['point_distance_sr'])):
                         abort = True
                     grad = np.array([mpm_env.simulator.particle_param.grad[material_id].E,
                                      mpm_env.simulator.particle_param.grad[material_id].nu,
                                      mpm_env.simulator.system_param.grad[None].yield_stress,
+                                     mpm_env.simulator.particle_param.grad[material_id].rho,
                                      mpm_env.simulator.system_param.grad[None].manipulator_friction,
                                      mpm_env.simulator.system_param.grad[None].ground_friction], dtype=DTYPE_NP)
                     if np.any(np.isnan(grad)) or np.any(np.isinf(grad)):
@@ -206,15 +168,28 @@ def main(args):
                     if abort:
                         print(f'===> [Warning] Strange loss or gradient.')
                         print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
-                        print(f'===> [Warning] Motion: {moition_ind}, agent: {agent}, data: {data_ind}')
+                        print(f'===> [Warning] Motion: {motion_ind}, agent: {agent}, data: {data_ind}')
                         abn = {
                             'E': float(E),
                             'nu': float(nu),
                             'yield_stress': float(yield_stress),
-                            'motion': moition_ind,
+                            'motion': motion_ind,
                             'agent': agent,
                             'data': data_ind,
                         }
+                        x_np = np.zeros((mpm_env.simualtor.n_particles, 3), dtype=DTYPE_NP)
+                        v_np = np.zeros((mpm_env.simualtor.n_particles, 3), dtype=DTYPE_NP)
+                        C_np = np.zeros((mpm_env.simualtor.n_particles, 3, 3), dtype=DTYPE_NP)
+                        F_np = np.zeros((mpm_env.simualtor.n_particles, 3, 3), dtype=DTYPE_NP)
+                        used_np = np.zeros((mpm_env.simualtor.n_particles,), dtype=np.int32)
+                        mpm_env.simualtor.readframe(mpm_env.simualtor.cur_substep_local, x_np, v_np, C_np, F_np, used_np)
+                        abn['x'] = x_np
+                        abn['v'] = v_np
+                        abn['C'] = C_np
+                        abn['F'] = F_np
+                        abn['used'] = used_np
+                        abn['actions'] = mpm_env.simualtor.actions_buffer
+
                         m = 0
                         while True:
                             abnormal_file_name = os.path.join(gradient_file_path, f'abnormal-{str(m)}.json')
@@ -234,8 +209,9 @@ def main(args):
     print(f"Avg. gradient of E: {grad_mean[0]}, std: {grad_std[0]}")
     print(f"Avg. gradient of nu: {grad_mean[1]}, std: {grad_std[1]}")
     print(f"Avg. gradient of yield stress: {grad_mean[2]}, std: {grad_std[2]}")
-    print(f"Avg. gradient of manipulator friction: {grad_mean[3]}, std: {grad_std[3]}")
-    print(f"Avg. gradient of ground friction: {grad_mean[4]}, std: {grad_std[4]}")
+    print(f"Avg. gradient of rho: {grad_mean[3]}, std: {grad_std[3]}")
+    print(f"Avg. gradient of manipulator friction: {grad_mean[4]}, std: {grad_std[4]}")
+    print(f"Avg. gradient of ground friction: {grad_mean[5]}, std: {grad_std[5]}")
     n = 0
     while True:
         grad_mean_file_name = os.path.join(gradient_file_path, f'grads-mean-{str(n)}.npy')
@@ -252,8 +228,8 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=3e7)
-    parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.004)
+    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
+    parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.005)
     parser.add_argument('--exp_dist', dest='exponential_distance', default=False, action='store_true')
     parser.add_argument('--avg_loss', dest='averaging_loss', default=False, action='store_true')
     parser.add_argument('--pd_rs_loss', dest='point_distance_rs_loss', default=False, action='store_true')
@@ -261,6 +237,7 @@ if __name__ == '__main__':
     parser.add_argument('--prd_rs_loss', dest='particle_distance_rs_loss', default=False, action='store_true')
     parser.add_argument('--prd_sr_loss', dest='particle_distance_sr_loss', default=False, action='store_true')
     parser.add_argument('--hm_loss', dest='height_map_loss', default=False, action='store_true')
-    parser.add_argument('--emd_loss', dest='emd_point_distance_loss', default=False, action='store_true')
+    parser.add_argument('--emd_p_loss', dest='emd_point_distance_loss', default=False, action='store_true')
+    parser.add_argument('--emd_pr_loss', dest='emd_particle_distance_loss', default=False, action='store_true')
     args = vars(parser.parse_args())
     main(args)

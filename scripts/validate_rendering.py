@@ -17,7 +17,7 @@ DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
 script_path = os.path.dirname(os.path.realpath(__file__))
 
-from doma.envs import SysIDEnv
+from doma.envs.sys_id_env import make_env, set_parameters
 
 def forward_backward(mpm_env, init_state, trajectory,
                      render=False, save_img=False, render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
@@ -59,18 +59,21 @@ def forward_backward(mpm_env, init_state, trajectory,
             k += 1
     t1 = time()
     mpm_env.set_state(init_state['state'], grad_enabled=True)
+    # print(mpm_env.agent.effectors[0].pos[mpm_env.simulator.cur_substep_local])
     for i in range(mpm_env.horizon):
         action = trajectory[i]
         mpm_env.step(action)
+        # print(mpm_env.agent.effectors[0].pos[mpm_env.simulator.cur_substep_local])
         if save_img:
-            if i % 4 == 0:
+            frame_skip = 4
+            if i % frame_skip == 0:
                 img = mpm_env.render(mode='rgb_array')
-                np.save(os.path.join(img_dir, f'img_{i//4}.npy'), img)
+                np.save(os.path.join(img_dir, f'img_{i//frame_skip}.npy'), img)
+                # plt.imshow(img)
+                # plt.show()
+                # sleep(0.1)
         if render:
             mpm_env.render(mode='human')
-            # plt.imshow(img)
-            # plt.show()
-            # sleep(0.1)
         if i == 0:
             input('Press any key to proceed')
 
@@ -137,62 +140,12 @@ def forward_backward(mpm_env, init_state, trajectory,
         del x, _, x_, x__, pts, real_pcd_pts, real_particle_pts, mesh, RGBA, coords
 
 
-def make_env(data_path, data_ind, horizon, dt_global, n_substeps, agent_name, material_id, cam_cfg, loss_config):
-    obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised.obj')
-    if not os.path.exists(obj_start_mesh_file_path):
-        return None, None
-    obj_start_centre_real = np.load(
-        os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_centre.npy')).astype(DTYPE_NP)
-    obj_start_centre_top_normalised = np.load(
-        os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_normalised_centre_top.npy')).astype(DTYPE_NP)
-
-    obj_end_pcd_file_path = os.path.join(data_path, 'pcd_' + data_ind + str(1) + '.ply')
-    obj_end_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind + str(1) + '_repaired_normalised.obj')
-    obj_end_centre_top_normalised = np.load(
-        os.path.join(data_path, 'mesh_' + data_ind + str(1) + '_repaired_normalised_centre_top.npy')).astype(DTYPE_NP)
-
-    # Building environment
-    obj_start_initial_pos = np.array([0.25, 0.25, obj_start_centre_top_normalised[-1] + 0.01], dtype=DTYPE_NP)
-    agent_init_pos = (0.25, 0.25, 2 * obj_start_centre_top_normalised[-1] + 0.01)
-    height_map_res = loss_config['height_map_res']
-    loss_config.update({
-        'target_pcd_path': obj_end_pcd_file_path,
-        'pcd_offset': (-obj_start_centre_real + obj_start_initial_pos),
-        'target_mesh_file': obj_end_mesh_file_path,
-        'mesh_offset': (0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
-        'target_pcd_height_map_path': os.path.join(data_path,
-                                                   f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(0.001)}.npy'),
-    })
-
-    env = SysIDEnv(ptcl_density=loss_config['ptcl_density'], horizon=horizon, dt_global=dt_global, n_substeps=n_substeps,
-                   material_id=material_id, voxelise_res=1080,
-                   mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
-                   loss_cfg=loss_config,
-                   agent_cfg_file=agent_name + '_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 0),
-                   render_agent=True, camera_cfg=cam_cfg)
-    env.reset()
-    mpm_env = env.mpm_env
-    init_state = mpm_env.get_state()
-
-    return env, mpm_env, init_state
-
-
-def set_parameters(mpm_env, E, nu, yield_stress):
-    mpm_env.simulator.system_param[None].yield_stress = yield_stress
-    mpm_env.simulator.particle_param[2].E = E
-    mpm_env.simulator.particle_param[2].nu = nu
-    mpm_env.simulator.particle_param[2].rho = 1300
-    mpm_env.simulator.system_param[None].ground_friction = 0.5
-    mpm_env.simulator.system_param[None].manipulator_friction = 0.2
-
-
 def main(args):
     process = psutil.Process(os.getpid())
     script_path = os.path.dirname(os.path.realpath(__file__))
     gradient_file_path = os.path.join(script_path, '..', 'gradients')
     os.makedirs(gradient_file_path, exist_ok=True)
 
-    material_id = 2
     cam_cfg = {
         'pos': (0.2, 0.02, 0.07),
         'lookat': (0.24, 0.23, 0.07),
@@ -200,10 +153,6 @@ def main(args):
         'lights': [{'pos': (0.5, -1.5, 0.5), 'color': (0.5, 0.5, 0.5)},
                    {'pos': (0.5, -1.5, 1.5), 'color': (0.5, 0.5, 0.5)}]
     }
-
-    E_range = (10000, 100000)
-    nu_range = (0.001, 0.49)
-    yield_stress_range = (50, 3000)
 
     p_density = args['ptcl_density']
     loss_cfg = {
@@ -221,11 +170,12 @@ def main(args):
         'height_map_res': 32,
         'height_map_size': 0.11,
         'emd_point_distance_loss': False,
+        'emd_particle_distance_loss': False
     }
 
-    moition_ind = str(args['motion_ind'])
-    trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{moition_ind}', 'tr_eef_v.npy'))
-    dt_global = np.load(os.path.join(script_path, '..', f'data-motion-{moition_ind}', 'tr_dt.npy'))
+    motion_ind = str(args['motion_ind'])
+    trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'tr_eef_v.npy'))
+    dt_global = np.load(os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'tr_dt.npy'))
     horizon = trajectory.shape[0]
     n_substeps = 50
 
@@ -238,7 +188,11 @@ def main(args):
     assert args['agent_ind'] in [0, 1, 2]
     agents = ['rectangle', 'round', 'cylinder']
     agent = agents[args['agent_ind']]
-    training_data_path = os.path.join(script_path, '..', f'data-motion-{moition_ind}', f'eef-{agent}')
+    if agent == 'rectangle':
+        agent_init_euler = (0, 0, 45)
+    else:
+        agent_init_euler = (0, 0, 0)
+    training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
     data_ids = ['2', '3', '4']
 
     E = 68400
@@ -249,17 +203,30 @@ def main(args):
         ti.reset()
         ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32,
                 fast_math=False, random_seed=1)
+        data_cfg = {
+            'data_path': training_data_path,
+            'data_ind': data_ind,
+        }
+        env_cfg = {
+            'p_density': p_density,
+            'horizon': horizon,
+            'dt_global': dt_global,
+            'n_substeps': n_substeps,
+            'material_id': 2,
+            'agent_name': agent,
+            'agent_init_euler': agent_init_euler,
+        }
         print(f'===> CPU memory occupied before create env: {process.memory_percent()} %')
         print(f'===> GPU memory before create env: {get_gpu_memory()}')
-        env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, dt_global, n_substeps, agent,
-                                            material_id, cam_cfg, loss_cfg.copy())
+        env, mpm_env, init_state = make_env(data_cfg, env_cfg, loss_cfg, cam_cfg)
         print(f'===> Num. simulation particles: {mpm_env.loss.n_particles_matching_mat}')
         print(f'===> Num. target pcd points: {mpm_env.loss.n_target_pcd_points}')
         print(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')
         print(f'===> CPU memory occupied after create env: {process.memory_percent()} %')
         print(f'===> GPU memory after create env: {get_gpu_memory()}')
 
-        set_parameters(mpm_env, E, nu, yield_stress)
+        set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress,
+                       rho=1000, ground_friction=0.5, manipulator_friction=0.5)
         forward_backward(mpm_env, init_state, trajectory.copy(),
                          render=args['render_human'], save_img=args['save_img'],
                          render_init_pcd=args['render_init_pcd'],

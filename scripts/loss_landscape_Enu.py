@@ -4,7 +4,7 @@ from matplotlib.ticker import LinearLocator
 import numpy as np
 import os
 import taichi as ti
-from doma.envs import SysIDEnv
+from doma.envs.sys_id_env import make_env, set_parameters
 from time import time
 plt.rcParams['pdf.fonttype'] = 42
 plt.rcParams['ps.fonttype'] = 42
@@ -79,53 +79,8 @@ def plot_loss_landscape(p1, p2, loss, fig_title='Fig', loss_type='bi_chamfer_los
         plt.close()
 
 
-def make_env(data_path, data_ind, horizon, dt_global, agent_name, loss_config, cam_cfg=None):
-    obj_start_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_normalised.obj')
-    if not os.path.exists(obj_start_mesh_file_path):
-        return None, None
-    obj_start_centre_real = np.load(os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_centre.npy')).astype(DTYPE_NP)
-    obj_start_centre_top_normalised = np.load(
-        os.path.join(data_path, 'mesh_' + data_ind+str(0) + '_repaired_normalised_centre_top.npy')).astype(DTYPE_NP)
-
-    obj_end_pcd_file_path = os.path.join(data_path, 'pcd_' + data_ind+str(1) + '.ply')
-    obj_end_mesh_file_path = os.path.join(data_path, 'mesh_' + data_ind+str(1) + '_repaired_normalised.obj')
-    obj_end_centre_top_normalised = np.load(
-        os.path.join(data_path, 'mesh_' + data_ind+str(1) + '_repaired_normalised_centre_top.npy')).astype(DTYPE_NP)
-
-    # Building environment
-    obj_start_initial_pos = np.array([0.25, 0.25, obj_start_centre_top_normalised[-1] + 0.01], dtype=DTYPE_NP)
-    agent_init_pos = (0.25, 0.25, 2*obj_start_centre_top_normalised[-1] + 0.01)
-    height_map_res = loss_config['height_map_res']
-    loss_config.update({
-        'target_pcd_path': obj_end_pcd_file_path,
-        'pcd_offset': (-obj_start_centre_real + obj_start_initial_pos),
-        'target_mesh_file': obj_end_mesh_file_path,
-        'mesh_offset': (0.25, 0.25, obj_end_centre_top_normalised[-1] + 0.01),
-        'target_pcd_height_map_path': os.path.join(data_path,
-                                                   f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(0.001)}.npy'),
-    })
-
-    env = SysIDEnv(ptcl_density=p_density, horizon=horizon, dt_global=dt_global, material_id=2, voxelise_res=1080,
-                   mesh_file=obj_start_mesh_file_path, initial_pos=obj_start_initial_pos,
-                   loss_cfg=loss_config,
-                   agent_cfg_file=agent_name+'_eef.yaml', agent_init_pos=agent_init_pos, agent_init_euler=(0, 0, 0),
-                   render_agent=True, camera_cfg=cam_cfg)
-    env.reset()
-    mpm_env = env.mpm_env
-    init_state = mpm_env.get_state()
-
-    return env, mpm_env, init_state
-
-
-def set_parameters(mpm_env, E, nu, yield_stress):
-    mpm_env.simulator.system_param[None].yield_stress = yield_stress.copy()
-    mpm_env.simulator.particle_param[2].E = E.copy()
-    mpm_env.simulator.particle_param[2].nu = nu.copy()
-    mpm_env.simulator.particle_param[2].rho = 1300
-
-
-p_density = 6e7
-p_density_str = '6e7pd'
+p_density = 4e7
+p_density_str = '4e7pd'
 
 loss_cfg = {
     'exponential_distance': False,
@@ -141,54 +96,72 @@ loss_cfg = {
     'height_map_loss': True,
     'height_map_res': 32,
     'height_map_size': 0.11,
-    'emd_point_distance_loss': True,
+    'emd_point_distance_loss': False,
+    'emd_particle_distance_loss': False,
 }
 
-# Setting up horizon and trajectory.
-# Trajectory 1 press down 0.015 m and lifts for 0.03 m.
-# Trajectory 2 press down 0.02 m and lifts for 0.03 m.
-horizon = 200
-# trajectory_1 = np.load(os.path.join(script_path, '..', 'data-motion-1', 'eef_v_trajectory.npy'))
-trajectory_2 = np.load(os.path.join(script_path, '..', 'data-motion-2', 'eef_v_trajectory_.npy'))
-# dt_global_1 = 1.03 / trajectory_1.shape[0]
-dt_global_2 = 1.04 / trajectory_2.shape[0]
+# Load trajectories.
+moition_ind = '2'
+trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{moition_ind}', 'tr_eef_v.npy'))
+dt_global = np.load(os.path.join(script_path, '..', f'data-motion-{moition_ind}', 'tr_dt.npy'))
+horizon = trajectory.shape[0]
+n_substeps = 50
 
+xy_param = 'E-nu'
 E_list = np.arange(10000, 100000, 2000).astype(DTYPE_NP)
 nu_list = np.arange(0.01, 0.49, 0.01).astype(DTYPE_NP)
 
-xy_param = 'E-nu'
 E, nu = np.meshgrid(E_list, nu_list)
-yield_stress = np.array([2500.0], dtype=DTYPE_NP)
+yield_stress = np.array([500.0], dtype=DTYPE_NP)
 
 distance_type = 'euclidean'
 
-avg_point_distance_sr = np.zeros_like(E)
-avg_point_distance_rs = np.zeros_like(E)
+point_distance_sr = np.zeros_like(E)
+point_distance_rs = np.zeros_like(E)
 chamfer_loss_pcd = np.zeros_like(E)
-avg_particle_distance_sr = np.zeros_like(E)
-avg_particle_distance_rs = np.zeros_like(E)
+particle_distance_sr = np.zeros_like(E)
+particle_distance_rs = np.zeros_like(E)
 chamfer_loss_particle = np.zeros_like(E)
 height_map_loss_pcd = np.zeros_like(E)
-emd_loss = np.zeros_like(E)
+emd_point_distance_loss = np.zeros_like(E)
+emd_particle_distance_loss = np.zeros_like(E)
 
 n_datapoints = 9
 for agent in ['rectangle', 'round', 'cylinder']:
     training_data_path = os.path.join(script_path, '..', 'data-motion-2', f'eef-{agent}')
+    if agent == 'rectangle':
+        agent_init_euler = (0, 0, 45)
+    else:
+        agent_init_euler = (0, 0, 0)
     for data_ind in range(n_datapoints):
         ti.reset()
         ti.init(arch=ti.opengl, default_ip=ti.i32, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
-        env, mpm_env, init_state = make_env(training_data_path, str(data_ind), horizon, dt_global_2, agent, loss_cfg)
+        data_cfg = {
+            'data_path': training_data_path,
+            'data_ind': str(data_ind),
+        }
+        env_cfg = {
+            'p_density': p_density,
+            'horizon': horizon,
+            'dt_global': dt_global,
+            'n_substeps': n_substeps,
+            'material_id': 2,
+            'agent_name': agent,
+            'agent_init_euler': agent_init_euler,
+        }
+
+        env, mpm_env, init_state = make_env(data_cfg, env_cfg, loss_cfg)
         print(f'===> Num. simulation particles: {mpm_env.loss.n_particles_matching_mat}')
         print(f'===> Num. target pcd points: {mpm_env.loss.n_target_pcd_points}')
         print(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')
         t0 = time()
-        print(f'Start calculating losses with grid size: {avg_point_distance_sr.shape}')
+        print(f'Start calculating losses with grid size: {point_distance_sr.shape}')
         for i in range(len(E_list)):
             for j in range(len(nu_list)):
-                set_parameters(mpm_env, E_list[i], nu_list[j], yield_stress)
+                set_parameters(mpm_env, env_cfg['material_id'],  E_list[i], nu_list[j], yield_stress, rho=1000)
                 mpm_env.set_state(init_state['state'], grad_enabled=False)
                 for k in range(mpm_env.horizon):
-                    action = trajectory_2[k].copy()
+                    action = trajectory[k].copy()
                     mpm_env.step(action)
                 loss_info = mpm_env.get_final_loss()
 
@@ -197,31 +170,34 @@ for agent in ['rectangle', 'round', 'cylinder']:
                     if b == 'final_height_map':
                         continue
                     print(f'{b}: {v:.4f}')
-                avg_point_distance_sr[j, i] += loss_info['avg_point_distance_sr']
-                avg_point_distance_rs[j, i] += loss_info['avg_point_distance_rs']
+                point_distance_sr[j, i] += loss_info['point_distance_sr']
+                point_distance_rs[j, i] += loss_info['point_distance_rs']
                 chamfer_loss_pcd[j, i] += loss_info['chamfer_loss_pcd']
-                avg_particle_distance_sr[j, i] += loss_info['avg_particle_distance_sr']
-                avg_particle_distance_rs[j, i] += loss_info['avg_particle_distance_rs']
+                particle_distance_sr[j, i] += loss_info['particle_distance_sr']
+                particle_distance_rs[j, i] += loss_info['particle_distance_rs']
                 chamfer_loss_particle[j, i] += loss_info['chamfer_loss_particle']
                 height_map_loss_pcd[j, i] += loss_info['height_map_loss_pcd']
-                emd_loss[j, i] += loss_info['emd_loss']
+                emd_point_distance_loss[j, i] += loss_info['emd_point_distance_loss']
+                emd_particle_distance_loss[j, i] += loss_info['emd_particle_distance_loss']
                 
         mpm_env.simulator.clear_ckpt()
         print(f'Time taken for data point {data_ind}: {time() - t0}')
 
-losses = [avg_point_distance_sr / (3 * n_datapoints),
-          avg_point_distance_rs / (3 * n_datapoints),
+losses = [point_distance_sr / (3 * n_datapoints),
+          point_distance_rs / (3 * n_datapoints),
           chamfer_loss_pcd / (3 * n_datapoints),
-          avg_particle_distance_sr / (3 * n_datapoints),
-          avg_particle_distance_rs / (3 * n_datapoints),
+          particle_distance_sr / (3 * n_datapoints),
+          particle_distance_rs / (3 * n_datapoints),
           chamfer_loss_particle / (3 * n_datapoints),
           height_map_loss_pcd / (3 * n_datapoints),
-          emd_loss / (3 * n_datapoints)
+          emd_point_distance_loss / (3 * n_datapoints),
+          emd_particle_distance_loss / (3 * n_datapoints)
           ]
 
-loss_types = ['avg_point_distance_sr', 'avg_point_distance_rs', 'chamfer_loss_pcd',
-              'avg_particle_distance_sr', 'avg_particle_distance_rs', 'chamfer_loss_particle',
-              'height_map_loss_pcd', 'emd_loss'
+loss_types = ['point_distance_sr', 'point_distance_rs', 'chamfer_loss_pcd',
+              'particle_distance_sr', 'particle_distance_rs', 'chamfer_loss_particle',
+              'height_map_loss_pcd',
+              'emd_point_distance_loss', 'emd_particle_distance_loss'
               ]
 
 for i in range(len(losses)):

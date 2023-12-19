@@ -49,15 +49,9 @@ def main(args):
     script_path = os.path.dirname(os.path.realpath(__file__))
     gradient_file_path = os.path.join(script_path, '..', 'gradients')
     os.makedirs(gradient_file_path, exist_ok=True)
+    np.random.seed(seed)
 
     material_id = 2
-    cam_cfg = {
-        'pos': (0.25, -0.1, 0.2),
-        'lookat': (0.25, 0.25, 0.05),
-        'fov': 30,
-        'lights': [{'pos': (0.5, -1.5, 0.5), 'color': (0.5, 0.5, 0.5)},
-                   {'pos': (0.5, -1.5, 1.5), 'color': (0.5, 0.5, 0.5)}]
-    }
 
     E_range = (10000, 100000)
     nu_range = (0.001, 0.49)
@@ -131,7 +125,8 @@ def main(args):
                     yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]),
                                               dtype=DTYPE_NP).reshape((1,))  # Yield stress
 
-                    set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress)
+                    set_parameters(mpm_env, env_cfg['material_id'], E.copy(), nu.copy(), yield_stress.copy(),
+                                   rho=1000)
 
                     loss_info = forward_backward(mpm_env, init_state, trajectory.copy(), backward=True)
 
@@ -171,6 +166,7 @@ def main(args):
                        abort = True
 
                     if abort:
+                        # todo: need to gather more information for debugging
                         print(f'===> [Warning] Strange loss or gradient.')
                         print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
                         print(f'===> [Warning] Motion: {motion_ind}, agent: {agent}, data: {data_ind}')
@@ -232,8 +228,8 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
-    parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.005)
+    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=2e7)
+    parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.006)
     parser.add_argument('--exp_dist', dest='exponential_distance', default=False, action='store_true')
     parser.add_argument('--pd_rs_loss', dest='point_distance_rs_loss', default=False, action='store_true')
     parser.add_argument('--pd_sr_loss', dest='point_distance_sr_loss', default=False, action='store_true')

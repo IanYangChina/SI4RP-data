@@ -157,7 +157,7 @@ def main(args):
     p_density = args['ptcl_density']
     loss_cfg = {
         'exponential_distance': False,
-        'averaging_loss': True,
+        'averaging_loss': False,
         'point_distance_rs_loss': False,
         'point_distance_sr_loss': False,
         'down_sample_voxel_size': args['down_sample_voxel_size'],
@@ -195,9 +195,9 @@ def main(args):
     training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
     data_ids = ['2', '3', '4']
 
-    E = 68400
-    nu = 0.49
-    yield_stress = 702
+    E = 38400
+    nu = 0.40
+    yield_stress = 500
 
     for data_ind in data_ids:
         ti.reset()

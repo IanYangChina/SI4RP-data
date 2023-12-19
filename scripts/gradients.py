@@ -29,6 +29,7 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True):
             pass
 
     t2 = time()
+    # input("===> Press Enter to continue...")
 
     if backward:
         # backward
@@ -49,6 +50,7 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True):
             print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[2].E}")
             print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[2].nu}")
             print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[2].rho}")
+            # input("===> Press Enter to continue...")
 
         t3 = time()
         print(f'===> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')

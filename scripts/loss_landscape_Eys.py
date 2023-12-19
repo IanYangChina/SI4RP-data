@@ -108,8 +108,8 @@ horizon = trajectory.shape[0]
 n_substeps = 50
 
 xy_param = 'E-yieldstress'
-E_list = np.arange(10000, 100000, 2000).astype(DTYPE_NP)
-yield_stress_list = np.arange(50, 2050, 40).astype(DTYPE_NP)
+E_list = np.arange(10000, 100000, 3300).astype(DTYPE_NP)
+yield_stress_list = np.arange(10, 1810, 60).astype(DTYPE_NP)
 
 E, yield_stress = np.meshgrid(E_list, yield_stress_list)
 nu = np.array([0.4], dtype=DTYPE_NP)
@@ -126,14 +126,15 @@ height_map_loss_pcd = np.zeros_like(E)
 emd_point_distance_loss = np.zeros_like(E)
 emd_particle_distance_loss = np.zeros_like(E)
 
-n_datapoints = 9
+n_datapoints = 5
 for agent in ['rectangle', 'round', 'cylinder']:
     training_data_path = os.path.join(script_path, '..', 'data-motion-2', f'eef-{agent}')
     if agent == 'rectangle':
         agent_init_euler = (0, 0, 45)
     else:
         agent_init_euler = (0, 0, 0)
-    for data_ind in range(n_datapoints):
+    data_ids = np.random.choice(9, size=n_datapoints, replace=False).tolist()
+    for data_ind in data_ids:
         ti.reset()
         ti.init(arch=ti.opengl, default_ip=ti.i32, default_fp=DTYPE_TI, fast_math=False, random_seed=1)
         data_cfg = {

@@ -34,22 +34,22 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True):
     if backward:
         # backward
         mpm_env.reset_grad()
-        print('******Initial grads:')
-        print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[2].E}")
-        print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[2].nu}")
-        print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[2].rho}")
+#        print('******Initial grads:')
+#        print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[2].E}")
+#        print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[2].nu}")
+#        print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[2].rho}")
         mpm_env.get_final_loss_grad()
-        print('******Grads after get_final_loss_grad()')
-        print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[2].E}")
-        print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[2].nu}")
-        print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[2].rho}")
+#        print('******Grads after get_final_loss_grad()')
+#        print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[2].E}")
+#        print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[2].nu}")
+#        print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[2].rho}")
         for i in range(mpm_env.horizon - 1, -1, -1):
             action = trajectory[i]
             mpm_env.step_grad(action=action)
-            print(f'******Grads after step_grad() at step {i}')
-            print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[2].E}")
-            print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[2].nu}")
-            print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[2].rho}")
+#            print(f'******Grads after step_grad() at step {i}')
+#            print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[2].E}")
+#            print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[2].nu}")
+#            print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[2].rho}")
             # input("===> Press Enter to continue...")
 
         t3 = time()
@@ -242,8 +242,8 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=2e7)
-    parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.006)
+    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
+    parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.005)
     parser.add_argument('--exp_dist', dest='exponential_distance', default=False, action='store_true')
     parser.add_argument('--pd_rs_loss', dest='point_distance_rs_loss', default=False, action='store_true')
     parser.add_argument('--pd_sr_loss', dest='point_distance_sr_loss', default=False, action='store_true')

@@ -33,10 +33,22 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True):
     if backward:
         # backward
         mpm_env.reset_grad()
+        print('******Initial grads:')
+        print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[2].E}")
+        print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[2].nu}")
+        print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[2].rho}")
         mpm_env.get_final_loss_grad()
+        print('******Grads after get_final_loss_grad()')
+        print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[2].E}")
+        print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[2].nu}")
+        print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[2].rho}")
         for i in range(mpm_env.horizon - 1, -1, -1):
             action = trajectory[i]
             mpm_env.step_grad(action=action)
+            print(f'******Grads after step_grad() at step {i}')
+            print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[2].E}")
+            print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[2].nu}")
+            print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[2].rho}")
 
         t3 = time()
         print(f'===> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
@@ -49,7 +61,7 @@ def main(args):
     script_path = os.path.dirname(os.path.realpath(__file__))
     gradient_file_path = os.path.join(script_path, '..', 'gradients')
     os.makedirs(gradient_file_path, exist_ok=True)
-    np.random.seed(seed)
+    np.random.seed(1)
 
     material_id = 2
 

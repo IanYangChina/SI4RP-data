@@ -226,7 +226,7 @@ def main(args):
         print(f'===> GPU memory after create env: {get_gpu_memory()}')
 
         set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress,
-                       rho=1000, ground_friction=0.5, manipulator_friction=0.5)
+                       rho=1000, ground_friction=1.5, manipulator_friction=2.0)
         forward_backward(mpm_env, init_state, trajectory.copy(),
                          render=args['render_human'], save_img=args['save_img'],
                          render_init_pcd=args['render_init_pcd'],

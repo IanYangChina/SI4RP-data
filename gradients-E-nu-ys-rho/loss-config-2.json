@@ -13,6 +13,5 @@
   "voxelise_res": 1080,
   "load_height_map": true,
   "height_map_res": 32,
-  "height_map_size": 0.11,
-  "target_pcd_path": "/home/xintong/Documents/PyProjects/SI4RP-data/scripts/../data-motion-2/eef-cylinder/pcd_61.ply",
-  "pcd_offset": 
+  "height_map_size": 0.11
+}

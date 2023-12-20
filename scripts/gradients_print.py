@@ -10,7 +10,7 @@ if not os.path.exists(fig_path):
     os.makedirs(fig_path)
 
 losses = ['pd_rs', 'pd_sr', 'prd_rs', 'prd_sr', 'hm', 'emd']
-i = 0
+params = ['E', 'nu', 'ys', 'rho', 'mani_fric', 'g_fric']
 n = 0
 plt.figure()
 while True:
@@ -18,8 +18,8 @@ while True:
         break
 
     loss_cfg = json.load(open(os.path.join(data_path, f'loss-config-{n}.json'), 'r'))
-    mean = np.load(os.path.join(data_path, f'grads-mean-{n}.npy'))[i]
-    std = np.load(os.path.join(data_path, f'grads-std-{n}.npy'))[i]
+    mean = np.load(os.path.join(data_path, f'grads-mean-{n}.npy'))
+    std = np.load(os.path.join(data_path, f'grads-std-{n}.npy'))
 
     legend = ''
     if loss_cfg['averaging_loss']:
@@ -37,10 +37,14 @@ while True:
     if loss_cfg['height_map_loss']:
         legend += 'hm'
     if loss_cfg['emd_point_distance_loss']:
-        legend += 'emd'
+        legend += 'emd_p'
+    if loss_cfg['emd_particle_distance_loss']:
+        legend += 'emd_pr'
 
     print(f'Loss {n}: {legend}')
-    print(f'Mean: {mean}')
-    print(f'Std: {std}')
+    for i in range(3):
+        print(f'Param {params[i]}')
+        print(f'Mean: {mean[i]}')
+        print(f'Std: {std[i]}')
 
     n += 1

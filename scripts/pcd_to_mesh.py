@@ -11,7 +11,7 @@ box_mesh = box_mesh.translate((0.0, 0.0, -0.0199))
 box_mesh = box_mesh.subdivide_midpoint(number_of_iterations=5)
 
 motion_ind = str(4)
-agent = 'cylinder'
+agent = 'round'
 data_ind = '4'
 pcd_index = '1'
 
@@ -30,6 +30,12 @@ pcd = o3d.io.read_point_cloud(pcd_path).crop(bounding_box)
 original_pcd = copy.deepcopy(pcd)
 
 centre = np.asarray(pcd.points).mean(0)
+pcd = pcd.voxel_down_sample(voxel_size=0.002)  # 0.003 is a good value for downsampling
+
+_, ind = pcd.remove_radius_outlier(nb_points=8, radius=0.003)
+outliner = pcd.select_by_index(ind, invert=True).paint_uniform_color([1, 0, 0])
+pcd = pcd.select_by_index(ind).paint_uniform_color([0, 0.5, 0.5])
+
 new_points = np.asarray(pcd.points).copy()
 new_points[:, -1] = 0
 addition_pcd_vec = o3d.utility.Vector3dVector(new_points)
@@ -37,11 +43,6 @@ addition_pcd = o3d.geometry.PointCloud(addition_pcd_vec)
 addition_pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.001, max_nn=30))
 addition_pcd.orient_normals_towards_camera_location(camera_location=[centre[0], centre[1], -0.1])
 pcd = pcd + addition_pcd
-pcd = pcd.voxel_down_sample(voxel_size=0.002)  # 0.003 is a good value for downsampling
-
-_, ind = pcd.remove_radius_outlier(nb_points=8, radius=0.003)
-outliner = pcd.select_by_index(ind, invert=True).paint_uniform_color([1, 0, 0])
-pcd = pcd.select_by_index(ind).paint_uniform_color([0, 0.5, 0.5])
 
 o3d.visualization.draw_geometries([pcd, outliner, world_frame, bounding_box],
                                   width=800, height=800,
@@ -51,7 +52,7 @@ o3d.visualization.draw_geometries([pcd, outliner, world_frame, bounding_box],
 print(original_pcd)
 print(pcd)
 
-radii = [0.003, 0.03]
+radii = [0.0025, 0.02]
 mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(pcd, o3d.utility.DoubleVector(radii))
 
 # o3d.visualization.draw_geometries([pcd, world_frame, bounding_box,  outliner, mesh],

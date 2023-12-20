@@ -108,7 +108,7 @@ horizon = trajectory.shape[0]
 n_substeps = 50
 
 xy_param = 'E-yieldstress'
-E_list = np.arange(10000, 100000, 3300).astype(DTYPE_NP)
+E_list = np.arange(10000, 100000, 3000).astype(DTYPE_NP)
 yield_stress_list = np.arange(10, 1810, 60).astype(DTYPE_NP)
 
 E, yield_stress = np.meshgrid(E_list, yield_stress_list)

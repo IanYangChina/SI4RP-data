@@ -108,7 +108,7 @@ horizon = trajectory.shape[0]
 n_substeps = 50
 
 xy_param = 'E-nu'
-E_list = np.arange(10000, 100000, 3300).astype(DTYPE_NP)
+E_list = np.arange(10000, 100000, 3000).astype(DTYPE_NP)
 nu_list = np.arange(0.01, 0.49, 0.016).astype(DTYPE_NP)
 
 E, nu = np.meshgrid(E_list, nu_list)

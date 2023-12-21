@@ -77,8 +77,8 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True, debug_grad=
 
             # This is a trick that prevents faulty gradient computation
             # It works for unknown reasons
-            # if i == (mpm_env.horizon // 2):
-            #     _ = mpm_env.simulator.particle_param.grad[2].E
+            if i == (mpm_env.horizon // 2):
+                _ = mpm_env.simulator.particle_param.grad[2].E
 
         t3 = time()
         print(f'===> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
@@ -103,7 +103,7 @@ def main(args):
 
     E_range = (10000, 100000)
     nu_range = (0.001, 0.49)
-    yield_stress_range = (50, 3000)
+    yield_stress_range = (50, 2000)
 
     p_density = args['ptcl_density']
     loss_cfg = {
@@ -147,8 +147,8 @@ def main(args):
         n_substeps = 50
 
         for agent in [
-        #    'rectangle',
-        #    'round',
+            'rectangle',
+            'round',
             'cylinder'
         ]:
             if agent == 'rectangle':

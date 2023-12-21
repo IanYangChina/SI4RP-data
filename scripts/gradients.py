@@ -74,13 +74,11 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True, debug_grad=
                     ans = input("===> Press Enter to proceed one step, or input 'c' to run to the end...")
                     if ans == 'c':
                         debug_mode = 'c'
-            if i % 50 == 0:
-                _ = [mpm_env.simulator.particle_param.grad[2].E,
-                     mpm_env.simulator.particle_param.grad[2].nu,
-                     mpm_env.simulator.system_param.grad[None].yield_stress,
-                     mpm_env.simulator.particle_param.grad[2].rho,
-                     mpm_env.simulator.system_param.grad[None].manipulator_friction,
-                     mpm_env.simulator.system_param.grad[None].ground_friction]
+
+            # This is a trick that prevents faulty gradient computation
+            # It works for unknown reasons
+            # if i == (mpm_env.horizon // 2):
+            #     _ = mpm_env.simulator.particle_param.grad[2].E
 
         t3 = time()
         print(f'===> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
@@ -198,7 +196,7 @@ def main(args):
                         yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]),
                                                   dtype=DTYPE_NP).reshape((1,))  # Yield stress
                         rho = np.asarray(np.random.uniform(100, 2000), dtype=DTYPE_NP).reshape((1,))  # Density
-                        ground_friction = np.array([2.1], dtype=DTYPE_NP).reshape((1,))
+                        ground_friction = np.array([2.0], dtype=DTYPE_NP).reshape((1,))
                         manipulator_friction = np.array([0.0], dtype=DTYPE_NP).reshape((1,))
                     else:
                         E = np.array([40000], dtype=DTYPE_NP).reshape((1,))
@@ -228,29 +226,31 @@ def main(args):
                         print(f"Gradient of manipulator friction: {mpm_env.simulator.system_param.grad[None].manipulator_friction}")
                         print(f"Gradient of ground friction: {mpm_env.simulator.system_param.grad[None].ground_friction}")
 
-                    # Check if the loss is strange
-                    abort = False
-                    if loss_info['point_distance_rs'] < 1e-20:
-                        abort = True
-                    if loss_info['point_distance_rs'] > 20000:
-                        abort = True
-                    if (np.isinf(loss_info['point_distance_rs'])) or (np.isnan(loss_info['point_distance_rs'])):
-                        abort = True
                     grad = np.array([mpm_env.simulator.particle_param.grad[material_id].E,
                                      mpm_env.simulator.particle_param.grad[material_id].nu,
                                      mpm_env.simulator.system_param.grad[None].yield_stress,
                                      mpm_env.simulator.particle_param.grad[material_id].rho,
                                      mpm_env.simulator.system_param.grad[None].manipulator_friction,
                                      mpm_env.simulator.system_param.grad[None].ground_friction], dtype=DTYPE_NP)
-                    if np.any(np.isnan(grad)) or np.any(np.isinf(grad)):
-                        abort = True
 
-                    num_zero_grad = 0
-                    for n in range(6):
-                        if grad[n] == 0.0:
-                            num_zero_grad += 1
-                    if num_zero_grad > 4:
-                       abort = True
+                    # Check if the loss is strange
+                    abort = False
+                    for i, v in loss_info.items():
+                        if i != 'final_height_map':
+                            if np.isinf(v) or np.isnan(v):
+                                abort = True
+                                break
+                    if not abort:
+                        if np.any(np.isnan(grad)) or np.any(np.isinf(grad)):
+                            abort = True
+
+                    if not abort:
+                        num_zero_grad = 0
+                        for n in range(6):
+                            if grad[n] == 0.0:
+                                num_zero_grad += 1
+                        if num_zero_grad > 4:
+                           abort = True
 
                     if abort:
                         print(f'===> [Warning] Strange loss or gradient.')

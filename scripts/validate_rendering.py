@@ -226,7 +226,7 @@ def main(args):
         print(f'===> GPU memory after create env: {get_gpu_memory()}')
 
         set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress,
-                       rho=1000, ground_friction=1.5, manipulator_friction=2.0)
+                       rho=500, ground_friction=0.9, manipulator_friction=2.0)
         forward_backward(mpm_env, init_state, trajectory.copy(),
                          render=args['render_human'], save_img=args['save_img'],
                          render_init_pcd=args['render_init_pcd'],
@@ -244,8 +244,8 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=3e7)
-    parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.004)
+    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=2e7)
+    parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.006)
     parser.add_argument('--demo', dest='demo', default=False, action='store_true')
     parser.add_argument('--m_id', dest='motion_ind', type=int, default=1)
     parser.add_argument('--agent_ind', dest='agent_ind', type=int, default=0)

@@ -7,12 +7,12 @@ import pickle as pkl
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 agent = 'round'  # 'round' 'cylinder'
-tr = '2'
+tr = '4'
 res = 1080
 particle_density = 3e7
 particle_r = 0.002
 
-for data_ind in ['4']:
+for data_ind in ['0', '1', '2', '3', '4']:
     for pcd_index in ['0', '1']:
         mesh_path = os.path.join(script_path, '..', f'data-motion-{tr}', f'eef-{agent}',
                                  f'mesh_{data_ind}{pcd_index}_repaired_normalised.obj')

@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 script_path = os.path.dirname(os.path.realpath(__file__))
-data_path = os.path.join(script_path, '..', 'gradients')
+data_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho')
 fig_path = os.path.join(data_path, 'figures')
 if not os.path.exists(fig_path):
     os.makedirs(fig_path)
@@ -42,7 +42,7 @@ while True:
         legend += 'emd_pr'
 
     print(f'Loss {n}: {legend}')
-    for i in range(3):
+    for i in range(4):
         print(f'Param {params[i]}')
         print(f'Mean: {mean[i]}')
         print(f'Std: {std[i]}')

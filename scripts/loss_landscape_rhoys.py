@@ -97,30 +97,31 @@ loss_cfg = {
     'height_map_loss': True,
     'height_map_res': 32,
     'height_map_size': 0.11,
-    'emd_point_distance_loss': False,
+    'emd_point_distance_loss': True,
     'emd_particle_distance_loss': False,
 }
 
 
-xy_param = 'E-nu'
-E_list = np.arange(10000, 100000, 3000).astype(DTYPE_NP)
-nu_list = np.arange(0.01, 0.49, 0.016).astype(DTYPE_NP)
+xy_param = 'rho-yieldstress'
+rho_list = np.arange(100, 2200, 70).astype(DTYPE_NP)
+yield_stress_list = np.arange(10, 1810, 60).astype(DTYPE_NP)
 
-E, nu = np.meshgrid(E_list, nu_list)
-yield_stress = 800.0
-rho = 1000.0
+rho, yield_stress = np.meshgrid(rho_list, yield_stress_list)
+
+E = 30000.0
+nu = 0.4
 
 distance_type = 'euclidean'
 
-point_distance_sr = np.zeros_like(E)
-point_distance_rs = np.zeros_like(E)
-chamfer_loss_pcd = np.zeros_like(E)
-particle_distance_sr = np.zeros_like(E)
-particle_distance_rs = np.zeros_like(E)
-chamfer_loss_particle = np.zeros_like(E)
-height_map_loss_pcd = np.zeros_like(E)
-emd_point_distance_loss = np.zeros_like(E)
-emd_particle_distance_loss = np.zeros_like(E)
+point_distance_sr = np.zeros_like(rho)
+point_distance_rs = np.zeros_like(rho)
+chamfer_loss_pcd = np.zeros_like(rho)
+particle_distance_sr = np.zeros_like(rho)
+particle_distance_rs = np.zeros_like(rho)
+chamfer_loss_particle = np.zeros_like(rho)
+height_map_loss_pcd = np.zeros_like(rho)
+emd_point_distance_loss = np.zeros_like(rho)
+emd_particle_distance_loss = np.zeros_like(rho)
 
 n_datapoints = 2 * 3 * 3
 # Load trajectories.
@@ -129,7 +130,6 @@ for motion_ind in ['1', '2']:
     dt_global = np.load(os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'tr_dt.npy'))
     horizon = trajectory.shape[0]
     n_substeps = 50
-
     for agent in ['rectangle', 'round', 'cylinder']:
         training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
         if agent == 'rectangle':
@@ -160,14 +160,14 @@ for motion_ind in ['1', '2']:
             print(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')
             t0 = time()
             print(f'Start calculating losses with grid size: {point_distance_sr.shape}')
-            for i in range(len(E_list)):
-                for j in range(len(nu_list)):
-                    set_parameters(mpm_env, env_cfg['material_id'],  E_list[i], nu_list[j],
-                                   yield_stress=yield_stress, rho=rho,
+            for i in range(len(rho_list)):
+                for j in range(len(yield_stress_list)):
+                    set_parameters(mpm_env, env_cfg['material_id'], E, nu,
+                                   yield_stress_list[j], rho_list[i],
                                    manipulator_friction=0.2, ground_friction=2.0)
                     mpm_env.set_state(init_state['state'], grad_enabled=False)
                     for k in range(mpm_env.horizon):
-                        action = trajectory[k].copy()
+                        action = trajectory[k]
                         mpm_env.step(action)
                     loss_info = mpm_env.get_final_loss()
 
@@ -200,29 +200,29 @@ losses = [point_distance_sr / n_datapoints,
           emd_particle_distance_loss / n_datapoints
           ]
 
-loss_types = ['point_distance_sr', 'point_distance_rs', 'chamfer_loss_pcd',
-              'particle_distance_sr', 'particle_distance_rs', 'chamfer_loss_particle',
-              'height_map_loss_pcd',
-              'emd_point_distance_loss', 'emd_particle_distance_loss'
-              ]
+loss_types = [
+    'point_distance_sr', 'point_distance_rs', 'chamfer_loss_pcd',
+    'particle_distance_sr', 'particle_distance_rs', 'chamfer_loss_particle',
+    'height_map_loss_pcd',
+    'emd_point_distance_loss', 'emd_particle_distance_loss'
+]
 
 for i in range(len(losses)):
     np.save(os.path.join(fig_data_path, f'{loss_types[i]}_{distance_type}_{xy_param}-{p_density_str}.npy'), losses[i])
     fig_title = (f'{loss_types[i]}\n'
-                 f'yield_stress = {yield_stress}, rho = {rho}\n'
+                 f'E = {E}, nu = {nu}\n'
                  f'm_friction = 0.2, g_friction = 2.0')
-    plot_loss_landscape(E, nu, losses[i], fig_title=fig_title,
-                        loss_type=f'{loss_types[i]}_{distance_type}',
-                        file_suffix=f'_{xy_param}-rightview-{p_density_str}',
-                        view='right',
-                        x_label='E', y_label='nu', z_label='Loss', show=False)
-    plot_loss_landscape(E, nu, losses[i], fig_title=fig_title,
+    plot_loss_landscape(rho, yield_stress, losses[i], fig_title=fig_title,
                         loss_type=f'{loss_types[i]}_{distance_type}',
                         file_suffix=f'_{xy_param}-leftview-{p_density_str}',
                         view='left',
-                        x_label='E', y_label='nu', z_label='Loss', show=False)
-    plot_loss_landscape(E, nu, losses[i], fig_title=fig_title,
+                        x_label='rho', y_label='yield_stress', z_label='Loss', show=False)
+    plot_loss_landscape(rho, yield_stress, losses[i], fig_title=fig_title,
+                        loss_type=f'{loss_types[i]}_{distance_type}',
+                        file_suffix=f'_{xy_param}-rightview-{p_density_str}',
+                        view='right',
+                        x_label='rho', y_label='yield_stress', z_label='Loss', hm=False, show=False, save=True)
+    plot_loss_landscape(rho, yield_stress, losses[i], fig_title=fig_title,
                         loss_type=f'{loss_types[i]}_{distance_type}',
                         file_suffix=f'_{xy_param}-topview-{p_density_str}',
-                        view='right',
-                        x_label='E', y_label='nu', z_label='Loss', hm=True, show=False)
+                        x_label='rho', y_label='yield_stress', z_label='Loss', hm=True, show=False, save=True)

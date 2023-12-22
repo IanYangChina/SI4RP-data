@@ -92,9 +92,9 @@ def main(args):
     process = psutil.Process(os.getpid())
     script_path = os.path.dirname(os.path.realpath(__file__))
     if args['param_set'] == 0:
-        gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho')
+        gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho'+args['dir_suffix'])
     else:
-        gradient_file_path = os.path.join(script_path, '..', 'gradients-mf-gf')
+        gradient_file_path = os.path.join(script_path, '..', 'gradients-mf-gf'+args['dir_suffix'])
 
     os.makedirs(gradient_file_path, exist_ok=True)
     np.random.seed(1)
@@ -128,11 +128,12 @@ def main(args):
     while True:
         grad_mean_file_name = os.path.join(gradient_file_path, f'grads-mean-{str(n)}.npy')
         grad_std_file_name = os.path.join(gradient_file_path, f'grads-std-{str(n)}.npy')
-        if not os.path.exists(grad_mean_file_name):
+        loss_cfg_file_name = os.path.join(gradient_file_path, f'loss-config-{str(n)}.json')
+        if not os.path.exists(loss_cfg_file_name):
             break
         n += 1
     if not args['debug']:
-        with open(os.path.join(gradient_file_path, f'loss-config-{str(n)}.json'), 'w') as f_ac:
+        with open(loss_cfg_file_name, 'w') as f_ac:
             json.dump(loss_cfg, f_ac, indent=2)
 
     grads = []
@@ -281,6 +282,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--dir_suffix', dest='dir_suffix', type=str, default='')
     parser.add_argument('--param_set', dest='param_set', type=int, default=0)
     parser.add_argument('--debug', dest='debug', default=False, action='store_true')
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)

@@ -13,6 +13,7 @@ plt.rcParams['font.serif'] = ['Times New Roman'] + plt.rcParams['font.serif']
 plt.rcParams.update({'font.size': 12})
 script_path = os.path.dirname(os.path.realpath(__file__))
 fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
+os.makedirs(fig_data_path, exist_ok=True)
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
 

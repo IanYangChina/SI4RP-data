@@ -12,12 +12,12 @@ box_mesh = box_mesh.subdivide_midpoint(number_of_iterations=5)
 
 motion_ind = str(4)
 agent = 'round'
-data_ind = '4'
-pcd_index = '1'
+data_ind = '0'
+pcd_index = '0'
 
 script_path = os.path.dirname(os.path.abspath(__file__))
 # data_path = os.path.join(script_path, '..', 'data-motion-'+motion_ind, f'eef-{agent}')
-data_path = os.path.join(script_path, '..', 'data-motion-'+motion_ind, 'pcd_to_mesh')
+data_path = os.path.join(script_path, '..', 'data-motion-validation', 'pcd_to_mesh')
 print(f'Processing data {data_ind} and pcd {pcd_index}.')
 pcd_path = os.path.join(data_path, 'pcd_'+data_ind+pcd_index+'.ply')
 bounding_box_array = np.load(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'))
@@ -27,12 +27,13 @@ bounding_box.color = [1, 0, 0]
 world_frame = o3d.geometry.TriangleMesh.create_coordinate_frame(size=0.1, origin=[0, 0, 0])
 
 pcd = o3d.io.read_point_cloud(pcd_path).crop(bounding_box)
+o3d.io.write_point_cloud(pcd_path, pcd)
 original_pcd = copy.deepcopy(pcd)
 
 centre = np.asarray(pcd.points).mean(0)
 pcd = pcd.voxel_down_sample(voxel_size=0.002)  # 0.003 is a good value for downsampling
 
-_, ind = pcd.remove_radius_outlier(nb_points=8, radius=0.003)
+_, ind = pcd.remove_radius_outlier(nb_points=5, radius=0.003)
 outliner = pcd.select_by_index(ind, invert=True).paint_uniform_color([1, 0, 0])
 pcd = pcd.select_by_index(ind).paint_uniform_color([0, 0.5, 0.5])
 
@@ -52,7 +53,7 @@ o3d.visualization.draw_geometries([pcd, outliner, world_frame, bounding_box],
 print(original_pcd)
 print(pcd)
 
-radii = [0.0025, 0.02]
+radii = [0.0028, 0.005]
 mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(pcd, o3d.utility.DoubleVector(radii))
 
 # o3d.visualization.draw_geometries([pcd, world_frame, bounding_box,  outliner, mesh],

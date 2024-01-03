@@ -37,16 +37,20 @@ import matplotlib.pyplot as plt
 # p = np.stack(np.meshgrid(x, y, z, indexing='ij'), -1)
 # print(p.shape)
 
-# script_path = os.path.dirname(os.path.realpath(__file__))
-# bbox = np.load(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'))
-# print(bbox)
-# bbox[4:, 2] = -0.002
-# bbox[1, 0] = -0.61
-# bbox[3, 0] = -0.61
-# bbox[5, 0] = -0.61
-# bbox[7, 0] = -0.61
-# print(bbox)
-# np.save(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'), bbox)
+script_path = os.path.dirname(os.path.realpath(__file__))
+bbox = np.load(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'))
+print(bbox)
+# bbox[0, 1] = 0.06
+# bbox[1, 1] = 0.06
+# bbox[2, 1] = -0.06
+# bbox[3, 1] = -0.06
+# bbox[4, 1] = 0.06
+# bbox[5, 1] = 0.06
+# bbox[6, 1] = -0.06
+# bbox[7, 1] = -0.06
+bbox[:4, 2] = 0.06
+print(bbox)
+np.save(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'), bbox)
 
-print(np.random.randint(3, 5, size=20, dtype=np.int32).tolist())
+# print(np.random.randint(3, 5, size=20, dtype=np.int32).tolist())
 exit()

@@ -1,0 +1,3 @@
+python loss_landscape_Eys.py
+python loss_landscape_Enu_exp.py
+python loss_landscape_rhoys_exp.py

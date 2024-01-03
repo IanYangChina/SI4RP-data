@@ -104,7 +104,7 @@ loss_cfg = {
 
 xy_param = 'rho-yieldstress'
 rho_list = np.arange(100, 2200, 70).astype(DTYPE_NP)
-yield_stress_list = np.arange(10, 1810, 60).astype(DTYPE_NP)
+yield_stress_list = np.arange(10, 1050, 35).astype(DTYPE_NP)
 
 rho, yield_stress = np.meshgrid(rho_list, yield_stress_list)
 

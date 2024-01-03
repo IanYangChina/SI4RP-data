@@ -1,2 +1,2 @@
-python loss_landscape_Enu_exp.py
+python loss_landscape_rhoys.py
 python loss_landscape_rhoys_exp.py

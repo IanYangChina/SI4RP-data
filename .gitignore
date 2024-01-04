@@ -12,3 +12,6 @@ imgui.ini
 /data-motion-4/eef-cylinder/*.vox
 /data-motion-4/eef-rectangle/*.vox
 /data-motion-4/eef-round/*.vox
+/data-motion-validation/eef-cylinder/*.vox
+/data-motion-validation/eef-rectangle/*.vox
+/data-motion-validation/eef-round/*.vox

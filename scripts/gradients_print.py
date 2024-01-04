@@ -1,6 +1,7 @@
 import os
 import json
 import numpy as np
+np.set_printoptions(precision=3)
 import matplotlib.pyplot as plt
 
 script_path = os.path.dirname(os.path.realpath(__file__))
@@ -11,6 +12,7 @@ if not os.path.exists(fig_path):
 
 losses = ['pd_rs', 'pd_sr', 'prd_rs', 'prd_sr', 'hm', 'emd']
 params = ['E', 'nu', 'ys', 'rho', 'mani_fric', 'g_fric']
+print(f'Param {params}')
 n = 0
 plt.figure()
 while True:
@@ -42,9 +44,7 @@ while True:
         legend += 'emd_pr'
 
     print(f'Loss {n}: {legend}')
-    for i in range(4):
-        print(f'Param {params[i]}')
-        print(f'Mean: {mean[i]}')
-        print(f'Std: {std[i]}')
+    print(f'Mean: {mean}')
+    print(f'Std: {std}')
 
     n += 1

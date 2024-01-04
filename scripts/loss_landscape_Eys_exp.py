@@ -104,7 +104,7 @@ loss_cfg = {
 
 xy_param = 'E-yieldstress'
 E_list = np.arange(10000, 100000, 3000).astype(DTYPE_NP)
-yield_stress_list = np.arange(0.01, 0.49, 0.016).astype(DTYPE_NP)
+yield_stress_list = np.arange(10, 1050, 35).astype(DTYPE_NP)
 
 E, yield_stress = np.meshgrid(E_list, yield_stress_list)
 nu = 0.4

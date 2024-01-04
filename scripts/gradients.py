@@ -103,7 +103,7 @@ def main(args):
 
     E_range = (10000, 100000)
     nu_range = (0.001, 0.49)
-    yield_stress_range = (50, 2000)
+    yield_stress_range = (50, 1050)
 
     p_density = args['ptcl_density']
     loss_cfg = {

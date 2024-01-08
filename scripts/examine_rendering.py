@@ -24,30 +24,27 @@ def forward_backward(mpm_env, init_state, trajectory,
                      init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
     cmap = 'Greys'
     if render_init_pcd:
-        x, _ = mpm_env.render(mode='point_cloud')
-        RGBA = np.zeros((len(x), 4))
-        RGBA[:, 0] = x[:, 2] / x[:, 2].max() * 255
-        RGBA[:, 1] = x[:, 2] / x[:, 2].max() * 255
+        x_init, _ = mpm_env.render(mode='point_cloud')
+        RGBA = np.zeros((len(x_init), 4))
+        RGBA[:, 0] = x_init[:, 2] / x_init[:, 2].max() * 255
+        RGBA[:, 1] = x_init[:, 2] / x_init[:, 2].max() * 255
         RGBA[:, -1] = 255
-        pts = Points(x, r=12, c=RGBA)
+        pts_init = Points(x_init, r=12, c=RGBA)
 
-        real_pcd_pts = Points(init_pcd_path, r=12, c='r')
-        x_ = real_pcd_pts.points() + init_pcd_offset
-        x_[:, 0] += (x[:, 0].max() - x[:, 0].min() + 0.002)
-        RGBA = np.zeros((len(x_), 4))
+        real_pcd_pts_init = Points(init_pcd_path, r=12, c='r')
+        pcd_init = real_pcd_pts_init.points() + init_pcd_offset
+        pcd_init[:, 1] += 0.1
+        RGBA = np.zeros((len(pcd_init), 4))
         RGBA[:, -1] = 255
-        RGBA[:, 0] = x_[:, 2] / x_[:, 2].max() * 255
-        RGBA[:, 1] = x_[:, 2] / x_[:, 2].max() * 255
-        real_pcd_pts = Points(x_, r=12, c=RGBA)
+        RGBA[:, 0] = pcd_init[:, 2] / pcd_init[:, 2].max() * 255
+        RGBA[:, 1] = pcd_init[:, 2] / pcd_init[:, 2].max() * 255
+        real_pcd_pts_init = Points(pcd_init, r=12, c=RGBA)
 
-        mesh = Mesh(init_mesh_path)
-        coords = mesh.points()
-        coords += init_mesh_pos
-        coords[:, 0] += (x[:, 0].max() - x[:, 0].min() + 0.002 + x_[:, 0].max() - x_[:, 0].min() + 0.002)
-        mesh.points(coords)
-
-        show([pts, real_pcd_pts, mesh], __doc__, axes=True).close()    # Forward
-        del x, pts, real_pcd_pts, mesh, RGBA, x_, coords
+        mesh_init = Mesh(init_mesh_path)
+        coords_init = mesh_init.points()
+        coords_init += init_mesh_pos
+        coords_init[:, 1] += 0.2
+        mesh_init.points(coords_init)
 
     if save_img:
         k = 0
@@ -104,7 +101,11 @@ def forward_backward(mpm_env, init_state, trajectory,
         del fig, ax1, ax2, im1, im2, cax, divider
 
     if render_end_pcd:
+        y_offset = 0.0
+        if render_init_pcd:
+            y_offset = 0.3
         x, _ = mpm_env.render(mode='point_cloud')
+        x[:, 1] += y_offset
         RGBA = np.zeros((len(x), 4))
         RGBA[:, -1] = 255
         RGBA[:, 0] = 250  # x[:, 0] / x[:, 0].max() * 255
@@ -113,7 +114,7 @@ def forward_backward(mpm_env, init_state, trajectory,
         pts = Points(x, r=12, c=RGBA)
 
         x_ = mpm_env.loss.target_pcd_points.to_numpy() / 1000
-        x_[:, 0] += (x[:, 0].max() - x[:, 0].min() + 0.002)
+        x_[:, 1] += (y_offset + 0.1)
         RGBA = np.zeros((mpm_env.loss.n_target_pcd_points, 4))
         RGBA[:, -1] = 255
         RGBA[:, 0] = 250  # x_[:, 0] / x_[:, 0].max() * 255
@@ -122,7 +123,7 @@ def forward_backward(mpm_env, init_state, trajectory,
         real_pcd_pts = Points(x_, r=12, c=RGBA)
 
         x__ = mpm_env.loss.target_particles_from_mesh.to_numpy() / 1000
-        x__[:, 0] += (x[:, 0].max() - x[:, 0].min() + 0.002 + x_[:, 0].max() - x_[:, 0].min() + 0.002)
+        x__[:, 1] += (y_offset + 0.2)
         RGBA = np.zeros((mpm_env.loss.n_target_particles_from_mesh, 4))
         RGBA[:, -1] = 255
         RGBA[:, 0] = 250  # x__[:, 0] / x__[:, 0].max() * 255
@@ -132,11 +133,17 @@ def forward_backward(mpm_env, init_state, trajectory,
 
         mesh = Mesh(mpm_env.loss.target_mesh_path)
         coords = mesh.points()
-        coords += mpm_env.loss.mesh_offset
-        coords[:, 0] += (x[:, 0].max() - x[:, 0].min() + 0.002 + x_[:, 0].max() - x_[:, 0].min() + 0.002 + x__[:, 0].max() - x__[:, 0].min() + 0.002)
+        coords += mpm_env.loss.target_mesh_offset
+        coords += init_mesh_pos
+        coords[:, 1] += (y_offset + 0.3)
         mesh.points(coords)
 
-        show([pts, real_pcd_pts, real_particle_pts, mesh], __doc__, axes=True).close()
+        if render_init_pcd:
+            show([pts_init, real_pcd_pts_init, mesh_init,
+                  pts, real_pcd_pts, real_particle_pts, mesh], __doc__, axes=True).close()
+            del pts_init, real_pcd_pts_init, mesh_init, x_init, pcd_init, coords_init
+        else:
+            show([pts, real_pcd_pts, real_particle_pts, mesh], __doc__, axes=True).close()
         del x, _, x_, x__, pts, real_pcd_pts, real_particle_pts, mesh, RGBA, coords
 
 
@@ -200,11 +207,14 @@ def main(args):
     training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
     if args['eval']:
         training_data_path = os.path.join(script_path, '..', 'data-motion-validation', f'eef-{agent}')
-    data_ids = ['0', '1']
+    data_ids = ['0', '1', '2', '3', '4', '5', '6', '7', '8']
 
-    E = 38400
-    nu = 0.40
-    yield_stress = 500
+    E = 1e4  # [1e4, 3e5]
+    nu = 0.01  # [0.01, 0.49]
+    yield_stress = 1e6  # [1e3, 1e6]
+    rho = 1000  # [1000, 2000]
+    gf = 2.0  # [0.01, 2.0]
+    mf = 0.0  # [0.01, 2.0]
 
     for data_ind in data_ids:
         ti.reset()
@@ -233,13 +243,13 @@ def main(args):
         print(f'===> GPU memory after create env: {get_gpu_memory()}')
 
         set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress,
-                       rho=800, ground_friction=0.8, manipulator_friction=0.9)
+                       rho=rho, ground_friction=gf, manipulator_friction=mf)
         forward_backward(mpm_env, init_state, trajectory.copy(),
                          render=args['render_human'], save_img=args['save_img'],
                          render_init_pcd=args['render_init_pcd'],
                          render_end_pcd=args['render_end_pcd'], render_heightmap=args['render_heightmap'],
                          init_pcd_path=os.path.join(training_data_path, 'pcd_' + str(data_ind) + str(0) + '.ply'),
-                         init_pcd_offset=env.pcd_offset,
+                         init_pcd_offset=env.target_pcd_offset,
                          init_mesh_path=env.mesh_file,
                          init_mesh_pos=env.initial_pos)
 

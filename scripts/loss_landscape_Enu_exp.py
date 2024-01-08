@@ -103,12 +103,12 @@ loss_cfg = {
 
 
 xy_param = 'E-nu'
-E_list = np.arange(10000, 100000, 3000).astype(DTYPE_NP)
+E_list = np.arange(1e4, 3e5, 10000).astype(DTYPE_NP)
 nu_list = np.arange(0.01, 0.49, 0.016).astype(DTYPE_NP)
 
 E, nu = np.meshgrid(E_list, nu_list)
-yield_stress = 800.0
-rho = 1000.0
+yield_stress = 1e5
+rho = 1300.0
 
 distance_type = 'exponential'
 

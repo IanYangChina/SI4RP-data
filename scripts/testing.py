@@ -1,5 +1,6 @@
-# import os
-# import pickle as pkl
+import os
+import pickle as pkl
+script_path = os.path.dirname(os.path.realpath(__file__))
 # import open3d as o3d
 # import pyvista as pv
 #
@@ -11,10 +12,13 @@
 # mesh = pv.read(os.path.join(script_path, '..', 'data-motion-1', 'trial-2', 'mesh_0_repaired.obj'))
 # pv.plot([mesh], notebook=False, window_size=[800, 600])
 
-# import trimesh
-#
-# # obj = pkl.load(open(os.path.join(script_path, '..', 'data-motion-1', 'eef-1', 'mesh_00_repaired_normalised-1080.vox'), 'rb'))
-# # obj.show()
+import trimesh
+
+obj = pkl.load(open(os.path.join(script_path, '..',
+                                 'data-motion-3',
+                                 'eef-round', 'mesh_01_repaired_normalised-1080.vox'), 'rb'))
+obj.show()
+exit()
 #
 #
 # import taichi as ti
@@ -37,7 +41,6 @@ import matplotlib.pyplot as plt
 # p = np.stack(np.meshgrid(x, y, z, indexing='ij'), -1)
 # print(p.shape)
 
-script_path = os.path.dirname(os.path.realpath(__file__))
 bbox = np.load(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'))
 print(bbox)
 # bbox[0, 1] = 0.06

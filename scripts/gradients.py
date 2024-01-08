@@ -101,9 +101,12 @@ def main(args):
 
     material_id = 2
 
-    E_range = (10000, 100000)
-    nu_range = (0.001, 0.49)
-    yield_stress_range = (50, 1050)
+    E_range = (1e4, 3e5)
+    nu_range = (0.01, 0.49)
+    yield_stress_range = (1e3, 1e6)
+    rho_range = (1000, 2000)
+    gf_range = (0.0, 2.0)
+    mf_range = (0.0, 2.0)
 
     p_density = args['ptcl_density']
     loss_cfg = {
@@ -196,14 +199,17 @@ def main(args):
                             (1,))  # Poisson's ratio
                         yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]),
                                                   dtype=DTYPE_NP).reshape((1,))  # Yield stress
-                        rho = np.asarray(np.random.uniform(100, 2000), dtype=DTYPE_NP).reshape((1,))  # Density
+                        rho = np.asarray(np.random.uniform(rho_range[0], rho_range[1]), dtype=DTYPE_NP).reshape((1,))  # Density
                         ground_friction = np.array([2.0], dtype=DTYPE_NP).reshape((1,))
                         manipulator_friction = np.array([0.0], dtype=DTYPE_NP).reshape((1,))
                     else:
-                        E = np.array([40000], dtype=DTYPE_NP).reshape((1,))
-                        nu = np.array([0.4], dtype=DTYPE_NP).reshape((1,))
-                        yield_stress = np.array([1000], dtype=DTYPE_NP).reshape((1,))
-                        rho = np.array([1000], dtype=DTYPE_NP).reshape((1,))
+                        E = np.asarray(np.random.uniform(E_range[0], E_range[1]), dtype=DTYPE_NP).reshape(
+                            (1,))  # Young's modulus
+                        nu = np.asarray(np.random.uniform(nu_range[0], nu_range[1]), dtype=DTYPE_NP).reshape(
+                            (1,))  # Poisson's ratio
+                        yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]),
+                                                  dtype=DTYPE_NP).reshape((1,))  # Yield stress
+                        rho = np.asarray(np.random.uniform(rho_range[0], rho_range[1]), dtype=DTYPE_NP).reshape((1,))  # Density
                         ground_friction = np.asarray(np.random.uniform(0.0, 2.0), dtype=DTYPE_NP).reshape((1,))
                         manipulator_friction = np.asarray(np.random.uniform(0.0, 2.0), dtype=DTYPE_NP).reshape((1,))
 

@@ -103,13 +103,13 @@ loss_cfg = {
 
 
 xy_param = 'rho-yieldstress'
-rho_list = np.arange(100, 2200, 70).astype(DTYPE_NP)
-yield_stress_list = np.arange(10, 1050, 35).astype(DTYPE_NP)
+rho_list = np.arange(1000, 1999, 33.3).astype(DTYPE_NP)
+yield_stress_list = np.arange(1e3, 1e6, 33300).astype(DTYPE_NP)
 
 rho, yield_stress = np.meshgrid(rho_list, yield_stress_list)
 
-E = 30000.0
-nu = 0.4
+E = 2e5
+nu = 0.1
 
 distance_type = 'euclidean'
 

@@ -12,8 +12,8 @@ box_mesh = box_mesh.subdivide_midpoint(number_of_iterations=5)
 
 motion_ind = str(4)
 agent = 'round'
-data_ind = '0'
-pcd_index = '0'
+data_ind = '2'
+pcd_index = '1'
 
 script_path = os.path.dirname(os.path.abspath(__file__))
 # data_path = os.path.join(script_path, '..', 'data-motion-'+motion_ind, f'eef-{agent}')
@@ -33,7 +33,7 @@ original_pcd = copy.deepcopy(pcd)
 centre = np.asarray(pcd.points).mean(0)
 pcd = pcd.voxel_down_sample(voxel_size=0.002)  # 0.003 is a good value for downsampling
 
-_, ind = pcd.remove_radius_outlier(nb_points=5, radius=0.003)
+_, ind = pcd.remove_radius_outlier(nb_points=6, radius=0.003)
 outliner = pcd.select_by_index(ind, invert=True).paint_uniform_color([1, 0, 0])
 pcd = pcd.select_by_index(ind).paint_uniform_color([0, 0.5, 0.5])
 
@@ -53,7 +53,7 @@ o3d.visualization.draw_geometries([pcd, outliner, world_frame, bounding_box],
 print(original_pcd)
 print(pcd)
 
-radii = [0.0028, 0.005]
+radii = [0.0028, 0.003]
 mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(pcd, o3d.utility.DoubleVector(radii))
 
 # o3d.visualization.draw_geometries([pcd, world_frame, bounding_box,  outliner, mesh],

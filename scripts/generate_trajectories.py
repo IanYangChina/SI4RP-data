@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 script_path = os.path.dirname(os.path.realpath(__file__))
 
 motion = 'validation'
-agent = 'cyldr'
-tr = np.load(os.path.join(script_path, '..', f'data-motion-{motion}', f'tr_{agent}_valid_eef_v_1.npy'))
-timestamps = np.load(os.path.join(script_path, '..', f'data-motion-{motion}', f'tr_{agent}_valid_timestamps_1.npy'))
+agent = 'cylinder'
+tr = np.load(os.path.join(script_path, '..', f'data-motion-{motion}', f'tr_{agent}_valid_eef_v_moveit.npy'))
+timestamps = np.load(os.path.join(script_path, '..', f'data-motion-{motion}', f'tr_{agent}_valid_timestamps_moveit.npy'))
 tds = np.diff(timestamps)
 
 px = [0.0]
@@ -28,7 +28,7 @@ print(tr.shape[0] - 1, timestamps[-1], px[-1], pz[-1])
 plt.plot(px, label='px')
 plt.plot(pz, label='pz')
 
-dt = timestamps[26] / 26
+dt = timestamps[-1] / tr.shape[0]
 new_tr = np.zeros(shape=(600, 6), dtype=np.float32)
 
 print(f'dt: {dt}')
@@ -73,5 +73,5 @@ plt.plot(tr)
 plt.plot(new_tr)
 plt.show()
 
-np.save(os.path.join(script_path, '..', f'data-motion-{motion}', f'tr_{agent}_v.npy'), new_tr)
-np.save(os.path.join(script_path, '..', f'data-motion-{motion}', f'tr_{agent}_dt.npy'), dt)
+np.save(os.path.join(script_path, '..', f'data-motion-{motion}', f'tr_{agent}_v_dt_avg.npy'), new_tr)
+np.save(os.path.join(script_path, '..', f'data-motion-{motion}', f'tr_{agent}_dt_avg.npy'), dt)

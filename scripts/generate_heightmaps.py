@@ -34,8 +34,8 @@ def run(args):
     process = psutil.Process(os.getpid())
     script_path = os.path.dirname(os.path.realpath(__file__))
     for motion_ind in ['validation']:
-        for agent in ['cylinder']:
-            for data_ind in [str(_) for _ in range(2)]:
+        for agent in ['rectangle', 'round']:
+            for data_ind in [str(_) for _ in range(3)]:
                 data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
                 # hm = np.load(os.path.join(data_path, f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(down_sample_voxel_size)}.npy'))
                 # plt.imshow(hm, cmap='Greys')

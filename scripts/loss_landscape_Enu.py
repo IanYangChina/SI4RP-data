@@ -101,13 +101,6 @@ loss_cfg = {
     'emd_particle_distance_loss': False,
 }
 
-E_range = (1e5, 1e6)
-nu_range = (0.001, 0.49)
-yield_stress_range = (1e3, 1e6)
-rho_range = (800, 2000)
-gf_range = (0.0, 2.0)
-mf_range = (0.0, 2.0)
-
 xy_param = 'E-nu'
 E_list = np.arange(1e4, 3e5, 10000).astype(DTYPE_NP)
 nu_list = np.arange(0.01, 0.49, 0.016).astype(DTYPE_NP)

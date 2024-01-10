@@ -101,7 +101,6 @@ loss_cfg = {
     'emd_particle_distance_loss': False,
 }
 
-
 xy_param = 'E-nu'
 E_list = np.arange(1e4, 3e5, 10000).astype(DTYPE_NP)
 nu_list = np.arange(0.01, 0.49, 0.016).astype(DTYPE_NP)

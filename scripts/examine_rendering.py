@@ -5,7 +5,7 @@ from time import time, sleep
 import open3d as o3d
 from vedo import Points, show, Mesh
 import matplotlib as mpl
-mpl.use('TkAgg')
+mpl.use('Qt5Agg')
 import matplotlib.pylab as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from doma.engine.utils.misc import get_gpu_memory
@@ -22,7 +22,7 @@ from doma.envs.sys_id_env import make_env, set_parameters
 def forward_backward(mpm_env, init_state, trajectory,
                      render=False, save_img=False, render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
                      init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
-    cmap = 'Greys'
+    cmap = 'YlGnBu'
     if render_init_pcd:
         x_init, _ = mpm_env.render(mode='point_cloud')
         RGBA = np.zeros((len(x_init), 4))
@@ -98,7 +98,6 @@ def forward_backward(mpm_env, init_state, trajectory,
         fig.colorbar(im2, cax=cax, orientation='vertical')
 
         plt.show()
-        del fig, ax1, ax2, im1, im2, cax, divider
 
     if render_end_pcd:
         y_offset = 0.0
@@ -199,9 +198,9 @@ def main(args):
         n_substeps = 10
 
     if args['eval']:
-        trajectory = np.load(os.path.join(script_path, '..', 'data-motion-validation', f'tr_{agent}_v.npy'))
+        dt_global = args['dt']
+        trajectory = np.load(os.path.join(script_path, '..', 'data-motion-validation', f'tr_{agent}_v_dt_{dt_global:0.2f}.npy'))
         horizon = trajectory.shape[0]
-        dt_global = np.load(os.path.join(script_path, '..', f'data-motion-validation', f'tr_{agent}_dt.npy'))
         n_substeps = 50
 
     training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
@@ -209,12 +208,12 @@ def main(args):
         training_data_path = os.path.join(script_path, '..', 'data-motion-validation', f'eef-{agent}')
     data_ids = ['0', '1', '2', '3', '4', '5', '6', '7', '8']
 
-    E = 1e4  # [1e4, 3e5]
-    nu = 0.01  # [0.01, 0.49]
-    yield_stress = 1e6  # [1e3, 1e6]
+    E = 3e5  # [1e4, 3e5]
+    nu = 0.2  # [0.01, 0.49]
+    yield_stress = 5e5  # [1e3, 1e6]
     rho = 1000  # [1000, 2000]
-    gf = 2.0  # [0.01, 2.0]
-    mf = 0.0  # [0.01, 2.0]
+    gf = 1.0  # [0.01, 2.0]
+    mf = 1.5  # [0.01, 2.0]
 
     for data_ind in data_ids:
         ti.reset()
@@ -265,6 +264,7 @@ if __name__ == '__main__':
     parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.006)
     parser.add_argument('--demo', dest='demo', default=False, action='store_true')
     parser.add_argument('--eval', dest='eval', default=False, action='store_true')
+    parser.add_argument('--dt', dest='dt', type=float, default=0.01)
     parser.add_argument('--m_id', dest='motion_ind', type=int, default=1)
     parser.add_argument('--agent_ind', dest='agent_ind', type=int, default=0)
     parser.add_argument('--r_human', dest='render_human', default=False, action='store_true')

@@ -40,14 +40,14 @@ def main(arguments):
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
-    particle_density = 3e7
+    particle_density = 4e7
     assert arguments['hm_res'] in [32, 64], 'height map resolution must be 32 or 64'
     loss_cfg = {
         'exponential_distance': arguments['exp_dist'],
         'averaging_loss': False,
         'point_distance_rs_loss': arguments['pd_rs_loss'],
         'point_distance_sr_loss': arguments['pd_sr_loss'],
-        'down_sample_voxel_size': 0.006,
+        'down_sample_voxel_size': 0.005,
         'particle_distance_rs_loss': arguments['prd_rs_loss'],
         'particle_distance_sr_loss': arguments['prd_sr_loss'],
         'voxelise_res': 1080,
@@ -63,17 +63,17 @@ def main(arguments):
     # Setting up horizon and trajectory.
 
     # Parameter ranges
-    E_range = (10000, 100000)
-    nu_range = (0.001, 0.49)
-    yield_stress_range = (10, 2000)
-    rho_range = (100, 2000)
+    E_range = (1e4, 3e5)
+    nu_range = (0.01, 0.49)
+    yield_stress_range = (1e3, 1e6)
+    rho_range = (1000, 2000)
     mf_range = (0.01, 2.0)
     gf_range = (0.01, 2.0)
 
     param_set = arguments['param_set']
     assert param_set in [0, 1], 'param_set must be 0 or 1'
 
-    n_epoch = 100
+    n_epoch = 150
     n_aborted_data = 0
     seeds = [0, 1, 2]
     n = 0
@@ -89,10 +89,10 @@ def main(arguments):
 
     training_config = {
         'param_set': param_set,
-        'lr_E': 1e3,
+        'lr_E': 2e3,
         'lr_nu': 1e-2,
-        'lr_yield_stress': 1e2,
-        'lr_rho': 1e-2,
+        'lr_yield_stress': 1e4,
+        'lr_rho': 10,
         'lr_manipulator_friction': 1e-2,
         'lr_ground_friction': 1e-2,
         'batch_size': arguments['batchsize'],
@@ -123,7 +123,7 @@ def main(arguments):
             rho = np.asarray(np.random.uniform(rho_range[0], rho_range[1]),
                                       dtype=DTYPE_NP).reshape((1,))  # Density
 
-            manipulator_friction = np.asarray([0.1], dtype=DTYPE_NP).reshape((0,))  # Manipulator friction
+            manipulator_friction = np.asarray([0.3], dtype=DTYPE_NP).reshape((0,))  # Manipulator friction
             ground_friction = np.asarray([2.0], dtype=DTYPE_NP).reshape((0,))  # Ground friction
 
             print(f"=====> Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
@@ -179,8 +179,8 @@ def main(arguments):
 
             for i in range(mini_batch_size):
                 motion_ind = str(motion_ids[i])
-                trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'tr_eef_v.npy'))
-                dt_global = np.load(os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'tr_dt.npy'))
+                dt_global = 0.02
+                trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
                 horizon = trajectory.shape[0]
                 n_substeps = 50
 

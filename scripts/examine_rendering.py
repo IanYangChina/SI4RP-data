@@ -186,8 +186,12 @@ def main(args):
         agent_init_euler = (0, 0, 0)
 
     motion_ind = str(args['motion_ind'])
-    trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'tr_eef_v.npy'))
-    dt_global = np.load(os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'tr_dt.npy'))
+    if not args['dt_avg']:
+        dt_global = args['dt']
+        trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
+    else:
+        dt_global = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_dt_avg.npy'))
+        trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_v_dt_avg.npy'))
     horizon = trajectory.shape[0]
     n_substeps = 50
 
@@ -198,10 +202,13 @@ def main(args):
         n_substeps = 10
 
     if args['eval']:
-        dt_global = args['dt']
-        trajectory = np.load(os.path.join(script_path, '..', 'data-motion-validation', f'tr_{agent}_v_dt_{dt_global:0.2f}.npy'))
+        if not args['dt_avg']:
+            dt_global = args['dt']
+            trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_valid_{agent}_v_dt_{dt_global:0.2f}.npy'))
+        else:
+            dt_global = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_valid_{agent}_dt_avg.npy'))
+            trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_valid_{agent}_v_dt_avg.npy'))
         horizon = trajectory.shape[0]
-        n_substeps = 50
 
     training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
     if args['eval']:
@@ -264,7 +271,8 @@ if __name__ == '__main__':
     parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.006)
     parser.add_argument('--demo', dest='demo', default=False, action='store_true')
     parser.add_argument('--eval', dest='eval', default=False, action='store_true')
-    parser.add_argument('--dt', dest='dt', type=float, default=0.01)
+    parser.add_argument('--dt', dest='dt', type=float, default=0.02)
+    parser.add_argument('--dt_avg', dest='dt_avg', default=False, action='store_true')
     parser.add_argument('--m_id', dest='motion_ind', type=int, default=1)
     parser.add_argument('--agent_ind', dest='agent_ind', type=int, default=0)
     parser.add_argument('--r_human', dest='render_human', default=False, action='store_true')

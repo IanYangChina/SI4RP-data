@@ -102,7 +102,7 @@ def main(args):
     material_id = 2
 
     E_range = (1e4, 3e5)
-    nu_range = (0.01, 0.48)
+    nu_range = (0.01, 0.49)
     yield_stress_range = (1e3, 1e6)
     rho_range = (1000, 2000)
     f_range = (0.0, 2.0)
@@ -144,7 +144,7 @@ def main(args):
     else:
         motions = ['3', '4']
     for motion_ind in motions:
-        dt_global = 0.02
+        dt_global = 0.01
         trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
         horizon = trajectory.shape[0]
         n_substeps = 50
@@ -190,7 +190,7 @@ def main(args):
                 print(f'===> CPU memory occupied after create env: {process.memory_percent()} %')
                 print(f'===> GPU memory after create env: {get_gpu_memory()}')
 
-                for _ in range(10):
+                for _ in range(50):
                     E = np.asarray(np.random.uniform(E_range[0], E_range[1]), dtype=DTYPE_NP).reshape(
                         (1,))  # Young's modulus
                     nu = np.asarray(np.random.uniform(nu_range[0], nu_range[1]), dtype=DTYPE_NP).reshape(

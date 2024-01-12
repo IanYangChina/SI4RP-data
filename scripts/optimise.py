@@ -60,8 +60,6 @@ def main(arguments):
         'emd_particle_distance_loss': arguments['emd_pr_loss'],
     }
 
-    # Setting up horizon and trajectory.
-
     # Parameter ranges
     E_range = (1e4, 3e5)
     nu_range = (0.01, 0.48)
@@ -180,7 +178,7 @@ def main(arguments):
 
             for i in range(mini_batch_size):
                 motion_ind = str(motion_ids[i])
-                dt_global = 0.02
+                dt_global = 0.01
                 trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
                 horizon = trajectory.shape[0]
                 n_substeps = 50
@@ -262,6 +260,11 @@ def main(arguments):
                 loss[i] = np.mean(v)
             avg_grad = np.mean(grads, axis=0)
 
+            for i, v in loss.items():
+                print(f"========> Avg. Loss: {i}: {v}")
+            print(f"========> Avg. grads: {avg_grad}")
+            print(f"========> Num. aborted data so far: {n_aborted_data}")
+
             if arguments['param_set'] == 0:
                 E = optim_E.step(E.copy(), avg_grad[0])
                 E = np.clip(E, E_range[0], E_range[1])
@@ -301,10 +304,6 @@ def main(arguments):
             logger.add_scalar(tag='Mem/GPU', scalar_value=get_gpu_memory()[0], global_step=epoch)
             logger.add_scalar(tag='Mem/RAM', scalar_value=process.memory_percent(), global_step=epoch)
             logger.add_scalar(tag='Aborted', scalar_value=n_aborted_data, global_step=epoch)
-
-            for i, v in loss.items():
-                print(f"========> Avg. Loss: {i}: {v}")
-            print(f"========> Avg. grads: {avg_grad}")
 
         logger.close()
         if arguments['param_set'] == 0:

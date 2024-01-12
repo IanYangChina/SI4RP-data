@@ -126,8 +126,8 @@ emd_particle_distance_loss = np.zeros_like(rho)
 n_datapoints = 2 * 3 * 3
 # Load trajectories.
 for motion_ind in ['1', '2']:
-    trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'tr_eef_v.npy'))
-    dt_global = np.load(os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'tr_dt.npy'))
+    dt_global = 0.01
+    trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
     horizon = trajectory.shape[0]
     n_substeps = 50
     for agent in ['rectangle', 'round', 'cylinder']:

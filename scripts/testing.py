@@ -14,11 +14,11 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 
 import trimesh
 
-obj = pkl.load(open(os.path.join(script_path, '..',
-                                 'data-motion-3',
-                                 'eef-round', 'mesh_01_repaired_normalised-1080.vox'), 'rb'))
-obj.show()
-exit()
+# obj = pkl.load(open(os.path.join(script_path, '..',
+#                                  'data-motion-3',
+#                                  'eef-round', 'mesh_01_repaired_normalised-1080.vox'), 'rb'))
+# obj.show()
+# exit()
 #
 #
 # import taichi as ti
@@ -30,6 +30,13 @@ exit()
 # print(a[None] / b[None])
 
 import numpy as np
+
+v_buffer = 3.0064564e+26
+grad = 9.111189305277442e+19
+v_t = np.array(0.999 * v_buffer + (1 - 0.999) * (grad * grad)).astype(np.float32)
+print(not (np.isnan(v_t) or np.isinf(v_t)))
+exit()
+
 import os
 import matplotlib.pyplot as plt
 # x = np.linspace(0, 1, 100)

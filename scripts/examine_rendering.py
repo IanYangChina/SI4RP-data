@@ -215,12 +215,15 @@ def main(args):
         training_data_path = os.path.join(script_path, '..', 'data-motion-validation', f'eef-{agent}')
     data_ids = ['0', '1', '2', '3', '4', '5', '6', '7', '8']
 
-    E = 3e5  # [1e4, 3e5]
-    nu = 0.2  # [0.01, 0.49]
-    yield_stress = 5e5  # [1e3, 1e6]
-    rho = 1000  # [1000, 2000]
-    gf = 1.0  # [0.01, 2.0]
-    mf = 1.5  # [0.01, 2.0]
+    E = 195424.14  # [1e4, 3e5]
+    nu = 0.48  # [0.01, 0.48]
+    mu = E / (2 * (1 + nu))
+    # lam = E * nu / ((1 + nu) * (1 - 2 * nu))
+    # print(f'===> mu: {mu}, lambda: {lam}')
+    yield_stress = 603160.6  # [1e3, 1e6]
+    rho = 1413.085  # [1000, 2000]
+    gf = 2.0  # [0.01, 2.0]
+    mf = 0.3  # [0.01, 2.0]
 
     for data_ind in data_ids:
         ti.reset()

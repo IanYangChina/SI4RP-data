@@ -94,7 +94,7 @@ def main(args):
     if args['param_set'] == 0:
         gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho'+args['dir_suffix'])
     else:
-        gradient_file_path = os.path.join(script_path, '..', 'gradients-mf-gf'+args['dir_suffix'])
+        gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-mf-gf'+args['dir_suffix'])
 
     os.makedirs(gradient_file_path, exist_ok=True)
     np.random.seed(1)
@@ -102,11 +102,10 @@ def main(args):
     material_id = 2
 
     E_range = (1e4, 3e5)
-    nu_range = (0.01, 0.49)
+    nu_range = (0.01, 0.48)
     yield_stress_range = (1e3, 1e6)
     rho_range = (1000, 2000)
-    gf_range = (0.0, 2.0)
-    mf_range = (0.0, 2.0)
+    f_range = (0.0, 2.0)
 
     p_density = args['ptcl_density']
     loss_cfg = {
@@ -145,8 +144,8 @@ def main(args):
     else:
         motions = ['3', '4']
     for motion_ind in motions:
-        trajectory = np.load(os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'tr_eef_v.npy'))
-        dt_global = np.load(os.path.join(script_path, '..', f'data-motion-{motion_ind}', 'tr_dt.npy'))
+        dt_global = 0.02
+        trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
         horizon = trajectory.shape[0]
         n_substeps = 50
 
@@ -192,26 +191,19 @@ def main(args):
                 print(f'===> GPU memory after create env: {get_gpu_memory()}')
 
                 for _ in range(10):
-                    if args['param_set'] == 0:
-                        E = np.asarray(np.random.uniform(E_range[0], E_range[1]), dtype=DTYPE_NP).reshape(
-                            (1,))  # Young's modulus
-                        nu = np.asarray(np.random.uniform(nu_range[0], nu_range[1]), dtype=DTYPE_NP).reshape(
-                            (1,))  # Poisson's ratio
-                        yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]),
-                                                  dtype=DTYPE_NP).reshape((1,))  # Yield stress
-                        rho = np.asarray(np.random.uniform(rho_range[0], rho_range[1]), dtype=DTYPE_NP).reshape((1,))  # Density
-                        ground_friction = np.array([2.0], dtype=DTYPE_NP).reshape((1,))
-                        manipulator_friction = np.array([0.0], dtype=DTYPE_NP).reshape((1,))
-                    else:
-                        E = np.asarray(np.random.uniform(E_range[0], E_range[1]), dtype=DTYPE_NP).reshape(
-                            (1,))  # Young's modulus
-                        nu = np.asarray(np.random.uniform(nu_range[0], nu_range[1]), dtype=DTYPE_NP).reshape(
-                            (1,))  # Poisson's ratio
-                        yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]),
-                                                  dtype=DTYPE_NP).reshape((1,))  # Yield stress
-                        rho = np.asarray(np.random.uniform(rho_range[0], rho_range[1]), dtype=DTYPE_NP).reshape((1,))  # Density
-                        ground_friction = np.asarray(np.random.uniform(0.0, 2.0), dtype=DTYPE_NP).reshape((1,))
-                        manipulator_friction = np.asarray(np.random.uniform(0.0, 2.0), dtype=DTYPE_NP).reshape((1,))
+                    E = np.asarray(np.random.uniform(E_range[0], E_range[1]), dtype=DTYPE_NP).reshape(
+                        (1,))  # Young's modulus
+                    nu = np.asarray(np.random.uniform(nu_range[0], nu_range[1]), dtype=DTYPE_NP).reshape(
+                        (1,))  # Poisson's ratio
+                    yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]),
+                                              dtype=DTYPE_NP).reshape((1,))  # Yield stress
+                    rho = np.asarray(np.random.uniform(rho_range[0], rho_range[1]), dtype=DTYPE_NP).reshape(
+                        (1,))  # Density
+                    ground_friction = np.array([2.0], dtype=DTYPE_NP).reshape((1,))
+                    manipulator_friction = np.array([0.0], dtype=DTYPE_NP).reshape((1,))
+                    if args['param_set'] == 1:
+                        ground_friction = np.asarray(np.random.uniform(f_range[0], f_range[1]), dtype=DTYPE_NP).reshape((1,))
+                        manipulator_friction = np.asarray(np.random.uniform(f_range[0], f_range[1]), dtype=DTYPE_NP).reshape((1,))
 
                     set_parameters(mpm_env, env_cfg['material_id'],
                                    E.copy(), nu.copy(), yield_stress.copy(),
@@ -222,14 +214,11 @@ def main(args):
                     print(f'===> CPU memory occupied after forward-backward: {process.memory_percent()} %')
                     print(f'===> GPU memory after forward-backward: {get_gpu_memory()}')
                     print('===> Gradients:')
-                    if args['param_set'] == 0:
-                        print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[material_id].E}")
-                        print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[material_id].nu}")
-                        print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[material_id].rho}")
-                        print(f"Gradient of yield stress: {mpm_env.simulator.system_param.grad[None].yield_stress}")
-                        # print(f"Gradient of theta_c: {mpm_env.simulator.system_param.grad[None].theta_c}")
-                        # print(f"Gradient of theta_s: {mpm_env.simulator.system_param.grad[None].theta_s}")
-                    else:
+                    print(f"Gradient of E: {mpm_env.simulator.particle_param.grad[material_id].E}")
+                    print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[material_id].nu}")
+                    print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[material_id].rho}")
+                    print(f"Gradient of yield stress: {mpm_env.simulator.system_param.grad[None].yield_stress}")
+                    if args['param_set'] == 1:
                         print(f"Gradient of manipulator friction: {mpm_env.simulator.system_param.grad[None].manipulator_friction}")
                         print(f"Gradient of ground friction: {mpm_env.simulator.system_param.grad[None].ground_friction}")
 
@@ -272,12 +261,11 @@ def main(args):
     grad_mean = np.mean(grads, axis=0)
     grad_std = np.std(grads, axis=0)
     print('===> Avg. Gradients:')
-    if args['param_set'] == 0:
-        print(f"Avg. gradient of E: {grad_mean[0]}, std: {grad_std[0]}")
-        print(f"Avg. gradient of nu: {grad_mean[1]}, std: {grad_std[1]}")
-        print(f"Avg. gradient of yield stress: {grad_mean[2]}, std: {grad_std[2]}")
-        print(f"Avg. gradient of rho: {grad_mean[3]}, std: {grad_std[3]}")
-    else:
+    print(f"Avg. gradient of E: {grad_mean[0]}, std: {grad_std[0]}")
+    print(f"Avg. gradient of nu: {grad_mean[1]}, std: {grad_std[1]}")
+    print(f"Avg. gradient of yield stress: {grad_mean[2]}, std: {grad_std[2]}")
+    print(f"Avg. gradient of rho: {grad_mean[3]}, std: {grad_std[3]}")
+    if args['param_set'] == 1:
         print(f"Avg. gradient of manipulator friction: {grad_mean[4]}, std: {grad_std[4]}")
         print(f"Avg. gradient of ground friction: {grad_mean[5]}, std: {grad_std[5]}")
 

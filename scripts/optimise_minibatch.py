@@ -64,7 +64,7 @@ def main(arguments):
 
     # Parameter ranges
     E_range = (1e4, 3e5)
-    nu_range = (0.01, 0.49)
+    nu_range = (0.01, 0.48)
     yield_stress_range = (1e3, 1e6)
     rho_range = (1000, 2000)
     mf_range = (0.01, 2.0)
@@ -73,7 +73,7 @@ def main(arguments):
     param_set = arguments['param_set']
     assert param_set in [0, 1], 'param_set must be 0 or 1'
 
-    n_epoch = 150
+    n_epoch = 120
     n_aborted_data = 0
     seeds = [0, 1, 2]
     n = 0
@@ -304,7 +304,7 @@ def main(arguments):
 
             for i, v in loss.items():
                 print(f"========> Avg. Loss: {i}: {v}")
-            print(f"========> Avg. grads: {grads}")
+            print(f"========> Avg. grads: {avg_grad}")
 
         logger.close()
         if arguments['param_set'] == 0:

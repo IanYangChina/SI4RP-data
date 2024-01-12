@@ -123,8 +123,8 @@ def main(arguments):
             rho = np.asarray(np.random.uniform(rho_range[0], rho_range[1]),
                                       dtype=DTYPE_NP).reshape((1,))  # Density
 
-            manipulator_friction = np.asarray([0.3], dtype=DTYPE_NP).reshape((0,))  # Manipulator friction
-            ground_friction = np.asarray([2.0], dtype=DTYPE_NP).reshape((0,))  # Ground friction
+            manipulator_friction = np.asarray([0.3], dtype=DTYPE_NP).reshape((1,))  # Manipulator friction
+            ground_friction = np.asarray([2.0], dtype=DTYPE_NP).reshape((1,))  # Ground friction
 
             print(f"=====> Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
             # Optimiser: Adam
@@ -138,13 +138,13 @@ def main(arguments):
                                         cfg={'lr': training_config['lr_rho'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
         else:
             # Initialising parameters
-            E = np.asarray([40000], dtype=DTYPE_NP).reshape((0,))  # Young's modulus
-            nu = np.asarray([0.4], dtype=DTYPE_NP).reshape((0,))
-            yield_stress = np.asarray([1000], dtype=DTYPE_NP).reshape((0,))
-            rho = np.asarray([1000], dtype=DTYPE_NP).reshape((0,))
+            E = np.asarray([40000], dtype=DTYPE_NP).reshape((1,))  # Young's modulus
+            nu = np.asarray([0.4], dtype=DTYPE_NP).reshape((1,))
+            yield_stress = np.asarray([1000], dtype=DTYPE_NP).reshape((1,))
+            rho = np.asarray([1000], dtype=DTYPE_NP).reshape((1,))
 
-            manipulator_friction = np.asarray(np.random.uniform(mf_range[0], mf_range[1]), dtype=DTYPE_NP).reshape((0,))  # Manipulator friction
-            ground_friction = np.asarray(np.random.uniform(gf_range[0], gf_range[1]), dtype=DTYPE_NP).reshape((0,))
+            manipulator_friction = np.asarray(np.random.uniform(mf_range[0], mf_range[1]), dtype=DTYPE_NP).reshape((1,))  # Manipulator friction
+            ground_friction = np.asarray(np.random.uniform(gf_range[0], gf_range[1]), dtype=DTYPE_NP).reshape((1,))
 
             print(f"=====> Seed: {seed}, initial parameters: manipulation friction={manipulator_friction}, ground friction={ground_friction}")
             # Optimiser: Adam
@@ -159,14 +159,15 @@ def main(arguments):
         for epoch in range(n_epoch):
             t1 = time()
             loss = {
-                'avg_point_distance_sr': [],
-                'avg_point_distance_rs': [],
+                'point_distance_sr': [],
+                'point_distance_rs': [],
                 'chamfer_loss_pcd': [],
-                'avg_particle_distance_sr': [],
-                'avg_particle_distance_rs': [],
+                'particle_distance_sr': [],
+                'particle_distance_rs': [],
                 'chamfer_loss_particle': [],
                 'height_map_loss_pcd': [],
-                'emd_loss': [],
+                'emd_point_distance_loss': [],
+                'emd_particle_distance_loss': [],
                 'total_loss': []
             }
             grads = []

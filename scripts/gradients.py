@@ -92,9 +92,9 @@ def main(args):
     process = psutil.Process(os.getpid())
     script_path = os.path.dirname(os.path.realpath(__file__))
     if args['param_set'] == 0:
-        gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho'+args['dir_suffix'])
+        gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-few-shot')
     else:
-        gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-mf-gf'+args['dir_suffix'])
+        gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-mf-gf-few-shot')
 
     os.makedirs(gradient_file_path, exist_ok=True)
     np.random.seed(1)
@@ -138,6 +138,13 @@ def main(args):
         with open(loss_cfg_file_name, 'w') as f_ac:
             json.dump(loss_cfg, f_ac, indent=2)
 
+    data_id_dict = {
+        '1': {'rectangle': [3, 5], 'round': [0, 1], 'cylinder': [1, 2]},
+        '2': {'rectangle': [1, 3], 'round': [0, 2], 'cylinder': [0, 2]},
+        '3': {'rectangle': [1, 2], 'round': [0, 1], 'cylinder': [0, 4]},
+        '4': {'rectangle': [1, 3], 'round': [1, 4], 'cylinder': [0, 4]},
+    }
+
     grads = []
     if args['param_set'] == 0:
         motions = ['1', '2']
@@ -159,11 +166,8 @@ def main(args):
             else:
                 agent_init_euler = (0, 0, 0)
             training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
-            if args['param_set'] == 0:
-                data_ids = np.random.randint(9, size=3, dtype=np.int32).tolist()
-            else:
-                data_ids = np.random.randint(5, size=3, dtype=np.int32).tolist()
 
+            data_ids = data_id_dict[motion_ind][agent]
             for data_ind in data_ids:
                 ti.reset()
                 ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32,
@@ -190,7 +194,7 @@ def main(args):
                 print(f'===> CPU memory occupied after create env: {process.memory_percent()} %')
                 print(f'===> GPU memory after create env: {get_gpu_memory()}')
 
-                for _ in range(50):
+                for _ in range(10):
                     E = np.asarray(np.random.uniform(E_range[0], E_range[1]), dtype=DTYPE_NP).reshape(
                         (1,))  # Young's modulus
                     nu = np.asarray(np.random.uniform(nu_range[0], nu_range[1]), dtype=DTYPE_NP).reshape(

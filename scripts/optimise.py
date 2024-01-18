@@ -71,9 +71,9 @@ def main(arguments):
     param_set = arguments['param_set']
     assert param_set in [0, 1], 'param_set must be 0 or 1'
 
-    n_epoch = 120
+    n_epoch = 100
     n_aborted_data = 0
-    seeds = [0, 1, 2]
+    seeds = [0, 1]
     n = 0
     while True:
         log_p_dir = os.path.join(script_path, '..', f'optimisation-param{param_set}-run{n}-logs')

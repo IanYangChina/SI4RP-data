@@ -112,6 +112,17 @@ E = 2e5
 nu = 0.1
 
 distance_type = 'exponential'
+loss_types = [
+    'point_distance_sr', 'point_distance_rs', 'chamfer_loss_pcd',
+    'particle_distance_sr', 'particle_distance_rs', 'chamfer_loss_particle',
+    'height_map_loss_pcd',
+    'emd_point_distance_loss', 'emd_particle_distance_loss'
+]
+
+for i in range(len(loss_types)):
+    data = np.load(os.path.join(fig_data_path, f'{loss_types[i]}_{distance_type}_{xy_param}-{p_density_str}.npy'))
+
+exit()
 
 point_distance_sr = np.zeros_like(rho)
 point_distance_rs = np.zeros_like(rho)
@@ -200,12 +211,6 @@ losses = [point_distance_sr / n_datapoints,
           emd_particle_distance_loss / n_datapoints
           ]
 
-loss_types = [
-    'point_distance_sr', 'point_distance_rs', 'chamfer_loss_pcd',
-    'particle_distance_sr', 'particle_distance_rs', 'chamfer_loss_particle',
-    'height_map_loss_pcd',
-    'emd_point_distance_loss', 'emd_particle_distance_loss'
-]
 
 for i in range(len(losses)):
     np.save(os.path.join(fig_data_path, f'{loss_types[i]}_{distance_type}_{xy_param}-{p_density_str}.npy'), losses[i])

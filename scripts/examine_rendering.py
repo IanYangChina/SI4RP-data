@@ -213,7 +213,7 @@ def main(args):
     training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
     if args['eval']:
         training_data_path = os.path.join(script_path, '..', 'data-motion-validation', f'eef-{agent}')
-    data_ids = ['7', '8']
+    data_ids = ['0', '1', '2', '3', '4', '5', '6', '7', '8']
 
     E = 193370  # [1e4, 3e5]
     nu = 0.49  # [0.01, 0.48]

@@ -14,7 +14,12 @@ losses = ['pd_rs', 'pd_sr', 'prd_rs', 'prd_sr', 'hm', 'emd']
 params = ['E', 'nu', 'ys', 'rho', 'mani_fric', 'g_fric']
 print(f'Param {params}')
 n = 0
-plt.figure()
+
+x = []
+y = []
+y_ = []
+e = []
+legends = []
 while True:
     if not os.path.exists(os.path.join(data_path, f'grads-mean-{n}.npy')):
         break
@@ -44,7 +49,43 @@ while True:
         legend += 'emd_pr'
 
     print(f'Loss {n}: {legend}')
-    print(f'Mean: {mean}')
-    print(f'Std: {std}')
-
+    print(f'Mean: {mean}, OoM: {np.log(np.abs(mean))}')
+    print(f'Std: {std}, OoM: {np.log(np.abs(std))}')
+    
+    x.append(n)
+    legends.append(legend)
     n += 1
+    
+    y.append(np.log(np.abs(mean)))
+    y_.append(std/mean)
+    
+y = np.asarray(y)
+y_ = np.asarray(y_)
+colors = ['b', 'g']
+markers = ['+', 'x']
+for k in range(6):
+    plt.figure()
+    for n in range(len(x)):
+        if n < 9:
+            m = 0
+        else:
+            m = 1
+        plt.scatter(x[n], y[n, k], color=colors[m], marker=markers[m])
+    plt.title(params[k]+'-log-abs-mean')
+    plt.xticks(x, legends, rotation=90)
+    plt.tight_layout()
+    plt.savefig(os.path.join(fig_path, params[k]+'-mean.pdf'), bbox_inches='tight', dpi=500)
+    plt.close()
+    
+    plt.figure()
+    for n in range(len(x)):
+        if n < 9:
+            m = 0
+        else:
+            m = 1
+        plt.scatter(x[n], y_[n, k], color=colors[m], marker=markers[m])
+    plt.title(params[k]+'-coeff-variation')
+    plt.xticks(x, legends, rotation=90)
+    plt.tight_layout()
+    plt.savefig(os.path.join(fig_path, params[k]+'-coeff-variation.pdf'), bbox_inches='tight', dpi=500)
+    plt.close()

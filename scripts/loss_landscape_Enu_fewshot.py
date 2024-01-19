@@ -174,11 +174,21 @@ for motion_ind in ['1', '2']:
                         mpm_env.step(action)
                     loss_info = mpm_env.get_final_loss()
 
+                    abort = False
                     print(f'The {i}, {j}-th loss is:')
                     for b, v in loss_info.items():
                         if b == 'final_height_map':
                             continue
+                        # Check if the loss is strange
+                        if np.isinf(v) or np.isnan(v):
+                            abort = True
                         print(f'{b}: {v:.4f}')
+
+                    if abort:
+                        print(f'===> [Warning] Strange loss.')
+                        print(f'===> [Warning] E: {E_list[i]}, nu: {nu_list[j]}')
+                        print(f'===> [Warning] Motion: {motion_ind}, agent: {agent}, data: {data_ind}')
+
                     point_distance_sr[j, i] += loss_info['point_distance_sr']
                     point_distance_rs[j, i] += loss_info['point_distance_rs']
                     chamfer_loss_pcd[j, i] += loss_info['chamfer_loss_pcd']

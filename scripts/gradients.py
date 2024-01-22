@@ -103,7 +103,7 @@ def main(args):
 
     E_range = (1e4, 3e5)
     nu_range = (0.01, 0.49)
-    yield_stress_range = (1e3, 1e6)
+    yield_stress_range = (100, 2e4)
     rho_range = (1000, 2000)
     f_range = (0.0, 2.0)
 

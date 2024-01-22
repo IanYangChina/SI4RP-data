@@ -63,7 +63,7 @@ def main(arguments):
     # Parameter ranges
     E_range = (1e4, 3e5)
     nu_range = (0.01, 0.48)
-    yield_stress_range = (1e3, 1e6)
+    yield_stress_range = (1e2, 2e4)
     rho_range = (1000, 2000)
     mf_range = (0.01, 2.0)
     gf_range = (0.01, 2.0)

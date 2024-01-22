@@ -25,7 +25,7 @@ def forward(mpm_env, init_state, trajectory, press_to_proceed=False,
             render=False, save_img=False, render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
             init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
     t1 = time()
-    mpm_env.set_state(init_state['state'], grad_enabled=True)
+    mpm_env.set_state(init_state['state'], grad_enabled=False)
     # print(mpm_env.agent.effectors[0].pos[mpm_env.simulator.cur_substep_local])
     cmap = 'YlGnBu'
     if render_init_pcd:
@@ -215,7 +215,7 @@ def main(args):
     training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
     if args['eval']:
         training_data_path = os.path.join(script_path, '..', 'data-motion-validation', f'eef-{agent}')
-    data_ids = ['0', '1', '2', '3', '4', '5', '6', '7', '8']
+    data_ids = ['3', '4']
 
     E = 1e4  # [1e4, 3e5]
     nu = 0.3  # [0.01, 0.48]
@@ -223,7 +223,7 @@ def main(args):
     # lam = E * nu / ((1 + nu) * (1 - 2 * nu))
     # print(f'===> mu: {mu}, lambda: {lam}')
     yield_stress = 6e3  # [1e2, 2e4]
-    rho = 2000  # [1000, 2000]
+    rho = 1300  # [1000, 2000]
     gf = 2.0  # [0.01, 2.0]
     mf = 0.2  # [0.01, 2.0]
 
@@ -253,8 +253,8 @@ def main(args):
         print(f'===> CPU memory occupied after create env: {process.memory_percent()} %')
         print(f'===> GPU memory after create env: {get_gpu_memory()}')
 
-        for E in [1e4, 5e4, 1e5, 3e5, 5e5, 1e6]:
-            for yield_stress in [1e2, 3e2, 5e2, 7e2, 1e3, 3e3, 5e3, 7e3, 9e3, 1.2e4]:
+        for E in [290000]:
+            for nu in [0.105999, 0.1220000, 0.137999, 0.153999, 0.170000, 0.186000, 0.202000, 0.217999]:
                 print(f'===> Parameters: E = {E}, nu = {nu}, yield_stress = {yield_stress}, rho = {rho}, gf = {gf}, mf = {mf}')
                 set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress,
                                rho=rho, ground_friction=gf, manipulator_friction=mf)
@@ -271,7 +271,8 @@ def main(args):
         print(f'===> CPU memory occupied after forward: {process.memory_percent()} %')
         print(f'===> GPU memory after forward: {get_gpu_memory()}')
 
-        mpm_env.simulator.clear_ckpt()
+        # Unnecessary to clear checkpoint without gradient enabled
+        # mpm_env.simulator.clear_ckpt()
 
 
 if __name__ == '__main__':

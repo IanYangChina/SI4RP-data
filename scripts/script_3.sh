@@ -16,7 +16,3 @@ python gradients_fewshot.py --prd_sr_loss --exp_dist
 python gradients_fewshot.py --hm_loss --exp_dist
 python gradients_fewshot.py --emd_p_loss --exp_dist
 python gradients_fewshot.py --emd_pr_loss --exp_dist
-python loss_landscapes_Enu_fewshot.py
-python loss_landscapes_Enu_exp_fewshot.py
-python loss_landscapes_rhoys_fewshot.py
-python loss_landscapes_rhoys_exp_fewshot.py

@@ -228,7 +228,8 @@ def main(args):
                         emd_point_distance_loss[j, i] += loss_info['emd_point_distance_loss']
                         emd_particle_distance_loss[j, i] += loss_info['emd_particle_distance_loss']
 
-                mpm_env.simulator.clear_ckpt()
+                # Unnecessary to clear ckpt without gradient enabled.
+                # mpm_env.simulator.clear_ckpt()
                 print(f'Time taken for data point {data_ind}: {time() - t0}')
                 logging.info(f'Time taken for data point {data_ind}: {time() - t0}')
 

@@ -229,7 +229,7 @@ def main(args):
 
     for data_ind in data_ids:
         ti.reset()
-        ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32,
+        ti.init(arch=ti.gpu, default_fp=DTYPE_TI, default_ip=ti.i32, debug=True,
                 fast_math=False, random_seed=1)
         data_cfg = {
             'data_path': training_data_path,

@@ -229,7 +229,7 @@ def main(arguments):
                             abort = True
                             break
                 if not abort:
-                    if np.any(np.isnan(grad)) or np.any(np.isinf(grad)):
+                    if np.any(np.isnan(grad)) or np.any(np.isinf(grad)) or np.any(np.abs(grad) > 1e10):
                         abort = True
 
                 if not abort:

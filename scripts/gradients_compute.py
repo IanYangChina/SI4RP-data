@@ -7,12 +7,13 @@ import psutil
 import json
 import argparse
 from doma.envs.sys_id_env import make_env, set_parameters
+import logging
 
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
 
 
-def forward_backward(mpm_env, init_state, trajectory, backward=True, debug_grad=False):
+def forward_backward(mpm_env, init_state, trajectory, logger, backward=True, debug_grad=False):
     cmap = 'Greys'
 
     t1 = time()
@@ -25,6 +26,7 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True, debug_grad=
     for i, v in loss_info.items():
         if i != 'final_height_map':
             print(f'===> {i}: {v:.4f}')
+            logger.info(f'===> {i}: {v:.4f}')
         else:
             pass
 
@@ -82,6 +84,7 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True, debug_grad=
 
         t3 = time()
         print(f'===> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
+        logger.info(f'===> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
 
     return loss_info
 
@@ -91,10 +94,16 @@ def main(args):
         print('[Warning] Debug mode on, printing gradients.')
     process = psutil.Process(os.getpid())
     script_path = os.path.dirname(os.path.realpath(__file__))
-    if args['param_set'] == 0:
-        gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-few-shot')
+    if args['fewshot']:
+        if args['param_set'] == 0:
+            gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-few-shot')
+        else:
+            gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-mf-gf-few-shot')
     else:
-        gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-mf-gf-few-shot')
+        if args['param_set'] == 0:
+            gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho' + args['dir_suffix'])
+        else:
+            gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-mf-gf' + args['dir_suffix'])
 
     os.makedirs(gradient_file_path, exist_ok=True)
     np.random.seed(1)
@@ -131,9 +140,15 @@ def main(args):
         grad_mean_file_name = os.path.join(gradient_file_path, f'grads-mean-{str(n)}.npy')
         grad_std_file_name = os.path.join(gradient_file_path, f'grads-std-{str(n)}.npy')
         loss_cfg_file_name = os.path.join(gradient_file_path, f'loss-config-{str(n)}.json')
+        log_file_name = os.path.join(gradient_file_path, f'grads_{str(n)}.log')
         if not os.path.exists(loss_cfg_file_name):
             break
         n += 1
+
+    logging.basicConfig(level=logging.NOTSET,filemode="w",
+                        filename=log_file_name,
+                        format="%(asctime)s %(levelname)s %(message)s")
+
     if not args['debug']:
         with open(loss_cfg_file_name, 'w') as f_ac:
             json.dump(loss_cfg, f_ac, indent=2)
@@ -167,10 +182,20 @@ def main(args):
                 agent_init_euler = (0, 0, 0)
             training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
 
-            data_ids = data_id_dict[motion_ind][agent]
+            if args['fewshot']:
+                data_ids = data_id_dict[motion_ind][agent]
+            else:
+                if args['param_set'] == 0:
+                    data_ids = np.random.randint(9, size=3, dtype=np.int32).tolist()
+                else:
+                    data_ids = np.random.randint(5, size=3, dtype=np.int32).tolist()
+
             for data_ind in data_ids:
                 ti.reset()
                 ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32,
+                        debug=False, advanced_optimization=True,
+                        # print_ir=True,
+                        # log_level=ti.TRACE,
                         fast_math=False, random_seed=1)
                 data_cfg = {
                     'data_path': training_data_path,
@@ -187,12 +212,19 @@ def main(args):
                 }
                 print(f'===> CPU memory occupied before create env: {process.memory_percent()} %')
                 print(f'===> GPU memory before create env: {get_gpu_memory()}')
+                logging.info(f'===> CPU memory occupied before create env: {process.memory_percent()} %')
+                logging.info(f'===> GPU memory before create env: {get_gpu_memory()}')
                 env, mpm_env, init_state = make_env(data_cfg, env_cfg, loss_cfg, debug_grad=args['debug'])
                 print(f'===> Num. simulation particles: {mpm_env.loss.n_particles_matching_mat}')
                 print(f'===> Num. target pcd points: {mpm_env.loss.n_target_pcd_points}')
                 print(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')
                 print(f'===> CPU memory occupied after create env: {process.memory_percent()} %')
                 print(f'===> GPU memory after create env: {get_gpu_memory()}')
+                logging.info(f'===> Num. simulation particles: {mpm_env.loss.n_particles_matching_mat}')
+                logging.info(f'===> Num. target pcd points: {mpm_env.loss.n_target_pcd_points}')
+                logging.info(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')
+                logging.info(f'===> CPU memory occupied after create env: {process.memory_percent()} %')
+                logging.info(f'===> GPU memory after create env: {get_gpu_memory()}')
 
                 for _ in range(20):
                     E = np.asarray(np.random.uniform(E_range[0], E_range[1]), dtype=DTYPE_NP).reshape(
@@ -213,7 +245,8 @@ def main(args):
                                    E.copy(), nu.copy(), yield_stress.copy(),
                                    rho.copy(), ground_friction.copy(), manipulator_friction.copy())
 
-                    loss_info = forward_backward(mpm_env, init_state, trajectory.copy(), backward=True, debug_grad=args['debug'])
+                    loss_info = forward_backward(mpm_env, init_state, trajectory.copy(), logger=logging,
+                                                 backward=True, debug_grad=args['debug'])
 
                     print(f'===> CPU memory occupied after forward-backward: {process.memory_percent()} %')
                     print(f'===> GPU memory after forward-backward: {get_gpu_memory()}')
@@ -222,9 +255,18 @@ def main(args):
                     print(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[material_id].nu}")
                     print(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[material_id].rho}")
                     print(f"Gradient of yield stress: {mpm_env.simulator.system_param.grad[None].yield_stress}")
+                    logging.info(f'===> CPU memory occupied after forward-backward: {process.memory_percent()} %')
+                    logging.info(f'===> GPU memory after forward-backward: {get_gpu_memory()}')
+                    logging.info('===> Gradients:')
+                    logging.info(f"Gradient of E: {mpm_env.simulator.particle_param.grad[material_id].E}")
+                    logging.info(f"Gradient of nu: {mpm_env.simulator.particle_param.grad[material_id].nu}")
+                    logging.info(f"Gradient of rho: {mpm_env.simulator.particle_param.grad[material_id].rho}")
+                    logging.info(f"Gradient of yield stress: {mpm_env.simulator.system_param.grad[None].yield_stress}")
                     if args['param_set'] == 1:
                         print(f"Gradient of manipulator friction: {mpm_env.simulator.system_param.grad[None].manipulator_friction}")
                         print(f"Gradient of ground friction: {mpm_env.simulator.system_param.grad[None].ground_friction}")
+                        logging.info(f"Gradient of manipulator friction: {mpm_env.simulator.system_param.grad[None].manipulator_friction}")
+                        logging.info(f"Gradient of ground friction: {mpm_env.simulator.system_param.grad[None].ground_friction}")
 
                     grad = np.array([mpm_env.simulator.particle_param.grad[material_id].E,
                                      mpm_env.simulator.particle_param.grad[material_id].nu,
@@ -241,7 +283,7 @@ def main(args):
                                 abort = True
                                 break
                     if not abort:
-                        if np.any(np.isnan(grad)) or np.any(np.isinf(grad)):
+                        if np.any(np.isnan(grad)) or np.any(np.isinf(grad)) or np.any(np.abs(grad) > 1e10):
                             abort = True
 
                     if not abort:
@@ -257,6 +299,10 @@ def main(args):
                         print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
                         print(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
                         print(f'===> [Warning] Motion: {motion_ind}, agent: {agent}, data: {data_ind}')
+                        logging.info(f'===> [Warning] Strange loss or gradient.')
+                        logging.info(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
+                        logging.info(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
+                        logging.info(f'===> [Warning] Motion: {motion_ind}, agent: {agent}, data: {data_ind}')
                     else:
                         grads.append(grad.copy())
 
@@ -269,9 +315,16 @@ def main(args):
     print(f"Avg. gradient of nu: {grad_mean[1]}, std: {grad_std[1]}")
     print(f"Avg. gradient of yield stress: {grad_mean[2]}, std: {grad_std[2]}")
     print(f"Avg. gradient of rho: {grad_mean[3]}, std: {grad_std[3]}")
+    logging.info('===> Avg. Gradients:')
+    logging.info(f"Avg. gradient of E: {grad_mean[0]}, std: {grad_std[0]}")
+    logging.info(f"Avg. gradient of nu: {grad_mean[1]}, std: {grad_std[1]}")
+    logging.info(f"Avg. gradient of yield stress: {grad_mean[2]}, std: {grad_std[2]}")
+    logging.info(f"Avg. gradient of rho: {grad_mean[3]}, std: {grad_std[3]}")
     if args['param_set'] == 1:
         print(f"Avg. gradient of manipulator friction: {grad_mean[4]}, std: {grad_std[4]}")
         print(f"Avg. gradient of ground friction: {grad_mean[5]}, std: {grad_std[5]}")
+        logging.info(f"Avg. gradient of manipulator friction: {grad_mean[4]}, std: {grad_std[4]}")
+        logging.info(f"Avg. gradient of ground friction: {grad_mean[5]}, std: {grad_std[5]}")
 
     if not args['debug']:
         np.save(grad_mean_file_name, grad_mean)
@@ -282,6 +335,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--dir_suffix', dest='dir_suffix', type=str, default='')
     parser.add_argument('--param_set', dest='param_set', type=int, default=0)
+    parser.add_argument('--fewshot', dest='fewshot', default=False, action='store_true')
     parser.add_argument('--debug', dest='debug', default=False, action='store_true')
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
     parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.005)

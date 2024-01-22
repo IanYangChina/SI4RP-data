@@ -1,0 +1,17 @@
+{
+  "exponential_distance": true,
+  "averaging_loss": false,
+  "point_distance_rs_loss": false,
+  "point_distance_sr_loss": false,
+  "particle_distance_rs_loss": true,
+  "particle_distance_sr_loss": true,
+  "height_map_loss": false,
+  "emd_point_distance_loss": false,
+  "emd_particle_distance_loss": false,
+  "ptcl_density": 40000000.0,
+  "down_sample_voxel_size": 0.005,
+  "voxelise_res": 1080,
+  "load_height_map": true,
+  "height_map_res": 32,
+  "height_map_size": 0.11
+}

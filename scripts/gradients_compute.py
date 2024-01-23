@@ -101,9 +101,9 @@ def main(args):
             gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-mf-gf-few-shot')
     else:
         if args['param_set'] == 0:
-            gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho' + args['dir_suffix'])
+            gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho')
         else:
-            gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-mf-gf' + args['dir_suffix'])
+            gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-mf-gf')
 
     os.makedirs(gradient_file_path, exist_ok=True)
     np.random.seed(1)
@@ -193,10 +193,11 @@ def main(args):
             for data_ind in data_ids:
                 ti.reset()
                 ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32,
-                        debug=False, advanced_optimization=True,
-                        # print_ir=True,
+                        debug=False, advanced_optimization=True, fast_math=True,
+                        print_ir=False,
                         # log_level=ti.TRACE,
-                        fast_math=False, random_seed=1)
+                        # offline_cache=False,
+                        random_seed=1)
                 data_cfg = {
                     'data_path': training_data_path,
                     'data_ind': str(data_ind),
@@ -283,7 +284,7 @@ def main(args):
                                 abort = True
                                 break
                     if not abort:
-                        if np.any(np.isnan(grad)) or np.any(np.isinf(grad)) or np.any(np.abs(grad) > 1e10):
+                        if np.any(np.isnan(grad)) or np.any(np.isinf(grad)) or np.any(np.abs(grad) > 1e6):
                             abort = True
 
                     if not abort:
@@ -299,10 +300,10 @@ def main(args):
                         print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
                         print(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
                         print(f'===> [Warning] Motion: {motion_ind}, agent: {agent}, data: {data_ind}')
-                        logging.info(f'===> [Warning] Strange loss or gradient.')
-                        logging.info(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
-                        logging.info(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
-                        logging.info(f'===> [Warning] Motion: {motion_ind}, agent: {agent}, data: {data_ind}')
+                        logging.error(f'===> [Warning] Strange loss or gradient.')
+                        logging.error(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
+                        logging.error(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
+                        logging.error(f'===> [Warning] Motion: {motion_ind}, agent: {agent}, data: {data_ind}')
                     else:
                         grads.append(grad.copy())
 
@@ -333,7 +334,6 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--dir_suffix', dest='dir_suffix', type=str, default='')
     parser.add_argument('--param_set', dest='param_set', type=int, default=0)
     parser.add_argument('--fewshot', dest='fewshot', default=False, action='store_true')
     parser.add_argument('--debug', dest='debug', default=False, action='store_true')

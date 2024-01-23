@@ -229,8 +229,8 @@ def main(args):
 
     for data_ind in data_ids:
         ti.reset()
-        ti.init(arch=ti.gpu, default_fp=DTYPE_TI, default_ip=ti.i32, debug=True,
-                fast_math=False, random_seed=1)
+        ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32, debug=False,
+                fast_math=True, advanced_optimization=True, random_seed=1)
         data_cfg = {
             'data_path': training_data_path,
             'data_ind': data_ind,
@@ -282,7 +282,7 @@ if __name__ == '__main__':
     parser.add_argument('--ptp', dest='press_to_proceed', default=False, action='store_true')
     parser.add_argument('--demo', dest='demo', default=False, action='store_true')
     parser.add_argument('--eval', dest='eval', default=False, action='store_true')
-    parser.add_argument('--dt', dest='dt', type=float, default=0.02)
+    parser.add_argument('--dt', dest='dt', type=float, default=0.01)
     parser.add_argument('--dt_avg', dest='dt_avg', default=False, action='store_true')
     parser.add_argument('--m_id', dest='motion_ind', type=int, default=1)
     parser.add_argument('--agent_ind', dest='agent_ind', type=int, default=0)

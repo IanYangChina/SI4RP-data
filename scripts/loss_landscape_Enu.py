@@ -212,9 +212,9 @@ def main(args):
                             print(f'===> [Warning] Strange loss.')
                             print(f'===> [Warning] E: {E_list[i]}, nu: {nu_list[j]}')
                             print(f'===> [Warning] Motion: {motion_ind}, agent: {agent}, data: {data_ind}')
-                        logging.error(f'===> [Warning] Strange loss.')
-                        logging.error(f'===> [Warning] RE: {E_list[i]}, nu: {nu_list[j]}')
-                        logging.error(f'===> [Warning] Motion: {motion_ind}, agent: {agent}, data: {data_ind}')
+                            logging.error(f'===> [Warning] Strange loss.')
+                            logging.error(f'===> [Warning] RE: {E_list[i]}, nu: {nu_list[j]}')
+                            logging.error(f'===> [Warning] Motion: {motion_ind}, agent: {agent}, data: {data_ind}')
 
                         point_distance_sr[j, i] += loss_info['point_distance_sr']
                         point_distance_rs[j, i] += loss_info['point_distance_rs']

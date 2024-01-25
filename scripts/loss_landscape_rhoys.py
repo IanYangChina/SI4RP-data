@@ -186,6 +186,17 @@ def main(args):
                 logging.info(f'===> Num. target pcd points: {mpm_env.loss.n_target_pcd_points}')
                 logging.info(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')
                 logging.info(f'Start calculating losses with grid size: {point_distance_sr.shape}')
+
+                # discard the first compute after env creation
+                set_parameters(mpm_env, env_cfg['material_id'],  E, nu,
+                               yield_stress=yield_stress_list[0], rho=rho_list[0],
+                               manipulator_friction=0.2, ground_friction=2.0)
+                mpm_env.set_state(init_state['state'], grad_enabled=False)
+                for k in range(mpm_env.horizon):
+                    action = trajectory[k].copy()
+                    mpm_env.step(action)
+                loss_info = mpm_env.get_final_loss()
+
                 t0 = time()
                 for i in range(len(rho_list)):
                     for j in range(len(yield_stress_list)):

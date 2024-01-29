@@ -114,7 +114,7 @@ def main(args):
 
     xy_param = 'rho-yieldstress'
     rho_list = np.arange(1000, 1999, 33.3).astype(DTYPE_NP)
-    yield_stress_list = np.arange(100, 20050, 665).astype(DTYPE_NP)
+    yield_stress_list = np.arange(1000, 20200, 640).astype(DTYPE_NP)
 
     rho, yield_stress = np.meshgrid(rho_list, yield_stress_list)
     E = 2e5

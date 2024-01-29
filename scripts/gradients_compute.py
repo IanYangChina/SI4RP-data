@@ -79,8 +79,7 @@ def forward_backward(mpm_env, init_state, trajectory, logger, backward=True, deb
 
             # This is a trick that prevents faulty gradient computation
             # It works for unknown reasons
-            if i == (mpm_env.horizon // 2):
-                _ = mpm_env.simulator.particle_param.grad[2].E
+            _ = mpm_env.simulator.particle_param.grad[2].E
 
         t3 = time()
         print(f'===> forward: {t2 - t1:.2f}s backward: {t3 - t2:.2f}s')
@@ -112,7 +111,7 @@ def main(args):
 
     E_range = (1e4, 3e5)
     nu_range = (0.01, 0.49)
-    yield_stress_range = (100, 2e4)
+    yield_stress_range = (1000, 2e4)
     rho_range = (1000, 2000)
     f_range = (0.0, 2.0)
 

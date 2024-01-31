@@ -5,7 +5,7 @@ np.set_printoptions(precision=3)
 import matplotlib.pyplot as plt
 
 script_path = os.path.dirname(os.path.realpath(__file__))
-data_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-few-shot')
+data_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-mf-gf-few-shot')
 fig_path = os.path.join(data_path, 'figures')
 if not os.path.exists(fig_path):
     os.makedirs(fig_path)

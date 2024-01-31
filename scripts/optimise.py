@@ -9,6 +9,8 @@ from doma.envs.sys_id_env import make_env, set_parameters
 from doma.engine.utils.misc import get_gpu_memory
 import psutil
 import json
+import logging
+
 
 MATERIAL_ID = 2
 process = psutil.Process(os.getpid())
@@ -31,8 +33,7 @@ def forward_backward(mpm_env, init_state, trajectory):
 
         # This is a trick that prevents faulty gradient computation
         # It works for unknown reasons
-        if i == (mpm_env.horizon // 2):
-            _ = mpm_env.simulator.particle_param.grad[2].E
+        _ = mpm_env.simulator.particle_param.grad[2].E
 
     return loss_info
 
@@ -62,8 +63,8 @@ def main(arguments):
 
     # Parameter ranges
     E_range = (1e4, 3e5)
-    nu_range = (0.01, 0.48)
-    yield_stress_range = (1e2, 2e4)
+    nu_range = (0.01, 0.49)
+    yield_stress_range = (1e3, 2e4)
     rho_range = (1000, 2000)
     mf_range = (0.01, 2.0)
     gf_range = (0.01, 2.0)
@@ -76,7 +77,10 @@ def main(arguments):
     seeds = [0, 1]
     n = 0
     while True:
-        log_p_dir = os.path.join(script_path, '..', f'optimisation-param{param_set}-run{n}-logs')
+        if arguments['fewshot']:
+            log_p_dir = os.path.join(script_path, '..', f'optimisation-fewshot-param{param_set}-run{n}-logs')
+        else:
+            log_p_dir = os.path.join(script_path, '..', f'optimisation-param{param_set}-run{n}-logs')
         if os.path.exists(log_p_dir):
             n += 1
         else:
@@ -84,12 +88,16 @@ def main(arguments):
     os.makedirs(log_p_dir, exist_ok=True)
     with open(os.path.join(log_p_dir, 'loss_config.json'), 'w') as f_ac:
         json.dump(loss_cfg, f_ac, indent=2)
+    log_file_name = os.path.join(log_p_dir, 'optimisation.log')
+    logging.basicConfig(level=logging.NOTSET,filemode="w",
+                        filename=log_file_name,
+                        format="%(asctime)s %(levelname)s %(message)s")
 
     training_config = {
         'param_set': param_set,
-        'lr_E': 2e3,
+        'lr_E': 4e3,
         'lr_nu': 1e-2,
-        'lr_yield_stress': 1e4,
+        'lr_yield_stress': 5e2,
         'lr_rho': 10,
         'lr_manipulator_friction': 1e-2,
         'lr_ground_friction': 1e-2,
@@ -103,6 +111,9 @@ def main(arguments):
     print(f"=====> Optimising param set {param_set} for {n_epoch} epochs for {len(seeds)} random seeds.")
     print(f"=====> Loss config: {loss_cfg}")
     print(f"=====> Training config: {training_config}")
+    logging.info(f"=====> Optimising param set {param_set} for {n_epoch} epochs for {len(seeds)} random seeds.")
+    logging.info(f"=====> Loss config: {loss_cfg}")
+    logging.info(f"=====> Training config: {training_config}")
 
     for seed in seeds:
         # Setting up random seed
@@ -125,6 +136,7 @@ def main(arguments):
             ground_friction = np.asarray([2.0], dtype=DTYPE_NP).reshape((1,))  # Ground friction
 
             print(f"=====> Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
+            logging.info(f"=====> Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
             # Optimiser: Adam
             optim_E = Adam(parameters_shape=E.shape,
                            cfg={'lr': training_config['lr_E'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
@@ -145,6 +157,7 @@ def main(arguments):
             ground_friction = np.asarray(np.random.uniform(gf_range[0], gf_range[1]), dtype=DTYPE_NP).reshape((1,))
 
             print(f"=====> Seed: {seed}, initial parameters: manipulation friction={manipulator_friction}, ground friction={ground_friction}")
+            logging.info(f"=====> Seed: {seed}, initial parameters: manipulation friction={manipulator_friction}, ground friction={ground_friction}")
             # Optimiser: Adam
             optim_mf = Adam(parameters_shape=manipulator_friction.shape,
                             cfg={'lr': training_config['lr_manipulator_friction'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
@@ -169,12 +182,29 @@ def main(arguments):
                 'total_loss': []
             }
             grads = []
-            if arguments['param_set'] == 0:
-                motion_ids = np.random.randint(1, 3, size=mini_batch_size, dtype=np.int32).tolist()
+            if arguments['fewshot']:
+                # data_id_dict = {
+                #     '1': {'rectangle': [3, 5], 'round': [0, 1], 'cylinder': [1, 2]},
+                #     '2': {'rectangle': [1, 3], 'round': [0, 2], 'cylinder': [0, 2]},
+                #     '3': {'rectangle': [1, 2], 'round': [0, 1], 'cylinder': [0, 4]},
+                #     '4': {'rectangle': [1, 3], 'round': [1, 4], 'cylinder': [0, 4]},
+                # }
+                mini_batch_size = 12
+                if arguments['param_set'] == 0:
+                    motion_ids = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]
+                    agent_ids = [0, 0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 2]
+                    data_ids = [3, 5, 0, 1, 1, 2, 1, 3, 0, 2, 0, 2]
+                else:
+                    motion_ids = [3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4]
+                    agent_ids = [0, 0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 2]
+                    data_ids = [1, 2, 0, 1, 0, 4, 1, 3, 1, 4, 0, 4]
             else:
-                motion_ids = np.random.randint(3, 5, size=mini_batch_size, dtype=np.int32).tolist()
-            agent_ids = np.random.randint(3, size=mini_batch_size, dtype=np.int32).tolist()
-            data_ids = np.random.randint(9, size=mini_batch_size, dtype=np.int32).tolist()
+                if arguments['param_set'] == 0:
+                    motion_ids = np.random.randint(1, 3, size=mini_batch_size, dtype=np.int32).tolist()
+                else:
+                    motion_ids = np.random.randint(3, 5, size=mini_batch_size, dtype=np.int32).tolist()
+                agent_ids = np.random.randint(3, size=mini_batch_size, dtype=np.int32).tolist()
+                data_ids = np.random.randint(9, size=mini_batch_size, dtype=np.int32).tolist()
 
             for i in range(mini_batch_size):
                 motion_ind = str(motion_ids[i])
@@ -192,7 +222,7 @@ def main(arguments):
                 data_ind = data_ids[i]
 
                 ti.reset()
-                ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=False, random_seed=seed,
+                ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
                         debug=False, check_out_of_bound=False)
                 data_cfg = {
                     'data_path': training_data_path,
@@ -208,6 +238,7 @@ def main(arguments):
                     'agent_init_euler': agent_init_euler,
                 }
                 print(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
+                logging.info(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
                 env, mpm_env, init_state = make_env(data_cfg, env_cfg, loss_cfg)
                 set_parameters(mpm_env, env_cfg['material_id'],
                                E=E.copy(), nu=nu.copy(), yield_stress=yield_stress.copy(), rho=rho.copy(),
@@ -229,7 +260,7 @@ def main(arguments):
                             abort = True
                             break
                 if not abort:
-                    if np.any(np.isnan(grad)) or np.any(np.isinf(grad)) or np.any(np.abs(grad) > 1e10):
+                    if np.any(np.isnan(grad)) or np.any(np.isinf(grad)) or np.any(np.abs(grad) > 1e6):
                         abort = True
 
                 if not abort:
@@ -245,6 +276,10 @@ def main(arguments):
                     print(f'===> [Warning] Strange loss or gradient.')
                     print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
                     print(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
+                    logging.error(f'===> [Warning] Aborting datapoint: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
+                    logging.error(f'===> [Warning] Strange loss or gradient.')
+                    logging.error(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
+                    logging.error(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
                     n_aborted_data += 1
                 else:
                     for i, v in loss.items():
@@ -253,6 +288,8 @@ def main(arguments):
 
                 print(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
                 print(f'=====> Grad: {grad}')
+                logging.info(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
+                logging.info(f'=====> Grad: {grad}')
 
                 mpm_env.simulator.clear_ckpt()
 
@@ -262,8 +299,11 @@ def main(arguments):
 
             for i, v in loss.items():
                 print(f"========> Avg. Loss: {i}: {v}")
+                logging.info(f"========> Avg. Loss: {i}: {v}")
             print(f"========> Avg. grads: {avg_grad}")
             print(f"========> Num. aborted data so far: {n_aborted_data}")
+            logging.info(f"========> Avg. grads: {avg_grad}")
+            logging.info(f"========> Num. aborted data so far: {n_aborted_data}")
 
             if arguments['param_set'] == 0:
                 E = optim_E.step(E.copy(), avg_grad[0])
@@ -308,15 +348,18 @@ def main(arguments):
         logger.close()
         if arguments['param_set'] == 0:
             print(f"Final parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
+            logging.info(f"Final parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
             np.save(os.path.join(log_dir, 'final_params.npy'), np.array([E, nu, yield_stress, rho], dtype=DTYPE_NP))
         else:
             print(f"Final parameters: manipulator friction={manipulator_friction}, ground friction={ground_friction}")
+            logging.info(f"Final parameters: manipulator friction={manipulator_friction}, ground friction={ground_friction}")
             np.save(os.path.join(log_dir, 'final_params.npy'), np.array([manipulator_friction, ground_friction], dtype=DTYPE_NP))
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--param_set', dest='param_set', type=int, default=0)
+    parser.add_argument('--fewshot', dest='fewshot', default=False, action='store_true')
     parser.add_argument('--exp_dist', dest='exp_dist', default=False, action='store_true')
     parser.add_argument('--pd_rs_loss', dest='pd_rs_loss', default=False, action='store_true')
     parser.add_argument('--pd_sr_loss', dest='pd_sr_loss', default=False, action='store_true')

@@ -73,6 +73,9 @@ def main(arguments):
         'emd_particle_distance_loss': arguments['emd_pr_loss'],
     }
 
+    validation_loss_config = loss_cfg.copy()
+    validation_loss_config['exponential_distance'] = False
+
     # Parameter ranges
     E_range = (1e4, 3e5)
     nu_range = (0.01, 0.49)
@@ -408,7 +411,8 @@ def main(arguments):
                         'agent_name': agent,
                         'agent_init_euler': agent_init_euler,
                     }
-                    env, mpm_env, init_state = make_env(validation_data_cfg, validation_env_cfg, loss_cfg, logger=logging)
+                    env, mpm_env, init_state = make_env(validation_data_cfg, validation_env_cfg,
+                                                        validation_loss_config, logger=logging)
                     set_parameters(mpm_env, validation_env_cfg['material_id'],
                                    E=E.copy(), nu=nu.copy(), yield_stress=yield_stress.copy(), rho=rho.copy(),
                                    ground_friction=ground_friction.copy(),

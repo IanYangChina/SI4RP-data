@@ -16,7 +16,7 @@ MATERIAL_ID = 2
 process = psutil.Process(os.getpid())
 
 
-def forward_backward(mpm_env, init_state, trajectory):
+def forward_backward(mpm_env, init_state, trajectory, backward=True):
     # Forward
     mpm_env.set_state(init_state['state'], grad_enabled=True)
     for i in range(mpm_env.horizon):
@@ -24,20 +24,31 @@ def forward_backward(mpm_env, init_state, trajectory):
         mpm_env.step(action)
     loss_info = mpm_env.get_final_loss()
 
-    # backward
-    mpm_env.reset_grad()
-    mpm_env.get_final_loss_grad()
-    for i in range(mpm_env.horizon - 1, -1, -1):
-        action = trajectory[i]
-        mpm_env.step_grad(action=action)
+    if backward:
+        # backward
+        mpm_env.reset_grad()
+        mpm_env.get_final_loss_grad()
+        for i in range(mpm_env.horizon - 1, -1, -1):
+            action = trajectory[i]
+            mpm_env.step_grad(action=action)
 
-        # This is a trick that prevents faulty gradient computation
-        # It works for unknown reasons
-        _ = mpm_env.simulator.particle_param.grad[2].E
+            # This is a trick that prevents faulty gradient computation
+            # It works for unknown reasons
+            _ = mpm_env.simulator.particle_param.grad[2].E
 
     return loss_info
 
+
 def main(arguments):
+    if arguments['backend'] == 'opengl':
+        backend = ti.opengl
+    elif arguments['backend'] == 'cuda':
+        backend = ti.cuda
+    elif arguments['backend'] == 'vulkan':
+        backend = ti.vulkan
+    else:
+        backend = ti.cpu
+
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
@@ -169,6 +180,7 @@ def main(arguments):
 
         for epoch in range(n_epoch):
             t1 = time()
+            """===========Training==========="""
             loss = {
                 'point_distance_sr': [],
                 'point_distance_rs': [],
@@ -215,15 +227,15 @@ def main(arguments):
 
                 agent = agents[agent_ids[i]]
                 agent_init_euler = (0, 0, 0)
-                training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
                 if agent == 'rectangle':
                     agent_init_euler = (0, 0, 45)
+                training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
 
                 data_ind = data_ids[i]
 
                 ti.reset()
-                ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
-                        debug=False, check_out_of_bound=False)
+                ti.init(arch=backend, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
+                        debug=False, check_out_of_bound=False, device_memory_GB=3)
                 data_cfg = {
                     'data_path': training_data_path,
                     'data_ind': str(data_ind),
@@ -239,7 +251,7 @@ def main(arguments):
                 }
                 print(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
                 logging.info(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
-                env, mpm_env, init_state = make_env(data_cfg, env_cfg, loss_cfg)
+                env, mpm_env, init_state = make_env(data_cfg, env_cfg, loss_cfg, logger=logging)
                 set_parameters(mpm_env, env_cfg['material_id'],
                                E=E.copy(), nu=nu.copy(), yield_stress=yield_stress.copy(), rho=rho.copy(),
                                ground_friction=ground_friction.copy(),
@@ -293,6 +305,7 @@ def main(arguments):
 
                 mpm_env.simulator.clear_ckpt()
 
+            """===========Statistics and updates==========="""
             for i, v in loss.items():
                 loss[i] = np.mean(v)
             avg_grad = np.mean(grads, axis=0)
@@ -300,11 +313,13 @@ def main(arguments):
             for i, v in loss.items():
                 print(f"========> Avg. Loss: {i}: {v}")
                 logging.info(f"========> Avg. Loss: {i}: {v}")
+                logger.add_scalar(tag=f'Loss/{i}', scalar_value=v, global_step=epoch)
             print(f"========> Avg. grads: {avg_grad}")
             print(f"========> Num. aborted data so far: {n_aborted_data}")
             logging.info(f"========> Avg. grads: {avg_grad}")
             logging.info(f"========> Num. aborted data so far: {n_aborted_data}")
 
+            # Updates
             if arguments['param_set'] == 0:
                 E = optim_E.step(E.copy(), avg_grad[0])
                 E = np.clip(E, E_range[0], E_range[1])
@@ -320,8 +335,6 @@ def main(arguments):
                 ground_friction = optim_gf.step(ground_friction.copy(), avg_grad[5])
                 ground_friction = np.clip(ground_friction, gf_range[0], gf_range[1])
 
-            for i, v in loss.items():
-                logger.add_scalar(tag=f'Loss/{i}', scalar_value=v, global_step=epoch)
             if arguments['param_set'] == 0:
                 logger.add_scalar(tag='Param/E', scalar_value=E, global_step=epoch)
                 logger.add_scalar(tag='Grad/E', scalar_value=avg_grad[0], global_step=epoch)
@@ -340,6 +353,90 @@ def main(arguments):
                 logger.add_scalar(tag='Grad/ground_friction', scalar_value=avg_grad[5], global_step=epoch)
                 print(f"========> Epoch {epoch}: time={time() - t1}\n"
                       f"========> Manipulator friction={manipulator_friction}, ground friction={ground_friction}")
+
+            """===========Validation==========="""
+            print(f'=====> Run validation at epoch {epoch}')
+            logging.info(f'=====> Run validation at epoch {epoch}')
+            validation_loss = {
+                'point_distance_sr': [],
+                'point_distance_rs': [],
+                'chamfer_loss_pcd': [],
+                'particle_distance_sr': [],
+                'particle_distance_rs': [],
+                'chamfer_loss_particle': [],
+                'height_map_loss_pcd': [],
+                'emd_point_distance_loss': [],
+                'emd_particle_distance_loss': [],
+                'total_loss': []
+            }
+            dt_global = 0.01
+            n_substeps = 50
+            for agent in agents:
+                agent_init_euler = (0, 0, 0)
+                if agent == 'rectangle':
+                    agent_init_euler = (0, 0, 45)
+                trajectory = np.load(
+                    os.path.join(script_path, '..', 'trajectories',
+                                 f'tr_valid_{agent}_v_dt_{dt_global:0.2f}.npy'))
+                horizon = trajectory.shape[0]
+                validation_data_path = os.path.join(script_path, '..', f'data-motion-validation', f'eef-{agent}')
+                for data_ind in range(2):
+                    ti.reset()
+                    ti.init(arch=backend, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
+                            debug=False, check_out_of_bound=False, device_memory_GB=3)
+                    validation_data_cfg = {
+                        'data_path': validation_data_path,
+                        'data_ind': str(data_ind),
+                    }
+                    validation_env_cfg = {
+                        'p_density': particle_density,
+                        'horizon': horizon,
+                        'dt_global': dt_global,
+                        'n_substeps': n_substeps,
+                        'material_id': 2,
+                        'agent_name': agent,
+                        'agent_init_euler': agent_init_euler,
+                    }
+                    env, mpm_env, init_state = make_env(validation_data_cfg, validation_env_cfg, loss_cfg, logger=logging)
+                    set_parameters(mpm_env, validation_env_cfg['material_id'],
+                                   E=E.copy(), nu=nu.copy(), yield_stress=yield_stress.copy(), rho=rho.copy(),
+                                   ground_friction=ground_friction.copy(),
+                                   manipulator_friction=manipulator_friction.copy())
+                    loss_info = forward_backward(mpm_env, init_state, trajectory, backward=False)
+                    # Check if the loss is strange
+                    abort = False
+                    for i, v in loss_info.items():
+                        if i != 'final_height_map':
+                            if np.isinf(v) or np.isnan(v):
+                                abort = True
+                                break
+                    if abort:
+                        print(f'===> [Warning] Aborting validation run: agent {agent}, data {data_ind}')
+                        print(f'===> [Warning] Strange loss.')
+                        print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
+                        print(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
+                        logging.error(f'===> [Warning] Aborting validation run: agent {agent}, data {data_ind}')
+                        logging.error(f'===> [Warning] Strange loss.')
+                        logging.error(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
+                        logging.error(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
+                        n_aborted_data += 1
+                    else:
+                        for i, v in validation_loss.items():
+                            validation_loss[i].append(loss_info[i])
+
+                    print(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
+                    logging.info(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
+
+                    mpm_env.simulator.clear_ckpt()
+
+            for i, v in validation_loss.items():
+                validation_loss[i] = np.mean(v)
+            for i, v in validation_loss.items():
+                print(f"========> Avg. Validation loss: {i}: {v}")
+                logging.info(f"========> Avg. Validation loss: {i}: {v}")
+                logger.add_scalar(tag=f'Validation loss/{i}', scalar_value=v, global_step=epoch)
+            print(f"========> Num. aborted data so far: {n_aborted_data}")
+            logging.info(f"========> Num. aborted data so far: {n_aborted_data}")
 
             logger.add_scalar(tag='Mem/GPU', scalar_value=get_gpu_memory()[0], global_step=epoch)
             logger.add_scalar(tag='Mem/RAM', scalar_value=process.memory_percent(), global_step=epoch)
@@ -370,5 +467,6 @@ if __name__ == '__main__':
     parser.add_argument('--hm_loss', dest='hm_loss', default=False, action='store_true')
     parser.add_argument('--hm_res', dest='hm_res', default=32, type=int)
     parser.add_argument('--bs', dest='batchsize', default=20, type=int)
+    parser.add_argument('--backend', dest='backend', default='opengl', type=str)
     args = vars(parser.parse_args())
     main(args)

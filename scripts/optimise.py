@@ -40,6 +40,15 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True):
 
 
 def main(arguments):
+    if arguments['backend'] == 'opengl':
+        backend = ti.opengl
+    elif arguments['backend'] == 'cuda':
+        backend = ti.cuda
+    elif arguments['backend'] == 'vulkan':
+        backend = ti.vulkan
+    else:
+        backend = ti.cpu
+
     script_path = os.path.dirname(os.path.realpath(__file__))
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
@@ -225,8 +234,8 @@ def main(arguments):
                 data_ind = data_ids[i]
 
                 ti.reset()
-                ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
-                        debug=False, check_out_of_bound=False)
+                ti.init(arch=backend, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
+                        debug=False, check_out_of_bound=False, device_memory_GB=3)
                 data_cfg = {
                     'data_path': training_data_path,
                     'data_ind': str(data_ind),
@@ -373,8 +382,8 @@ def main(arguments):
                 validation_data_path = os.path.join(script_path, '..', f'data-motion-validation', f'eef-{agent}')
                 for data_ind in range(2):
                     ti.reset()
-                    ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
-                            debug=False, check_out_of_bound=False)
+                    ti.init(arch=backend, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
+                            debug=False, check_out_of_bound=False, device_memory_GB=3)
                     validation_data_cfg = {
                         'data_path': validation_data_path,
                         'data_ind': str(data_ind),
@@ -458,5 +467,6 @@ if __name__ == '__main__':
     parser.add_argument('--hm_loss', dest='hm_loss', default=False, action='store_true')
     parser.add_argument('--hm_res', dest='hm_res', default=32, type=int)
     parser.add_argument('--bs', dest='batchsize', default=20, type=int)
+    parser.add_argument('--backend', dest='backend', default='opengl', type=str)
     args = vars(parser.parse_args())
     main(args)

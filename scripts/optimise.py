@@ -22,9 +22,10 @@ def forward_backward(mpm_env, init_state, trajectory, backward=True):
     for i in range(mpm_env.horizon):
         action = trajectory[i]
         mpm_env.step(action)
+
     loss_info = mpm_env.get_final_loss()
 
-    if backward:
+    if backward and (not loss_info['particle_has_naninf']):
         # backward
         mpm_env.reset_grad()
         mpm_env.get_final_loss_grad()
@@ -266,11 +267,19 @@ def main(arguments):
                                  mpm_env.simulator.system_param.grad[None].ground_friction], dtype=DTYPE_NP)
                 # Check if the loss is strange
                 abort = False
-                for i, v in loss_info.items():
-                    if i != 'final_height_map':
-                        if np.isinf(v) or np.isnan(v):
-                            abort = True
-                            break
+                particle_has_naninf = loss_info['particle_has_naninf']
+                if particle_has_naninf:
+                    abort = True
+
+                if not abort:
+                    for i, v in loss_info.items():
+                        if i == 'final_height_map' or i == 'particle_has_naninf':
+                            pass
+                        else:
+                            if np.isinf(v) or np.isnan(v):
+                                abort = True
+                                break
+
                 if not abort:
                     if np.any(np.isnan(grad)) or np.any(np.isinf(grad)) or np.any(np.abs(grad) > 1e6):
                         abort = True
@@ -285,10 +294,12 @@ def main(arguments):
 
                 if abort:
                     print(f'===> [Warning] Aborting datapoint: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
+                    print(f'===> [Warning] Particle has nan or inf: {particle_has_naninf}')
                     print(f'===> [Warning] Strange loss or gradient.')
                     print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
                     print(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
                     logging.error(f'===> [Warning] Aborting datapoint: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
+                    logging.error(f'===> [Warning] Particle has nan or inf: {particle_has_naninf}')
                     logging.error(f'===> [Warning] Strange loss or gradient.')
                     logging.error(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
                     logging.error(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
@@ -405,17 +416,27 @@ def main(arguments):
                     loss_info = forward_backward(mpm_env, init_state, trajectory, backward=False)
                     # Check if the loss is strange
                     abort = False
-                    for i, v in loss_info.items():
-                        if i != 'final_height_map':
-                            if np.isinf(v) or np.isnan(v):
-                                abort = True
-                                break
+                    particle_has_naninf = loss_info['particle_has_naninf']
+                    if particle_has_naninf:
+                        abort = True
+
+                    if not abort:
+                        for i, v in loss_info.items():
+                            if i == 'final_height_map' or i == 'particle_has_naninf':
+                                pass
+                            else:
+                                if np.isinf(v) or np.isnan(v):
+                                    abort = True
+                                    break
+
                     if abort:
                         print(f'===> [Warning] Aborting validation run: agent {agent}, data {data_ind}')
+                        print(f'===> [Warning] Particle has nan or inf: {particle_has_naninf}')
                         print(f'===> [Warning] Strange loss.')
                         print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
                         print(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
                         logging.error(f'===> [Warning] Aborting validation run: agent {agent}, data {data_ind}')
+                        logging.error(f'===> [Warning] Particle has nan or inf: {particle_has_naninf}')
                         logging.error(f'===> [Warning] Strange loss.')
                         logging.error(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
                         logging.error(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')

@@ -1,0 +1,19 @@
+2024-02-02 10:07:54,437 INFO =====> Optimising param set 0 for 100 epochs for 2 random seeds.
+2024-02-02 10:07:54,437 INFO =====> Loss config: {'exponential_distance': False, 'averaging_loss': False, 'point_distance_rs_loss': True, 'point_distance_sr_loss': True, 'down_sample_voxel_size': 0.005, 'particle_distance_rs_loss': False, 'particle_distance_sr_loss': False, 'voxelise_res': 1080, 'ptcl_density': 40000000.0, 'load_height_map': True, 'height_map_loss': False, 'height_map_res': 32, 'height_map_size': 0.11, 'emd_point_distance_loss': False, 'emd_particle_distance_loss': False}
+2024-02-02 10:07:54,437 INFO =====> Training config: {'param_set': 0, 'lr_E': 4000.0, 'lr_nu': 0.01, 'lr_yield_stress': 500.0, 'lr_rho': 10, 'lr_manipulator_friction': 0.01, 'lr_ground_friction': 0.01, 'batch_size': 20, 'n_epoch': 100, 'seeds': [0, 1]}
+2024-02-02 10:07:54,439 INFO =====> Seed: 0, initial parameters: E=[169155.92], nu=[0.3532909], yield_stress=[12452.504], rho=[1544.8832]
+2024-02-02 10:07:54,745 INFO =====> Computing: epoch 0, motion 1, agent rectangle, data 3
+2024-02-02 10:07:54,746 INFO ===> New TaichiEnv created.
+2024-02-02 10:07:54,746 INFO ===> Specifications: horizon = 87, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-02-02 10:08:46,778 INFO =====> Total loss: 12548.466796875
+2024-02-02 10:08:46,778 INFO =====> Grad: [-1.6916233e-04  1.3949196e+02  4.2930110e-03 -1.6025105e-02
+ -4.9156227e+01 -2.1278804e-02]
+2024-02-02 10:08:47,656 INFO =====> Computing: epoch 0, motion 1, agent rectangle, data 5
+2024-02-02 10:08:47,657 INFO ===> New TaichiEnv created.
+2024-02-02 10:08:47,657 INFO ===> Specifications: horizon = 87, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-02-02 10:09:35,627 INFO =====> Total loss: 9332.65234375
+2024-02-02 10:09:35,627 INFO =====> Grad: [-4.1200928e-04 -5.7608805e+00  4.9842941e-03  4.8732208e-03
+ -1.4726157e+02  2.0662673e+00]
+2024-02-02 10:09:36,473 INFO =====> Computing: epoch 0, motion 1, agent round, data 0
+2024-02-02 10:09:36,474 INFO ===> New TaichiEnv created.
+2024-02-02 10:09:36,474 INFO ===> Specifications: horizon = 87, dt = 0.01, n_substeps = 50, dt_sub = 0.0002

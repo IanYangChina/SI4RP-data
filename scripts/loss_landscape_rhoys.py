@@ -82,6 +82,14 @@ def plot_loss_landscape(p1, p2, loss, fig_title='Fig', view='left',
 
 
 def main(args):
+    if args['backend'] == 'opengl':
+        backend = ti.opengl
+    elif args['backend'] == 'cuda':
+        backend = ti.cuda
+    elif args['backend'] == 'vulkan':
+        backend = ti.vulkan
+    else:
+        backend = ti.cpu
     if args['fewshot']:
         n_datapoints = 12
         fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34-few-shot')
@@ -165,7 +173,9 @@ def main(args):
                 data_ids = np.random.choice(9, size=3, replace=False).tolist()
             for data_ind in data_ids:
                 ti.reset()
-                ti.init(arch=ti.opengl, default_ip=ti.i32, default_fp=DTYPE_TI, fast_math=True, random_seed=1)
+                ti.init(arch=backend, default_ip=ti.i32, default_fp=DTYPE_TI,
+                        fast_math=True, random_seed=1,
+                        device_memory_GB=3)
                 data_cfg = {
                     'data_path': training_data_path,
                     'data_ind': str(data_ind),
@@ -287,5 +297,6 @@ if __name__ == '__main__':
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
     parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.005)
     parser.add_argument('--exp_dist', dest='exponential_distance', default=False, action='store_true')
+    parser.add_argument('--backend', dest='backend', default='opengl', type=str)
     args = vars(parser.parse_args())
     main(args)

@@ -1,0 +1,13 @@
+2024-02-05 15:39:12,243 INFO =====> Optimising param set 0 for 100 epochs for 3 random seeds.
+2024-02-05 15:39:12,243 INFO =====> Loss config: {'exponential_distance': False, 'averaging_loss': False, 'point_distance_rs_loss': False, 'point_distance_sr_loss': False, 'down_sample_voxel_size': 0.005, 'particle_distance_rs_loss': False, 'particle_distance_sr_loss': False, 'voxelise_res': 1080, 'ptcl_density': 40000000.0, 'load_height_map': True, 'height_map_loss': False, 'height_map_res': 32, 'height_map_size': 0.11, 'emd_point_distance_loss': True, 'emd_particle_distance_loss': False}
+2024-02-05 15:39:12,243 INFO =====> Training config: {'param_set': 0, 'lr_E': 4000.0, 'lr_nu': 0.01, 'lr_yield_stress': 500.0, 'lr_rho': 10, 'lr_manipulator_friction': 0.01, 'lr_ground_friction': 0.01, 'batch_size': 20, 'n_epoch': 100, 'seeds': [0, 1, 2]}
+2024-02-05 15:39:12,245 INFO =====> Seed: 0, initial parameters: E=[169155.92], nu=[0.3532909], yield_stress=[12452.504], rho=[1544.8832]
+2024-02-05 15:39:12,493 INFO =====> Computing: epoch 0, motion 1, agent rectangle, data 3
+2024-02-05 15:39:12,494 INFO ===> New TaichiEnv created.
+2024-02-05 15:39:12,494 INFO ===> Specifications: horizon = 87, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-02-05 15:39:29,054 INFO =====> Total loss: 1010.654541015625
+2024-02-05 15:39:29,054 INFO =====> Grad: [-4.2855263e-05  2.2781296e+01  6.9403544e-04 -9.0523425e-04
+  6.4283085e+00 -1.3387649e-02]
+2024-02-05 15:39:29,345 INFO =====> Computing: epoch 0, motion 1, agent rectangle, data 5
+2024-02-05 15:39:29,346 INFO ===> New TaichiEnv created.
+2024-02-05 15:39:29,346 INFO ===> Specifications: horizon = 87, dt = 0.01, n_substeps = 50, dt_sub = 0.0002

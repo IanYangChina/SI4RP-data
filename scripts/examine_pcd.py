@@ -11,10 +11,10 @@ bounding_box.color = [1, 0, 0]
 
 # Data: /home/xintong/Documents/PyProjects/SI4RP-data/scripts/../data-motion-2/eef-round/pcd_31.ply
 
-tr = '4'
-for agent in ['cylinder']:
+tr = '2'
+for agent in ['round']:
     data_path = os.path.join(script_path, '..', f'data-motion-{tr}', f'eef-{agent}')
-    for data_ind in ['1']:
+    for data_ind in ['1', '3', '4', '5', '6', '7', '8']:
         init_mesh_path = os.path.join(data_path, f'mesh_{data_ind}0_repaired_normalised.obj')
         obj_start_centre_real = np.load(os.path.join(data_path, 'mesh_' + data_ind + str(0) + '_repaired_centre.npy'))
         obj_start_centre_top_normalised = np.load(

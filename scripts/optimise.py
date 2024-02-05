@@ -89,22 +89,45 @@ def main(arguments):
 
     n_epoch = 100
     n_aborted_data = 0
-    seeds = [0, 1]
-    n = 0
-    while True:
+    if arguments['seed'] != -1:
+        seeds = [arguments['seed']]
+    else:
+        seeds = [0, 1, 2]
+    if arguments['n_run'] != -1:
+        # Append experiment into existing folder
+        n = arguments['n_run']
         if arguments['fewshot']:
             log_p_dir = os.path.join(script_path, '..', f'optimisation-fewshot-param{param_set}-run{n}-logs')
         else:
             log_p_dir = os.path.join(script_path, '..', f'optimisation-param{param_set}-run{n}-logs')
-        if os.path.exists(log_p_dir):
-            n += 1
-        else:
-            break
+    else:
+        # New experiments
+        n = 0
+        while True:
+            if arguments['fewshot']:
+                log_p_dir = os.path.join(script_path, '..', f'optimisation-fewshot-param{param_set}-run{n}-logs')
+            else:
+                log_p_dir = os.path.join(script_path, '..', f'optimisation-param{param_set}-run{n}-logs')
+            if os.path.exists(log_p_dir):
+                n += 1
+            else:
+                break
     os.makedirs(log_p_dir, exist_ok=True)
-    with open(os.path.join(log_p_dir, 'loss_config.json'), 'w') as f_ac:
-        json.dump(loss_cfg, f_ac, indent=2)
+
+    loss_cfg_file = os.path.join(log_p_dir, 'loss_config.json')
+    if os.path.isfile(loss_cfg_file):
+        with open(loss_cfg_file, 'r') as f_ac:
+            loss_cfg = json.load(f_ac)
+    else:
+        with open(loss_cfg_file, 'w') as f_ac:
+            json.dump(loss_cfg, f_ac, indent=2)
+
     log_file_name = os.path.join(log_p_dir, 'optimisation.log')
-    logging.basicConfig(level=logging.NOTSET,filemode="w",
+    if os.path.isfile(log_file_name):
+        filemode = "a"
+    else:
+        filemode = "w"
+    logging.basicConfig(level=logging.NOTSET, filemode=filemode,
                         filename=log_file_name,
                         format="%(asctime)s %(levelname)s %(message)s")
 
@@ -120,8 +143,13 @@ def main(arguments):
         'n_epoch': n_epoch,
         'seeds': seeds,
     }
-    with open(os.path.join(log_p_dir, 'training_config.json'), 'w') as f_ac:
-        json.dump(training_config, f_ac, indent=2)
+    training_config_file = os.path.join(log_p_dir, 'training_config.json')
+    if os.path.isfile(training_config_file):
+        with open(training_config_file, 'r') as f_ac:
+            training_config = json.load(f_ac)
+    else:
+        with open(training_config_file, 'w') as f_ac:
+            json.dump(training_config, f_ac, indent=2)
 
     print(f"=====> Optimising param set {param_set} for {n_epoch} epochs for {len(seeds)} random seeds.")
     print(f"=====> Loss config: {loss_cfg}")
@@ -217,10 +245,11 @@ def main(arguments):
             else:
                 if arguments['param_set'] == 0:
                     motion_ids = np.random.randint(1, 3, size=mini_batch_size, dtype=np.int32).tolist()
+                    data_ids = np.random.randint(9, size=mini_batch_size, dtype=np.int32).tolist()
                 else:
                     motion_ids = np.random.randint(3, 5, size=mini_batch_size, dtype=np.int32).tolist()
+                    data_ids = np.random.randint(5, size=mini_batch_size, dtype=np.int32).tolist()
                 agent_ids = np.random.randint(3, size=mini_batch_size, dtype=np.int32).tolist()
-                data_ids = np.random.randint(9, size=mini_batch_size, dtype=np.int32).tolist()
 
             for i in range(mini_batch_size):
                 motion_ind = str(motion_ids[i])
@@ -385,16 +414,29 @@ def main(arguments):
             }
             dt_global = 0.01
             n_substeps = 50
+            validation_dataind_dict = {
+                'rectangle': [4, 8],
+                'round': [4, 7],
+                'cylinder': [4, 7]
+            }
             for agent in agents:
                 agent_init_euler = (0, 0, 0)
                 if agent == 'rectangle':
                     agent_init_euler = (0, 0, 45)
-                trajectory = np.load(
-                    os.path.join(script_path, '..', 'trajectories',
-                                 f'tr_valid_{agent}_v_dt_{dt_global:0.2f}.npy'))
+                if arguments['param_set'] == 0:
+                    trajectory = np.load(
+                        os.path.join(script_path, '..', 'trajectories',
+                                     f'tr_2_v_dt_{dt_global:0.2f}.npy'))
+                    validation_data_path = os.path.join(script_path, '..', f'data-motion-2', f'eef-{agent}')
+                    data_inds = validation_dataind_dict[agent]
+                else:
+                    trajectory = np.load(
+                        os.path.join(script_path, '..', 'trajectories',
+                                     f'tr_valid_{agent}_v_dt_{dt_global:0.2f}.npy'))
+                    validation_data_path = os.path.join(script_path, '..', f'data-motion-validation', f'eef-{agent}')
+                    data_inds = [0, 1]
                 horizon = trajectory.shape[0]
-                validation_data_path = os.path.join(script_path, '..', f'data-motion-validation', f'eef-{agent}')
-                for data_ind in range(2):
+                for data_ind in data_inds:
                     ti.reset()
                     ti.init(arch=backend, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
                             debug=False, check_out_of_bound=False, device_memory_GB=3)
@@ -480,6 +522,8 @@ def main(arguments):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--n_run', dest='n_run', type=int, default=-1)
+    parser.add_argument('--seed', dest='seed', type=int, default=-1)
     parser.add_argument('--param_set', dest='param_set', type=int, default=0)
     parser.add_argument('--fewshot', dest='fewshot', default=False, action='store_true')
     parser.add_argument('--exp_dist', dest='exp_dist', default=False, action='store_true')

@@ -170,7 +170,7 @@ def main(args):
             if args['fewshot']:
                 data_ids = data_id_dict[motion_ind][agent]
             else:
-                data_ids = np.random.choice(9, size=3, replace=False).tolist()
+                data_ids = np.random.choice(5, size=3, replace=False).tolist()
             for data_ind in data_ids:
                 ti.reset()
                 ti.init(arch=backend, default_ip=ti.i32, default_fp=DTYPE_TI, fast_math=True, random_seed=1,

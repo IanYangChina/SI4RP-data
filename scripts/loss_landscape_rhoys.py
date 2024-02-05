@@ -84,10 +84,10 @@ def plot_loss_landscape(p1, p2, loss, fig_title='Fig', view='left',
 def main(args):
     if args['fewshot']:
         n_datapoints = 12
-        fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-few-shot')
+        fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34-few-shot')
     else:
         n_datapoints = 18
-        fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
+        fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34')
     os.makedirs(fig_data_path, exist_ok=True)
 
     p_density = args['ptcl_density']
@@ -111,7 +111,6 @@ def main(args):
         'emd_particle_distance_loss': False,
     }
 
-
     xy_param = 'rho-yieldstress'
     rho_list = np.arange(1000, 1999, 33.3).astype(DTYPE_NP)
     yield_stress_list = np.arange(1000, 20200, 640).astype(DTYPE_NP)
@@ -119,6 +118,8 @@ def main(args):
     rho, yield_stress = np.meshgrid(rho_list, yield_stress_list)
     E = 2e5
     nu = 0.2
+    mf = 0.2
+    gf = 2.0
 
     if args['exponential_distance']:
         distance_type = 'exponential'
@@ -142,9 +143,11 @@ def main(args):
     data_id_dict = {
         '1': {'rectangle': [3, 5], 'round': [0, 1], 'cylinder': [1, 2]},
         '2': {'rectangle': [1, 3], 'round': [0, 2], 'cylinder': [0, 2]},
+        '3': {'rectangle': [1, 2], 'round': [0, 1], 'cylinder': [0, 4]},
+        '4': {'rectangle': [1, 3], 'round': [1, 4], 'cylinder': [0, 4]},
     }
     # Load trajectories.
-    for motion_ind in ['1', '2']:
+    for motion_ind in ['3', '4']:
         dt_global = 0.01
         trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
         horizon = trajectory.shape[0]
@@ -190,7 +193,7 @@ def main(args):
                 # discard the first compute after env creation
                 set_parameters(mpm_env, env_cfg['material_id'],  E, nu,
                                yield_stress=yield_stress_list[0], rho=rho_list[0],
-                               manipulator_friction=0.2, ground_friction=2.0)
+                               manipulator_friction=mf, ground_friction=gf)
                 mpm_env.set_state(init_state['state'], grad_enabled=False)
                 for k in range(mpm_env.horizon):
                     action = trajectory[k].copy()
@@ -266,7 +269,7 @@ def main(args):
         np.save(os.path.join(fig_data_path, f'{loss_types[i]}_{distance_type}_{xy_param}-{p_density_str}.npy'), losses[i])
         fig_title = (f'{loss_types[i]}\n'
                      f'E = {E}, nu = {nu}\n'
-                     f'm_friction = 0.2, g_friction = 2.0')
+                     f'm_friction = {mf}, g_friction = {gf}')
         plot_loss_landscape(rho, yield_stress, losses[i], fig_title=fig_title, view='left',
                             x_label='rho', y_label='yield_stress', z_label='Loss', hm=False, show=False, save=True,
                             path=os.path.join(fig_data_path, f"{loss_types[i]}_{distance_type}_landscape_{xy_param}-leftview-{p_density_str}.pdf"))

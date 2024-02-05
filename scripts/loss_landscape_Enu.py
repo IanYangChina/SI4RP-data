@@ -83,10 +83,10 @@ def plot_loss_landscape(p1, p2, loss, fig_title='Fig', view='left',
 def main(args):
     if args['fewshot']:
         n_datapoints = 12
-        fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-few-shot')
+        fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34-few-shot')
     else:
         n_datapoints = 18
-        fig_data_path = os.path.join(script_path, '..', 'loss-landscapes')
+        fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34')
     os.makedirs(fig_data_path, exist_ok=True)
 
     p_density = args['ptcl_density']
@@ -117,6 +117,8 @@ def main(args):
     E, nu = np.meshgrid(E_list, nu_list)
     yield_stress = 6e3
     rho = 1300.0
+    mf = 0.2
+    gf = 2.0
 
     if args['exponential_distance']:
         distance_type = 'exponential'
@@ -140,9 +142,11 @@ def main(args):
     data_id_dict = {
         '1': {'rectangle': [3, 5], 'round': [0, 1], 'cylinder': [1, 2]},
         '2': {'rectangle': [1, 3], 'round': [0, 2], 'cylinder': [0, 2]},
+        '3': {'rectangle': [1, 2], 'round': [0, 1], 'cylinder': [0, 4]},
+        '4': {'rectangle': [1, 3], 'round': [1, 4], 'cylinder': [0, 4]},
     }
     # Load trajectories.
-    for motion_ind in ['1', '2']:
+    for motion_ind in ['3', '4']:
         dt_global = 0.01
         trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
         horizon = trajectory.shape[0]
@@ -160,7 +164,7 @@ def main(args):
                 data_ids = np.random.choice(9, size=3, replace=False).tolist()
             for data_ind in data_ids:
                 ti.reset()
-                ti.init(arch=ti.gpu, default_ip=ti.i32, default_fp=DTYPE_TI, fast_math=True, random_seed=1,
+                ti.init(arch=ti.opengl, default_ip=ti.i32, default_fp=DTYPE_TI, fast_math=True, random_seed=1,
                         device_memory_GB=2)
                 data_cfg = {
                     'data_path': training_data_path,
@@ -186,22 +190,12 @@ def main(args):
                 logging.info(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')
                 logging.info(f'Start calculating losses with grid size: {point_distance_sr.shape}')
 
-                # discard the first compute after env creation
-                set_parameters(mpm_env, env_cfg['material_id'],  E_list[0], nu_list[0],
-                               yield_stress=yield_stress, rho=rho,
-                               manipulator_friction=0.2, ground_friction=2.0)
-                mpm_env.set_state(init_state['state'], grad_enabled=False)
-                for k in range(mpm_env.horizon):
-                    action = trajectory[k].copy()
-                    mpm_env.step(action)
-                loss_info = mpm_env.get_final_loss()
-
                 t0 = time()
                 for i in range(len(E_list)):
                     for j in range(len(nu_list)):
                         set_parameters(mpm_env, env_cfg['material_id'],  E_list[i], nu_list[j],
                                        yield_stress=yield_stress, rho=rho,
-                                       manipulator_friction=0.2, ground_friction=2.0)
+                                       manipulator_friction=mf, ground_friction=gf)
                         mpm_env.set_state(init_state['state'], grad_enabled=False)
                         for k in range(mpm_env.horizon):
                             action = trajectory[k].copy()
@@ -264,7 +258,7 @@ def main(args):
         np.save(os.path.join(fig_data_path, f'{loss_types[i]}_{distance_type}_{xy_param}-{p_density_str}.npy'), losses[i])
         fig_title = (f'{loss_types[i]}\n'
                      f'yield_stress = {yield_stress}, rho = {rho}\n'
-                     f'm_friction = 0.2, g_friction = 2.0')
+                     f'm_friction = {mf}, g_friction = {gf}')
         plot_loss_landscape(E, nu, losses[i], fig_title=fig_title, view='left',
                             x_label='E', y_label='nu', z_label='Loss', hm=False, show=False, save=True,
                             path=os.path.join(fig_data_path, f"{loss_types[i]}_{distance_type}_landscape_{xy_param}-leftview-{p_density_str}.pdf"))

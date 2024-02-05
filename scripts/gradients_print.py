@@ -5,7 +5,7 @@ np.set_printoptions(precision=3)
 import matplotlib.pyplot as plt
 
 script_path = os.path.dirname(os.path.realpath(__file__))
-data_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-mf-gf-few-shot')
+data_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-few-shot')
 fig_path = os.path.join(data_path, 'figures')
 if not os.path.exists(fig_path):
     os.makedirs(fig_path)
@@ -18,6 +18,8 @@ n = 0
 x = []
 y = []
 y_ = []
+y__ = []
+y___ = []
 e = []
 legends = []
 while True:
@@ -58,9 +60,13 @@ while True:
     
     y.append(np.log(np.abs(mean)))
     y_.append(std/mean)
+    y__.append(mean)
+    y___.append(std)
     
 y = np.asarray(y)
 y_ = np.asarray(y_)
+y__ = np.asarray(y__)
+y___ = np.asarray(y___)
 colors = ['b', 'g']
 markers = ['+', 'x']
 for k in range(6):
@@ -74,7 +80,7 @@ for k in range(6):
     plt.title(params[k]+'-log-abs-mean')
     plt.xticks(x, legends, rotation=90)
     plt.tight_layout()
-    plt.savefig(os.path.join(fig_path, params[k]+'-mean.pdf'), bbox_inches='tight', dpi=500)
+    plt.savefig(os.path.join(fig_path, params[k]+'-order-of-magnitude.pdf'), bbox_inches='tight', dpi=500)
     plt.close()
     
     plt.figure()
@@ -88,4 +94,18 @@ for k in range(6):
     plt.xticks(x, legends, rotation=90)
     plt.tight_layout()
     plt.savefig(os.path.join(fig_path, params[k]+'-coeff-variation.pdf'), bbox_inches='tight', dpi=500)
+    plt.close()
+
+    plt.figure()
+    for n in range(len(x)):
+        if n < 9:
+            m = 0
+        else:
+            m = 1
+        plt.scatter(x[n], y__[n, k], color=colors[m], marker=markers[m])
+        plt.errorbar(x[n], y__[n, k], yerr=y___[n, k], color=colors[m])
+    plt.title(params[k]+'-mean')
+    plt.xticks(x, legends, rotation=90)
+    plt.tight_layout()
+    plt.savefig(os.path.join(fig_path, params[k]+'-mean-std.pdf'), bbox_inches='tight', dpi=500)
     plt.close()

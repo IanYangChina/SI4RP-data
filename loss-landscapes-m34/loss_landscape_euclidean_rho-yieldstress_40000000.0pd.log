@@ -1,0 +1,40 @@
+2024-02-05 15:41:02,774 INFO ===> Num. simulation particles: 3567
+2024-02-05 15:41:02,774 INFO ===> Num. target pcd points: 682
+2024-02-05 15:41:02,774 INFO ===> Num. target particles: 3508
+2024-02-05 15:41:02,774 INFO Start calculating losses with grid size: (30, 31)
+2024-02-05 15:41:26,505 INFO The 0, 0-th loss is:
+2024-02-05 15:41:26,505 INFO particle_has_naninf: 0.0000
+2024-02-05 15:41:26,505 INFO point_distance_sr: 17574.4746
+2024-02-05 15:41:26,505 INFO point_distance_rs: 1488.7946
+2024-02-05 15:41:26,505 INFO chamfer_loss_pcd: 19063.2695
+2024-02-05 15:41:26,505 INFO particle_distance_sr: 5792.7466
+2024-02-05 15:41:26,505 INFO particle_distance_rs: 6238.7944
+2024-02-05 15:41:26,505 INFO chamfer_loss_particle: 12031.5410
+2024-02-05 15:41:26,505 INFO height_map_loss_pcd: 2072.8728
+2024-02-05 15:41:26,505 INFO emd_point_distance_loss: 1528.4584
+2024-02-05 15:41:26,505 INFO emd_particle_distance_loss: 9613.2402
+2024-02-05 15:41:26,505 INFO total_loss: 10882.8721
+2024-02-05 15:41:31,931 INFO The 0, 1-th loss is:
+2024-02-05 15:41:31,931 INFO particle_has_naninf: 0.0000
+2024-02-05 15:41:31,931 INFO point_distance_sr: 17236.9629
+2024-02-05 15:41:31,931 INFO point_distance_rs: 1397.1201
+2024-02-05 15:41:31,931 INFO chamfer_loss_pcd: 18634.0820
+2024-02-05 15:41:31,931 INFO particle_distance_sr: 6186.5986
+2024-02-05 15:41:31,931 INFO particle_distance_rs: 6336.5186
+2024-02-05 15:41:31,931 INFO chamfer_loss_particle: 12523.1172
+2024-02-05 15:41:31,931 INFO height_map_loss_pcd: 2592.8550
+2024-02-05 15:41:31,931 INFO emd_point_distance_loss: 1429.7595
+2024-02-05 15:41:31,931 INFO emd_particle_distance_loss: 8642.4648
+2024-02-05 15:41:31,931 INFO total_loss: 11606.3340
+2024-02-05 15:41:40,773 INFO The 0, 2-th loss is:
+2024-02-05 15:41:40,773 INFO particle_has_naninf: 0.0000
+2024-02-05 15:41:40,773 INFO point_distance_sr: 16935.4219
+2024-02-05 15:41:40,773 INFO point_distance_rs: 1527.2798
+2024-02-05 15:41:40,773 INFO chamfer_loss_pcd: 18462.7012
+2024-02-05 15:41:40,773 INFO particle_distance_sr: 6728.4272
+2024-02-05 15:41:40,773 INFO particle_distance_rs: 6947.0513
+2024-02-05 15:41:40,773 INFO chamfer_loss_particle: 13675.4785
+2024-02-05 15:41:40,773 INFO height_map_loss_pcd: 3060.0220
+2024-02-05 15:41:40,773 INFO emd_point_distance_loss: 1592.2578
+2024-02-05 15:41:40,773 INFO emd_particle_distance_loss: 17988.9453
+2024-02-05 15:41:40,773 INFO total_loss: 12907.9863

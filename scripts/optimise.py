@@ -414,11 +414,19 @@ def main(arguments):
             }
             dt_global = 0.01
             n_substeps = 50
-            validation_dataind_dict = {
-                'rectangle': [4, 8],
-                'round': [4, 7],
-                'cylinder': [4, 7]
-            }
+            if arguments['param_set'] == 0:
+                validation_dataind_dict = {
+                    'rectangle': [4, 8],
+                    'round': [4, 7],
+                    'cylinder': [4, 7]
+                }
+            else:
+                # todo
+                validation_dataind_dict = {
+                    'rectangle': [],
+                    'round': [],
+                    'cylinder': []
+                }
             for agent in agents:
                 agent_init_euler = (0, 0, 0)
                 if agent == 'rectangle':

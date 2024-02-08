@@ -11,7 +11,6 @@ import psutil
 import json
 import logging
 
-
 MATERIAL_ID = 2
 process = psutil.Process(os.getpid())
 
@@ -72,9 +71,6 @@ def main(arguments):
         'emd_point_distance_loss': arguments['emd_p_loss'],
         'emd_particle_distance_loss': arguments['emd_pr_loss'],
     }
-
-    validation_loss_config = loss_cfg.copy()
-    validation_loss_config['exponential_distance'] = False
 
     # Parameter ranges
     E_range = (1e4, 3e5)
@@ -398,6 +394,8 @@ def main(arguments):
                       f"========> Manipulator friction={manipulator_friction}, ground friction={ground_friction}")
 
             """===========Validation==========="""
+            validation_loss_config = loss_cfg.copy()
+            validation_loss_config['exponential_distance'] = False
             print(f'=====> Run validation at epoch {epoch}')
             logging.info(f'=====> Run validation at epoch {epoch}')
             validation_loss = {
@@ -414,95 +412,93 @@ def main(arguments):
             }
             dt_global = 0.01
             n_substeps = 50
-            if arguments['param_set'] == 0:
-                validation_dataind_dict = {
+            validation_dataind_dict = {
+                '2': {
                     'rectangle': [4, 8],
                     'round': [4, 7],
                     'cylinder': [4, 7]
-                }
-            else:
+                },
                 # todo
-                validation_dataind_dict = {
+                '4': {
                     'rectangle': [],
                     'round': [],
                     'cylinder': []
                 }
-            for agent in agents:
-                agent_init_euler = (0, 0, 0)
-                if agent == 'rectangle':
-                    agent_init_euler = (0, 0, 45)
-                if arguments['param_set'] == 0:
-                    trajectory = np.load(
-                        os.path.join(script_path, '..', 'trajectories',
-                                     f'tr_2_v_dt_{dt_global:0.2f}.npy'))
-                    validation_data_path = os.path.join(script_path, '..', f'data-motion-2', f'eef-{agent}')
-                    data_inds = validation_dataind_dict[agent]
-                else:
-                    trajectory = np.load(
-                        os.path.join(script_path, '..', 'trajectories',
-                                     f'tr_valid_{agent}_v_dt_{dt_global:0.2f}.npy'))
-                    validation_data_path = os.path.join(script_path, '..', f'data-motion-validation', f'eef-{agent}')
-                    data_inds = [0, 1]
-                horizon = trajectory.shape[0]
-                for data_ind in data_inds:
-                    ti.reset()
-                    ti.init(arch=backend, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
-                            debug=False, check_out_of_bound=False, device_memory_GB=3)
-                    validation_data_cfg = {
-                        'data_path': validation_data_path,
-                        'data_ind': str(data_ind),
-                    }
-                    validation_env_cfg = {
-                        'p_density': particle_density,
-                        'horizon': horizon,
-                        'dt_global': dt_global,
-                        'n_substeps': n_substeps,
-                        'material_id': 2,
-                        'agent_name': agent,
-                        'agent_init_euler': agent_init_euler,
-                    }
-                    env, mpm_env, init_state = make_env(validation_data_cfg, validation_env_cfg,
-                                                        validation_loss_config, logger=logging)
-                    set_parameters(mpm_env, validation_env_cfg['material_id'],
-                                   E=E.copy(), nu=nu.copy(), yield_stress=yield_stress.copy(), rho=rho.copy(),
-                                   ground_friction=ground_friction.copy(),
-                                   manipulator_friction=manipulator_friction.copy())
-                    loss_info = forward_backward(mpm_env, init_state, trajectory, backward=False)
-                    # Check if the loss is strange
-                    abort = False
-                    particle_has_naninf = loss_info['particle_has_naninf']
-                    if particle_has_naninf:
-                        abort = True
+            }
+            if arguments['param_set'] == 0:
+                validation_motions = [2]
+            else:
+                validation_motions = [2, 4]
+            for validation_motion in validation_motions:
+                for agent in agents:
+                    agent_init_euler = (0, 0, 0)
+                    if agent == 'rectangle':
+                        agent_init_euler = (0, 0, 45)
 
-                    if not abort:
-                        for i, v in loss_info.items():
-                            if i == 'final_height_map' or i == 'particle_has_naninf':
-                                pass
-                            else:
-                                if np.isinf(v) or np.isnan(v):
-                                    abort = True
-                                    break
+                    trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{validation_motion}_v_dt_{dt_global:0.2f}.npy'))
+                    validation_data_path = os.path.join(script_path, '..', f'data-motion-{validation_motion}', f'eef-{agent}')
+                    data_inds = validation_dataind_dict[str(validation_motion)][agent]
 
-                    if abort:
-                        print(f'===> [Warning] Aborting validation run: agent {agent}, data {data_ind}')
-                        print(f'===> [Warning] Particle has nan or inf: {particle_has_naninf}')
-                        print(f'===> [Warning] Strange loss.')
-                        print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
-                        print(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
-                        logging.error(f'===> [Warning] Aborting validation run: agent {agent}, data {data_ind}')
-                        logging.error(f'===> [Warning] Particle has nan or inf: {particle_has_naninf}')
-                        logging.error(f'===> [Warning] Strange loss.')
-                        logging.error(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
-                        logging.error(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
-                        n_aborted_data += 1
-                    else:
-                        for i, v in validation_loss.items():
-                            validation_loss[i].append(loss_info[i])
+                    horizon = trajectory.shape[0]
+                    for data_ind in data_inds:
+                        ti.reset()
+                        ti.init(arch=backend, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
+                                debug=False, check_out_of_bound=False, device_memory_GB=3)
+                        validation_data_cfg = {
+                            'data_path': validation_data_path,
+                            'data_ind': str(data_ind),
+                        }
+                        validation_env_cfg = {
+                            'p_density': particle_density,
+                            'horizon': horizon,
+                            'dt_global': dt_global,
+                            'n_substeps': n_substeps,
+                            'material_id': 2,
+                            'agent_name': agent,
+                            'agent_init_euler': agent_init_euler,
+                        }
+                        env, mpm_env, init_state = make_env(validation_data_cfg, validation_env_cfg,
+                                                            validation_loss_config, logger=logging)
+                        set_parameters(mpm_env, validation_env_cfg['material_id'],
+                                       E=E.copy(), nu=nu.copy(), yield_stress=yield_stress.copy(), rho=rho.copy(),
+                                       ground_friction=ground_friction.copy(),
+                                       manipulator_friction=manipulator_friction.copy())
+                        loss_info = forward_backward(mpm_env, init_state, trajectory, backward=False)
+                        # Check if the loss is strange
+                        abort = False
+                        particle_has_naninf = loss_info['particle_has_naninf']
+                        if particle_has_naninf:
+                            abort = True
 
-                    print(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
-                    logging.info(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
+                        if not abort:
+                            for i, v in loss_info.items():
+                                if i == 'final_height_map' or i == 'particle_has_naninf':
+                                    pass
+                                else:
+                                    if np.isinf(v) or np.isnan(v):
+                                        abort = True
+                                        break
 
-                    mpm_env.simulator.clear_ckpt()
+                        if abort:
+                            print(f'===> [Warning] Aborting validation run: agent {agent}, data {data_ind}')
+                            print(f'===> [Warning] Particle has nan or inf: {particle_has_naninf}')
+                            print(f'===> [Warning] Strange loss.')
+                            print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
+                            print(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
+                            logging.error(f'===> [Warning] Aborting validation run: agent {agent}, data {data_ind}')
+                            logging.error(f'===> [Warning] Particle has nan or inf: {particle_has_naninf}')
+                            logging.error(f'===> [Warning] Strange loss.')
+                            logging.error(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
+                            logging.error(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
+                            n_aborted_data += 1
+                        else:
+                            for i, v in validation_loss.items():
+                                validation_loss[i].append(loss_info[i])
+
+                        print(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
+                        logging.info(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
+
+                        mpm_env.simulator.clear_ckpt()
 
             for i, v in validation_loss.items():
                 validation_loss[i] = np.mean(v)

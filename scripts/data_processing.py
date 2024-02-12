@@ -24,125 +24,206 @@ loss_types = ['point_distance_sr',
               ]
 
 """generate mean and deviation data"""
-
-run_id = 0
-for run_id in [3]:
-    run_dir = os.path.join(cwd, '..', f'optimisation-fewshot-param0-run{run_id}-logs',)
-
-    data_dict = {
-        'seed-0': {
-            'training': {
-                'point_distance_sr': [],
-                'point_distance_rs': [],
-                'chamfer_loss_pcd': [],
-                'particle_distance_sr': [],
-                'particle_distance_rs': [],
-                'chamfer_loss_particle': [],
-                'height_map_loss_pcd': [],
-                'emd_point_distance_loss': [],
-                'emd_particle_distance_loss': []
-            },
-            'validation': {
-                'point_distance_sr': [],
-                'point_distance_rs': [],
-                'chamfer_loss_pcd': [],
-                'particle_distance_sr': [],
-                'particle_distance_rs': [],
-                'chamfer_loss_particle': [],
-                'height_map_loss_pcd': [],
-                'emd_point_distance_loss': [],
-                'emd_particle_distance_loss': []
-            }
-        },
-        'seed-1': {
-            'training': {
-                'point_distance_sr': [],
-                'point_distance_rs': [],
-                'chamfer_loss_pcd': [],
-                'particle_distance_sr': [],
-                'particle_distance_rs': [],
-                'chamfer_loss_particle': [],
-                'height_map_loss_pcd': [],
-                'emd_point_distance_loss': [],
-                'emd_particle_distance_loss': []
-            },
-            'validation': {
-                'point_distance_sr': [],
-                'point_distance_rs': [],
-                'chamfer_loss_pcd': [],
-                'particle_distance_sr': [],
-                'particle_distance_rs': [],
-                'chamfer_loss_particle': [],
-                'height_map_loss_pcd': [],
-                'emd_point_distance_loss': [],
-                'emd_particle_distance_loss': []
-            }
-        },
-        'seed-2': {
-            'training': {
-                'point_distance_sr': [],
-                'point_distance_rs': [],
-                'chamfer_loss_pcd': [],
-                'particle_distance_sr': [],
-                'particle_distance_rs': [],
-                'chamfer_loss_particle': [],
-                'height_map_loss_pcd': [],
-                'emd_point_distance_loss': [],
-                'emd_particle_distance_loss': []
-            },
-            'validation': {
-                'point_distance_sr': [],
-                'point_distance_rs': [],
-                'chamfer_loss_pcd': [],
-                'particle_distance_sr': [],
-                'particle_distance_rs': [],
-                'chamfer_loss_particle': [],
-                'height_map_loss_pcd': [],
-                'emd_point_distance_loss': [],
-                'emd_particle_distance_loss': []
-            }
-        }
-    }
-
-    seeds = [0, 1, 2]
-    for seed in seeds:
-        seed_dir = os.path.join(run_dir, f'seed-{str(seed)}')
-        for filename in os.listdir(seed_dir):
-            if filename[:5] == 'event':
-                for event in summary_iterator(os.path.join(seed_dir, filename)):
-                    for v in event.summary.value:
-                        if v.tag[:5] == 'Loss/':
-                            if v.tag[6:] == 'point_distance_sr':
-                                data_dict[f'seed-{seed}']['training']['point_distance_sr'].append(v.simple_value)
-                            elif v.tag[6:]
-                        print(v.tag, event.step, v.simple_value)
-    for loss_type in loss_types:
-        # training
-        data = []
-        for seed in seeds:
-            with open(os.path.join(run_dir, f'run-seed-{str(seed)}-tag-Loss_{loss_type}.json'), 'rb') as f:
-                d = json.load(f)
-            data.append(np.array(d)[:, -1])
-        plot.get_mean_and_deviation(np.array(data),
-                                    save_data=True,
-                                    file_name=os.path.join(run_dir, f'training-{loss_type}.json'))
-        # validation
-        validation_data = []
-        for seed in seeds:
-            with open(os.path.join(run_dir, f'run-seed-{str(seed)}-tag-Validation loss_{loss_type}.json'), 'rb') as f:
-                d = json.load(f)
-            validation_data.append(np.array(d)[:, -1])
-        plot.get_mean_and_deviation(np.array(validation_data),
-                                    save_data=True,
-                                    file_name=os.path.join(run_dir, f'validation-{loss_type}.json'))
-exit()
+#
+# run_id = 0
+# for run_id in [3, 4, 5, 6, 7]:
+#     run_dir = os.path.join(cwd, '..', f'optimisation-fewshot-param0-run{run_id}-logs',)
+#     save_data_dir = os.path.join(run_dir, 'data')
+#     os.makedirs(save_data_dir, exist_ok=True)
+#
+#     data_dict = {
+#         'seed-0': {
+#             'training': {
+#                 'point_distance_sr': [],
+#                 'point_distance_rs': [],
+#                 'chamfer_loss_pcd': [],
+#                 'particle_distance_sr': [],
+#                 'particle_distance_rs': [],
+#                 'chamfer_loss_particle': [],
+#                 'height_map_loss_pcd': [],
+#                 'emd_point_distance_loss': [],
+#                 'emd_particle_distance_loss': []
+#             },
+#             'validation': {
+#                 'point_distance_sr': [],
+#                 'point_distance_rs': [],
+#                 'chamfer_loss_pcd': [],
+#                 'particle_distance_sr': [],
+#                 'particle_distance_rs': [],
+#                 'chamfer_loss_particle': [],
+#                 'height_map_loss_pcd': [],
+#                 'emd_point_distance_loss': [],
+#                 'emd_particle_distance_loss': []
+#             }
+#         },
+#         'seed-1': {
+#             'training': {
+#                 'point_distance_sr': [],
+#                 'point_distance_rs': [],
+#                 'chamfer_loss_pcd': [],
+#                 'particle_distance_sr': [],
+#                 'particle_distance_rs': [],
+#                 'chamfer_loss_particle': [],
+#                 'height_map_loss_pcd': [],
+#                 'emd_point_distance_loss': [],
+#                 'emd_particle_distance_loss': []
+#             },
+#             'validation': {
+#                 'point_distance_sr': [],
+#                 'point_distance_rs': [],
+#                 'chamfer_loss_pcd': [],
+#                 'particle_distance_sr': [],
+#                 'particle_distance_rs': [],
+#                 'chamfer_loss_particle': [],
+#                 'height_map_loss_pcd': [],
+#                 'emd_point_distance_loss': [],
+#                 'emd_particle_distance_loss': []
+#             }
+#         },
+#         'seed-2': {
+#             'training': {
+#                 'point_distance_sr': [],
+#                 'point_distance_rs': [],
+#                 'chamfer_loss_pcd': [],
+#                 'particle_distance_sr': [],
+#                 'particle_distance_rs': [],
+#                 'chamfer_loss_particle': [],
+#                 'height_map_loss_pcd': [],
+#                 'emd_point_distance_loss': [],
+#                 'emd_particle_distance_loss': []
+#             },
+#             'validation': {
+#                 'point_distance_sr': [],
+#                 'point_distance_rs': [],
+#                 'chamfer_loss_pcd': [],
+#                 'particle_distance_sr': [],
+#                 'particle_distance_rs': [],
+#                 'chamfer_loss_particle': [],
+#                 'height_map_loss_pcd': [],
+#                 'emd_point_distance_loss': [],
+#                 'emd_particle_distance_loss': []
+#             }
+#         }
+#     }
+#
+#     seeds = [0, 1, 2]
+#     for seed in seeds:
+#         seed_dir = os.path.join(run_dir, f'seed-{str(seed)}')
+#         for filename in os.listdir(seed_dir):
+#             if filename[:5] == 'event':
+#                 for event in summary_iterator(os.path.join(seed_dir, filename)):
+#                     for v in event.summary.value:
+#                         if v.tag[:5] == 'Loss/':
+#                             if v.tag[5:] == 'point_distance_sr':
+#                                 data_dict[f'seed-{seed}']['training']['point_distance_sr'].append(v.simple_value)
+#                             elif v.tag[5:] == 'point_distance_rs':
+#                                 data_dict[f'seed-{seed}']['training']['point_distance_rs'].append(v.simple_value)
+#                             elif v.tag[5:] == 'chamfer_loss_pcd':
+#                                 data_dict[f'seed-{seed}']['training']['chamfer_loss_pcd'].append(v.simple_value)
+#                             elif v.tag[5:] == 'particle_distance_sr':
+#                                 data_dict[f'seed-{seed}']['training']['particle_distance_sr'].append(v.simple_value)
+#                             elif v.tag[5:] == 'particle_distance_rs':
+#                                 data_dict[f'seed-{seed}']['training']['particle_distance_rs'].append(v.simple_value)
+#                             elif v.tag[5:] == 'chamfer_loss_particle':
+#                                 data_dict[f'seed-{seed}']['training']['chamfer_loss_particle'].append(v.simple_value)
+#                             elif v.tag[5:] == 'height_map_loss_pcd':
+#                                 data_dict[f'seed-{seed}']['training']['height_map_loss_pcd'].append(v.simple_value)
+#                             elif v.tag[5:] == 'emd_point_distance_loss':
+#                                 data_dict[f'seed-{seed}']['training']['emd_point_distance_loss'].append(v.simple_value)
+#                             elif v.tag[5:] == 'emd_particle_distance_loss':
+#                                 data_dict[f'seed-{seed}']['training']['emd_particle_distance_loss'].append(v.simple_value)
+#                             else:
+#                                 pass
+#                         elif v.tag[:16] == 'Validation loss/':
+#                             if v.tag[16:] == 'point_distance_sr':
+#                                 data_dict[f'seed-{seed}']['validation']['point_distance_sr'].append(v.simple_value)
+#                             elif v.tag[16:] == 'point_distance_rs':
+#                                 data_dict[f'seed-{seed}']['validation']['point_distance_rs'].append(v.simple_value)
+#                             elif v.tag[16:] == 'chamfer_loss_pcd':
+#                                 data_dict[f'seed-{seed}']['validation']['chamfer_loss_pcd'].append(v.simple_value)
+#                             elif v.tag[16:] == 'particle_distance_sr':
+#                                 data_dict[f'seed-{seed}']['validation']['particle_distance_sr'].append(v.simple_value)
+#                             elif v.tag[16:] == 'particle_distance_rs':
+#                                 data_dict[f'seed-{seed}']['validation']['particle_distance_rs'].append(v.simple_value)
+#                             elif v.tag[16:] == 'chamfer_loss_particle':
+#                                 data_dict[f'seed-{seed}']['validation']['chamfer_loss_particle'].append(v.simple_value)
+#                             elif v.tag[16:] == 'height_map_loss_pcd':
+#                                 data_dict[f'seed-{seed}']['validation']['height_map_loss_pcd'].append(v.simple_value)
+#                             elif v.tag[16:] == 'emd_point_distance_loss':
+#                                 data_dict[f'seed-{seed}']['validation']['emd_point_distance_loss'].append(v.simple_value)
+#                             elif v.tag[16:] == 'emd_particle_distance_loss':
+#                                 data_dict[f'seed-{seed}']['validation']['emd_particle_distance_loss'].append(v.simple_value)
+#                             else:
+#                                 pass
+#                         else:
+#                             pass
+#
+#     for loss_type in loss_types:
+#         # training
+#         data = []
+#         for seed in seeds:
+#             d = np.array(data_dict[f'seed-{seed}']['training'][loss_type])
+#             data.append(d)
+#         plot.get_mean_and_deviation(np.array(data),
+#                                     save_data=True,
+#                                     file_name=os.path.join(save_data_dir, f'training-{loss_type}.json'))
+#         # validation
+#         validation_data = []
+#         for seed in seeds:
+#             d = data_dict[f'seed-{seed}']['validation'][loss_type]
+#             validation_data.append(np.array(d))
+#         plot.get_mean_and_deviation(np.array(validation_data),
+#                                     save_data=True,
+#                                     file_name=os.path.join(save_data_dir, f'validation-{loss_type}.json'))
+# exit()
 
 """Plotting"""
+"Legends"
+legends = [
+    'Euclidean: PCD chamfer',
+    'Euclidean: Particle chamfer',
+    'Euclidean: PCD emd',
+    'Euclidean: Particle emd',
+    'Euclidean: Height map',
+    # 'Exponential: PCD chamfer',
+    # 'Exponential: Particle chamfer',
+    # 'Exponential: Height map',
+]
+plot.smoothed_plot_mean_deviation(
+    file=os.path.join(cwd, '..', 'optimisation-result-figs', f'fewshot-param0-legend.pdf'),
+    legend_file=os.path.join(cwd, '..', 'optimisation-result-figs', f'fewshot-param0-legend.pdf'),
+    horizontal_lines=None, linestyle='--', linewidth=5,
+    legend=legends, legend_ncol=1, legend_frame=False,
+    legend_bbox_to_anchor=(1.6, 1.1),
+    legend_loc='upper right',
+    data_dict_list=[None for _ in range(len(legends))], legend_only=True)
+
+"Data"
 for case in ['training', 'validation']:
     for i in range(len(loss_types)):
         loss_type = loss_types[i]
+        if loss_type == 'point_distance_sr':
+            title = 'Euclidean: PCD sim2real'
+        elif loss_type == 'point_distance_rs':
+            title = 'Euclidean: PCD real2sim'
+        elif loss_type == 'chamfer_loss_pcd':
+            title = 'Euclidean: PCD chamfer'
+        elif loss_type == 'particle_distance_sr':
+            title = 'Euclidean: Particle sim2real'
+        elif loss_type == 'particle_distance_rs':
+            title = 'Euclidean: Particle real2sim'
+        elif loss_type == 'chamfer_loss_particle':
+            title = 'Euclidean: Particle chamfer'
+        elif loss_type == 'height_map_loss_pcd':
+            title = 'Euclidean: Height map'
+        elif loss_type == 'emd_point_distance_loss':
+            title = 'Euclidean: PCD emd'
+        elif loss_type == 'emd_particle_distance_loss':
+            title = 'Euclidean: Particle emd'
+        else:
+            raise ValueError('Unknown loss type')
         stat_dicts = []
-        for run_id in [0, 1]:
+        for run_id in [2, 3, 1, 0, 4]:
             run_dir = os.path.join(cwd, '..', f'optimisation-fewshot-param0-run{run_id}-logs', 'data')
 
             with open(os.path.join(run_dir, f'{case}-{loss_type}.json'), 'rb') as f:
@@ -157,10 +238,10 @@ for case in ['training', 'validation']:
             file=os.path.join(cwd, '..', 'optimisation-result-figs', f'fewshot-param0-{case}-{loss_type}.pdf'),
             data_dict_list=stat_dicts,
             horizontal_lines=None, linestyle='--', linewidth=5,
-            legend=None, legend_ncol=2, legend_frame=False,
-            legend_bbox_to_anchor=(-0.1, 1.0),
-            legend_loc='upper left',
+            legend=None, legend_ncol=1, legend_frame=False,
+            legend_bbox_to_anchor=(1.4, 1.1),
+            legend_loc='upper right',
             x_label='Epoch', x_axis_off=False,
             y_label=None, y_axis_off=False,
-            title=loss_type
+            title=title
         )

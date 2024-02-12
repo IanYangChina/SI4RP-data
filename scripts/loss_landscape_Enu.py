@@ -1,84 +1,14 @@
 import argparse
 import logging
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-from matplotlib.ticker import LinearLocator
+from doma.engine.utils.misc import plot_loss_landscape
 import numpy as np
 import os
 import taichi as ti
 from doma.envs.sys_id_env import make_env, set_parameters
 from time import time
-plt.rcParams['pdf.fonttype'] = 42
-plt.rcParams['ps.fonttype'] = 42
-plt.rcParams['font.family'] = 'serif'
-plt.rcParams['font.serif'] = ['Times New Roman'] + plt.rcParams['font.serif']
-plt.rcParams.update({'font.size': 12})
 script_path = os.path.dirname(os.path.realpath(__file__))
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
-
-
-def plot_loss_landscape(p1, p2, loss, fig_title='Fig', view='left',
-                        x_label='p1', y_label='p2', z_label='Loss',
-                        hm=False, show=False, save=True, path=None):
-    cmap = 'GnBu'
-    if not show:
-        mpl.use('Agg')
-    if hm:
-        loss = np.flip(loss, axis=0)
-        fig, ax = plt.subplots()
-        im = ax.imshow(loss, cmap=cmap)
-        fig.colorbar(im, ax=ax)
-        x_ticks = np.linspace(0, p1.shape[1] - 1, 5).astype(np.int32)
-        x_labels = np.round(np.linspace(p1[0, 0], p1[0, -1], 5), 2)
-
-        y_ticks = np.linspace(0, p1.shape[0] - 1, 5).astype(np.int32)
-        y_labels = np.round(np.linspace(p2[0, 0], p2[-1, 0], 5), 2).tolist()
-        y_labels.reverse()
-        ax.set_xticks(x_ticks)
-        ax.set_xticklabels(x_labels)
-        ax.set_yticks(y_ticks)
-        ax.set_yticklabels(y_labels)
-        ax.set_xlabel(x_label)
-        ax.set_ylabel(y_label)
-        ax.set_title(label=fig_title)
-        if save:
-            plt.savefig(path, dpi=500, bbox_inches='tight')
-        if show:
-            plt.show()
-        plt.close()
-    else:
-        fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
-        # Plot the surface.
-        surf = ax.plot_surface(p1, p2, loss, cmap=cmap,
-                               linewidth=0, antialiased=False)
-
-        # Customize the z axis.
-        ax.zaxis.set_major_locator(LinearLocator(5))
-        # A StrMethodFormatter is used automatically
-        ax.zaxis.set_major_formatter('{x:.02f}')
-        if view == 'left':
-            ax.view_init(elev=25., azim=130)
-        else:
-            ax.view_init(elev=25., azim=-130)
-        ax.tick_params(axis='x', pad=0)
-        ax.tick_params(axis='y', pad=0)
-        ax.tick_params(axis='z', pad=10)
-        ax.set_xlabel(x_label)
-        ax.xaxis.labelpad = 5
-        ax.set_ylabel(y_label)
-        ax.yaxis.labelpad = 5
-        ax.set_zlabel(z_label)
-        ax.zaxis.labelpad = 22
-        ax.set_title(label=fig_title)
-
-        # Add a color bar which maps values to colors.
-        fig.colorbar(surf, shrink=0.5, aspect=5, location=view)
-        if save:
-            plt.savefig(path, dpi=500, bbox_inches='tight')
-        if show:
-            plt.show()
-        plt.close()
 
 
 def main(args):

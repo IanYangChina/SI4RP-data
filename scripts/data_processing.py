@@ -2,9 +2,11 @@ import os
 import json
 import numpy as np
 from drl_implementation.agent.utils import plot as plot
+import matplotlib as mpl
+mpl.use('TkAgg')
 import matplotlib.pyplot as plt
 from tensorflow.python.summary.summary_iterator import summary_iterator
-
+np.set_printoptions(2, suppress=True)
 
 plt.rcParams['pdf.fonttype'] = 42
 plt.rcParams['ps.fonttype'] = 42
@@ -22,6 +24,53 @@ loss_types = ['point_distance_sr',
               'emd_point_distance_loss',
               'emd_particle_distance_loss'
               ]
+
+"""Read/print params"""
+legends = [
+    'Euclidean: PCD chamfer - 0',
+    'Euclidean: PCD chamfer - 1',
+    'Euclidean: PCD chamfer - 2',
+    'Euclidean: Particle chamfer - 0',
+    'Euclidean: Particle chamfer - 1',
+    'Euclidean: Particle chamfer - 2',
+    'Euclidean: PCD emd - 0',
+    'Euclidean: PCD emd - 1',
+    'Euclidean: PCD emd - 2',
+    'Euclidean: Particle emd - 0',
+    'Euclidean: Particle emd - 1',
+    'Euclidean: Particle emd - 2',
+    'Euclidean: Height map - 0',
+    'Euclidean: Height map - 1',
+    'Euclidean: Height map - 2'
+]
+colors = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
+          'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan','k']
+param_names = ['E', 'nu', 'yield stress', 'rho', 'mf', 'gf']
+for p_id in range(4):
+    n = 0
+    if p_id != 3:
+        plt.figure(figsize=(8, 2.5))
+    else:
+        plt.figure(figsize=(8, 5))
+    for run_id in [2, 3, 1, 0, 4]:
+        run_dir = os.path.join(cwd, '..', f'optimisation-fewshot-param0-run{run_id}-logs',)
+        values = []
+        for seed in [0, 1, 2]:
+            seed_dir = os.path.join(run_dir, f'seed-{str(seed)}')
+            params = np.load(os.path.join(seed_dir, 'final_params.npy'))
+            plt.scatter(n, params.flatten()[p_id], color=colors[run_id])
+            n += 1
+    plt.title(f'Final value of {param_names[p_id]}')
+    plt.xticks(np.arange(15), legends, rotation=90)
+    if p_id != 3:
+        plt.xlabel(None)
+        plt.xticks([])
+    plt.tight_layout()
+    plt.savefig(os.path.join(cwd, '..', 'optimisation-result-figs',
+                             f'fewshot-param0-final-{param_names[p_id]}.pdf'), bbox_inches='tight', dpi=500)
+    plt.close()
+
+exit()
 
 """generate mean and deviation data"""
 #

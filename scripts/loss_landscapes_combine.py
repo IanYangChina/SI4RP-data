@@ -51,7 +51,7 @@ def main(args):
     loss_type = ''
     loss_rhoys = np.zeros_like(rho)
     loss_Enu = np.zeros_like(E)
-    for i in [2, 7, 8]:
+    for i in [5, 8]:
         loss_type += loss_types[i]
         loss_type += '-'
         loss_rhoys += np.load(os.path.join(fig_data_path,

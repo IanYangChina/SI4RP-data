@@ -89,6 +89,14 @@ def forward_backward(mpm_env, init_state, trajectory, logger, backward=True, deb
 
 
 def main(args):
+    if args['backend'] == 'opengl':
+        backend = ti.opengl
+    elif args['backend'] == 'cuda':
+        backend = ti.cuda
+    elif args['backend'] == 'vulkan':
+        backend = ti.vulkan
+    else:
+        backend = ti.cpu
     if args['debug']:
         print('[Warning] Debug mode on, printing gradients.')
     process = psutil.Process(os.getpid())
@@ -191,7 +199,7 @@ def main(args):
 
             for data_ind in data_ids:
                 ti.reset()
-                ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32,
+                ti.init(arch=backend, default_fp=DTYPE_TI, default_ip=ti.i32, device_memory_GB=3,
                         debug=False, advanced_optimization=True, fast_math=True,
                         print_ir=False,
                         # log_level=ti.TRACE,
@@ -346,5 +354,6 @@ if __name__ == '__main__':
     parser.add_argument('--hm_loss', dest='height_map_loss', default=False, action='store_true')
     parser.add_argument('--emd_p_loss', dest='emd_point_distance_loss', default=False, action='store_true')
     parser.add_argument('--emd_pr_loss', dest='emd_particle_distance_loss', default=False, action='store_true')
+    parser.add_argument('--backend', dest='backend', default='opengl', type=str)
     args = vars(parser.parse_args())
     main(args)

@@ -24,7 +24,7 @@ from doma.envs.sys_id_env import make_env, set_parameters
 def forward(mpm_env, init_state, trajectory, press_to_proceed=False,
             render=False, save_img=False, render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
             init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
-    t1 = time()
+
     mpm_env.set_state(init_state['state'], grad_enabled=False)
     # print(mpm_env.agent.effectors[0].pos[mpm_env.simulator.cur_substep_local])
     cmap = 'YlGnBu'
@@ -54,7 +54,7 @@ def forward(mpm_env, init_state, trajectory, press_to_proceed=False,
     if save_img:
         k = 0
         while True:
-            img_dir = os.path.join(script_path, '..', 'demo_files', f'imgs-{k}')
+            img_dir = os.path.join(script_path, '..', 'optimisation-result-figs', f'imgs-{k}')
             if not os.path.exists(img_dir):
                 os.makedirs(img_dir)
                 break
@@ -154,7 +154,7 @@ def main(args):
 
     cam_cfg = {
         'pos': (0.2, 0.02, 0.07),
-        'lookat': (0.24, 0.23, 0.07),
+        'lookat': (0.24, 0.20, 0.07),
         'fov': 30,
         'lights': [{'pos': (0.5, -1.5, 0.5), 'color': (0.5, 0.5, 0.5)},
                    {'pos': (0.5, -1.5, 1.5), 'color': (0.5, 0.5, 0.5)}]
@@ -215,17 +215,34 @@ def main(args):
     training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
     if args['eval']:
         training_data_path = os.path.join(script_path, '..', 'data-motion-validation', f'eef-{agent}')
-    data_ids = ['3', '4']
+    data_ids = ['2']
 
     E = 1e4  # [1e4, 3e5]
     nu = 0.3  # [0.01, 0.48]
-    # mu = E / (2 * (1 + nu))
-    # lam = E * nu / ((1 + nu) * (1 - 2 * nu))
-    # print(f'===> mu: {mu}, lambda: {lam}')
     yield_stress = 6e3  # [1e2, 2e4]
     rho = 1300  # [1000, 2000]
     gf = 2.0  # [0.01, 2.0]
-    mf = 0.2  # [0.01, 2.0]
+    mf = 0.3  # [0.01, 2.0]
+    if args['load_params']:
+        run_id = args['load_params_run']
+        seed_id = args['load_params_seed']
+        print(f'Loading optimised parameters from run {run_id} seed {seed_id}...')
+        params = np.load(os.path.join(
+            script_path, '..', f'optimisation-fewshot-param0-run{run_id}-logs', f'seed-{seed_id}', 'final_params.npy'
+        )).flatten()
+        E = params[0]
+        nu = params[1]
+        yield_stress = params[2]
+        rho = params[3]
+
+    data_id_dict = {
+        'rectangle': [4, 8],
+        'round': [4, 7],
+        'cylinder': [4, 7]
+    }
+    data_ids = data_id_dict[agent]
+    if args['eval']:
+        data_ids = [0, 1]
 
     for data_ind in data_ids:
         ti.reset()
@@ -233,7 +250,7 @@ def main(args):
                 fast_math=True, advanced_optimization=True, random_seed=1)
         data_cfg = {
             'data_path': training_data_path,
-            'data_ind': data_ind,
+            'data_ind': str(data_ind),
         }
         env_cfg = {
             'p_density': p_density,
@@ -253,35 +270,33 @@ def main(args):
         print(f'===> CPU memory occupied after create env: {process.memory_percent()} %')
         print(f'===> GPU memory after create env: {get_gpu_memory()}')
 
-        for E in [290000]:
-            for nu in [0.105999, 0.1220000, 0.137999, 0.153999, 0.170000, 0.186000, 0.202000, 0.217999]:
-                print(f'===> Parameters: E = {E}, nu = {nu}, yield_stress = {yield_stress}, rho = {rho}, gf = {gf}, mf = {mf}')
-                set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress,
-                               rho=rho, ground_friction=gf, manipulator_friction=mf)
-                forward(mpm_env, init_state, trajectory.copy(),
-                        press_to_proceed=args['press_to_proceed'],
-                        render=args['render_human'], save_img=args['save_img'],
-                        render_init_pcd=args['render_init_pcd'],
-                        render_end_pcd=args['render_end_pcd'], render_heightmap=args['render_heightmap'],
-                        init_pcd_path=os.path.join(training_data_path, 'pcd_' + str(data_ind) + str(0) + '.ply'),
-                        init_pcd_offset=env.target_pcd_offset,
-                        init_mesh_path=env.mesh_file,
-                        init_mesh_pos=env.initial_pos)
+        print(f'===> Parameters: E = {E}, nu = {nu}, yield_stress = {yield_stress}, rho = {rho}, gf = {gf}, mf = {mf}')
+        set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress,
+                       rho=rho, ground_friction=gf, manipulator_friction=mf)
+        forward(mpm_env, init_state, trajectory.copy(),
+                press_to_proceed=args['press_to_proceed'],
+                render=args['render_human'], save_img=args['save_img'],
+                render_init_pcd=args['render_init_pcd'],
+                render_end_pcd=args['render_end_pcd'], render_heightmap=args['render_heightmap'],
+                init_pcd_path=os.path.join(training_data_path, 'pcd_' + str(data_ind) + str(0) + '.ply'),
+                init_pcd_offset=env.target_pcd_offset,
+                init_mesh_path=env.mesh_file,
+                init_mesh_pos=env.initial_pos)
 
         print(f'===> CPU memory occupied after forward: {process.memory_percent()} %')
         print(f'===> GPU memory after forward: {get_gpu_memory()}')
 
-        # Unnecessary to clear checkpoint without gradient enabled
-        # mpm_env.simulator.clear_ckpt()
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=2e7)
+    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
     parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.006)
     parser.add_argument('--ptp', dest='press_to_proceed', default=False, action='store_true')
     parser.add_argument('--demo', dest='demo', default=False, action='store_true')
     parser.add_argument('--eval', dest='eval', default=False, action='store_true')
+    parser.add_argument('--load_params', dest='load_params', default=False, action='store_true')
+    parser.add_argument('--load_params_run', dest='load_params_run', type=int, default=0)
+    parser.add_argument('--load_params_seed', dest='load_params_seed', type=int, default=0)
     parser.add_argument('--dt', dest='dt', type=float, default=0.01)
     parser.add_argument('--dt_avg', dest='dt_avg', default=False, action='store_true')
     parser.add_argument('--m_id', dest='motion_ind', type=int, default=1)

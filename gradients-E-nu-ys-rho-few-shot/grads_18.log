@@ -4425,3 +4425,225 @@
 2024-02-14 09:28:00,532 INFO ===> emd_point_distance_loss: 1617.6069
 2024-02-14 09:28:00,532 INFO ===> emd_particle_distance_loss: 6473.7900
 2024-02-14 09:28:00,532 INFO ===> total_loss: 11370.8311
+2024-02-14 09:28:12,435 INFO ===> forward: 5.64s backward: 11.90s
+2024-02-14 09:28:12,483 INFO ===> CPU memory occupied after forward-backward: 0.6700763226797185 %
+2024-02-14 09:28:12,573 INFO ===> GPU memory after forward-backward: [22575, 18076]
+2024-02-14 09:28:12,574 INFO ===> Gradients:
+2024-02-14 09:28:12,576 INFO Gradient of E: 0.003953829407691956
+2024-02-14 09:28:12,577 INFO Gradient of nu: -20970.185546875
+2024-02-14 09:28:12,577 INFO Gradient of rho: 0.024159913882613182
+2024-02-14 09:28:12,577 INFO Gradient of yield stress: -0.04527652636170387
+2024-02-14 09:28:18,181 INFO ===> particle_has_naninf: 0.0000
+2024-02-14 09:28:18,181 INFO ===> point_distance_sr: 4118.9946
+2024-02-14 09:28:18,181 INFO ===> point_distance_rs: 1369.8889
+2024-02-14 09:28:18,181 INFO ===> chamfer_loss_pcd: 5488.8838
+2024-02-14 09:28:18,181 INFO ===> particle_distance_sr: 2130.4160
+2024-02-14 09:28:18,181 INFO ===> particle_distance_rs: 2996.7710
+2024-02-14 09:28:18,181 INFO ===> chamfer_loss_particle: 5127.1870
+2024-02-14 09:28:18,181 INFO ===> height_map_loss_pcd: 2716.3289
+2024-02-14 09:28:18,181 INFO ===> emd_point_distance_loss: 1590.7806
+2024-02-14 09:28:18,181 INFO ===> emd_particle_distance_loss: 6426.6235
+2024-02-14 09:28:18,181 INFO ===> total_loss: 11553.8105
+2024-02-14 09:28:29,952 INFO ===> forward: 5.60s backward: 11.77s
+2024-02-14 09:28:30,020 INFO ===> CPU memory occupied after forward-backward: 0.6708537914288535 %
+2024-02-14 09:28:30,067 INFO ===> GPU memory after forward-backward: [22575, 18076]
+2024-02-14 09:28:30,067 INFO ===> Gradients:
+2024-02-14 09:28:30,069 INFO Gradient of E: -0.00018244421517010778
+2024-02-14 09:28:30,070 INFO Gradient of nu: -957.3992919921875
+2024-02-14 09:28:30,070 INFO Gradient of rho: 0.46345168352127075
+2024-02-14 09:28:30,070 INFO Gradient of yield stress: -0.06431549042463303
+2024-02-14 09:28:35,700 INFO ===> particle_has_naninf: 0.0000
+2024-02-14 09:28:35,700 INFO ===> point_distance_sr: 4397.6714
+2024-02-14 09:28:35,700 INFO ===> point_distance_rs: 1438.7510
+2024-02-14 09:28:35,700 INFO ===> chamfer_loss_pcd: 5836.4224
+2024-02-14 09:28:35,700 INFO ===> particle_distance_sr: 2393.6052
+2024-02-14 09:28:35,700 INFO ===> particle_distance_rs: 3476.9678
+2024-02-14 09:28:35,700 INFO ===> chamfer_loss_particle: 5870.5732
+2024-02-14 09:28:35,700 INFO ===> height_map_loss_pcd: 2781.7336
+2024-02-14 09:28:35,700 INFO ===> emd_point_distance_loss: 1617.3488
+2024-02-14 09:28:35,700 INFO ===> emd_particle_distance_loss: 6489.0190
+2024-02-14 09:28:35,700 INFO ===> total_loss: 12359.5918
+2024-02-14 09:28:47,340 INFO ===> forward: 5.63s backward: 11.64s
+2024-02-14 09:28:47,387 INFO ===> CPU memory occupied after forward-backward: 0.6716312601779884 %
+2024-02-14 09:28:47,478 INFO ===> GPU memory after forward-backward: [22575, 18074]
+2024-02-14 09:28:47,478 INFO ===> Gradients:
+2024-02-14 09:28:47,479 INFO Gradient of E: -0.00041688469354994595
+2024-02-14 09:28:47,479 INFO Gradient of nu: -613.1928100585938
+2024-02-14 09:28:47,480 INFO Gradient of rho: 0.534558892250061
+2024-02-14 09:28:47,480 INFO Gradient of yield stress: -0.24271473288536072
+2024-02-14 09:28:53,138 INFO ===> particle_has_naninf: 0.0000
+2024-02-14 09:28:53,138 INFO ===> point_distance_sr: 4077.3274
+2024-02-14 09:28:53,138 INFO ===> point_distance_rs: 1429.4777
+2024-02-14 09:28:53,138 INFO ===> chamfer_loss_pcd: 5506.8052
+2024-02-14 09:28:53,138 INFO ===> particle_distance_sr: 2041.4296
+2024-02-14 09:28:53,138 INFO ===> particle_distance_rs: 3041.5869
+2024-02-14 09:28:53,138 INFO ===> chamfer_loss_particle: 5083.0166
+2024-02-14 09:28:53,138 INFO ===> height_map_loss_pcd: 2811.4751
+2024-02-14 09:28:53,138 INFO ===> emd_point_distance_loss: 1668.9899
+2024-02-14 09:28:53,138 INFO ===> emd_particle_distance_loss: 6468.5889
+2024-02-14 09:28:53,138 INFO ===> total_loss: 11551.6055
+2024-02-14 09:29:04,905 INFO ===> forward: 5.66s backward: 11.77s
+2024-02-14 09:29:04,972 INFO ===> CPU memory occupied after forward-backward: 0.6700763226797185 %
+2024-02-14 09:29:05,020 INFO ===> GPU memory after forward-backward: [22575, 18074]
+2024-02-14 09:29:05,021 INFO ===> Gradients:
+2024-02-14 09:29:05,023 INFO Gradient of E: -0.0015775683568790555
+2024-02-14 09:29:05,024 INFO Gradient of nu: 135.82537841796875
+2024-02-14 09:29:05,024 INFO Gradient of rho: 0.2732430398464203
+2024-02-14 09:29:05,025 INFO Gradient of yield stress: -0.010289651341736317
+2024-02-14 09:29:10,665 INFO ===> particle_has_naninf: 0.0000
+2024-02-14 09:29:10,665 INFO ===> point_distance_sr: 4461.4585
+2024-02-14 09:29:10,665 INFO ===> point_distance_rs: 1340.5632
+2024-02-14 09:29:10,665 INFO ===> chamfer_loss_pcd: 5802.0215
+2024-02-14 09:29:10,666 INFO ===> particle_distance_sr: 2299.0205
+2024-02-14 09:29:10,666 INFO ===> particle_distance_rs: 3309.2961
+2024-02-14 09:29:10,666 INFO ===> chamfer_loss_particle: 5608.3164
+2024-02-14 09:29:10,666 INFO ===> height_map_loss_pcd: 2496.5142
+2024-02-14 09:29:10,666 INFO ===> emd_point_distance_loss: 1503.7100
+2024-02-14 09:29:10,666 INFO ===> emd_particle_distance_loss: 6232.8320
+2024-02-14 09:29:10,666 INFO ===> total_loss: 11841.1484
+2024-02-14 09:29:22,619 INFO ===> forward: 5.64s backward: 11.95s
+2024-02-14 09:29:22,666 INFO ===> CPU memory occupied after forward-backward: 0.6716312601779884 %
+2024-02-14 09:29:22,757 INFO ===> GPU memory after forward-backward: [22575, 18074]
+2024-02-14 09:29:22,758 INFO ===> Gradients:
+2024-02-14 09:29:22,759 INFO Gradient of E: -0.0037100855261087418
+2024-02-14 09:29:22,759 INFO Gradient of nu: -682.8484497070312
+2024-02-14 09:29:22,759 INFO Gradient of rho: 0.47599178552627563
+2024-02-14 09:29:22,759 INFO Gradient of yield stress: -0.08350210636854172
+2024-02-14 09:29:28,420 INFO ===> particle_has_naninf: 0.0000
+2024-02-14 09:29:28,420 INFO ===> point_distance_sr: 4044.1130
+2024-02-14 09:29:28,420 INFO ===> point_distance_rs: 1410.3959
+2024-02-14 09:29:28,420 INFO ===> chamfer_loss_pcd: 5454.5088
+2024-02-14 09:29:28,420 INFO ===> particle_distance_sr: 2401.3813
+2024-02-14 09:29:28,420 INFO ===> particle_distance_rs: 3234.0168
+2024-02-14 09:29:28,420 INFO ===> chamfer_loss_particle: 5635.3984
+2024-02-14 09:29:28,420 INFO ===> height_map_loss_pcd: 2705.5815
+2024-02-14 09:29:28,420 INFO ===> emd_point_distance_loss: 1632.4379
+2024-02-14 09:29:28,421 INFO ===> emd_particle_distance_loss: 6713.1621
+2024-02-14 09:29:28,421 INFO ===> total_loss: 12348.5605
+2024-02-14 09:29:40,065 INFO ===> forward: 5.66s backward: 11.64s
+2024-02-14 09:29:40,111 INFO ===> CPU memory occupied after forward-backward: 0.6716312601779884 %
+2024-02-14 09:29:40,182 INFO ===> GPU memory after forward-backward: [22575, 18074]
+2024-02-14 09:29:40,183 INFO ===> Gradients:
+2024-02-14 09:29:40,185 INFO Gradient of E: -0.02577917091548443
+2024-02-14 09:29:40,185 INFO Gradient of nu: -40.531028747558594
+2024-02-14 09:29:40,186 INFO Gradient of rho: 0.22938968241214752
+2024-02-14 09:29:40,186 INFO Gradient of yield stress: 0.0
+2024-02-14 09:29:45,839 INFO ===> particle_has_naninf: 0.0000
+2024-02-14 09:29:45,839 INFO ===> point_distance_sr: 4069.7542
+2024-02-14 09:29:45,839 INFO ===> point_distance_rs: 1415.4845
+2024-02-14 09:29:45,839 INFO ===> chamfer_loss_pcd: 5485.2388
+2024-02-14 09:29:45,839 INFO ===> particle_distance_sr: 2196.9409
+2024-02-14 09:29:45,839 INFO ===> particle_distance_rs: 3065.9907
+2024-02-14 09:29:45,839 INFO ===> chamfer_loss_particle: 5262.9316
+2024-02-14 09:29:45,840 INFO ===> height_map_loss_pcd: 2772.2627
+2024-02-14 09:29:45,840 INFO ===> emd_point_distance_loss: 1639.7812
+2024-02-14 09:29:45,840 INFO ===> emd_particle_distance_loss: 6547.2856
+2024-02-14 09:29:45,840 INFO ===> total_loss: 11810.2168
+2024-02-14 09:29:57,638 INFO ===> forward: 5.65s backward: 11.80s
+2024-02-14 09:29:57,684 INFO ===> CPU memory occupied after forward-backward: 0.6716312601779884 %
+2024-02-14 09:29:57,753 INFO ===> GPU memory after forward-backward: [22575, 18074]
+2024-02-14 09:29:57,753 INFO ===> Gradients:
+2024-02-14 09:29:57,755 INFO Gradient of E: -0.013007394969463348
+2024-02-14 09:29:57,756 INFO Gradient of nu: -118.05316925048828
+2024-02-14 09:29:57,757 INFO Gradient of rho: 0.3052828311920166
+2024-02-14 09:29:57,757 INFO Gradient of yield stress: 0.0
+2024-02-14 09:30:03,391 INFO ===> particle_has_naninf: 0.0000
+2024-02-14 09:30:03,391 INFO ===> point_distance_sr: 4058.8655
+2024-02-14 09:30:03,391 INFO ===> point_distance_rs: 1419.2902
+2024-02-14 09:30:03,391 INFO ===> chamfer_loss_pcd: 5478.1558
+2024-02-14 09:30:03,391 INFO ===> particle_distance_sr: 2188.5649
+2024-02-14 09:30:03,391 INFO ===> particle_distance_rs: 3115.2288
+2024-02-14 09:30:03,391 INFO ===> chamfer_loss_particle: 5303.7939
+2024-02-14 09:30:03,391 INFO ===> height_map_loss_pcd: 2809.1704
+2024-02-14 09:30:03,391 INFO ===> emd_point_distance_loss: 1637.3951
+2024-02-14 09:30:03,391 INFO ===> emd_particle_distance_loss: 6478.4541
+2024-02-14 09:30:03,391 INFO ===> total_loss: 11782.2480
+2024-02-14 09:30:15,016 INFO ===> forward: 5.63s backward: 11.62s
+2024-02-14 09:30:15,087 INFO ===> CPU memory occupied after forward-backward: 0.6708537914288535 %
+2024-02-14 09:30:15,154 INFO ===> GPU memory after forward-backward: [22575, 18072]
+2024-02-14 09:30:15,155 INFO ===> Gradients:
+2024-02-14 09:30:15,156 INFO Gradient of E: -0.01020033285021782
+2024-02-14 09:30:15,157 INFO Gradient of nu: -24.162532806396484
+2024-02-14 09:30:15,157 INFO Gradient of rho: 0.41123059391975403
+2024-02-14 09:30:15,157 INFO Gradient of yield stress: -0.024716688320040703
+2024-02-14 09:30:20,776 INFO ===> particle_has_naninf: 0.0000
+2024-02-14 09:30:20,776 INFO ===> point_distance_sr: 4176.8335
+2024-02-14 09:30:20,776 INFO ===> point_distance_rs: 1427.9618
+2024-02-14 09:30:20,776 INFO ===> chamfer_loss_pcd: 5604.7954
+2024-02-14 09:30:20,776 INFO ===> particle_distance_sr: 2196.0867
+2024-02-14 09:30:20,776 INFO ===> particle_distance_rs: 3157.0957
+2024-02-14 09:30:20,776 INFO ===> chamfer_loss_particle: 5353.1826
+2024-02-14 09:30:20,776 INFO ===> height_map_loss_pcd: 2858.9663
+2024-02-14 09:30:20,776 INFO ===> emd_point_distance_loss: 1643.4204
+2024-02-14 09:30:20,776 INFO ===> emd_particle_distance_loss: 6392.6802
+2024-02-14 09:30:20,776 INFO ===> total_loss: 11745.8633
+2024-02-14 09:30:32,432 INFO ===> forward: 5.62s backward: 11.66s
+2024-02-14 09:30:32,556 INFO ===> CPU memory occupied after forward-backward: 0.6708537914288535 %
+2024-02-14 09:30:32,629 INFO ===> GPU memory after forward-backward: [22575, 18072]
+2024-02-14 09:30:32,629 INFO ===> Gradients:
+2024-02-14 09:30:32,630 INFO Gradient of E: -7.425102376146242e-05
+2024-02-14 09:30:32,631 INFO Gradient of nu: 458.03875732421875
+2024-02-14 09:30:32,631 INFO Gradient of rho: 0.722248911857605
+2024-02-14 09:30:32,631 INFO Gradient of yield stress: -0.13439913094043732
+2024-02-14 09:30:38,324 INFO ===> particle_has_naninf: 0.0000
+2024-02-14 09:30:38,324 INFO ===> point_distance_sr: 4054.2803
+2024-02-14 09:30:38,324 INFO ===> point_distance_rs: 1404.9393
+2024-02-14 09:30:38,324 INFO ===> chamfer_loss_pcd: 5459.2197
+2024-02-14 09:30:38,324 INFO ===> particle_distance_sr: 2409.2380
+2024-02-14 09:30:38,324 INFO ===> particle_distance_rs: 3224.2124
+2024-02-14 09:30:38,324 INFO ===> chamfer_loss_particle: 5633.4502
+2024-02-14 09:30:38,324 INFO ===> height_map_loss_pcd: 2695.7310
+2024-02-14 09:30:38,324 INFO ===> emd_point_distance_loss: 1626.0812
+2024-02-14 09:30:38,324 INFO ===> emd_particle_distance_loss: 6687.7158
+2024-02-14 09:30:38,324 INFO ===> total_loss: 12321.1660
+2024-02-14 09:30:49,982 INFO ===> forward: 5.69s backward: 11.66s
+2024-02-14 09:30:50,030 INFO ===> CPU memory occupied after forward-backward: 0.6716312601779884 %
+2024-02-14 09:30:50,101 INFO ===> GPU memory after forward-backward: [22575, 18072]
+2024-02-14 09:30:50,102 INFO ===> Gradients:
+2024-02-14 09:30:50,103 INFO Gradient of E: -0.03785601258277893
+2024-02-14 09:30:50,104 INFO Gradient of nu: -88.05784606933594
+2024-02-14 09:30:50,104 INFO Gradient of rho: 0.33880922198295593
+2024-02-14 09:30:50,104 INFO Gradient of yield stress: 0.0
+2024-02-14 09:30:55,771 INFO ===> particle_has_naninf: 0.0000
+2024-02-14 09:30:55,771 INFO ===> point_distance_sr: 4618.9507
+2024-02-14 09:30:55,773 INFO ===> point_distance_rs: 1457.1019
+2024-02-14 09:30:55,773 INFO ===> chamfer_loss_pcd: 6076.0527
+2024-02-14 09:30:55,773 INFO ===> particle_distance_sr: 2301.9355
+2024-02-14 09:30:55,773 INFO ===> particle_distance_rs: 3514.4663
+2024-02-14 09:30:55,773 INFO ===> chamfer_loss_particle: 5816.4019
+2024-02-14 09:30:55,773 INFO ===> height_map_loss_pcd: 2657.8892
+2024-02-14 09:30:55,773 INFO ===> emd_point_distance_loss: 1615.3749
+2024-02-14 09:30:55,773 INFO ===> emd_particle_distance_loss: 6598.5933
+2024-02-14 09:30:55,773 INFO ===> total_loss: 12414.9951
+2024-02-14 09:31:07,462 INFO ===> forward: 5.67s backward: 11.69s
+2024-02-14 09:31:07,536 INFO ===> CPU memory occupied after forward-backward: 0.6708537914288535 %
+2024-02-14 09:31:07,581 INFO ===> GPU memory after forward-backward: [22575, 18072]
+2024-02-14 09:31:07,582 INFO ===> Gradients:
+2024-02-14 09:31:07,583 INFO Gradient of E: -0.004135782364755869
+2024-02-14 09:31:07,584 INFO Gradient of nu: -1301.82177734375
+2024-02-14 09:31:07,584 INFO Gradient of rho: 1.07683527469635
+2024-02-14 09:31:07,584 INFO Gradient of yield stress: -0.8158764839172363
+2024-02-14 09:31:13,261 INFO ===> particle_has_naninf: 0.0000
+2024-02-14 09:31:13,261 INFO ===> point_distance_sr: 4272.4082
+2024-02-14 09:31:13,261 INFO ===> point_distance_rs: 1384.5677
+2024-02-14 09:31:13,261 INFO ===> chamfer_loss_pcd: 5656.9761
+2024-02-14 09:31:13,261 INFO ===> particle_distance_sr: 2239.3752
+2024-02-14 09:31:13,261 INFO ===> particle_distance_rs: 3240.1619
+2024-02-14 09:31:13,261 INFO ===> chamfer_loss_particle: 5479.5371
+2024-02-14 09:31:13,261 INFO ===> height_map_loss_pcd: 2721.0676
+2024-02-14 09:31:13,261 INFO ===> emd_point_distance_loss: 1586.5031
+2024-02-14 09:31:13,261 INFO ===> emd_particle_distance_loss: 6423.1763
+2024-02-14 09:31:13,261 INFO ===> total_loss: 11902.7129
+2024-02-14 09:31:24,886 INFO ===> forward: 5.68s backward: 11.62s
+2024-02-14 09:31:24,955 INFO ===> CPU memory occupied after forward-backward: 0.6716312601779884 %
+2024-02-14 09:31:25,021 INFO ===> GPU memory after forward-backward: [22575, 18072]
+2024-02-14 09:31:25,022 INFO ===> Gradients:
+2024-02-14 09:31:25,023 INFO Gradient of E: -0.004188362043350935
+2024-02-14 09:31:25,023 INFO Gradient of nu: -360.7747802734375
+2024-02-14 09:31:25,023 INFO Gradient of rho: 0.47168660163879395
+2024-02-14 09:31:25,024 INFO Gradient of yield stress: 0.01387622207403183
+2024-02-14 09:31:25,028 INFO ===> Avg. Gradients:
+2024-02-14 09:31:25,028 INFO Avg. gradient of E: -0.0014258447336032987, std: 0.014429374597966671
+2024-02-14 09:31:25,028 INFO Avg. gradient of nu: -66.68456268310547, std: 2144.628173828125
+2024-02-14 09:31:25,028 INFO Avg. gradient of yield stress: 0.04234546795487404, std: 0.49718189239501953
+2024-02-14 09:31:25,028 INFO Avg. gradient of rho: -0.08747454732656479, std: 0.6788557171821594

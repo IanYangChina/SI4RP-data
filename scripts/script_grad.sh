@@ -7,7 +7,7 @@
 # python gradients_compute.py --hm_loss --fewshot --param_set 0
 # python gradients_compute.py --emd_p_loss --fewshot --param_set 0
 # python gradients_compute.py --emd_pr_loss --fewshot --param_set 0
-python gradients_compute.py --prd_rs_loss --prd_sr_loss --emd_pr_loss --fewshot --param_set 0
+python gradients_compute.py --prd_rs_loss --prd_sr_loss --emd_pr_loss --fewshot --param_set 0 --backend opengl
 # python gradients_compute.py --pd_rs_loss --pd_sr_loss --exp_dist --fewshot --param_set 0
 # python gradients_compute.py --pd_rs_loss --exp_dist --fewshot --param_set 0
 # python gradients_compute.py --pd_sr_loss --exp_dist --fewshot --param_set 0
@@ -47,7 +47,7 @@ python gradients_compute.py --prd_rs_loss --prd_sr_loss --emd_pr_loss --fewshot 
 #python gradients_compute.py --hm_loss --param_set 0
 #python gradients_compute.py --emd_p_loss --param_set 0
 #python gradients_compute.py --emd_pr_loss --param_set 0
-python gradients_compute.py --prd_rs_loss --prd_sr_loss --emd_pr_loss --param_set 0
+python gradients_compute.py --prd_rs_loss --prd_sr_loss --emd_pr_loss --param_set 0 --backend opengl
 #python gradients_compute.py --pd_rs_loss --pd_sr_loss --exp_dist --param_set 0
 #python gradients_compute.py --pd_rs_loss --exp_dist --param_set 0
 #python gradients_compute.py --pd_sr_loss --exp_dist --param_set 0

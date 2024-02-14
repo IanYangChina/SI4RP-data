@@ -139,6 +139,11 @@ def main(arguments):
         'n_epoch': n_epoch,
         'seeds': seeds,
     }
+    if arguments['param_set'] == 1:
+        training_config['lr_nu'] = 1e-3
+        training_config['lr_yield_stress'] = 1e2
+        training_config['lr_manipulator_friction'] = 0.1
+        training_config['lr_ground_friction'] = 0.05
     training_config_file = os.path.join(log_p_dir, 'training_config.json')
     if os.path.isfile(training_config_file):
         with open(training_config_file, 'r') as f_ac:
@@ -412,23 +417,28 @@ def main(arguments):
             }
             dt_global = 0.01
             n_substeps = 50
+            # training data_id_dict = {
+            #     '1': {'rectangle': [3, 5], 'round': [0, 1], 'cylinder': [1, 2]},
+            #     '2': {'rectangle': [1, 3], 'round': [0, 2], 'cylinder': [0, 2]},
+            #     '3': {'rectangle': [1, 2], 'round': [0, 1], 'cylinder': [0, 4]},
+            #     '4': {'rectangle': [1, 3], 'round': [1, 4], 'cylinder': [0, 4]},
+            # }
             validation_dataind_dict = {
                 '2': {
                     'rectangle': [4, 8],
                     'round': [4, 7],
                     'cylinder': [4, 7]
                 },
-                # todo
                 '4': {
-                    'rectangle': [],
-                    'round': [],
-                    'cylinder': []
+                    'rectangle': [2, 4],
+                    'round': [2, 3],
+                    'cylinder': [1, 3]
                 }
             }
             if arguments['param_set'] == 0:
                 validation_motions = [2]
             else:
-                validation_motions = [2, 4]
+                validation_motions = [4]
             for validation_motion in validation_motions:
                 for agent in agents:
                     agent_init_euler = (0, 0, 0)

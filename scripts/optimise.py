@@ -167,35 +167,34 @@ def main(arguments):
         os.makedirs(log_dir, exist_ok=True)
         logger = SummaryWriter(log_dir=log_dir)
 
-        if arguments['param_set'] == 0:
-            # Initialising parameters
-            E = np.asarray(np.random.uniform(E_range[0], E_range[1]), dtype=DTYPE_NP).reshape((1,))  # Young's modulus
-            nu = np.asarray(np.random.uniform(nu_range[0], nu_range[1]), dtype=DTYPE_NP).reshape((1,))  # Poisson's ratio
-            yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]),
-                                      dtype=DTYPE_NP).reshape((1,))  # Yield stress
-            rho = np.asarray(np.random.uniform(rho_range[0], rho_range[1]),
-                                      dtype=DTYPE_NP).reshape((1,))  # Density
+        # Initialising parameters
+        E = np.asarray(np.random.uniform(E_range[0], E_range[1]), dtype=DTYPE_NP).reshape((1,))  # Young's modulus
+        nu = np.asarray(np.random.uniform(nu_range[0], nu_range[1]), dtype=DTYPE_NP).reshape((1,))  # Poisson's ratio
+        yield_stress = np.asarray(np.random.uniform(yield_stress_range[0], yield_stress_range[1]),
+                                  dtype=DTYPE_NP).reshape((1,))  # Yield stress
+        rho = np.asarray(np.random.uniform(rho_range[0], rho_range[1]),
+                                  dtype=DTYPE_NP).reshape((1,))  # Density
 
-            manipulator_friction = np.asarray([0.3], dtype=DTYPE_NP).reshape((1,))  # Manipulator friction
-            ground_friction = np.asarray([2.0], dtype=DTYPE_NP).reshape((1,))  # Ground friction
+        manipulator_friction = np.asarray([0.3], dtype=DTYPE_NP).reshape((1,))  # Manipulator friction
+        ground_friction = np.asarray([2.0], dtype=DTYPE_NP).reshape((1,))  # Ground friction
 
-            print(f"=====> Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
-            logging.info(f"=====> Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
-            # Optimiser: Adam
-            optim_E = Adam(parameters_shape=E.shape,
-                           cfg={'lr': training_config['lr_E'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
-            optim_nu = Adam(parameters_shape=nu.shape,
-                            cfg={'lr': training_config['lr_nu'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
-            optim_yield_stress = Adam(parameters_shape=yield_stress.shape,
-                                      cfg={'lr': training_config['lr_yield_stress'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
-            optim_rho = Adam(parameters_shape=rho.shape,
-                                        cfg={'lr': training_config['lr_rho'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
-        else:
+        print(f"=====> Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
+        logging.info(f"=====> Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
+        # Optimiser: Adam
+        optim_E = Adam(parameters_shape=E.shape,
+                       cfg={'lr': training_config['lr_E'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+        optim_nu = Adam(parameters_shape=nu.shape,
+                        cfg={'lr': training_config['lr_nu'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+        optim_yield_stress = Adam(parameters_shape=yield_stress.shape,
+                                  cfg={'lr': training_config['lr_yield_stress'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+        optim_rho = Adam(parameters_shape=rho.shape,
+                                    cfg={'lr': training_config['lr_rho'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
+        if arguments['param_set'] == 1:
             # Initialising parameters
-            E = np.asarray([40000], dtype=DTYPE_NP).reshape((1,))  # Young's modulus
-            nu = np.asarray([0.4], dtype=DTYPE_NP).reshape((1,))
-            yield_stress = np.asarray([1000], dtype=DTYPE_NP).reshape((1,))
-            rho = np.asarray([1000], dtype=DTYPE_NP).reshape((1,))
+            # E = np.asarray([40000], dtype=DTYPE_NP).reshape((1,))  # Young's modulus
+            # nu = np.asarray([0.4], dtype=DTYPE_NP).reshape((1,))
+            # yield_stress = np.asarray([1000], dtype=DTYPE_NP).reshape((1,))
+            # rho = np.asarray([1000], dtype=DTYPE_NP).reshape((1,))
 
             manipulator_friction = np.asarray(np.random.uniform(mf_range[0], mf_range[1]), dtype=DTYPE_NP).reshape((1,))  # Manipulator friction
             ground_friction = np.asarray(np.random.uniform(gf_range[0], gf_range[1]), dtype=DTYPE_NP).reshape((1,))
@@ -364,33 +363,31 @@ def main(arguments):
             logging.info(f"========> Num. aborted data so far: {n_aborted_data}")
 
             # Updates
-            if arguments['param_set'] == 0:
-                E = optim_E.step(E.copy(), avg_grad[0])
-                E = np.clip(E, E_range[0], E_range[1])
-                nu = optim_nu.step(nu.copy(), avg_grad[1])
-                nu = np.clip(nu, nu_range[0], nu_range[1])
-                yield_stress = optim_yield_stress.step(yield_stress.copy(), avg_grad[2])
-                yield_stress = np.clip(yield_stress, yield_stress_range[0], yield_stress_range[1])
-                rho = optim_rho.step(rho.copy(), avg_grad[3])
-                rho = np.clip(rho, rho_range[0], rho_range[1])
-            else:
+            E = optim_E.step(E.copy(), avg_grad[0])
+            E = np.clip(E, E_range[0], E_range[1])
+            nu = optim_nu.step(nu.copy(), avg_grad[1])
+            nu = np.clip(nu, nu_range[0], nu_range[1])
+            yield_stress = optim_yield_stress.step(yield_stress.copy(), avg_grad[2])
+            yield_stress = np.clip(yield_stress, yield_stress_range[0], yield_stress_range[1])
+            rho = optim_rho.step(rho.copy(), avg_grad[3])
+            rho = np.clip(rho, rho_range[0], rho_range[1])
+            if arguments['param_set'] == 1:
                 manipulator_friction = optim_mf.step(manipulator_friction.copy(), avg_grad[4])
                 manipulator_friction = np.clip(manipulator_friction, mf_range[0], mf_range[1])
                 ground_friction = optim_gf.step(ground_friction.copy(), avg_grad[5])
                 ground_friction = np.clip(ground_friction, gf_range[0], gf_range[1])
 
-            if arguments['param_set'] == 0:
-                logger.add_scalar(tag='Param/E', scalar_value=E, global_step=epoch)
-                logger.add_scalar(tag='Grad/E', scalar_value=avg_grad[0], global_step=epoch)
-                logger.add_scalar(tag='Param/nu', scalar_value=nu, global_step=epoch)
-                logger.add_scalar(tag='Grad/nu', scalar_value=avg_grad[1], global_step=epoch)
-                logger.add_scalar(tag='Param/yield_stress', scalar_value=yield_stress, global_step=epoch)
-                logger.add_scalar(tag='Grad/yield_stress', scalar_value=avg_grad[2], global_step=epoch)
-                logger.add_scalar(tag='Param/rho', scalar_value=rho, global_step=epoch)
-                logger.add_scalar(tag='Grad/rho', scalar_value=avg_grad[3], global_step=epoch)
-                print(f"========> Epoch {epoch}: time={time() - t1}\n"
-                      f"========> E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
-            else:
+            logger.add_scalar(tag='Param/E', scalar_value=E, global_step=epoch)
+            logger.add_scalar(tag='Grad/E', scalar_value=avg_grad[0], global_step=epoch)
+            logger.add_scalar(tag='Param/nu', scalar_value=nu, global_step=epoch)
+            logger.add_scalar(tag='Grad/nu', scalar_value=avg_grad[1], global_step=epoch)
+            logger.add_scalar(tag='Param/yield_stress', scalar_value=yield_stress, global_step=epoch)
+            logger.add_scalar(tag='Grad/yield_stress', scalar_value=avg_grad[2], global_step=epoch)
+            logger.add_scalar(tag='Param/rho', scalar_value=rho, global_step=epoch)
+            logger.add_scalar(tag='Grad/rho', scalar_value=avg_grad[3], global_step=epoch)
+            print(f"========> Epoch {epoch}: time={time() - t1}\n"
+                  f"========> E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
+            if arguments['param_set'] == 1:
                 logger.add_scalar(tag='Param/manipulator_friction', scalar_value=manipulator_friction, global_step=epoch)
                 logger.add_scalar(tag='Grad/manipulator_friction', scalar_value=avg_grad[4], global_step=epoch)
                 logger.add_scalar(tag='Param/ground_friction', scalar_value=ground_friction, global_step=epoch)
@@ -529,9 +526,11 @@ def main(arguments):
             logging.info(f"Final parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
             np.save(os.path.join(log_dir, 'final_params.npy'), np.array([E, nu, yield_stress, rho], dtype=DTYPE_NP))
         else:
+            print(f"Final parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
             print(f"Final parameters: manipulator friction={manipulator_friction}, ground friction={ground_friction}")
+            logging.info(f"Final parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
             logging.info(f"Final parameters: manipulator friction={manipulator_friction}, ground friction={ground_friction}")
-            np.save(os.path.join(log_dir, 'final_params.npy'), np.array([manipulator_friction, ground_friction], dtype=DTYPE_NP))
+            np.save(os.path.join(log_dir, 'final_params.npy'), np.array([E, nu, yield_stress, rho, manipulator_friction, ground_friction], dtype=DTYPE_NP))
 
 
 if __name__ == '__main__':

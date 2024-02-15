@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 script_path = os.path.dirname(os.path.realpath(__file__))
 
 
-def main(data_folder='gradients-E-nu-ys-rho', plot=False):
+def main(data_ids=None, data_folder='gradients-E-nu-ys-rho', plot=False):
     data_path = os.path.join(script_path, '..', data_folder)
     fig_path = os.path.join(data_path, 'figures')
     if not os.path.exists(fig_path):
@@ -16,7 +16,9 @@ def main(data_folder='gradients-E-nu-ys-rho', plot=False):
     params = ['E', 'nu', 'ys', 'rho', 'mani_fric', 'g_fric']
     print(f'Param {params}')
 
-    n = 0
+    if data_ids is None:
+        data_ids = range(19)
+
     x = []
     y = []
     y_ = []
@@ -24,9 +26,9 @@ def main(data_folder='gradients-E-nu-ys-rho', plot=False):
     y___ = []
     e = []
     legends = []
-    while True:
+    for n in data_ids:
         if not os.path.exists(os.path.join(data_path, f'grads-mean-{n}.npy')):
-            break
+            continue
 
         loss_cfg = json.load(open(os.path.join(data_path, f'loss-config-{n}.json'), 'r'))
         mean = np.load(os.path.join(data_path, f'grads-mean-{n}.npy'))
@@ -58,7 +60,6 @@ def main(data_folder='gradients-E-nu-ys-rho', plot=False):
 
         x.append(n)
         legends.append(legend)
-        n += 1
 
         y.append(np.log(np.abs(mean)))
         y_.append(std/mean)
@@ -114,4 +115,4 @@ def main(data_folder='gradients-E-nu-ys-rho', plot=False):
             plt.close()
 
 
-main(data_folder='gradients-E-nu-ys-rho-mf-gf-few-shot', plot=False)
+main(data_ids=[3, 8, 18], data_folder='gradients-E-nu-ys-rho', plot=False)

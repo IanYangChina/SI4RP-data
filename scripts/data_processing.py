@@ -259,6 +259,7 @@ def plot_legends():
 
 
 def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True):
+    plt.rcParams.update({'font.size': 32})
     assert len(run_ids) > 0
     legends = [
         f'{dist_type}: PCD chamfer - 0',
@@ -283,40 +284,66 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True):
         dir_prefix = f'optimisation-fewshot-param{param_set}'
     else:
         dir_prefix = f'optimisation-param{param_set}'
+
     for case in ['training', 'validation']:
         for i in range(len(loss_types)):
             loss_type = loss_types[i]
             if loss_type == 'point_distance_sr':
                 title = f'{dist_type}: PCD sim2real'
+                ylim_valid = [7500, 8450]
             elif loss_type == 'point_distance_rs':
                 title = f'{dist_type}: PCD real2sim'
+                ylim_valid = [1110, 1260]
             elif loss_type == 'chamfer_loss_pcd':
                 title = f'{dist_type}: PCD chamfer'
+                ylim_valid = [8690, 9650]
             elif loss_type == 'particle_distance_sr':
                 title = f'{dist_type}: Particle sim2real'
+                ylim_valid = [2780, 3040]
             elif loss_type == 'particle_distance_rs':
                 title = f'{dist_type}: Particle real2sim'
+                ylim_valid = [3080, 3450]
             elif loss_type == 'chamfer_loss_particle':
                 title = f'{dist_type}: Particle chamfer'
+                ylim_valid = [5880, 6480]
             elif loss_type == 'height_map_loss_pcd':
                 title = f'{dist_type}: Height map'
+                ylim_valid = [1970, 2400]
             elif loss_type == 'emd_point_distance_loss':
                 title = f'{dist_type}: PCD emd'
+                ylim_valid = [1180, 1390]
             elif loss_type == 'emd_particle_distance_loss':
                 title = f'{dist_type}: Particle emd'
+                ylim_valid = [5240, 7200]
             else:
                 raise ValueError('Unknown loss type')
+
             stat_dicts = []
+            max_y = 0
+            min_y = 2000000
             for run_id in run_ids:
                 run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', 'data')
 
                 with open(os.path.join(run_dir, f'{case}-{loss_type}.json'), 'rb') as f:
                     d = json.load(f)
-                if i <= 2:
-                    d['mean'] = np.array(d['mean']).tolist()
-                    d['lower'] = np.array(d['lower']).tolist()
-                    d['upper'] = np.array(d['upper']).tolist()
+
+                max_y = np.max([max_y, np.max(d['upper'])])
+                min_y = np.min([min_y, np.min(d['lower'])])
+
+                d['mean'] = np.array(d['mean']).tolist()
+                d['lower'] = np.array(d['lower']).tolist()
+                d['upper'] = np.array(d['upper']).tolist()
                 stat_dicts.append(d)
+
+            if case == 'training':
+                ylim_valid = (min_y*0.995, max_y*1.005)
+                yticks = (round(min_y*1.005),
+                          round((min_y+max_y)/2),
+                          round(max_y*0.995))
+            else:
+                yticks = (round(ylim_valid[0]*1.01),
+                          round((ylim_valid[1]+ylim_valid[0])/2),
+                          round(ylim_valid[1]*0.99))
 
             plot.smoothed_plot_mean_deviation(
                 file=os.path.join(cwd, '..', f'{dir_prefix}-result-figs',
@@ -326,16 +353,16 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True):
                 legend=None, legend_ncol=1, legend_frame=False,
                 legend_bbox_to_anchor=(1.4, 1.1),
                 legend_loc='upper right',
-                x_label='Epoch', x_axis_off=False,
-                y_label=None, y_axis_off=False,
-                title=title
+                x_label='Epoch', x_axis_off=True,
+                y_label=None, y_axis_off=False, ylim=ylim_valid, yticks=yticks,
+                title=None
             )
 
 
 # generate_mean_deviation([8, 9])
 plot_legends()
-# plot_losses(run_ids=[2, 3, 1, 0, 4], param_set=0, dist_type='Euclidean')
+plot_losses(run_ids=[2, 3, 1, 0, 4], param_set=0, dist_type='Euclidean')
 # read_plot_params(run_ids=[2, 3, 1, 0, 4], param_set=0, dist_type='Euclidean')
 # plot_legends(dist_type='Exponential', param_set=0)
-# plot_losses(run_ids=[5, 6, 8, 9, 7], param_set=0, dist_type='Exponential')
+plot_losses(run_ids=[5, 6, 8, 9, 7], param_set=0, dist_type='Exponential')
 # read_plot_params(run_ids=[5, 6, 8, 9, 7], param_set=0, dist_type='Exponential')

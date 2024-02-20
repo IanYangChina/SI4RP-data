@@ -81,7 +81,7 @@ def read_plot_params(run_ids, param_set=0, dist_type='Euclidean', fewshot=True):
         plt.close()
 
 
-def generate_mean_deviation(run_ids, param_set=0, fewshot=True):
+def read_losses(run_ids, param_set=0, fewshot=True, save_meanstd=False):
     """generate mean and deviation data"""
     assert len(run_ids) > 0
     if fewshot:
@@ -116,6 +116,12 @@ def generate_mean_deviation(run_ids, param_set=0, fewshot=True):
                     'height_map_loss_pcd': [],
                     'emd_point_distance_loss': [],
                     'emd_particle_distance_loss': []
+                },
+                'parameters': {
+                    'E': [],
+                    'nu': [],
+                    'yield_stress': [],
+                    'rho': []
                 }
             },
             'seed-1': {
@@ -140,6 +146,12 @@ def generate_mean_deviation(run_ids, param_set=0, fewshot=True):
                     'height_map_loss_pcd': [],
                     'emd_point_distance_loss': [],
                     'emd_particle_distance_loss': []
+                },
+                'parameters': {
+                    'E': [],
+                    'nu': [],
+                    'yield_stress': [],
+                    'rho': []
                 }
             },
             'seed-2': {
@@ -164,6 +176,12 @@ def generate_mean_deviation(run_ids, param_set=0, fewshot=True):
                     'height_map_loss_pcd': [],
                     'emd_point_distance_loss': [],
                     'emd_particle_distance_loss': []
+                },
+                'parameters': {
+                    'E': [],
+                    'nu': [],
+                    'yield_stress': [],
+                    'rho': []
                 }
             }
         }
@@ -217,26 +235,32 @@ def generate_mean_deviation(run_ids, param_set=0, fewshot=True):
                                     data_dict[f'seed-{seed}']['validation']['emd_particle_distance_loss'].append(v.simple_value)
                                 else:
                                     pass
+                            elif v.tag[:7] == 'Params/':
+                                #todo
+                                pass
                             else:
                                 pass
 
-        for loss_type in loss_types:
-            # training
-            data = []
-            for seed in seeds:
-                d = np.array(data_dict[f'seed-{seed}']['training'][loss_type])
-                data.append(d)
-            plot.get_mean_and_deviation(np.array(data),
-                                        save_data=True,
-                                        file_name=os.path.join(save_data_dir, f'training-{loss_type}.json'))
-            # validation
-            validation_data = []
-            for seed in seeds:
-                d = data_dict[f'seed-{seed}']['validation'][loss_type]
-                validation_data.append(np.array(d))
-            plot.get_mean_and_deviation(np.array(validation_data),
-                                        save_data=True,
-                                        file_name=os.path.join(save_data_dir, f'validation-{loss_type}.json'))
+        json.dump(data_dict, open(os.path.join(save_data_dir, 'raw_loss.json'), 'w'))
+
+        if save_meanstd:
+            for loss_type in loss_types:
+                # training
+                data = []
+                for seed in seeds:
+                    d = np.array(data_dict[f'seed-{seed}']['training'][loss_type])
+                    data.append(d)
+                plot.get_mean_and_deviation(np.array(data),
+                                            save_data=True,
+                                            file_name=os.path.join(save_data_dir, f'training-{loss_type}.json'))
+                # validation
+                validation_data = []
+                for seed in seeds:
+                    d = data_dict[f'seed-{seed}']['validation'][loss_type]
+                    validation_data.append(np.array(d))
+                plot.get_mean_and_deviation(np.array(validation_data),
+                                            save_data=True,
+                                            file_name=os.path.join(save_data_dir, f'validation-{loss_type}.json'))
 
 
 def plot_legends():
@@ -258,7 +282,7 @@ def plot_legends():
         data_dict_list=[None for _ in range(len(legends))], legend_only=True)
 
 
-def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True):
+def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, mean_std=True):
     plt.rcParams.update({'font.size': 32})
     assert len(run_ids) > 0
     legends = [
@@ -318,51 +342,81 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True):
             else:
                 raise ValueError('Unknown loss type')
 
-            stat_dicts = []
-            max_y = 0
-            min_y = 2000000
-            for run_id in run_ids:
-                run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', 'data')
+            yticks = (round(ylim_valid[0]*1.01),
+                      round((ylim_valid[1]+ylim_valid[0])/2),
+                      round(ylim_valid[1]*0.99))
 
-                with open(os.path.join(run_dir, f'{case}-{loss_type}.json'), 'rb') as f:
-                    d = json.load(f)
+            if mean_std:
+                stat_dicts = []
+                max_y = 0
+                min_y = 2000000
+                for run_id in run_ids:
+                    run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', 'data')
 
-                max_y = np.max([max_y, np.max(d['upper'])])
-                min_y = np.min([min_y, np.min(d['lower'])])
+                    with open(os.path.join(run_dir, f'{case}-{loss_type}.json'), 'rb') as f:
+                        d = json.load(f)
 
-                d['mean'] = np.array(d['mean']).tolist()
-                d['lower'] = np.array(d['lower']).tolist()
-                d['upper'] = np.array(d['upper']).tolist()
-                stat_dicts.append(d)
+                    max_y = np.max([max_y, np.max(d['upper'])])
+                    min_y = np.min([min_y, np.min(d['lower'])])
 
-            if case == 'training':
-                ylim_valid = (min_y*0.995, max_y*1.005)
-                yticks = (round(min_y*1.005),
-                          round((min_y+max_y)/2),
-                          round(max_y*0.995))
+                    d['mean'] = np.array(d['mean']).tolist()
+                    d['lower'] = np.array(d['lower']).tolist()
+                    d['upper'] = np.array(d['upper']).tolist()
+                    stat_dicts.append(d)
+
+                if case == 'training':
+                    ylim_valid = (min_y * 0.995, max_y * 1.005)
+                    yticks = (round(min_y * 1.005),
+                              round((min_y + max_y) / 2),
+                              round(max_y * 0.995))
+
+                plot.smoothed_plot_mean_deviation(
+                    file=os.path.join(cwd, '..', f'{dir_prefix}-result-figs',
+                                      f'fewshot-param{param_set}-{dist_type}-{case}-{loss_type}-meanstd.pdf'),
+                    data_dict_list=stat_dicts,
+                    horizontal_lines=None, linestyle='--', linewidth=5,
+                    legend=None, legend_ncol=1, legend_frame=False,
+                    legend_bbox_to_anchor=(1.4, 1.1),
+                    legend_loc='upper right',
+                    x_label='Epoch', x_axis_off=True,
+                    y_label=None, y_axis_off=False, ylim=ylim_valid, yticks=yticks,
+                    title=None
+                )
             else:
-                yticks = (round(ylim_valid[0]*1.01),
-                          round((ylim_valid[1]+ylim_valid[0])/2),
-                          round(ylim_valid[1]*0.99))
+                color_pool = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
+                 'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan', 'k']
+                datas = []
+                colors = []
+                n = 0
+                for run_id in run_ids:
+                    run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', 'data')
+                    losses = json.load(open(os.path.join(run_dir, 'raw_loss.json'), 'rb'))
+                    for seed in [0, 1, 2]:
+                        datas.append(losses[f'seed-{seed}'][case][loss_type])
+                        colors.append(color_pool[n])
+                    n += 1
 
-            plot.smoothed_plot_mean_deviation(
-                file=os.path.join(cwd, '..', f'{dir_prefix}-result-figs',
-                                  f'fewshot-param{param_set}-{dist_type}-{case}-{loss_type}.pdf'),
-                data_dict_list=stat_dicts,
-                horizontal_lines=None, linestyle='--', linewidth=5,
-                legend=None, legend_ncol=1, legend_frame=False,
-                legend_bbox_to_anchor=(1.4, 1.1),
-                legend_loc='upper right',
-                x_label='Epoch', x_axis_off=True,
-                y_label=None, y_axis_off=False, ylim=ylim_valid, yticks=yticks,
-                title=None
-            )
+                max_y = np.max(datas)
+                min_y = np.min(datas)
+                if case == 'training':
+                    ylim_valid = (min_y * 0.995, max_y * 1.005)
+                    yticks = (round(min_y * 1.005),
+                              round((min_y + max_y) / 2),
+                              round(max_y * 0.995))
+
+                plot.smoothed_plot_multi_line(
+                    file=os.path.join(cwd, '..', f'{dir_prefix}-result-figs',
+                                      f'fewshot-param{param_set}-{dist_type}-{case}-{loss_type}-raw.pdf'),
+                    data=datas, colors=colors,
+                    x_axis_off=True,
+                    y_label=None, y_axis_off=False, ylim=ylim_valid, yticks=yticks
+                )
 
 
-# generate_mean_deviation([8, 9])
-plot_legends()
-plot_losses(run_ids=[2, 3, 1, 0, 4], param_set=0, dist_type='Euclidean')
+# read_losses(run_ids=range(10), param_set=0)
+# plot_legends()
+# plot_losses(run_ids=[2, 3, 1, 0, 4], param_set=0, dist_type='Euclidean', mean_std=False)
 # read_plot_params(run_ids=[2, 3, 1, 0, 4], param_set=0, dist_type='Euclidean')
 # plot_legends(dist_type='Exponential', param_set=0)
-plot_losses(run_ids=[5, 6, 8, 9, 7], param_set=0, dist_type='Exponential')
+plot_losses(run_ids=[5, 6, 8, 9, 7], param_set=0, dist_type='Exponential', mean_std=False)
 # read_plot_params(run_ids=[5, 6, 8, 9, 7], param_set=0, dist_type='Exponential')

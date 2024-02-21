@@ -23004,4 +23004,10 @@
 2024-02-17 18:45:33,039 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 5589.339192708333
 2024-02-17 18:45:33,039 INFO ========> Avg. Validation loss: total_loss: 11683.415364583334
 2024-02-17 18:45:33,039 INFO ========> Num. aborted data so far: 0
-2024-02-17 18:45:33,804 INFO Final parameters: E=[104504.5], nu=[0.48], yield_stress=[1650.2227], rho=[1449.965]
+2024-02-17 18:45:33,804 INFO Final parameters: E=[104504.5], nu=[0.48], yield_stress=[1650.2227], rho=[1449.965]2024-02-21 22:27:17,397 INFO =====> Optimising param set 0 for 100 epochs for 1 random seeds.
+2024-02-21 22:27:17,397 INFO =====> Loss config: {'exponential_distance': False, 'averaging_loss': False, 'point_distance_rs_loss': False, 'point_distance_sr_loss': False, 'down_sample_voxel_size': 0.005, 'particle_distance_rs_loss': True, 'particle_distance_sr_loss': True, 'voxelise_res': 1080, 'ptcl_density': 40000000.0, 'load_height_map': True, 'height_map_loss': False, 'height_map_res': 32, 'height_map_size': 0.11, 'emd_point_distance_loss': False, 'emd_particle_distance_loss': True}
+2024-02-21 22:27:17,397 INFO =====> Training config: {'param_set': 0, 'lr_E': 4000.0, 'lr_nu': 0.01, 'lr_yield_stress': 500.0, 'lr_rho': 10, 'lr_manipulator_friction': 0.01, 'lr_ground_friction': 0.01, 'batch_size': 20, 'n_epoch': 100, 'seeds': [0, 1, 2]}
+2024-02-21 22:27:17,400 INFO =====> Seed: 2, initial parameters: E=[136438.52], nu=[0.02218533], yield_stress=[11443.587], rho=[1435.3224]
+2024-02-21 22:27:17,901 INFO =====> Computing: epoch 0, motion 1, agent rectangle, data 3
+2024-02-21 22:27:17,902 INFO ===> New TaichiEnv created.
+2024-02-21 22:27:17,902 INFO ===> Specifications: horizon = 87, dt = 0.01, n_substeps = 50, dt_sub = 0.0002

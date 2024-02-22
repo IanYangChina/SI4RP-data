@@ -20,12 +20,30 @@ def main(args):
         backend = ti.vulkan
     else:
         backend = ti.cpu
-    if args['fewshot']:
-        n_datapoints = 12
-        fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34-few-shot')
+
+    if args['param_set'] == 0:
+        motion_inds = ['1', '2']
+        if args['fewshot']:
+            n_datapoints = 12
+            fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m12-few-shot')
+        elif args['oneshot']:
+            n_datapoints = 6
+            fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m12-one-shot')
+        else:
+            n_datapoints = 18
+            fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m12')
     else:
-        n_datapoints = 18
-        fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34')
+        motion_inds = ['3', '4']
+        if args['fewshot']:
+            n_datapoints = 9
+            fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34-few-shot')
+        elif args['oneshot']:
+            n_datapoints = 3
+            fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34-one-shot')
+        else:
+            n_datapoints = 12
+            fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34')
+
     os.makedirs(fig_data_path, exist_ok=True)
 
     p_density = args['ptcl_density']
@@ -78,14 +96,20 @@ def main(args):
     emd_point_distance_loss = np.zeros_like(rho)
     emd_particle_distance_loss = np.zeros_like(rho)
 
-    data_id_dict = {
+    fewshot_data_id_dict = {
         '1': {'rectangle': [3, 5], 'round': [0, 1], 'cylinder': [1, 2]},
         '2': {'rectangle': [1, 3], 'round': [0, 2], 'cylinder': [0, 2]},
         '3': {'rectangle': [1, 2], 'round': [0, 1], 'cylinder': [0, 4]},
         '4': {'rectangle': [1, 3], 'round': [1, 4], 'cylinder': [0, 4]},
     }
+    oneshot_data_id_dict = {
+        '1': {'rectangle': [3], 'round': [0], 'cylinder': [1]},
+        '2': {'rectangle': [1], 'round': [0], 'cylinder': [0]},
+        '3': {'rectangle': [1], 'round': [0], 'cylinder': [0]},
+        '4': {'rectangle': [1], 'round': [1], 'cylinder': [0]},
+    }
     # Load trajectories.
-    for motion_ind in ['3', '4']:
+    for motion_ind in motion_inds:
         dt_global = 0.01
         trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
         horizon = trajectory.shape[0]
@@ -98,7 +122,9 @@ def main(args):
             else:
                 agent_init_euler = (0, 0, 0)
             if args['fewshot']:
-                data_ids = data_id_dict[motion_ind][agent]
+                data_ids = fewshot_data_id_dict[motion_ind][agent]
+            elif args['oneshot']:
+                data_ids = oneshot_data_id_dict[motion_ind][agent]
             else:
                 data_ids = np.random.choice(5, size=3, replace=False).tolist()
             for data_ind in data_ids:
@@ -223,7 +249,9 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('--param_set', dest='param_set', default=0, type=int)
     parser.add_argument('--fewshot', dest='fewshot', default=False, action='store_true')
+    parser.add_argument('--oneshot', dest='oneshot', default=False, action='store_true')
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
     parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.005)
     parser.add_argument('--exp_dist', dest='exponential_distance', default=False, action='store_true')

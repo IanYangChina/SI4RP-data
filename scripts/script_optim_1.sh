@@ -1,3 +1,4 @@
+python optimise.py --fewshot --param_set 1 --backend cuda --n_run 2 --seed 2 --pd_rs_loss --pd_sr_loss
 python optimise.py --oneshot --param_set 0 --backend cuda --n_run 0 --seed 0 --pd_rs_loss --pd_sr_loss
 python optimise.py --oneshot --param_set 0 --backend cuda --n_run 0 --seed 1 --pd_rs_loss --pd_sr_loss
 python optimise.py --oneshot --param_set 0 --backend cuda --n_run 0 --seed 2 --pd_rs_loss --pd_sr_loss

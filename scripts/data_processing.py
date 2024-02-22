@@ -472,10 +472,10 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, mean_
         )
 
 
-# read_losses(run_ids=range(10), param_set=0)
+read_losses(run_ids=range(10), param_set=0)
 # plot_legends()
-plot_losses(run_ids=[2, 3, 1, 0, 4], param_set=0, dist_type='Euclidean', mean_std=False, params_only=True)
+# plot_losses(run_ids=[2, 3, 1, 0, 4], param_set=0, dist_type='Euclidean', mean_std=False, params_only=True)
 # read_plot_params(run_ids=[2, 3, 1, 0, 4], param_set=0, dist_type='Euclidean')
 # plot_legends(dist_type='Exponential', param_set=0)
-plot_losses(run_ids=[5, 6, 8, 9, 7], param_set=0, dist_type='Exponential', mean_std=False, params_only=True)
+# plot_losses(run_ids=[5, 6, 8, 9, 7], param_set=0, dist_type='Exponential', mean_std=False, params_only=True)
 # read_plot_params(run_ids=[5, 6, 8, 9, 7], param_set=0, dist_type='Exponential')

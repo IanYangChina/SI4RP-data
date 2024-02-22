@@ -1,2 +1,0 @@
-python optimise.py --fewshot --param_set 0 --backend cuda --n_run 10 --seed 2 --prd_sr_loss --prd_rs_loss --emd_pr_loss
-python optimise.py --fewshot --param_set 0 --backend cuda --hm_loss --emd_pr_loss

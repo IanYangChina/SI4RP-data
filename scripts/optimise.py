@@ -94,6 +94,8 @@ def main(arguments):
         n = arguments['n_run']
         if arguments['fewshot']:
             log_p_dir = os.path.join(script_path, '..', f'optimisation-fewshot-param{param_set}-run{n}-logs')
+        elif arguments['oneshot']:
+            log_p_dir = os.path.join(script_path, '..', f'optimisation-oneshot-param{param_set}-run{n}-logs')
         else:
             log_p_dir = os.path.join(script_path, '..', f'optimisation-param{param_set}-run{n}-logs')
     else:
@@ -102,6 +104,8 @@ def main(arguments):
         while True:
             if arguments['fewshot']:
                 log_p_dir = os.path.join(script_path, '..', f'optimisation-fewshot-param{param_set}-run{n}-logs')
+            elif arguments['oneshot']:
+                log_p_dir = os.path.join(script_path, '..', f'optimisation-oneshot-param{param_set}-run{n}-logs')
             else:
                 log_p_dir = os.path.join(script_path, '..', f'optimisation-param{param_set}-run{n}-logs')
             if os.path.exists(log_p_dir):
@@ -242,6 +246,16 @@ def main(arguments):
                     motion_ids = [3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4]
                     agent_ids = [0, 0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 2]
                     data_ids = [1, 2, 0, 1, 0, 4, 1, 3, 1, 4, 0, 4]
+            elif arguments['oneshot']:
+                mini_batch_size = 6
+                if arguments['param_set'] == 0:
+                    motion_ids = [1, 1, 1, 2, 2, 2]
+                    agent_ids = [0, 1, 2, 0, 1, 2]
+                    data_ids = [3, 0, 1, 1, 0, 0]
+                else:
+                    motion_ids = [3, 3, 3, 4, 4, 4]
+                    agent_ids = [0, 1, 2, 0, 1, 2]
+                    data_ids = [1, 0, 0, 1, 1, 0]
             else:
                 if arguments['param_set'] == 0:
                     motion_ids = np.random.randint(1, 3, size=mini_batch_size, dtype=np.int32).tolist()
@@ -539,6 +553,7 @@ if __name__ == '__main__':
     parser.add_argument('--seed', dest='seed', type=int, default=-1)
     parser.add_argument('--param_set', dest='param_set', type=int, default=0)
     parser.add_argument('--fewshot', dest='fewshot', default=False, action='store_true')
+    parser.add_argument('--oneshot', dest='oneshot', default=False, action='store_true')
     parser.add_argument('--exp_dist', dest='exp_dist', default=False, action='store_true')
     parser.add_argument('--pd_rs_loss', dest='pd_rs_loss', default=False, action='store_true')
     parser.add_argument('--pd_sr_loss', dest='pd_sr_loss', default=False, action='store_true')

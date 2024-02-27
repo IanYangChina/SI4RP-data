@@ -122,7 +122,9 @@ def read_losses(run_ids, param_set=0, fewshot=True, save_meanstd=False):
                     'E': [],
                     'nu': [],
                     'yield_stress': [],
-                    'rho': []
+                    'rho': [],
+                    'mf': [],
+                    'gf': []
                 }
             },
             'seed-1': {
@@ -152,7 +154,9 @@ def read_losses(run_ids, param_set=0, fewshot=True, save_meanstd=False):
                     'E': [],
                     'nu': [],
                     'yield_stress': [],
-                    'rho': []
+                    'rho': [],
+                    'mf': [],
+                    'gf': []
                 }
             },
             'seed-2': {
@@ -247,9 +251,9 @@ def read_losses(run_ids, param_set=0, fewshot=True, save_meanstd=False):
                                     data_dict[f'seed-{seed}']['parameters']['yield_stress'].append(v.simple_value)
                                 elif v.tag[6:] == 'rho':
                                     data_dict[f'seed-{seed}']['parameters']['rho'].append(v.simple_value)
-                                elif v.tag[6:] == 'mf':
+                                elif v.tag[6:] == 'manipulator_friction':
                                     data_dict[f'seed-{seed}']['parameters']['mf'].append(v.simple_value)
-                                elif v.tag[6:] == 'gf':
+                                elif v.tag[6:] == 'ground_friction':
                                     data_dict[f'seed-{seed}']['parameters']['gf'].append(v.simple_value)
                                 else:
                                     pass
@@ -381,11 +385,11 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, mean_
                         d['upper'] = np.array(d['upper']).tolist()
                         stat_dicts.append(d)
 
-                    if case == 'training':
-                        ylim_valid = (min_y * 0.995, max_y * 1.005)
-                        yticks = (round(min_y * 1.005),
-                                  round((min_y + max_y) / 2),
-                                  round(max_y * 0.995))
+                    # if case == 'training':
+                    ylim_valid = (min_y * 0.995, max_y * 1.005)
+                    yticks = (round(min_y * 1.005),
+                              round((min_y + max_y) / 2),
+                              round(max_y * 0.995))
 
                     plot.smoothed_plot_mean_deviation(
                         file=os.path.join(cwd, '..', f'{dir_prefix}-result-figs',
@@ -430,6 +434,7 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, mean_
                     )
 
     """Plot params"""
+    params = ['E', 'nu', 'yield_stress', 'rho', 'mf', 'gf']
     if param_set == 0:
         params = ['E', 'nu', 'yield_stress', 'rho']
 
@@ -446,7 +451,7 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, mean_
         elif p == 'rho':
             ylim_valid = [1000, 2000]
         else:
-            ylim_valid = [0.0, 2.0]
+            ylim_valid = [-0.02, 2.02]
 
         yticks = (round(ylim_valid[0]),
                   round((ylim_valid[1] + ylim_valid[0]) / 2),
@@ -472,9 +477,9 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, mean_
         )
 
 
-read_losses(run_ids=range(10), param_set=0)
+# read_losses(run_ids=[9], param_set=1, save_meanstd=True)
 # plot_legends()
-# plot_losses(run_ids=[2, 3, 1, 0, 4], param_set=0, dist_type='Euclidean', mean_std=False, params_only=True)
+plot_losses(run_ids=[2, 3, 1, 0, 4], param_set=1, dist_type='Euclidean', mean_std=False, params_only=True)
 # read_plot_params(run_ids=[2, 3, 1, 0, 4], param_set=0, dist_type='Euclidean')
 # plot_legends(dist_type='Exponential', param_set=0)
 # plot_losses(run_ids=[5, 6, 8, 9, 7], param_set=0, dist_type='Exponential', mean_std=False, params_only=True)

@@ -100,7 +100,7 @@ def forward(mpm_env, init_state, trajectory, press_to_proceed=False,
         axs[1].imshow(target_hm, cmap=cmap, vmin=min_val, vmax=max_val)
 
         if save_img:
-            plt.savefig(os.path.join(img_dir, 'end_heightmap.png'), bbox_inches='tight')
+            plt.savefig(os.path.join(img_dir, 'end_heightmap.png'), bbox_inches='tight', dpi=300)
         else:
             plt.show()
 

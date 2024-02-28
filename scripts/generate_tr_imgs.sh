@@ -1,0 +1,3 @@
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --load_params_run 3 --fewshot --load_params_seed 1 --agent_ind 0
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --load_params_run 3 --fewshot --load_params_seed 1 --agent_ind 1
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --load_params_run 3 --fewshot --load_params_seed 1 --agent_ind 2

@@ -27,7 +27,7 @@ loss_types = ['point_distance_sr',
 params = ['E', 'nu', 'yield_stress', 'rho', 'mf', 'gf']
 
 
-def read_plot_params_scatter(run_ids, param_set=0, dist_type='Euclidean', fewshot=True):
+def read_plot_params_scatter(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, oneshot=False):
     """Read/plot params"""
     assert len(run_ids) > 0
     legends = [
@@ -53,7 +53,10 @@ def read_plot_params_scatter(run_ids, param_set=0, dist_type='Euclidean', fewsho
               'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan','k']
     param_names = ['E', 'nu', 'yield stress', 'rho', 'mf', 'gf']
     if fewshot:
+        assert not oneshot
         dir_prefix = f'optimisation-fewshot-param{param_set}'
+    elif oneshot:
+        dir_prefix = f'optimisation-oneshot-param{param_set}'
     else:
         dir_prefix = f'optimisation-param{param_set}'
     for p_id in range(4):
@@ -82,11 +85,14 @@ def read_plot_params_scatter(run_ids, param_set=0, dist_type='Euclidean', fewsho
         plt.close()
 
 
-def read_losses(run_ids, param_set=0, fewshot=True, save_meanstd=False):
+def read_losses(run_ids, param_set=0, fewshot=True, oneshot=False, save_meanstd=False):
     """generate mean and deviation data"""
     assert len(run_ids) > 0
     if fewshot:
+        assert not oneshot
         dir_prefix = f'optimisation-fewshot-param{param_set}'
+    elif oneshot:
+        dir_prefix = f'optimisation-oneshot-param{param_set}'
     else:
         dir_prefix = f'optimisation-param{param_set}'
     for run_id in run_ids:
@@ -288,7 +294,6 @@ def plot_legends():
         'Particle chamfer',
         'PCD emd',
         'Particle emd',
-        'Height map',
     ]
 
     plot.smoothed_plot_mean_deviation(
@@ -301,7 +306,8 @@ def plot_legends():
         data_dict_list=[None for _ in range(len(legends))], legend_only=True)
 
 
-def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, mean_std=True, params_only=False):
+def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, oneshot=False,
+                mean_std=True, params_only=False):
     plt.rcParams.update({'font.size': 32})
     assert len(run_ids) > 0
     legends = [
@@ -317,16 +323,22 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, mean_
         f'{dist_type}: Particle emd - 0',
         f'{dist_type}: Particle emd - 1',
         f'{dist_type}: Particle emd - 2',
-        f'{dist_type}: Height map - 0',
-        f'{dist_type}: Height map - 1',
-        f'{dist_type}: Height map - 2'
     ]
     print(f'[Warning]: make sure the run ids are in the correct order based on \n'
-          f'{legends[0]}\n{legends[3]}\n{legends[6]}\n{legends[9]}\n{legends[12]}')
+          f'{legends[0]}\n{legends[3]}\n{legends[6]}\n{legends[9]}')
     if fewshot:
+        assert not oneshot
         dir_prefix = f'optimisation-fewshot-param{param_set}'
+        file_prefix = f'fewshot-param{param_set}'
+    elif oneshot:
+        dir_prefix = f'optimisation-oneshot-param{param_set}'
+        file_prefix = f'oneshot-param{param_set}'
     else:
         dir_prefix = f'optimisation-param{param_set}'
+        file_prefix = f'param{param_set}'
+
+    result_dir = os.path.join(cwd, '..', f'{dir_prefix}-result-figs')
+    os.makedirs(result_dir, exist_ok=True)
 
     """Plot losses"""
     if not params_only:
@@ -336,30 +348,48 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, mean_
                 if loss_type == 'point_distance_sr':
                     title = f'{dist_type}: PCD sim2real'
                     ylim_valid = [7500, 8450]
+                    if param_set == 1:
+                        ylim_valid = [14000, 17000]
                 elif loss_type == 'point_distance_rs':
                     title = f'{dist_type}: PCD real2sim'
                     ylim_valid = [1110, 1260]
+                    if param_set == 1:
+                        ylim_valid = [1560, 2400]
                 elif loss_type == 'chamfer_loss_pcd':
                     title = f'{dist_type}: PCD chamfer'
                     ylim_valid = [8690, 9650]
+                    if param_set == 1:
+                        ylim_valid = [16000, 18900]
                 elif loss_type == 'particle_distance_sr':
                     title = f'{dist_type}: Particle sim2real'
-                    ylim_valid = [2780, 3040]
+                    ylim_valid = [2760, 3050]
+                    if param_set == 1:
+                        ylim_valid = [4600, 6600]
                 elif loss_type == 'particle_distance_rs':
                     title = f'{dist_type}: Particle real2sim'
-                    ylim_valid = [3080, 3450]
+                    ylim_valid = [3010, 3450]
+                    if param_set == 1:
+                        ylim_valid = [5500, 8200]
                 elif loss_type == 'chamfer_loss_particle':
                     title = f'{dist_type}: Particle chamfer'
                     ylim_valid = [5880, 6480]
+                    if param_set == 1:
+                        ylim_valid = [10250, 14900]
                 elif loss_type == 'height_map_loss_pcd':
                     title = f'{dist_type}: Height map'
                     ylim_valid = [1970, 2400]
+                    if param_set == 1:
+                        ylim_valid = [2500, 8500]
                 elif loss_type == 'emd_point_distance_loss':
                     title = f'{dist_type}: PCD emd'
-                    ylim_valid = [1180, 1390]
+                    ylim_valid = [1170, 1390]
+                    if param_set == 1:
+                        ylim_valid = [1670, 2700]
                 elif loss_type == 'emd_particle_distance_loss':
                     title = f'{dist_type}: Particle emd'
                     ylim_valid = [5240, 7200]
+                    if param_set == 1:
+                        ylim_valid = [10750, 25000]
                 else:
                     raise ValueError('Unknown loss type')
 
@@ -385,15 +415,16 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, mean_
                         d['upper'] = np.array(d['upper']).tolist()
                         stat_dicts.append(d)
 
-                    # if case == 'training':
-                    ylim_valid = (min_y * 0.995, max_y * 1.005)
-                    yticks = (round(min_y * 1.005),
-                              round((min_y + max_y) / 2),
-                              round(max_y * 0.995))
+                    if case == 'training':
+                        ylim_valid = (min_y * 0.995, max_y * 1.005)
+                        delta_y = (max_y - min_y) / 30
+                        yticks = (round(min_y + delta_y),
+                                  round((min_y + max_y) / 2),
+                                  round(max_y - delta_y))
 
                     plot.smoothed_plot_mean_deviation(
                         file=os.path.join(cwd, '..', f'{dir_prefix}-result-figs',
-                                          f'fewshot-param{param_set}-{dist_type}-{case}-{loss_type}-meanstd.pdf'),
+                                          f'{file_prefix}-{dist_type}-{case}-{loss_type}-meanstd.pdf'),
                         data_dict_list=stat_dicts,
                         horizontal_lines=None, linestyle='--', linewidth=5,
                         legend=None, legend_ncol=1, legend_frame=False,
@@ -421,13 +452,14 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, mean_
                     min_y = np.min(datas)
                     if case == 'training':
                         ylim_valid = (min_y * 0.995, max_y * 1.005)
-                        yticks = (round(min_y * 1.005),
+                        delta_y = (max_y - min_y) / 30
+                        yticks = (round(min_y + delta_y),
                                   round((min_y + max_y) / 2),
-                                  round(max_y * 0.995))
+                                  round(max_y - delta_y))
 
                     plot.smoothed_plot_multi_line(
                         file=os.path.join(cwd, '..', f'{dir_prefix}-result-figs',
-                                          f'fewshot-param{param_set}-{dist_type}-{case}-{loss_type}-raw.pdf'),
+                                          f'{file_prefix}-{dist_type}-{case}-{loss_type}-raw.pdf'),
                         data=datas, colors=colors,
                         x_axis_off=True,
                         y_label=None, y_axis_off=False, ylim=ylim_valid, yticks=yticks
@@ -441,21 +473,21 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, mean_
     for p in params:
         color_pool = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
                       'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan', 'k']
-        # todo: set ylim_valid
         if p == 'E':
-            ylim_valid = [1e4, 3e5]
+            ylim_valid = [1e4-10000, 3e5+10000]
+            yticks = (1e4, 155000, 3e5)
         elif p == 'nu':
-            ylim_valid = [0.01, 0.48]
+            ylim_valid = [-0.03, 0.52]
+            yticks = (0, 0.25, 0.5)
         elif p == 'yield_stress':
-            ylim_valid = [1e3, 2e4]
+            ylim_valid = [1e3-1000, 2e4+1000]
+            yticks = (1e3, 10500, 2e4)
         elif p == 'rho':
-            ylim_valid = [1000, 2000]
+            ylim_valid = [980, 2020]
+            yticks = (1000, 1500, 2000)
         else:
-            ylim_valid = [-0.02, 2.02]
-
-        yticks = (round(ylim_valid[0]),
-                  round((ylim_valid[1] + ylim_valid[0]) / 2),
-                  round(ylim_valid[1]))
+            ylim_valid = [-0.05, 2.05]
+            yticks = (0, 1, 2)
 
         datas = []
         colors = []
@@ -470,17 +502,24 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, mean_
 
         plot.smoothed_plot_multi_line(
             file=os.path.join(cwd, '..', f'{dir_prefix}-result-figs',
-                              f'fewshot-param{param_set}-{dist_type}-param-{p}-raw.pdf'),
+                              f'{file_prefix}-{dist_type}-param-{p}-raw.pdf'),
             data=datas, colors=colors,
             x_axis_off=True,
             y_label=None, y_axis_off=False, ylim=ylim_valid, yticks=yticks
         )
 
 
-# read_losses(run_ids=[9], param_set=1, save_meanstd=True)
+read_losses(run_ids=[0, 1, 2, 3], param_set=0, fewshot=False, oneshot=True, save_meanstd=True)
 # plot_legends()
-plot_losses(run_ids=[2, 3, 1, 0, 4], param_set=1, dist_type='Euclidean', mean_std=False, params_only=True)
+# plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', mean_std=True, params_only=False, fewshot=True, oneshot=False)
+# plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', mean_std=False, params_only=False, fewshot=True, oneshot=False)
+# plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', mean_std=False, params_only=True, fewshot=True, oneshot=False)
+plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', mean_std=True, params_only=False, fewshot=False, oneshot=True)
+plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', mean_std=False, params_only=False, fewshot=False, oneshot=True)
+# plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', mean_std=False, params_only=True, fewshot=False, oneshot=True)
 # read_plot_params(run_ids=[2, 3, 1, 0, 4], param_set=0, dist_type='Euclidean')
 # plot_legends(dist_type='Exponential', param_set=0)
-# plot_losses(run_ids=[5, 6, 8, 9, 7], param_set=0, dist_type='Exponential', mean_std=False, params_only=True)
+plot_losses(run_ids=[5, 6, 7, 8], param_set=0, dist_type='Exponential', mean_std=True, params_only=False, fewshot=True, oneshot=False)
+plot_losses(run_ids=[5, 6, 7, 8], param_set=0, dist_type='Exponential', mean_std=False, params_only=False, fewshot=True, oneshot=False)
+# plot_losses(run_ids=[5, 6, 7, 8], param_set=0, dist_type='Exponential', mean_std=False, params_only=True, fewshot=True, oneshot=False)
 # read_plot_params(run_ids=[5, 6, 8, 9, 7], param_set=0, dist_type='Exponential')

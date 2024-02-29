@@ -65,7 +65,11 @@ def forward(mpm_env, init_state, trajectory, press_to_proceed=False,
         # print(mpm_env.agent.effectors[0].pos[mpm_env.simulator.cur_substep_local])
         if save_img:
             frame_skip = 1
-            frames_to_save = [0, round(mpm_env.horizon/4), round(mpm_env.horizon/2), round(mpm_env.horizon*3/4), mpm_env.horizon-1]
+            frames_to_save = [0,
+                              round(mpm_env.horizon/4),
+                              round(mpm_env.horizon/2),
+                              round(mpm_env.horizon*3/4),
+                              mpm_env.horizon-1]
             if i in frames_to_save:
                 img = mpm_env.render(mode='rgb_array')
                 # np.save(os.path.join(img_dir, f'img_{i // frame_skip}.png'), img)

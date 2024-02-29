@@ -7,8 +7,8 @@ import numpy as np
 
 
 script_path = os.path.dirname(os.path.realpath(__file__))
-hm_1 = np.load(os.path.join(script_path, '..', 'data-motion-1', 'eef-round', 'target_pcd_height_map-0-res32-vdsize0.001.npy')) / 1000
-hm_2 = np.load(os.path.join(script_path, '..', 'data-motion-1', 'eef-round', 'target_pcd_height_map-2-res32-vdsize0.001.npy')) / 1000
+hm_1 = np.load(os.path.join(script_path, '..', 'data-motion-1', 'eef-round', 'target_pcd_height_map-0-res32-vdsize0.001.npy'))
+hm_2 = np.load(os.path.join(script_path, '..', 'data-motion-1', 'eef-round', 'target_pcd_height_map-2-res32-vdsize0.001.npy'))
 cmap = 'YlOrBr'
 
 min_val, max_val = np.amin(hm_1), np.amax(hm_1)

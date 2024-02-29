@@ -4,11 +4,12 @@ import taichi as ti
 from time import time, sleep
 import open3d as o3d
 from vedo import Points, show, Mesh
+from PIL import Image
 import matplotlib as mpl
-
 mpl.use('Qt5Agg')
 import matplotlib.pylab as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+
 from doma.engine.utils.misc import get_gpu_memory
 import psutil
 import json
@@ -22,12 +23,11 @@ from doma.envs.sys_id_env import make_env, set_parameters
 
 
 def forward(mpm_env, init_state, trajectory, press_to_proceed=False,
-            render=False, save_img=False, render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
+            render=False, save_img=False, image_dir=None, render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
             init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
 
     mpm_env.set_state(init_state['state'], grad_enabled=False)
     # print(mpm_env.agent.effectors[0].pos[mpm_env.simulator.cur_substep_local])
-    cmap = 'YlGnBu'
     if render_init_pcd:
         x_init, _ = mpm_env.render(mode='point_cloud')
         RGBA = np.zeros((len(x_init), 4))
@@ -54,7 +54,7 @@ def forward(mpm_env, init_state, trajectory, press_to_proceed=False,
     if save_img:
         k = 0
         while True:
-            img_dir = os.path.join(script_path, '..', 'optimisation-result-figs', f'imgs-{k}')
+            img_dir = os.path.join(image_dir, str(k))
             if not os.path.exists(img_dir):
                 os.makedirs(img_dir)
                 break
@@ -64,10 +64,11 @@ def forward(mpm_env, init_state, trajectory, press_to_proceed=False,
         mpm_env.step(action)
         # print(mpm_env.agent.effectors[0].pos[mpm_env.simulator.cur_substep_local])
         if save_img:
-            frame_skip = 4
+            frame_skip = 1
             if i % frame_skip == 0:
                 img = mpm_env.render(mode='rgb_array')
-                np.save(os.path.join(img_dir, f'img_{i // frame_skip}.npy'), img)
+                # np.save(os.path.join(img_dir, f'img_{i // frame_skip}.png'), img)
+                Image.fromarray(img).save(os.path.join(img_dir, f'img_{i // frame_skip}.png'))
                 # plt.imshow(img)
                 # plt.show()
                 # sleep(0.1)
@@ -84,22 +85,24 @@ def forward(mpm_env, init_state, trajectory, press_to_proceed=False,
             pass
 
     if render_heightmap:
-        fig = plt.figure(figsize=(10, 4))
-        ax1 = fig.add_subplot(2, 1, 1)
-        ax1.set_title('Target PCD\nheight map')
-        im1 = ax1.imshow(mpm_env.loss.height_map_pcd_target.to_numpy(), cmap=cmap)
-        divider = make_axes_locatable(ax1)
-        cax = divider.append_axes('right', size='2%', pad=0.05)
-        fig.colorbar(im1, cax=cax, orientation='vertical')
+        cmap = 'YlOrBr'
+        target_hm = mpm_env.loss.height_map_pcd_target.to_numpy()
+        min_val, max_val = np.amin(target_hm), np.amax(target_hm)
 
-        ax2 = fig.add_subplot(2, 1, 2)
-        ax2.set_title('Simulated particle\nheight map')
-        im2 = ax2.imshow(loss_info['final_height_map'], cmap=cmap)
-        divider = make_axes_locatable(ax2)
-        cax = divider.append_axes('right', size='2%', pad=0.05)
-        fig.colorbar(im2, cax=cax, orientation='vertical')
+        fig, axs = plt.subplots(1, 2)
+        axs[0].set_title('Simulation result')
+        axs[0].xaxis.set_visible(False)
+        axs[0].yaxis.set_visible(False)
+        axs[0].imshow(loss_info['final_height_map'], cmap=cmap, vmin=min_val, vmax=max_val)
+        axs[1].set_title('Ground truth')
+        axs[1].xaxis.set_visible(False)
+        axs[1].yaxis.set_visible(False)
+        axs[1].imshow(target_hm, cmap=cmap, vmin=min_val, vmax=max_val)
 
-        plt.show()
+        if save_img:
+            plt.savefig(os.path.join(img_dir, 'end_heightmap.png'), bbox_inches='tight', dpi=300)
+        else:
+            plt.show()
 
     if render_end_pcd:
         y_offset = 0.0
@@ -153,11 +156,19 @@ def main(args):
     script_path = os.path.dirname(os.path.realpath(__file__))
 
     cam_cfg = {
-        'pos': (0.2, 0.02, 0.07),
-        'lookat': (0.24, 0.20, 0.07),
+        'pos': (0.4, 0.1, 0.1),
+        'lookat': (0.25, 0.25, 0.04),
         'fov': 30,
-        'lights': [{'pos': (0.5, -1.5, 0.5), 'color': (0.5, 0.5, 0.5)},
-                   {'pos': (0.5, -1.5, 1.5), 'color': (0.5, 0.5, 0.5)}]
+        'lights': [{'pos': (0.5, 0.25, 0.2), 'color': (0.6, 0.6, 0.6)},
+                   {'pos': (0.5, 0.5, 1.0), 'color': (0.6, 0.6, 0.6)},
+                   {'pos': (0.5, 0.0, 1.0), 'color': (0.8, 0.8, 0.8)}],
+        'particle_radius': 0.002,
+        'res': (640, 640)
+    }
+    agent_colors = {
+        'rectangle': (0.9, 0.1, 0.1, 1.0),
+        'round': (0.8, 0.8, 0.8, 1.0),
+        'cylinder': (0.2, 0.2, 0.2, 1.0)
     }
 
     p_density = args['ptcl_density']
@@ -215,7 +226,6 @@ def main(args):
     training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
     if args['eval']:
         training_data_path = os.path.join(script_path, '..', 'data-motion-validation', f'eef-{agent}')
-    data_ids = ['2']
 
     E = 1e4  # [1e4, 3e5]
     nu = 0.3  # [0.01, 0.48]
@@ -226,27 +236,52 @@ def main(args):
     if args['load_params']:
         run_id = args['load_params_run']
         seed_id = args['load_params_seed']
-        print(f'Loading optimised parameters from run {run_id} seed {seed_id}...')
-        params = np.load(os.path.join(
-            script_path, '..', f'optimisation-fewshot-param0-run{run_id}-logs', f'seed-{seed_id}', 'final_params.npy'
-        )).flatten()
+        p_set = args['param_set']
+        if args['oneshot']:
+            assert not args['fewshot'], 'Cannot load oneshot and fewshot parameters at the same time'
+            print(f'Loading optimised parameters from oneshot result, param set {p_set}, run {run_id} seed {seed_id}...')
+            params = np.load(os.path.join(
+                script_path, '..',
+                f'optimisation-oneshot-param{p_set}-run{run_id}-logs', f'seed-{seed_id}', 'final_params.npy'
+            )).flatten()
+            image_dir = os.path.join(script_path, '..', f'optimisation-oneshot-param{p_set}-run{run_id}-logs',
+                                     f'seed-{seed_id}', f'validation_tr_imgs-motion{motion_ind}-{agent}')
+        elif args['fewshot']:
+            assert not args['oneshot'], 'Cannot load oneshot and fewshot parameters at the same time'
+            print(f'Loading optimised parameters from fewshot result, param set {p_set}, run {run_id} seed {seed_id}...')
+            params = np.load(os.path.join(
+                script_path, '..',
+                f'optimisation-fewshot-param{p_set}-run{run_id}-logs', f'seed-{seed_id}', 'final_params.npy'
+            )).flatten()
+            image_dir = os.path.join(script_path, '..', f'optimisation-fewshot-param{p_set}-run{run_id}-logs',
+                                     f'seed-{seed_id}', f'validation_tr_imgs-motion{motion_ind}-{agent}')
+        else:
+            raise ValueError('Please specify either oneshot or fewshot')
         E = params[0]
         nu = params[1]
         yield_stress = params[2]
         rho = params[3]
 
-    data_id_dict = {
-        'rectangle': [4, 8],
-        'round': [4, 7],
-        'cylinder': [4, 7]
+    validation_dataind_dict = {
+        '2': {
+            'rectangle': [4, 8],
+            'round': [4, 7],
+            'cylinder': [4, 7]
+        },
+        '4': {
+            'rectangle': [2, 4],
+            'round': [2, 3],
+            'cylinder': [1, 3]
+        }
     }
-    data_ids = data_id_dict[agent]
+
+    data_ids = validation_dataind_dict[motion_ind][agent]
     if args['eval']:
         data_ids = [0, 1]
 
     for data_ind in data_ids:
         ti.reset()
-        ti.init(arch=ti.opengl, default_fp=DTYPE_TI, default_ip=ti.i32, debug=False,
+        ti.init(arch=ti.cuda, default_fp=DTYPE_TI, default_ip=ti.i32, debug=False, device_memory_GB=3,
                 fast_math=True, advanced_optimization=True, random_seed=1)
         data_cfg = {
             'data_path': training_data_path,
@@ -264,6 +299,7 @@ def main(args):
         print(f'===> CPU memory occupied before create env: {process.memory_percent()} %')
         print(f'===> GPU memory before create env: {get_gpu_memory()}')
         env, mpm_env, init_state = make_env(data_cfg, env_cfg, loss_cfg, cam_cfg)
+        mpm_env.agent.effectors[0].mesh.update_color(agent_colors[agent])
         print(f'===> Num. simulation particles: {mpm_env.loss.n_particles_matching_mat}')
         print(f'===> Num. target pcd points: {mpm_env.loss.n_target_pcd_points}')
         print(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')
@@ -275,7 +311,7 @@ def main(args):
                        rho=rho, ground_friction=gf, manipulator_friction=mf)
         forward(mpm_env, init_state, trajectory.copy(),
                 press_to_proceed=args['press_to_proceed'],
-                render=args['render_human'], save_img=args['save_img'],
+                render=args['render_human'], save_img=args['save_img'], image_dir=image_dir,
                 render_init_pcd=args['render_init_pcd'],
                 render_end_pcd=args['render_end_pcd'], render_heightmap=args['render_heightmap'],
                 init_pcd_path=os.path.join(training_data_path, 'pcd_' + str(data_ind) + str(0) + '.ply'),
@@ -297,6 +333,9 @@ if __name__ == '__main__':
     parser.add_argument('--load_params', dest='load_params', default=False, action='store_true')
     parser.add_argument('--load_params_run', dest='load_params_run', type=int, default=0)
     parser.add_argument('--load_params_seed', dest='load_params_seed', type=int, default=0)
+    parser.add_argument('--fewshot', dest='fewshot', default=False, action='store_true')
+    parser.add_argument('--oneshot', dest='oneshot', default=False, action='store_true')
+    parser.add_argument('--param_set', dest='param_set', type=int, default=0)
     parser.add_argument('--dt', dest='dt', type=float, default=0.01)
     parser.add_argument('--dt_avg', dest='dt_avg', default=False, action='store_true')
     parser.add_argument('--m_id', dest='motion_ind', type=int, default=1)

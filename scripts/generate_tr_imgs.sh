@@ -1,0 +1,12 @@
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --load_params_run 0 --fewshot --load_params_seed 0 --agent_ind 0
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --load_params_run 0 --fewshot --load_params_seed 0 --agent_ind 1
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --load_params_run 0 --fewshot --load_params_seed 0 --agent_ind 2
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --load_params_run 1 --fewshot --load_params_seed 1 --agent_ind 0
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --load_params_run 1 --fewshot --load_params_seed 1 --agent_ind 1
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --load_params_run 1 --fewshot --load_params_seed 1 --agent_ind 2
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --load_params_run 2 --fewshot --load_params_seed 1 --agent_ind 0
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --load_params_run 2 --fewshot --load_params_seed 1 --agent_ind 1
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --load_params_run 2 --fewshot --load_params_seed 1 --agent_ind 2
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --load_params_run 3 --fewshot --load_params_seed 1 --agent_ind 0
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --load_params_run 3 --fewshot --load_params_seed 1 --agent_ind 1
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --load_params_run 3 --fewshot --load_params_seed 1 --agent_ind 2

@@ -1,96 +1,96 @@
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 0 --fewshot --param_set 0 --load_params_seed 0 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 0 --fewshot --param_set 0 --load_params_seed 0 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 0 --fewshot --param_set 0 --load_params_seed 0 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 1 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 1 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 1 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 2 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 2 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 2 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 3 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 3 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 3 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 5 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 5 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 5 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 6 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 6 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 6 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 7 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 7 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 7 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 8 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 8 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 8 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 2
-
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 0 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 0 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 0 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 1 --oneshot --param_set 0 --load_params_seed 2 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 1 --oneshot --param_set 0 --load_params_seed 2 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 1 --oneshot --param_set 0 --load_params_seed 2 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 2 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 2 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 2 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 3 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 3 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 3 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 5 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 5 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 5 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 6 --oneshot --param_set 0 --load_params_seed 2 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 6 --oneshot --param_set 0 --load_params_seed 2 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 6 --oneshot --param_set 0 --load_params_seed 2 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 7 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 7 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 7 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 8 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 8 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 8 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 2
-
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 0 --fewshot --param_set 1 --load_params_seed 0 --agent_ind 0
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 0 --fewshot --param_set 1 --load_params_seed 0 --agent_ind 1
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 0 --fewshot --param_set 1 --load_params_seed 0 --agent_ind 2
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 1 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 1 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 1 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 2 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 2 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 2 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 3 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 3 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 3 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 5 --fewshot --param_set 1 --load_params_seed 0 --agent_ind 0
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 5 --fewshot --param_set 1 --load_params_seed 0 --agent_ind 1
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 5 --fewshot --param_set 1 --load_params_seed 0 --agent_ind 2
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 6 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 6 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 6 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 7 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 7 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 7 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 2
-
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 0 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 0 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 0 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 1 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 1 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 1 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 2 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 2 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 2 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 3 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 3 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 3 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 2
-#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 5 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 0
-#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 5 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 1
-#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 5 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 2
-#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 6 --oneshot --param_set 1 --load_params_seed 2 --agent_ind 0
-#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 6 --oneshot --param_set 1 --load_params_seed 2 --agent_ind 1
-#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 6 --oneshot --param_set 1 --load_params_seed 2 --agent_ind 2
-#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 7 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 0
-#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 7 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 1
-#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 7 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 2
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 8 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 0
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 8 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 1
-python examine_rendering.py --m_id 2 --load_params --r_hm --save_img--save_heightmap --load_params_run 8 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 0 --fewshot --param_set 0 --load_params_seed 0 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 0 --fewshot --param_set 0 --load_params_seed 0 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 0 --fewshot --param_set 0 --load_params_seed 0 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 1 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 1 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 1 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 2 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 2 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 2 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 3 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 3 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 3 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 5 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 5 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 5 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 6 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 6 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 6 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 7 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 7 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 7 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 8 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 8 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 8 --fewshot --param_set 0 --load_params_seed 1 --agent_ind 2
+#
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 0 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 0 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 0 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 1 --oneshot --param_set 0 --load_params_seed 2 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 1 --oneshot --param_set 0 --load_params_seed 2 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 1 --oneshot --param_set 0 --load_params_seed 2 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 2 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 2 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 2 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 3 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 3 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 3 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 5 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 5 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 5 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 6 --oneshot --param_set 0 --load_params_seed 2 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 6 --oneshot --param_set 0 --load_params_seed 2 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 6 --oneshot --param_set 0 --load_params_seed 2 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 7 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 7 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 7 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 8 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 8 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_heightmap --load_params_run 8 --oneshot --param_set 0 --load_params_seed 1 --agent_ind 2
+#
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 0 --fewshot --param_set 1 --load_params_seed 0 --agent_ind 0
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 0 --fewshot --param_set 1 --load_params_seed 0 --agent_ind 1
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 0 --fewshot --param_set 1 --load_params_seed 0 --agent_ind 2
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 1 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 1 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 1 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 2 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 2 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 2 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 3 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 3 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 3 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 5 --fewshot --param_set 1 --load_params_seed 0 --agent_ind 0
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 5 --fewshot --param_set 1 --load_params_seed 0 --agent_ind 1
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 5 --fewshot --param_set 1 --load_params_seed 0 --agent_ind 2
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 6 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 6 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 6 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 7 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 7 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 4 --load_params --r_hm --save_heightmap --load_params_run 7 --fewshot --param_set 1 --load_params_seed 1 --agent_ind 2
+#
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 0 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 0 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 0 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 2
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 1 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 0
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 1 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 1
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 1 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 2
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 2 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 0
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 2 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 1
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 2 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 2
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 3 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 0
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 3 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 1
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 3 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 5 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 5 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 5 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 6 --oneshot --param_set 1 --load_params_seed 2 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 6 --oneshot --param_set 1 --load_params_seed 2 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 6 --oneshot --param_set 1 --load_params_seed 2 --agent_ind 2
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 7 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 0
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 7 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 1
+#python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 7 --oneshot --param_set 1 --load_params_seed 1 --agent_ind 2
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 8 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 0
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 8 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 1
+python examine_rendering.py --m_id 2 --load_params --r_hm --save_img --save_heightmap --load_params_run 8 --oneshot --param_set 1 --load_params_seed 0 --agent_ind 2

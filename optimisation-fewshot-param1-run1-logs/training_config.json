@@ -9,8 +9,6 @@
   "batch_size": 20,
   "n_epoch": 100,
   "seeds": [
-    0,
-    1,
-    2
+    0
   ]
 }

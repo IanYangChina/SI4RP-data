@@ -22,8 +22,8 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 from doma.envs.sys_id_env import make_env, set_parameters
 
 
-def forward(mpm_env, init_state, trajectory, press_to_proceed=False,
-            render=False, save_img=False, image_dir=None, render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
+def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=False,
+            render=False, save_img=False, save_heightmap=False, image_dir=None, render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
             init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
 
     mpm_env.set_state(init_state['state'], grad_enabled=False)
@@ -51,14 +51,9 @@ def forward(mpm_env, init_state, trajectory, press_to_proceed=False,
         coords_init[:, 1] += 0.2
         mesh_init.points(coords_init)
 
-    if save_img:
-        k = 0
-        while True:
-            img_dir = os.path.join(image_dir, str(k))
-            if not os.path.exists(img_dir):
-                os.makedirs(img_dir)
-                break
-            k += 1
+    if save_img or save_heightmap:
+        img_dir = os.path.join(image_dir, str(n_episode))
+        os.makedirs(img_dir, exist_ok=True)
     for i in range(mpm_env.horizon):
         action = trajectory[i]
         mpm_env.step(action)
@@ -94,17 +89,11 @@ def forward(mpm_env, init_state, trajectory, press_to_proceed=False,
         target_hm = mpm_env.loss.height_map_pcd_target.to_numpy()
         min_val, max_val = np.amin(target_hm), np.amax(target_hm)
 
-        fig, axs = plt.subplots(1, 2)
-        axs[0].set_title('Simulation result')
-        axs[0].xaxis.set_visible(False)
-        axs[0].yaxis.set_visible(False)
-        axs[0].imshow(loss_info['final_height_map'], cmap=cmap, vmin=min_val, vmax=max_val)
-        axs[1].set_title('Ground truth')
-        axs[1].xaxis.set_visible(False)
-        axs[1].yaxis.set_visible(False)
-        axs[1].imshow(target_hm, cmap=cmap, vmin=min_val, vmax=max_val)
+        plt.imshow(loss_info['final_height_map'], cmap=cmap, vmin=min_val, vmax=max_val)
+        plt.xticks([])
+        plt.yticks([])
 
-        if save_img:
+        if save_heightmap:
             plt.savefig(os.path.join(img_dir, 'end_heightmap.png'), bbox_inches='tight', dpi=300)
         else:
             plt.show()
@@ -284,6 +273,7 @@ def main(args):
     if args['eval']:
         data_ids = [0, 1]
 
+    n_episode = 0
     for data_ind in data_ids:
         ti.reset()
         ti.init(arch=ti.cuda, default_fp=DTYPE_TI, default_ip=ti.i32, debug=False, device_memory_GB=3,
@@ -314,9 +304,9 @@ def main(args):
         print(f'===> Parameters: E = {E}, nu = {nu}, yield_stress = {yield_stress}, rho = {rho}, gf = {gf}, mf = {mf}')
         set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress,
                        rho=rho, ground_friction=gf, manipulator_friction=mf)
-        forward(mpm_env, init_state, trajectory.copy(),
+        forward(mpm_env, init_state, trajectory.copy(), n_episode=n_episode,
                 press_to_proceed=args['press_to_proceed'],
-                render=args['render_human'], save_img=args['save_img'], image_dir=image_dir,
+                render=args['render_human'], save_img=args['save_img'], save_heightmap=args['save_heightmap'], image_dir=image_dir,
                 render_init_pcd=args['render_init_pcd'],
                 render_end_pcd=args['render_end_pcd'], render_heightmap=args['render_heightmap'],
                 init_pcd_path=os.path.join(training_data_path, 'pcd_' + str(data_ind) + str(0) + '.ply'),
@@ -326,6 +316,7 @@ def main(args):
 
         print(f'===> CPU memory occupied after forward: {process.memory_percent()} %')
         print(f'===> GPU memory after forward: {get_gpu_memory()}')
+        n_episode += 1
 
 
 if __name__ == '__main__':
@@ -347,6 +338,7 @@ if __name__ == '__main__':
     parser.add_argument('--agent_ind', dest='agent_ind', type=int, default=0)
     parser.add_argument('--r_human', dest='render_human', default=False, action='store_true')
     parser.add_argument('--save_img', dest='save_img', default=False, action='store_true')
+    parser.add_argument('--save_heightmap', dest='save_heightmap', default=False, action='store_true')
     parser.add_argument('--r_init_pcd', dest='render_init_pcd', default=False, action='store_true')
     parser.add_argument('--r_end_pcd', dest='render_end_pcd', default=False, action='store_true')
     parser.add_argument('--r_hm', dest='render_heightmap', default=False, action='store_true')

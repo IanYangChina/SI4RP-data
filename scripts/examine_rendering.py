@@ -151,7 +151,7 @@ def main(args):
 
     cam_cfg = {
         'pos': (0.4, 0.1, 0.1),
-        'lookat': (0.25, 0.25, 0.04),
+        'lookat': (0.25, 0.25, 0.03),
         'fov': 30,
         'lights': [{'pos': (0.5, 0.25, 0.2), 'color': (0.6, 0.6, 0.6)},
                    {'pos': (0.5, 0.5, 1.0), 'color': (0.6, 0.6, 0.6)},
@@ -255,6 +255,11 @@ def main(args):
         nu = params[1]
         yield_stress = params[2]
         rho = params[3]
+        gf = params[4]
+        mf = params[5]
+        if args['eval']:
+            image_dir = os.path.join(script_path, '..', f'optimisation-fewshot-param{p_set}-run{run_id}-logs',
+                                     f'seed-{seed_id}', f'validation_tr_imgs-long_motion-{agent}')
 
     validation_dataind_dict = {
         '2': {

@@ -80,6 +80,9 @@ def main(arguments):
     mf_range = (0.01, 2.0)
     gf_range = (0.01, 2.0)
 
+    agents = ['rectangle', 'round', 'cylinder']
+    mini_batch_size = arguments['batchsize']
+
     param_set = arguments['param_set']
     assert param_set in [0, 1], 'param_set must be 0 or 1'
 
@@ -96,6 +99,9 @@ def main(arguments):
             log_p_dir = os.path.join(script_path, '..', f'optimisation-fewshot-param{param_set}-run{n}-logs')
         elif arguments['oneshot']:
             log_p_dir = os.path.join(script_path, '..', f'optimisation-oneshot-param{param_set}-run{n}-logs')
+        elif arguments['realoneshot']:
+            agent_name = agents[arguments['realoneshot_agent_id']]
+            log_p_dir = os.path.join(script_path, '..', f'optimisation-realoneshot-{agent_name}-param{param_set}-run{n}-logs')
         else:
             log_p_dir = os.path.join(script_path, '..', f'optimisation-param{param_set}-run{n}-logs')
     else:
@@ -106,6 +112,9 @@ def main(arguments):
                 log_p_dir = os.path.join(script_path, '..', f'optimisation-fewshot-param{param_set}-run{n}-logs')
             elif arguments['oneshot']:
                 log_p_dir = os.path.join(script_path, '..', f'optimisation-oneshot-param{param_set}-run{n}-logs')
+            elif arguments['realoneshot']:
+                agent_name = agents[arguments['realoneshot_agent_id']]
+                log_p_dir = os.path.join(script_path, '..', f'optimisation-realoneshot-{agent_name}-param{param_set}-run{n}-logs')
             else:
                 log_p_dir = os.path.join(script_path, '..', f'optimisation-param{param_set}-run{n}-logs')
             if os.path.exists(log_p_dir):
@@ -211,9 +220,6 @@ def main(arguments):
             optim_gf = Adam(parameters_shape=ground_friction.shape,
                             cfg={'lr': training_config['lr_ground_friction'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
 
-        agents = ['rectangle', 'round', 'cylinder']
-        mini_batch_size = arguments['batchsize']
-
         for epoch in range(n_epoch):
             t1 = time()
             """===========Training==========="""
@@ -230,13 +236,13 @@ def main(arguments):
                 'total_loss': []
             }
             grads = []
+            data_id_dict = {
+                '1': {'rectangle': [3, 5], 'round': [0, 1], 'cylinder': [1, 2]},
+                '2': {'rectangle': [1, 3], 'round': [0, 2], 'cylinder': [0, 2]},
+                '3': {'rectangle': [1, 2], 'round': [0, 1], 'cylinder': [0, 4]},
+                '4': {'rectangle': [1, 3], 'round': [1, 4], 'cylinder': [0, 4]},
+            }
             if arguments['fewshot']:
-                # data_id_dict = {
-                #     '1': {'rectangle': [3, 5], 'round': [0, 1], 'cylinder': [1, 2]},
-                #     '2': {'rectangle': [1, 3], 'round': [0, 2], 'cylinder': [0, 2]},
-                #     '3': {'rectangle': [1, 2], 'round': [0, 1], 'cylinder': [0, 4]},
-                #     '4': {'rectangle': [1, 3], 'round': [1, 4], 'cylinder': [0, 4]},
-                # }
                 mini_batch_size = 12
                 if arguments['param_set'] == 0:
                     motion_ids = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]
@@ -256,6 +262,16 @@ def main(arguments):
                     motion_ids = [3, 3, 3, 4, 4, 4]
                     agent_ids = [0, 1, 2, 0, 1, 2]
                     data_ids = [1, 0, 0, 1, 1, 0]
+            elif arguments['realoneshot']:
+                mini_batch_size = 1
+                if arguments['param_set'] == 0:
+                    motion_ids = [2]
+                    agent_ids = [arguments['realoneshot_agent_id']]
+                    data_ids = [data_id_dict['2'][agents[arguments['realoneshot_agent_id']]][0]]
+                else:
+                    motion_ids = [4]
+                    agent_ids = [arguments['realoneshot_agent_id']]
+                    data_ids = [data_id_dict['4'][agents[arguments['realoneshot_agent_id']]][0]]
             else:
                 if arguments['param_set'] == 0:
                     motion_ids = np.random.randint(1, 3, size=mini_batch_size, dtype=np.int32).tolist()
@@ -554,6 +570,8 @@ if __name__ == '__main__':
     parser.add_argument('--param_set', dest='param_set', type=int, default=0)
     parser.add_argument('--fewshot', dest='fewshot', default=False, action='store_true')
     parser.add_argument('--oneshot', dest='oneshot', default=False, action='store_true')
+    parser.add_argument('--realoneshot', dest='realoneshot', default=False, action='store_true')
+    parser.add_argument('--realoneshot_agent_id', dest='realoneshot_agent_id', type=int, default=0)
     parser.add_argument('--exp_dist', dest='exp_dist', default=False, action='store_true')
     parser.add_argument('--pd_rs_loss', dest='pd_rs_loss', default=False, action='store_true')
     parser.add_argument('--pd_sr_loss', dest='pd_sr_loss', default=False, action='store_true')

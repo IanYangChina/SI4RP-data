@@ -299,7 +299,7 @@ def plot_legends():
     plot.smoothed_plot_mean_deviation(
         file=os.path.join(cwd, '..', 'result-figs', 'legend.pdf'),
         legend_file=os.path.join(cwd, '..', 'result-figs', 'legend.pdf'),
-        horizontal_lines=None, linestyle='--', linewidth=5,
+        horizontal_lines=None, linestyle='--', linewidth=7, handlelength=0.5,
         legend=legends, legend_ncol=1, legend_frame=False,
         legend_bbox_to_anchor=(1.6, 1.1),
         legend_loc='upper right',
@@ -307,7 +307,7 @@ def plot_legends():
 
 
 def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, oneshot=False,
-                mean_std=True, params_only=False):
+                mean_std=True, params=False):
     plt.rcParams.update({'font.size': 32})
     assert len(run_ids) > 0
     legends = [
@@ -341,188 +341,202 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, onesh
     os.makedirs(result_dir, exist_ok=True)
 
     """Plot losses"""
-    if not params_only:
-        for case in ['training', 'validation']:
-            for i in range(len(loss_types)):
-                loss_type = loss_types[i]
-                if loss_type == 'point_distance_sr':
-                    title = f'{dist_type}: PCD sim2real'
-                    ylim_valid = [7500, 8450]
-                    if param_set == 1:
-                        ylim_valid = [14000, 17000]
-                elif loss_type == 'point_distance_rs':
-                    title = f'{dist_type}: PCD real2sim'
-                    ylim_valid = [1110, 1260]
-                    if param_set == 1:
-                        ylim_valid = [1560, 2400]
-                elif loss_type == 'chamfer_loss_pcd':
-                    title = f'{dist_type}: PCD chamfer'
-                    ylim_valid = [8690, 9650]
-                    if param_set == 1:
-                        ylim_valid = [16000, 18900]
-                elif loss_type == 'particle_distance_sr':
-                    title = f'{dist_type}: Particle sim2real'
-                    ylim_valid = [2760, 3050]
-                    if param_set == 1:
-                        ylim_valid = [4600, 6600]
-                elif loss_type == 'particle_distance_rs':
-                    title = f'{dist_type}: Particle real2sim'
-                    ylim_valid = [3010, 3450]
-                    if param_set == 1:
-                        ylim_valid = [5500, 8200]
-                elif loss_type == 'chamfer_loss_particle':
-                    title = f'{dist_type}: Particle chamfer'
-                    ylim_valid = [5880, 6480]
-                    if param_set == 1:
-                        ylim_valid = [10250, 14900]
-                elif loss_type == 'height_map_loss_pcd':
-                    title = f'{dist_type}: Height map'
-                    ylim_valid = [1970, 2400]
-                    if param_set == 1:
-                        ylim_valid = [2500, 8500]
-                elif loss_type == 'emd_point_distance_loss':
-                    title = f'{dist_type}: PCD emd'
-                    ylim_valid = [1170, 1390]
-                    if param_set == 1:
-                        ylim_valid = [1670, 2700]
-                elif loss_type == 'emd_particle_distance_loss':
-                    title = f'{dist_type}: Particle emd'
-                    ylim_valid = [5240, 7200]
-                    if param_set == 1:
-                        ylim_valid = [10750, 25000]
-                else:
-                    raise ValueError('Unknown loss type')
+    for case in ['training', 'validation']:
+        for i in range(len(loss_types)):
+            loss_type = loss_types[i]
+            if loss_type == 'point_distance_sr':
+                title = f'{dist_type}: PCD sim2real'
+                ylim_valid = [7500, 8450]
+                if param_set == 1:
+                    ylim_valid = [14000, 17000]
+            elif loss_type == 'point_distance_rs':
+                title = f'{dist_type}: PCD real2sim'
+                ylim_valid = [1110, 1260]
+                if param_set == 1:
+                    ylim_valid = [1560, 2400]
+            elif loss_type == 'chamfer_loss_pcd':
+                title = f'{dist_type}: PCD chamfer'
+                ylim_valid = [8690, 9650]
+                if param_set == 1:
+                    ylim_valid = [16000, 18900]
+            elif loss_type == 'particle_distance_sr':
+                title = f'{dist_type}: Particle sim2real'
+                ylim_valid = [2760, 3050]
+                if param_set == 1:
+                    ylim_valid = [4600, 6600]
+            elif loss_type == 'particle_distance_rs':
+                title = f'{dist_type}: Particle real2sim'
+                ylim_valid = [3010, 3450]
+                if param_set == 1:
+                    ylim_valid = [5500, 8200]
+            elif loss_type == 'chamfer_loss_particle':
+                title = f'{dist_type}: Particle chamfer'
+                ylim_valid = [5880, 6480]
+                if param_set == 1:
+                    ylim_valid = [10250, 14900]
+            elif loss_type == 'height_map_loss_pcd':
+                title = f'{dist_type}: Height map'
+                ylim_valid = [1970, 2400]
+                if param_set == 1:
+                    ylim_valid = [2500, 8500]
+            elif loss_type == 'emd_point_distance_loss':
+                title = f'{dist_type}: PCD emd'
+                ylim_valid = [1170, 1390]
+                if param_set == 1:
+                    ylim_valid = [1670, 2700]
+            elif loss_type == 'emd_particle_distance_loss':
+                title = f'{dist_type}: Particle emd'
+                ylim_valid = [5240, 7200]
+                if param_set == 1:
+                    ylim_valid = [10750, 25000]
+            else:
+                raise ValueError('Unknown loss type')
 
-                yticks = (round(ylim_valid[0]*1.01),
-                          round((ylim_valid[1]+ylim_valid[0])/2),
-                          round(ylim_valid[1]*0.99))
+            yticks = (round(ylim_valid[0]*1.01),
+                      round((ylim_valid[1]+ylim_valid[0])/2),
+                      round(ylim_valid[1]*0.99))
 
-                if mean_std:
-                    stat_dicts = []
-                    max_y = 0
-                    min_y = 2000000
-                    for run_id in run_ids:
-                        run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', 'data')
+            if mean_std:
+                stat_dicts = []
+                max_y = 0
+                min_y = 2000000
+                for run_id in run_ids:
+                    run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', 'data')
 
-                        with open(os.path.join(run_dir, f'{case}-{loss_type}.json'), 'rb') as f:
-                            d = json.load(f)
+                    with open(os.path.join(run_dir, f'{case}-{loss_type}.json'), 'rb') as f:
+                        d = json.load(f)
 
-                        max_y = np.max([max_y, np.max(d['upper'])])
-                        min_y = np.min([min_y, np.min(d['lower'])])
+                    max_y = np.max([max_y, np.max(d['upper'])])
+                    min_y = np.min([min_y, np.min(d['lower'])])
 
-                        d['mean'] = np.array(d['mean']).tolist()
-                        d['lower'] = np.array(d['lower']).tolist()
-                        d['upper'] = np.array(d['upper']).tolist()
-                        stat_dicts.append(d)
+                    d['mean'] = np.array(d['mean']).tolist()
+                    d['lower'] = np.array(d['lower']).tolist()
+                    d['upper'] = np.array(d['upper']).tolist()
+                    stat_dicts.append(d)
 
-                    if case == 'training':
-                        ylim_valid = (min_y * 0.995, max_y * 1.005)
-                        delta_y = (max_y - min_y) / 30
-                        yticks = (round(min_y + delta_y),
-                                  round((min_y + max_y) / 2),
-                                  round(max_y - delta_y))
+                if case == 'training':
+                    ylim_valid = (min_y * 0.995, max_y * 1.005)
+                    delta_y = (max_y - min_y) / 30
+                    yticks = (round(min_y + delta_y),
+                              round((min_y + max_y) / 2),
+                              round(max_y - delta_y))
 
-                    plot.smoothed_plot_mean_deviation(
-                        file=os.path.join(cwd, '..', f'{dir_prefix}-result-figs',
-                                          f'{file_prefix}-{dist_type}-{case}-{loss_type}-meanstd.pdf'),
-                        data_dict_list=stat_dicts,
-                        horizontal_lines=None, linestyle='--', linewidth=5,
-                        legend=None, legend_ncol=1, legend_frame=False,
-                        legend_bbox_to_anchor=(1.4, 1.1),
-                        legend_loc='upper right',
-                        x_label='Epoch', x_axis_off=True,
-                        y_label=None, y_axis_off=False, ylim=ylim_valid, yticks=yticks,
-                        title=None
-                    )
-                else:
-                    color_pool = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
-                     'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan', 'k']
-                    datas = []
-                    colors = []
-                    n = 0
-                    for run_id in run_ids:
-                        run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', 'data')
-                        losses = json.load(open(os.path.join(run_dir, 'raw_loss.json'), 'rb'))
-                        for seed in [0, 1, 2]:
-                            datas.append(losses[f'seed-{seed}'][case][loss_type])
-                            colors.append(color_pool[n])
-                        n += 1
+                plot.smoothed_plot_mean_deviation(
+                    file=os.path.join(cwd, '..', f'{dir_prefix}-result-figs',
+                                      f'{file_prefix}-{dist_type}-{case}-{loss_type}-meanstd.pdf'),
+                    data_dict_list=stat_dicts,
+                    horizontal_lines=None, linestyle='--', linewidth=5,
+                    legend=None, legend_ncol=1, legend_frame=False,
+                    legend_bbox_to_anchor=(1.4, 1.1),
+                    legend_loc='upper right',
+                    x_label='Epoch', x_axis_off=True,
+                    y_label=None, y_axis_off=False, ylim=ylim_valid, yticks=yticks,
+                    title=None
+                )
+            else:
+                color_pool = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
+                 'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan', 'k']
+                datas = []
+                colors = []
+                linestyles = []
+                linewidths = []
+                alphas = []
+                n = 0
+                for run_id in run_ids:
+                    run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', 'data')
+                    losses = json.load(open(os.path.join(run_dir, 'raw_loss.json'), 'rb'))
+                    for seed in [0, 1, 2]:
+                        datas.append(losses[f'seed-{seed}'][case][loss_type])
+                        colors.append(color_pool[n])
+                        linestyles.append(':')
+                        linewidths.append(4)
+                        alphas.append(0.8)
+                    with open(os.path.join(run_dir, f'{case}-{loss_type}.json'), 'rb') as f:
+                        d = json.load(f)
+                    datas.append(d['mean'])
+                    colors.append(color_pool[n])
+                    linestyles.append('-')
+                    linewidths.append(4)
+                    alphas.append(1)
+                    n += 1
 
-                    max_y = np.max(datas)
-                    min_y = np.min(datas)
-                    if case == 'training':
-                        ylim_valid = (min_y * 0.995, max_y * 1.005)
-                        delta_y = (max_y - min_y) / 30
-                        yticks = (round(min_y + delta_y),
-                                  round((min_y + max_y) / 2),
-                                  round(max_y - delta_y))
+                max_y = np.max(datas)
+                min_y = np.min(datas)
+                if case == 'training':
+                    ylim_valid = (min_y * 0.995, max_y * 1.005)
+                    delta_y = (max_y - min_y) / 30
+                    yticks = (round(min_y + delta_y),
+                              round((min_y + max_y) / 2),
+                              round(max_y - delta_y))
 
-                    plot.smoothed_plot_multi_line(
-                        file=os.path.join(cwd, '..', f'{dir_prefix}-result-figs',
-                                          f'{file_prefix}-{dist_type}-{case}-{loss_type}-raw.pdf'),
-                        data=datas, colors=colors,
-                        x_axis_off=True,
-                        y_label=None, y_axis_off=False, ylim=ylim_valid, yticks=yticks
-                    )
+                plot.smoothed_plot_multi_line(
+                    file=os.path.join(cwd, '..', f'{dir_prefix}-result-figs',
+                                      f'{file_prefix}-{dist_type}-{case}-{loss_type}-raw-mean.pdf'),
+                    window=10,
+                    data=datas, colors=colors, linestyles=linestyles, linewidths=linewidths, alphas=alphas,
+                    x_axis_off=True,
+                    y_label=None, y_axis_off=False, ylim=ylim_valid, yticks=yticks
+                )
 
     """Plot params"""
-    params = ['E', 'nu', 'yield_stress', 'rho', 'mf', 'gf']
-    if param_set == 0:
-        params = ['E', 'nu', 'yield_stress', 'rho']
+    if params:
+        params = ['E', 'nu', 'yield_stress', 'rho', 'mf', 'gf']
+        if param_set == 0:
+            params = ['E', 'nu', 'yield_stress', 'rho']
 
-    for p in params:
-        color_pool = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
-                      'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan', 'k']
-        if p == 'E':
-            ylim_valid = [1e4-10000, 3e5+10000]
-            yticks = (1e4, 155000, 3e5)
-        elif p == 'nu':
-            ylim_valid = [-0.03, 0.52]
-            yticks = (0, 0.25, 0.5)
-        elif p == 'yield_stress':
-            ylim_valid = [1e3-1000, 2e4+1000]
-            yticks = (1e3, 10500, 2e4)
-        elif p == 'rho':
-            ylim_valid = [980, 2020]
-            yticks = (1000, 1500, 2000)
-        else:
-            ylim_valid = [-0.05, 2.05]
-            yticks = (0, 1, 2)
+        for p in params:
+            color_pool = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
+                          'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan', 'k']
+            if p == 'E':
+                ylim_valid = [1e4-10000, 3e5+10000]
+                yticks = (1e4, 155000, 3e5)
+            elif p == 'nu':
+                ylim_valid = [-0.03, 0.52]
+                yticks = (0, 0.25, 0.5)
+            elif p == 'yield_stress':
+                ylim_valid = [1e3-1000, 2e4+1000]
+                yticks = (1e3, 10500, 2e4)
+            elif p == 'rho':
+                ylim_valid = [980, 2020]
+                yticks = (1000, 1500, 2000)
+            else:
+                ylim_valid = [-0.05, 2.05]
+                yticks = (0, 1, 2)
 
-        datas = []
-        colors = []
-        n = 0
-        for run_id in run_ids:
-            run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', 'data')
-            losses = json.load(open(os.path.join(run_dir, 'raw_loss.json'), 'rb'))
-            for seed in [0, 1, 2]:
-                datas.append(losses[f'seed-{seed}']['parameters'][p])
-                colors.append(color_pool[n])
-            n += 1
+            datas = []
+            colors = []
+            n = 0
+            for run_id in run_ids:
+                run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', 'data')
+                losses = json.load(open(os.path.join(run_dir, 'raw_loss.json'), 'rb'))
+                for seed in [0, 1, 2]:
+                    datas.append(losses[f'seed-{seed}']['parameters'][p])
+                    colors.append(color_pool[n])
+                n += 1
 
-        plot.smoothed_plot_multi_line(
-            file=os.path.join(cwd, '..', f'{dir_prefix}-result-figs',
-                              f'{file_prefix}-{dist_type}-param-{p}-raw.pdf'),
-            data=datas, colors=colors,
-            x_axis_off=True,
-            y_label=None, y_axis_off=False, ylim=ylim_valid, yticks=yticks
-        )
+            plot.smoothed_plot_multi_line(
+                file=os.path.join(cwd, '..', f'{dir_prefix}-result-figs',
+                                  f'{file_prefix}-{dist_type}-param-{p}-raw.pdf'),
+                data=datas, colors=colors,
+                x_axis_off=True,
+                y_label=None, y_axis_off=False, ylim=ylim_valid, yticks=yticks
+            )
 
 
-read_losses(run_ids=[5, 6, 7, 8], param_set=0, fewshot=False, oneshot=True, save_meanstd=True)
+# read_losses(run_ids=[5, 7, 8, 9], param_set=1, fewshot=False, oneshot=True, save_meanstd=True)
 # plot_legends()
 # plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', mean_std=True, params_only=False, fewshot=True, oneshot=False)
-# plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', mean_std=False, params_only=False, fewshot=True, oneshot=False)
+plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', mean_std=False, params=False, fewshot=False, oneshot=True)
 # plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', mean_std=False, params_only=True, fewshot=True, oneshot=False)
 # plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', mean_std=True, params_only=False, fewshot=False, oneshot=True)
-# plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', mean_std=False, params_only=False, fewshot=False, oneshot=True)
+plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Exponential', mean_std=False, params=False, fewshot=False, oneshot=True)
 # plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', mean_std=False, params_only=True, fewshot=False, oneshot=True)
 # read_plot_params(run_ids=[2, 3, 1, 0, 4], param_set=0, dist_type='Euclidean')
 # plot_legends(dist_type='Exponential', param_set=0)
-# plot_losses(run_ids=[5, 6, 7, 8], param_set=0, dist_type='Exponential', mean_std=True, params_only=False, fewshot=True, oneshot=False)
-# plot_losses(run_ids=[5, 6, 7, 8], param_set=0, dist_type='Exponential', mean_std=False, params_only=False, fewshot=True, oneshot=False)
-# plot_losses(run_ids=[5, 6, 7, 8], param_set=0, dist_type='Exponential', mean_std=False, params_only=True, fewshot=True, oneshot=False)
-plot_losses(run_ids=[5, 6, 7, 8], param_set=0, dist_type='Exponential', mean_std=True, params_only=False, fewshot=False, oneshot=True)
-plot_losses(run_ids=[5, 6, 7, 8], param_set=0, dist_type='Exponential', mean_std=False, params_only=False, fewshot=False, oneshot=True)
-plot_losses(run_ids=[5, 6, 7, 8], param_set=0, dist_type='Exponential', mean_std=False, params_only=True, fewshot=False, oneshot=True)
+# plot_losses(run_ids=[5, 6, 7, 8], param_set=1, dist_type='Exponential', mean_std=True, params_only=False, fewshot=True, oneshot=False)
+# plot_losses(run_ids=[5, 6, 7, 8], param_set=1, dist_type='Exponential', mean_std=False, params_only=False, fewshot=True, oneshot=False)
+# plot_losses(run_ids=[5, 6, 7, 8], param_set=1, dist_type='Exponential', mean_std=False, params_only=True, fewshot=True, oneshot=False)
+# plot_losses(run_ids=[5, 6, 7, 8], param_set=0, dist_type='Exponential', mean_std=True, params_only=False, fewshot=False, oneshot=True)
+# plot_losses(run_ids=[5, 6, 7, 8], param_set=0, dist_type='Exponential', mean_std=False, params_only=False, fewshot=False, oneshot=True)
+# plot_losses(run_ids=[5, 6, 7, 8], param_set=0, dist_type='Exponential', mean_std=False, params_only=True, fewshot=False, oneshot=True)
 # read_plot_params(run_ids=[5, 6, 8, 9, 7], param_set=0, dist_type='Exponential')

@@ -450,7 +450,7 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, onesh
                         colors.append(color_pool[n])
                         linestyles.append(':')
                         linewidths.append(4)
-                        alphas.append(0.8)
+                        alphas.append(1)
                     with open(os.path.join(run_dir, f'{case}-{loss_type}.json'), 'rb') as f:
                         d = json.load(f)
                     datas.append(d['mean'])

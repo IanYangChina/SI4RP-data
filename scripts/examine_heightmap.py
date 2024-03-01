@@ -13,15 +13,18 @@ cmap = 'YlOrBr'
 
 min_val, max_val = np.amin(hm_1), np.amax(hm_1)
 
-fig, axs = plt.subplots(1, 2)
-axs[0].set_title('Ground truth')
-axs[0].xaxis.set_visible(False)
-axs[0].yaxis.set_visible(False)
-axs[0].imshow(hm_1, cmap=cmap, vmin=min_val, vmax=max_val)
+# fig, axs = plt.subplots(1, 2)
+# axs[0].set_title('Ground truth')
+# axs[0].xaxis.set_visible(False)
+# axs[0].yaxis.set_visible(False)
+# axs[0].imshow(hm_1, cmap=cmap, vmin=min_val, vmax=max_val)
+#
+# axs[1].set_title('Simulation result')
+# axs[1].xaxis.set_visible(False)
+# axs[1].yaxis.set_visible(False)
+# axs[1].imshow(hm_2, cmap=cmap, vmin=min_val, vmax=max_val)
 
-axs[1].set_title('Simulation result')
-axs[1].xaxis.set_visible(False)
-axs[1].yaxis.set_visible(False)
-axs[1].imshow(hm_2, cmap=cmap, vmin=min_val, vmax=max_val)
-
+plt.imshow(hm_1, cmap=cmap, vmin=min_val, vmax=max_val)
+plt.xticks([])
+plt.yticks([])
 plt.show()

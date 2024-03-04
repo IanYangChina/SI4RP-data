@@ -234,32 +234,38 @@ def main(args):
         if args['oneshot']:
             assert not args['fewshot'], 'Cannot load oneshot and fewshot parameters at the same time'
             print(f'Loading optimised parameters from oneshot result, param set {p_set}, run {run_id} seed {seed_id}...')
-            params = np.load(os.path.join(
-                script_path, '..',
-                f'optimisation-oneshot-param{p_set}-run{run_id}-logs', f'seed-{seed_id}', 'final_params.npy'
-            )).flatten()
-            image_dir = os.path.join(script_path, '..', f'optimisation-oneshot-param{p_set}-run{run_id}-logs',
-                                     f'seed-{seed_id}', f'validation_tr_imgs-motion{motion_ind}-{agent}')
+            data_dir = os.path.join(script_path, '..',
+                                    f'optimisation-oneshot-param{p_set}-run{run_id}-logs',
+                                    f'seed-{seed_id}')
         elif args['fewshot']:
             assert not args['oneshot'], 'Cannot load oneshot and fewshot parameters at the same time'
             print(f'Loading optimised parameters from fewshot result, param set {p_set}, run {run_id} seed {seed_id}...')
-            params = np.load(os.path.join(
-                script_path, '..',
-                f'optimisation-fewshot-param{p_set}-run{run_id}-logs', f'seed-{seed_id}', 'final_params.npy'
-            )).flatten()
-            image_dir = os.path.join(script_path, '..', f'optimisation-fewshot-param{p_set}-run{run_id}-logs',
-                                     f'seed-{seed_id}', f'validation_tr_imgs-motion{motion_ind}-{agent}')
+            data_dir = os.path.join(script_path, '..',
+                                    f'optimisation-fewshot-param{p_set}-run{run_id}-logs',
+                                    f'seed-{seed_id}')
+        elif args['realoneshot']:
+            assert not args['oneshot'] and not args['fewshot'], \
+                'Cannot load oneshot and fewshot parameters at the same time'
+            realoneshot_agent = agents[args['realoneshot_agent_ind']]
+            print(f'Loading optimised parameters from realoneshot result, '
+                  f'param set {p_set}, agent {realoneshot_agent}, run {run_id} seed {seed_id}...')
+            data_dir = os.path.join(script_path, '..',
+                                    f'optimisation-realoneshot-{realoneshot_agent}-param{p_set}-run{run_id}-logs',
+                                    f'seed-{seed_id}')
         else:
             raise ValueError('Please specify either oneshot or fewshot')
+
+        params = np.load(os.path.join(data_dir, 'final_params.npy')).flatten()
         E = params[0]
         nu = params[1]
         yield_stress = params[2]
         rho = params[3]
-        gf = params[4]
-        mf = params[5]
+        if p_set == 1:
+            gf = params[4]
+            mf = params[5]
+        image_dir = os.path.join(data_dir, f'validation_tr_imgs-motion{motion_ind}-{agent}')
         if args['eval']:
-            image_dir = os.path.join(script_path, '..', f'optimisation-fewshot-param{p_set}-run{run_id}-logs',
-                                     f'seed-{seed_id}', f'validation_tr_imgs-long_motion-{agent}')
+            image_dir = os.path.join(data_dir, f'validation_tr_imgs-long_motion-{agent}')
 
     validation_dataind_dict = {
         '2': {
@@ -336,6 +342,8 @@ if __name__ == '__main__':
     parser.add_argument('--load_params_seed', dest='load_params_seed', type=int, default=0)
     parser.add_argument('--fewshot', dest='fewshot', default=False, action='store_true')
     parser.add_argument('--oneshot', dest='oneshot', default=False, action='store_true')
+    parser.add_argument('--realoneshot', dest='realoneshot', default=False, action='store_true')
+    parser.add_argument('--realoneshot_agent_ind', dest='realoneshot_agent_ind', type=int, default=0)
     parser.add_argument('--param_set', dest='param_set', type=int, default=0)
     parser.add_argument('--dt', dest='dt', type=float, default=0.01)
     parser.add_argument('--dt_avg', dest='dt_avg', default=False, action='store_true')

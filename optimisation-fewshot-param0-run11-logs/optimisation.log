@@ -34509,3 +34509,16 @@
 2024-02-22 08:22:01,021 INFO ========> Avg. Validation loss: total_loss: 12595.180338541666
 2024-02-22 08:22:01,021 INFO ========> Num. aborted data so far: 0
 2024-02-22 08:22:01,315 INFO Final parameters: E=[244364.], nu=[0.09708806], yield_stress=[7075.2344], rho=[1420.4966]
+2024-03-04 11:22:28,662 INFO =====> Optimising param set 0 for 100 epochs for 1 random seeds.
+2024-03-04 11:22:28,662 INFO =====> Loss config: {'exponential_distance': False, 'averaging_loss': False, 'point_distance_rs_loss': False, 'point_distance_sr_loss': False, 'down_sample_voxel_size': 0.005, 'particle_distance_rs_loss': True, 'particle_distance_sr_loss': True, 'voxelise_res': 1080, 'ptcl_density': 40000000.0, 'load_height_map': True, 'height_map_loss': False, 'height_map_res': 32, 'height_map_size': 0.11, 'emd_point_distance_loss': False, 'emd_particle_distance_loss': True}
+2024-03-04 11:22:28,663 INFO =====> Training config: {'param_set': 0, 'lr_E': 4000.0, 'lr_nu': 0.01, 'lr_yield_stress': 500.0, 'lr_rho': 10, 'lr_manipulator_friction': 0.01, 'lr_ground_friction': 0.01, 'batch_size': 20, 'n_epoch': 100, 'seeds': [0, 1, 2]}
+2024-03-04 11:22:28,665 INFO =====> Seed: 0, initial parameters: E=[169155.92], nu=[0.346139], yield_stress=[12452.504], rho=[1544.8832]
+2024-03-04 11:22:28,907 INFO =====> Computing: epoch 0, motion 1, agent rectangle, data 3
+2024-03-04 11:22:28,913 INFO ===> New TaichiEnv created.
+2024-03-04 11:22:28,913 INFO ===> Specifications: horizon = 87, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-04 11:23:04,887 INFO =====> Total loss: 19403.33203125
+2024-03-04 11:23:04,888 INFO =====> Grad: [ 8.9404872e-04  1.2670300e+02  5.3919619e-03 -1.4011292e-01
+ -5.5166645e+01 -1.2599678e-01]
+2024-03-04 11:23:05,287 INFO =====> Computing: epoch 0, motion 1, agent rectangle, data 5
+2024-03-04 11:23:05,289 INFO ===> New TaichiEnv created.
+2024-03-04 11:23:05,289 INFO ===> Specifications: horizon = 87, dt = 0.01, n_substeps = 50, dt_sub = 0.0002

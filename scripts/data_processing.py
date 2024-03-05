@@ -555,13 +555,15 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, onesh
 
 
 # plot_legends()
-plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', params=True, loss_curves=False,
-            fewshot=True, oneshot=False, realoneshot=False, agent_id=0)
-plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', params=True, loss_curves=False,
+# read_losses(run_ids=[1], param_set=1, fewshot=False, oneshot=False, save_meanstd=True, realoneshot=True, agent_id=1)
+
+# plot_losses(run_ids=[0, 1, 2, 3], param_set=1, dist_type='Euclidean', params=False, loss_curves=True,
+#             fewshot=True, oneshot=False, realoneshot=False, agent_id=0)
+plot_losses(run_ids=[0, 1, 2, 3], param_set=1, dist_type='Euclidean', params=True, loss_curves=False,
             fewshot=False, oneshot=True, realoneshot=False, agent_id=1)
-plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', params=True, loss_curves=False,
-            fewshot=False, oneshot=False, realoneshot=True, agent_id=0)
-plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', params=True, loss_curves=False,
-            fewshot=False, oneshot=False, realoneshot=True, agent_id=1)
-plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', params=True, loss_curves=False,
-            fewshot=False, oneshot=False, realoneshot=True, agent_id=2)
+# plot_losses(run_ids=[0, 1, 2, 3], param_set=1, dist_type='Euclidean', params=False, loss_curves=True,
+#             fewshot=False, oneshot=False, realoneshot=True, agent_id=0)
+# plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', params=True, loss_curves=False,
+#             fewshot=False, oneshot=False, realoneshot=True, agent_id=1)
+# plot_losses(run_ids=[0, 1, 2, 3], param_set=1, dist_type='Euclidean', params=False, loss_curves=True,
+#             fewshot=False, oneshot=False, realoneshot=True, agent_id=2)

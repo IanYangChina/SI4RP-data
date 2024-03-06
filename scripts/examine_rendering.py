@@ -237,12 +237,18 @@ def main(args):
             data_dir = os.path.join(script_path, '..',
                                     f'optimisation-oneshot-param{p_set}-run{run_id}-logs',
                                     f'seed-{seed_id}')
+            save_dir = os.path.join(script_path, '..',
+                                    f'optimisation-oneshot-param{p_set}-result-figs',
+                                    f'run{run_id}', f'seed{seed_id}')
         elif args['fewshot']:
             assert not args['oneshot'], 'Cannot load oneshot and fewshot parameters at the same time'
             print(f'Loading optimised parameters from fewshot result, param set {p_set}, run {run_id} seed {seed_id}...')
             data_dir = os.path.join(script_path, '..',
                                     f'optimisation-fewshot-param{p_set}-run{run_id}-logs',
                                     f'seed-{seed_id}')
+            save_dir = os.path.join(script_path, '..',
+                                    f'optimisation-fewshot-param{p_set}-result-figs',
+                                    f'run{run_id}', f'seed{seed_id}')
         elif args['realoneshot']:
             assert not args['oneshot'] and not args['fewshot'], \
                 'Cannot load oneshot and fewshot parameters at the same time'
@@ -252,6 +258,9 @@ def main(args):
             data_dir = os.path.join(script_path, '..',
                                     f'optimisation-realoneshot-{realoneshot_agent}-param{p_set}-run{run_id}-logs',
                                     f'seed-{seed_id}')
+            save_dir = os.path.join(script_path, '..',
+                                    f'optimisation-realoneshot-{realoneshot_agent}-param{p_set}-result-figs',
+                                    f'run{run_id}', f'seed{seed_id}')
         else:
             raise ValueError('Please specify either oneshot or fewshot')
 
@@ -263,9 +272,9 @@ def main(args):
         if p_set == 1:
             gf = params[4]
             mf = params[5]
-        image_dir = os.path.join(data_dir, f'validation_tr_imgs-motion{motion_ind}-{agent}')
+        image_dir = os.path.join(save_dir, f'validation_tr_imgs-motion{motion_ind}-{agent}')
         if args['eval']:
-            image_dir = os.path.join(data_dir, f'validation_tr_imgs-long_motion-{agent}')
+            image_dir = os.path.join(save_dir, f'validation_tr_imgs-long_motion-{agent}')
 
     validation_dataind_dict = {
         '2': {

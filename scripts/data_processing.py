@@ -382,37 +382,37 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, onesh
                     title = f'{dist_type}: PCD chamfer'
                     ylim_valid = [8690, 9650]
                     if param_set == 1:
-                        ylim_valid = [16000, 18900]
+                        ylim_valid = [16000, 19800]
                 elif loss_type == 'particle_distance_sr':
                     title = f'{dist_type}: Particle sim2real'
                     ylim_valid = [2760, 3050]
                     if param_set == 1:
-                        ylim_valid = [4600, 6600]
+                        ylim_valid = [4600, 6800]
                 elif loss_type == 'particle_distance_rs':
                     title = f'{dist_type}: Particle real2sim'
                     ylim_valid = [3010, 3450]
                     if param_set == 1:
-                        ylim_valid = [5500, 8200]
+                        ylim_valid = [5500, 8400]
                 elif loss_type == 'chamfer_loss_particle':
                     title = f'{dist_type}: Particle chamfer'
                     ylim_valid = [5880, 6480]
                     if param_set == 1:
-                        ylim_valid = [10250, 14900]
+                        ylim_valid = [10250, 15100]
                 elif loss_type == 'height_map_loss_pcd':
                     title = f'{dist_type}: Height map'
                     ylim_valid = [1970, 2400]
                     if param_set == 1:
-                        ylim_valid = [2500, 8500]
+                        ylim_valid = [2500, 4000]
                 elif loss_type == 'emd_point_distance_loss':
                     title = f'{dist_type}: PCD emd'
                     ylim_valid = [1170, 1390]
                     if param_set == 1:
-                        ylim_valid = [1670, 2700]
+                        ylim_valid = [1670, 2800]
                 elif loss_type == 'emd_particle_distance_loss':
                     title = f'{dist_type}: Particle emd'
                     ylim_valid = [5240, 7200]
                     if param_set == 1:
-                        ylim_valid = [10750, 25000]
+                        ylim_valid = [10750, 26000]
                 else:
                     raise ValueError('Unknown loss type')
 
@@ -484,8 +484,8 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, onesh
                     alphas.append(1)
                     n += 1
 
-                max_y = np.max(datas)
-                min_y = np.min(datas)
+                max_y = np.max(np.max(datas))
+                min_y = np.min(np.min(datas))
                 if case == 'training':
                     ylim_valid = (min_y * 0.995, max_y * 1.005)
                     delta_y = (max_y - min_y) / 30
@@ -555,15 +555,15 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, onesh
 
 
 # plot_legends()
-read_losses(run_ids=[1], param_set=1, fewshot=False, oneshot=False, save_meanstd=True, realoneshot=True, agent_id=1)
+# read_losses(run_ids=[1], param_set=1, fewshot=False, oneshot=False, save_meanstd=True, realoneshot=True, agent_id=1)
 
-# plot_losses(run_ids=[0, 1, 2, 3], param_set=1, dist_type='Euclidean', params=False, loss_curves=True,
+# plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', params=False, loss_curves=True,
 #             fewshot=True, oneshot=False, realoneshot=False, agent_id=0)
-# plot_losses(run_ids=[0, 1, 2, 3], param_set=1, dist_type='Euclidean', params=True, loss_curves=False,
+# plot_losses(run_ids=[0, 1, 2, 3, 11], param_set=0, dist_type='Euclidean', params=False, loss_curves=True,
 #             fewshot=False, oneshot=True, realoneshot=False, agent_id=1)
-# plot_losses(run_ids=[0, 1, 2, 3], param_set=1, dist_type='Euclidean', params=False, loss_curves=True,
+# plot_losses(run_ids=[0, 1, 2, 3, 11], param_set=0, dist_type='Euclidean', params=False, loss_curves=True,
 #             fewshot=False, oneshot=False, realoneshot=True, agent_id=0)
-# plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', params=True, loss_curves=False,
-#             fewshot=False, oneshot=False, realoneshot=True, agent_id=1)
+plot_losses(run_ids=[0, 1, 2, 3, 11], param_set=0, dist_type='Euclidean', params=False, loss_curves=True,
+            fewshot=False, oneshot=False, realoneshot=True, agent_id=1)
 # plot_losses(run_ids=[0, 1, 2, 3], param_set=1, dist_type='Euclidean', params=False, loss_curves=True,
 #             fewshot=False, oneshot=False, realoneshot=True, agent_id=2)

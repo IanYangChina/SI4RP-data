@@ -298,7 +298,7 @@ def main(arguments):
 
                 ti.reset()
                 ti.init(arch=backend, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
-                        debug=False, check_out_of_bound=False, device_memory_GB=3)
+                        debug=False, check_out_of_bound=False, device_memory_GB=6)
                 data_cfg = {
                     'data_path': training_data_path,
                     'data_ind': str(data_ind),
@@ -480,7 +480,7 @@ def main(arguments):
                     for data_ind in data_inds:
                         ti.reset()
                         ti.init(arch=backend, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
-                                debug=False, check_out_of_bound=False, device_memory_GB=3)
+                                debug=False, check_out_of_bound=False, device_memory_GB=arguments['device_memory_GB'])
                         validation_data_cfg = {
                             'data_path': validation_data_path,
                             'data_ind': str(data_ind),
@@ -584,6 +584,7 @@ if __name__ == '__main__':
     parser.add_argument('--hm_loss', dest='hm_loss', default=False, action='store_true')
     parser.add_argument('--hm_res', dest='hm_res', default=32, type=int)
     parser.add_argument('--bs', dest='batchsize', default=20, type=int)
-    parser.add_argument('--backend', dest='backend', default='opengl', type=str)
+    parser.add_argument('--backend', dest='backend', default='cuda', type=str)
+    parser.add_argument('--device_mem', dest='device_memory_GB', default=3, type=int)
     args = vars(parser.parse_args())
     main(args)

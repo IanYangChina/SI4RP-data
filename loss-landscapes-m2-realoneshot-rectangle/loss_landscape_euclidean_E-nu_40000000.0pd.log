@@ -1,0 +1,160 @@
+2024-03-07 13:23:15,666 INFO ===> Num. simulation particles: 2102
+2024-03-07 13:23:15,666 INFO ===> Num. target pcd points: 463
+2024-03-07 13:23:15,666 INFO ===> Num. target particles: 2055
+2024-03-07 13:23:15,666 INFO Start calculating losses with grid size: (30, 29)
+2024-03-07 13:23:28,942 INFO The 0, 0-th loss is:
+2024-03-07 13:23:28,942 INFO particle_has_naninf: 0.0000
+2024-03-07 13:23:28,942 INFO point_distance_sr: 9426.8818
+2024-03-07 13:23:28,942 INFO point_distance_rs: 1010.6055
+2024-03-07 13:23:28,942 INFO chamfer_loss_pcd: 10437.4873
+2024-03-07 13:23:28,942 INFO particle_distance_sr: 3233.6655
+2024-03-07 13:23:28,942 INFO particle_distance_rs: 3495.1372
+2024-03-07 13:23:28,942 INFO chamfer_loss_particle: 6728.8027
+2024-03-07 13:23:28,942 INFO height_map_loss_pcd: 1637.1864
+2024-03-07 13:23:28,942 INFO emd_point_distance_loss: 1044.9501
+2024-03-07 13:23:28,942 INFO emd_particle_distance_loss: 5964.0532
+2024-03-07 13:23:28,942 INFO total_loss: 5881.4575
+2024-03-07 13:23:32,573 INFO The 0, 1-th loss is:
+2024-03-07 13:23:32,573 INFO particle_has_naninf: 0.0000
+2024-03-07 13:23:32,573 INFO point_distance_sr: 9421.8350
+2024-03-07 13:23:32,573 INFO point_distance_rs: 1009.3012
+2024-03-07 13:23:32,573 INFO chamfer_loss_pcd: 10431.1357
+2024-03-07 13:23:32,573 INFO particle_distance_sr: 3230.7261
+2024-03-07 13:23:32,573 INFO particle_distance_rs: 3491.0532
+2024-03-07 13:23:32,573 INFO chamfer_loss_particle: 6721.7793
+2024-03-07 13:23:32,573 INFO height_map_loss_pcd: 1575.5424
+2024-03-07 13:23:32,573 INFO emd_point_distance_loss: 1043.5916
+2024-03-07 13:23:32,573 INFO emd_particle_distance_loss: 5956.6704
+2024-03-07 13:23:32,573 INFO total_loss: 5815.5693
+2024-03-07 13:23:36,213 INFO The 0, 2-th loss is:
+2024-03-07 13:23:36,213 INFO particle_has_naninf: 0.0000
+2024-03-07 13:23:36,213 INFO point_distance_sr: 9416.5664
+2024-03-07 13:23:36,213 INFO point_distance_rs: 1008.0814
+2024-03-07 13:23:36,213 INFO chamfer_loss_pcd: 10424.6475
+2024-03-07 13:23:36,213 INFO particle_distance_sr: 3227.7507
+2024-03-07 13:23:36,213 INFO particle_distance_rs: 3487.2632
+2024-03-07 13:23:36,213 INFO chamfer_loss_particle: 6715.0137
+2024-03-07 13:23:36,214 INFO height_map_loss_pcd: 1575.2476
+2024-03-07 13:23:36,214 INFO emd_point_distance_loss: 1042.2726
+2024-03-07 13:23:36,214 INFO emd_particle_distance_loss: 5949.5342
+2024-03-07 13:23:36,214 INFO total_loss: 5811.0801
+2024-03-07 13:23:39,824 INFO The 0, 3-th loss is:
+2024-03-07 13:23:39,824 INFO particle_has_naninf: 0.0000
+2024-03-07 13:23:39,824 INFO point_distance_sr: 9410.9395
+2024-03-07 13:23:39,824 INFO point_distance_rs: 1006.7107
+2024-03-07 13:23:39,824 INFO chamfer_loss_pcd: 10417.6504
+2024-03-07 13:23:39,824 INFO particle_distance_sr: 3224.8721
+2024-03-07 13:23:39,824 INFO particle_distance_rs: 3483.6104
+2024-03-07 13:23:39,824 INFO chamfer_loss_particle: 6708.4824
+2024-03-07 13:23:39,824 INFO height_map_loss_pcd: 1522.6129
+2024-03-07 13:23:39,824 INFO emd_point_distance_loss: 1040.8032
+2024-03-07 13:23:39,824 INFO emd_particle_distance_loss: 5942.5000
+2024-03-07 13:23:39,824 INFO total_loss: 5754.1958
+2024-03-07 13:23:43,439 INFO The 0, 4-th loss is:
+2024-03-07 13:23:43,439 INFO particle_has_naninf: 0.0000
+2024-03-07 13:23:43,439 INFO point_distance_sr: 9405.2295
+2024-03-07 13:23:43,439 INFO point_distance_rs: 1005.3295
+2024-03-07 13:23:43,439 INFO chamfer_loss_pcd: 10410.5586
+2024-03-07 13:23:43,439 INFO particle_distance_sr: 3222.0955
+2024-03-07 13:23:43,439 INFO particle_distance_rs: 3480.3052
+2024-03-07 13:23:43,439 INFO chamfer_loss_particle: 6702.4004
+2024-03-07 13:23:43,439 INFO height_map_loss_pcd: 1522.0421
+2024-03-07 13:23:43,439 INFO emd_point_distance_loss: 1039.3457
+2024-03-07 13:23:43,439 INFO emd_particle_distance_loss: 5935.6318
+2024-03-07 13:23:43,439 INFO total_loss: 5749.4668
+2024-03-07 13:23:47,088 INFO The 0, 5-th loss is:
+2024-03-07 13:23:47,088 INFO particle_has_naninf: 0.0000
+2024-03-07 13:23:47,088 INFO point_distance_sr: 9399.3887
+2024-03-07 13:23:47,088 INFO point_distance_rs: 1003.9293
+2024-03-07 13:23:47,088 INFO chamfer_loss_pcd: 10403.3184
+2024-03-07 13:23:47,088 INFO particle_distance_sr: 3219.5657
+2024-03-07 13:23:47,088 INFO particle_distance_rs: 3477.1943
+2024-03-07 13:23:47,088 INFO chamfer_loss_particle: 6696.7598
+2024-03-07 13:23:47,088 INFO height_map_loss_pcd: 1521.3538
+2024-03-07 13:23:47,088 INFO emd_point_distance_loss: 1037.8551
+2024-03-07 13:23:47,088 INFO emd_particle_distance_loss: 5928.9463
+2024-03-07 13:23:47,089 INFO total_loss: 5744.8486
+2024-03-07 13:23:50,697 INFO The 0, 6-th loss is:
+2024-03-07 13:23:50,697 INFO particle_has_naninf: 0.0000
+2024-03-07 13:23:50,697 INFO point_distance_sr: 9393.3398
+2024-03-07 13:23:50,697 INFO point_distance_rs: 1002.5116
+2024-03-07 13:23:50,697 INFO chamfer_loss_pcd: 10395.8516
+2024-03-07 13:23:50,697 INFO particle_distance_sr: 3217.2815
+2024-03-07 13:23:50,697 INFO particle_distance_rs: 3474.4868
+2024-03-07 13:23:50,697 INFO chamfer_loss_particle: 6691.7686
+2024-03-07 13:23:50,697 INFO height_map_loss_pcd: 1520.5597
+2024-03-07 13:23:50,697 INFO emd_point_distance_loss: 1036.3329
+2024-03-07 13:23:50,697 INFO emd_particle_distance_loss: 5922.4194
+2024-03-07 13:23:50,697 INFO total_loss: 5740.3525
+2024-03-07 13:23:54,288 INFO The 0, 7-th loss is:
+2024-03-07 13:23:54,289 INFO particle_has_naninf: 0.0000
+2024-03-07 13:23:54,289 INFO point_distance_sr: 9386.7197
+2024-03-07 13:23:54,289 INFO point_distance_rs: 1001.0605
+2024-03-07 13:23:54,289 INFO chamfer_loss_pcd: 10387.7803
+2024-03-07 13:23:54,289 INFO particle_distance_sr: 3215.0146
+2024-03-07 13:23:54,289 INFO particle_distance_rs: 3471.8765
+2024-03-07 13:23:54,289 INFO chamfer_loss_particle: 6686.8911
+2024-03-07 13:23:54,289 INFO height_map_loss_pcd: 1519.6290
+2024-03-07 13:23:54,289 INFO emd_point_distance_loss: 1034.7299
+2024-03-07 13:23:54,289 INFO emd_particle_distance_loss: 5916.0967
+2024-03-07 13:23:54,289 INFO total_loss: 5735.7041
+2024-03-07 13:23:57,898 INFO The 0, 8-th loss is:
+2024-03-07 13:23:57,898 INFO particle_has_naninf: 0.0000
+2024-03-07 13:23:57,898 INFO point_distance_sr: 9379.7607
+2024-03-07 13:23:57,898 INFO point_distance_rs: 999.5150
+2024-03-07 13:23:57,898 INFO chamfer_loss_pcd: 10379.2754
+2024-03-07 13:23:57,898 INFO particle_distance_sr: 3212.8093
+2024-03-07 13:23:57,898 INFO particle_distance_rs: 3469.2168
+2024-03-07 13:23:57,898 INFO chamfer_loss_particle: 6682.0264
+2024-03-07 13:23:57,898 INFO height_map_loss_pcd: 1518.5688
+2024-03-07 13:23:57,898 INFO emd_point_distance_loss: 1033.0181
+2024-03-07 13:23:57,898 INFO emd_particle_distance_loss: 5909.7959
+2024-03-07 13:23:57,898 INFO total_loss: 5730.8936
+2024-03-07 13:24:01,835 INFO The 0, 9-th loss is:
+2024-03-07 13:24:01,835 INFO particle_has_naninf: 0.0000
+2024-03-07 13:24:01,835 INFO point_distance_sr: 9372.9150
+2024-03-07 13:24:01,835 INFO point_distance_rs: 997.9933
+2024-03-07 13:24:01,835 INFO chamfer_loss_pcd: 10370.9082
+2024-03-07 13:24:01,835 INFO particle_distance_sr: 3210.5840
+2024-03-07 13:24:01,835 INFO particle_distance_rs: 3466.6560
+2024-03-07 13:24:01,835 INFO chamfer_loss_particle: 6677.2402
+2024-03-07 13:24:01,835 INFO height_map_loss_pcd: 1475.3615
+2024-03-07 13:24:01,835 INFO emd_point_distance_loss: 1031.3125
+2024-03-07 13:24:01,835 INFO emd_particle_distance_loss: 5903.9526
+2024-03-07 13:24:01,835 INFO total_loss: 5683.9385
+2024-03-07 13:24:05,429 INFO The 0, 10-th loss is:
+2024-03-07 13:24:05,429 INFO particle_has_naninf: 0.0000
+2024-03-07 13:24:05,429 INFO point_distance_sr: 9365.5410
+2024-03-07 13:24:05,429 INFO point_distance_rs: 996.3664
+2024-03-07 13:24:05,429 INFO chamfer_loss_pcd: 10361.9072
+2024-03-07 13:24:05,429 INFO particle_distance_sr: 3209.1243
+2024-03-07 13:24:05,429 INFO particle_distance_rs: 3464.4441
+2024-03-07 13:24:05,429 INFO chamfer_loss_particle: 6673.5684
+2024-03-07 13:24:05,429 INFO height_map_loss_pcd: 1457.8733
+2024-03-07 13:24:05,429 INFO emd_point_distance_loss: 1029.5283
+2024-03-07 13:24:05,429 INFO emd_particle_distance_loss: 5898.4663
+2024-03-07 13:24:05,430 INFO total_loss: 5663.3643
+2024-03-07 13:24:09,027 INFO The 0, 11-th loss is:
+2024-03-07 13:24:09,027 INFO particle_has_naninf: 0.0000
+2024-03-07 13:24:09,027 INFO point_distance_sr: 9358.1455
+2024-03-07 13:24:09,027 INFO point_distance_rs: 994.6915
+2024-03-07 13:24:09,027 INFO chamfer_loss_pcd: 10352.8369
+2024-03-07 13:24:09,027 INFO particle_distance_sr: 3207.5371
+2024-03-07 13:24:09,027 INFO particle_distance_rs: 3461.8931
+2024-03-07 13:24:09,027 INFO chamfer_loss_particle: 6669.4302
+2024-03-07 13:24:09,027 INFO height_map_loss_pcd: 1451.0836
+2024-03-07 13:24:09,028 INFO emd_point_distance_loss: 1027.6755
+2024-03-07 13:24:09,028 INFO emd_particle_distance_loss: 5893.2051
+2024-03-07 13:24:09,028 INFO total_loss: 5653.3125
+2024-03-07 13:24:12,633 INFO The 0, 12-th loss is:
+2024-03-07 13:24:12,634 INFO particle_has_naninf: 0.0000
+2024-03-07 13:24:12,634 INFO point_distance_sr: 9350.8350
+2024-03-07 13:24:12,634 INFO point_distance_rs: 992.9788
+2024-03-07 13:24:12,634 INFO chamfer_loss_pcd: 10343.8135
+2024-03-07 13:24:12,634 INFO particle_distance_sr: 3206.2898
+2024-03-07 13:24:12,634 INFO particle_distance_rs: 3459.0730
+2024-03-07 13:24:12,634 INFO chamfer_loss_particle: 6665.3628
+2024-03-07 13:24:12,634 INFO height_map_loss_pcd: 1444.3914
+2024-03-07 13:24:12,634 INFO emd_point_distance_loss: 1025.8762
+2024-03-07 13:24:12,634 INFO emd_particle_distance_loss: 5888.4927
+2024-03-07 13:24:12,634 INFO total_loss: 5643.6602

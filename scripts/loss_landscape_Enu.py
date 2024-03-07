@@ -21,6 +21,7 @@ def main(args):
     else:
         backend = ti.cpu
 
+    agents = ['rectangle', 'round', 'cylinder']
     if args['param_set'] == 0:
         motion_inds = ['1', '2']
         if args['fewshot']:
@@ -29,6 +30,11 @@ def main(args):
         elif args['oneshot']:
             n_datapoints = 6
             fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m12-one-shot')
+        elif args['realoneshot']:
+            motion_inds = ['2']
+            realoneshot_agent = agents[args['realoneshot_agent_ind']]
+            n_datapoints = 1
+            fig_data_path = os.path.join(script_path, '..', f'loss-landscapes-m2-realoneshot-{realoneshot_agent}')
         else:
             n_datapoints = 18
             fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m12')
@@ -40,8 +46,13 @@ def main(args):
         elif args['oneshot']:
             n_datapoints = 3
             fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34-one-shot')
+        elif args['realoneshot']:
+            motion_inds = ['4']
+            realoneshot_agent = agents[args['realoneshot_agent_ind']]
+            n_datapoints = 1
+            fig_data_path = os.path.join(script_path, '..', f'loss-landscapes-m4-realoneshot-{realoneshot_agent}')
         else:
-            n_datapoints = 12
+            n_datapoints = 18
             fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34')
 
     os.makedirs(fig_data_path, exist_ok=True)
@@ -90,35 +101,8 @@ def main(args):
 
         for i in range(len(loss_types)):
             loss_type = loss_types[i]
-            if loss_type == 'chamfer_loss_pcd':
-                min_val = 8400
-                max_val = 9400
-                if args['param_set'] == 1:
-                    min_val = 8400
-                    max_val = 9400
-            elif loss_type == 'chamfer_loss_particle':
-                min_val = 5450
-                max_val = 6250
-                if args['param_set'] == 1:
-                    min_val = 5450
-                    max_val = 6250
-            elif loss_type == 'emd_point_distance_loss':
-                min_val = 890
-                max_val = 1130
-                if args['param_set'] == 1:
-                    min_val = 890
-                    max_val = 1130
-            elif loss_type == 'emd_particle_distance_loss':
-                min_val = 4600
-                max_val = 5900
-                if args['param_set'] == 1:
-                    min_val = 500
-                    max_val = 800
-            else:
-                raise ValueError('Invalid loss type.')
-
             loss = np.load(os.path.join(fig_data_path, f'{loss_type}_{distance_type}_{xy_param}-{p_density_str}.npy'))
-            plot_loss_landscape(E, nu, loss, fig_title=None, colorbar=True, cmap='OrRd',
+            plot_loss_landscape(E, nu, loss, fig_title=None, colorbar=True, cmap='YlGnBu',
                                 x_label='E', y_label='nu', hm=True, show=False, save=True,
                                 path=os.path.join(fig_data_path, f"{loss_type}_{distance_type}_landscape_{xy_param}-topview-{p_density_str}.pdf"))
         return
@@ -155,8 +139,11 @@ def main(args):
         trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
         horizon = trajectory.shape[0]
         n_substeps = 50
-
-        for agent in ['rectangle', 'round', 'cylinder']:
+        if args['realoneshot']:
+            agents_to_use = [agents[args['realoneshot_agent_ind']]]
+        else:
+            agents_to_use = agents
+        for agent in agents_to_use:
             training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
             if agent == 'rectangle':
                 agent_init_euler = (0, 0, 45)
@@ -165,6 +152,8 @@ def main(args):
             if args['fewshot']:
                 data_ids = fewshot_data_id_dict[motion_ind][agent]
             elif args['oneshot']:
+                data_ids = oneshot_data_id_dict[motion_ind][agent]
+            elif args['realoneshot']:
                 data_ids = oneshot_data_id_dict[motion_ind][agent]
             else:
                 data_ids = np.random.choice(5, size=3, replace=False).tolist()
@@ -265,13 +254,13 @@ def main(args):
         fig_title = (f'{loss_types[i]}\n'
                      f'yield_stress = {yield_stress}, rho = {rho}\n'
                      f'm_friction = {mf}, g_friction = {gf}')
-        plot_loss_landscape(E, nu, losses[i], fig_title=fig_title, view='left',
-                            x_label='E', y_label='nu', z_label='Loss', hm=False, show=False, save=True,
-                            path=os.path.join(fig_data_path, f"{loss_types[i]}_{distance_type}_landscape_{xy_param}-leftview-{p_density_str}.pdf"))
-        plot_loss_landscape(E, nu, losses[i], fig_title=fig_title, view='right',
-                            x_label='E', y_label='nu', z_label='Loss', hm=False, show=False, save=True,
-                            path=os.path.join(fig_data_path, f"{loss_types[i]}_{distance_type}_landscape_{xy_param}-rightview-{p_density_str}.pdf"))
-        plot_loss_landscape(E, nu, losses[i], fig_title=fig_title,
+        # plot_loss_landscape(E, nu, losses[i], fig_title=fig_title, view='left',
+        #                     x_label='E', y_label='nu', z_label='Loss', hm=False, show=False, save=True,
+        #                     path=os.path.join(fig_data_path, f"{loss_types[i]}_{distance_type}_landscape_{xy_param}-leftview-{p_density_str}.pdf"))
+        # plot_loss_landscape(E, nu, losses[i], fig_title=fig_title, view='right',
+        #                     x_label='E', y_label='nu', z_label='Loss', hm=False, show=False, save=True,
+        #                     path=os.path.join(fig_data_path, f"{loss_types[i]}_{distance_type}_landscape_{xy_param}-rightview-{p_density_str}.pdf"))
+        plot_loss_landscape(E, nu, losses[i], fig_title=None, colorbar=True, cmap='YlGnBu',
                             x_label='E', y_label='nu', z_label='Loss', hm=True, show=False, save=True,
                             path=os.path.join(fig_data_path, f"{loss_types[i]}_{distance_type}_landscape_{xy_param}-topview-{p_density_str}.pdf"))
 
@@ -282,6 +271,8 @@ if __name__ == '__main__':
     parser.add_argument('--rap', dest='read_and_plot', default=False, action='store_true')
     parser.add_argument('--fewshot', dest='fewshot', default=False, action='store_true')
     parser.add_argument('--oneshot', dest='oneshot', default=False, action='store_true')
+    parser.add_argument('--realoneshot', dest='realoneshot', default=False, action='store_true')
+    parser.add_argument('--realoneshot_agent_ind', dest='realoneshot_agent_ind', type=int, default=0)
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
     parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.005)
     parser.add_argument('--exp_dist', dest='exponential_distance', default=False, action='store_true')

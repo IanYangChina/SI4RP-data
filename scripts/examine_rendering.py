@@ -227,6 +227,7 @@ def main(args):
     rho = 1300  # [1000, 2000]
     gf = 2.0  # [0.01, 2.0]
     mf = 0.3  # [0.01, 2.0]
+    image_dir = None
     if args['load_params']:
         run_id = args['load_params_run']
         seed_id = args['load_params_seed']

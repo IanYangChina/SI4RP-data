@@ -82,6 +82,47 @@ def main(args):
     else:
         distance_type = 'euclidean'
 
+    if args['read_and_plot']:
+        loss_types = ['chamfer_loss_pcd',
+                      'chamfer_loss_particle',
+                      'emd_point_distance_loss',
+                      'emd_particle_distance_loss']
+
+        for i in range(len(loss_types)):
+            loss_type = loss_types[i]
+            if loss_type == 'chamfer_loss_pcd':
+                min_val = 8400
+                max_val = 9400
+                if args['param_set'] == 1:
+                    min_val = 8400
+                    max_val = 9400
+            elif loss_type == 'chamfer_loss_particle':
+                min_val = 5450
+                max_val = 6250
+                if args['param_set'] == 1:
+                    min_val = 5450
+                    max_val = 6250
+            elif loss_type == 'emd_point_distance_loss':
+                min_val = 890
+                max_val = 1130
+                if args['param_set'] == 1:
+                    min_val = 890
+                    max_val = 1130
+            elif loss_type == 'emd_particle_distance_loss':
+                min_val = 4600
+                max_val = 5900
+                if args['param_set'] == 1:
+                    min_val = 500
+                    max_val = 800
+            else:
+                raise ValueError('Invalid loss type.')
+
+            loss = np.load(os.path.join(fig_data_path, f'{loss_type}_{distance_type}_{xy_param}-{p_density_str}.npy'))
+            plot_loss_landscape(E, nu, loss, fig_title=None, colorbar=True, cmap='OrRd',
+                                x_label='E', y_label='nu', hm=True, show=False, save=True,
+                                path=os.path.join(fig_data_path, f"{loss_type}_{distance_type}_landscape_{xy_param}-topview-{p_density_str}.pdf"))
+        return
+
     logging.basicConfig(level=logging.NOTSET,filemode="w",
                         filename=os.path.join(fig_data_path, f'loss_landscape_{distance_type}_{xy_param}_{p_density_str}.log'),
                         format="%(asctime)s %(levelname)s %(message)s")
@@ -238,6 +279,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--param_set', dest='param_set', default=0, type=int)
+    parser.add_argument('--rap', dest='read_and_plot', default=False, action='store_true')
     parser.add_argument('--fewshot', dest='fewshot', default=False, action='store_true')
     parser.add_argument('--oneshot', dest='oneshot', default=False, action='store_true')
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)

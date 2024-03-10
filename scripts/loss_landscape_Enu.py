@@ -41,10 +41,10 @@ def main(args):
     else:
         motion_inds = ['3', '4']
         if args['fewshot']:
-            n_datapoints = 9
+            n_datapoints = 12
             fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34-few-shot')
         elif args['oneshot']:
-            n_datapoints = 3
+            n_datapoints = 6
             fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34-one-shot')
         elif args['realoneshot']:
             motion_inds = ['4']

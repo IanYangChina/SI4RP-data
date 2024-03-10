@@ -41,16 +41,16 @@ def main(args):
     else:
         motion_inds = ['3', '4']
         if args['fewshot']:
-            n_datapoints = 9
+            n_datapoints = 12
             fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34-few-shot')
         elif args['oneshot']:
-            n_datapoints = 3
+            n_datapoints = 6
             fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34-one-shot')
         elif args['realoneshot']:
             motion_inds = ['4']
             realoneshot_agent = agents[args['realoneshot_agent_ind']]
             n_datapoints = 1
-            fig_data_path = os.path.join(script_path, '..', f'loss-landscapes-m4realoneshot-{realoneshot_agent}')
+            fig_data_path = os.path.join(script_path, '..', f'loss-landscapes-m4-realoneshot-{realoneshot_agent}')
         else:
             n_datapoints = 18
             fig_data_path = os.path.join(script_path, '..', 'loss-landscapes-m34')

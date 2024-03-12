@@ -87,8 +87,8 @@ def main(args):
         for i in range(len(loss_types)):
             loss_type = loss_types[i]
             loss = np.load(os.path.join(fig_data_path, f'{loss_type}_{distance_type}_{xy_param}-{p_density_str}.npy'))
-            plot_loss_landscape(E, nu, loss, fig_title=None, colorbar=True, cmap='YlGnBu',
-                                x_label='E', y_label='nu', hm=True, show=False, save=True,
+            plot_loss_landscape(mf, gf, loss, fig_title=None, colorbar=True, cmap='YlGnBu',
+                                x_label='mf', y_label='gf', hm=True, show=False, save=True,
                                 path=os.path.join(fig_data_path, f"{loss_type}_{distance_type}_landscape_{xy_param}-topview-{p_density_str}.pdf"))
         return
 

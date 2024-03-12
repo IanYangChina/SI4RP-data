@@ -7639,3 +7639,2170 @@
 2024-03-11 08:26:12,547 INFO =====> Total loss: 28847.603515625
 2024-03-11 08:26:13,002 INFO ===> New TaichiEnv created.
 2024-03-11 08:26:13,002 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:27:18,925 INFO =====> Total loss: 28134.02734375
+2024-03-11 08:27:19,376 INFO ===> New TaichiEnv created.
+2024-03-11 08:27:19,376 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:28:32,326 INFO =====> Total loss: 34863.6953125
+2024-03-11 08:28:32,327 INFO ========> Avg. Validation loss: point_distance_sr: 27056.828776041668
+2024-03-11 08:28:32,327 INFO ========> Avg. Validation loss: point_distance_rs: 6039.7548828125
+2024-03-11 08:28:32,328 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 33096.583984375
+2024-03-11 08:28:32,328 INFO ========> Avg. Validation loss: particle_distance_sr: 11572.544026692709
+2024-03-11 08:28:32,328 INFO ========> Avg. Validation loss: particle_distance_rs: 13133.1044921875
+2024-03-11 08:28:32,328 INFO ========> Avg. Validation loss: chamfer_loss_particle: 24705.6484375
+2024-03-11 08:28:32,328 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3589.023478190104
+2024-03-11 08:28:32,328 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7902.680745442708
+2024-03-11 08:28:32,328 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 41403.859375
+2024-03-11 08:28:32,328 INFO ========> Avg. Validation loss: total_loss: 33096.583984375
+2024-03-11 08:28:32,329 INFO ========> Num. aborted data so far: 0
+2024-03-11 08:28:33,017 INFO =====> Computing: epoch 56, motion 4, agent round, data 1
+2024-03-11 08:28:33,019 INFO ===> New TaichiEnv created.
+2024-03-11 08:28:33,019 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:30:20,986 INFO =====> Total loss: 27282.0546875
+2024-03-11 08:30:20,986 INFO =====> Grad: [ 1.2376861e-02  3.6700918e+03 -7.1063119e-01  2.8217790e-01
+  3.5950791e+03 -6.7994810e+03]
+2024-03-11 08:30:20,987 INFO ========> Avg. Loss: point_distance_sr: 22013.96484375
+2024-03-11 08:30:20,987 INFO ========> Avg. Loss: point_distance_rs: 5268.0888671875
+2024-03-11 08:30:20,987 INFO ========> Avg. Loss: chamfer_loss_pcd: 27282.0546875
+2024-03-11 08:30:20,988 INFO ========> Avg. Loss: particle_distance_sr: 10766.634765625
+2024-03-11 08:30:20,988 INFO ========> Avg. Loss: particle_distance_rs: 14052.681640625
+2024-03-11 08:30:20,988 INFO ========> Avg. Loss: chamfer_loss_particle: 24819.31640625
+2024-03-11 08:30:20,988 INFO ========> Avg. Loss: height_map_loss_pcd: 3027.81640625
+2024-03-11 08:30:20,988 INFO ========> Avg. Loss: emd_point_distance_loss: 7176.0283203125
+2024-03-11 08:30:20,988 INFO ========> Avg. Loss: emd_particle_distance_loss: 46116.51171875
+2024-03-11 08:30:20,988 INFO ========> Avg. Loss: total_loss: 27282.0546875
+2024-03-11 08:30:20,989 INFO ========> Avg. grads: [ 1.2376861e-02  3.6700918e+03 -7.1063119e-01  2.8217790e-01
+  3.5950791e+03 -6.7994810e+03]
+2024-03-11 08:30:20,989 INFO ========> Num. aborted data so far: 0
+2024-03-11 08:30:20,990 INFO =====> Run validation at epoch 56
+2024-03-11 08:30:21,446 INFO ===> New TaichiEnv created.
+2024-03-11 08:30:21,446 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:33:37,764 INFO =====> Total loss: 40561.0703125
+2024-03-11 08:33:38,216 INFO ===> New TaichiEnv created.
+2024-03-11 08:33:38,216 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:34:16,295 INFO =====> Total loss: 27922.091796875
+2024-03-11 08:34:16,747 INFO ===> New TaichiEnv created.
+2024-03-11 08:34:16,747 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:37:00,063 INFO =====> Total loss: 38128.38671875
+2024-03-11 08:37:00,515 INFO ===> New TaichiEnv created.
+2024-03-11 08:37:00,515 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:37:56,625 INFO =====> Total loss: 28840.2265625
+2024-03-11 08:37:57,068 INFO ===> New TaichiEnv created.
+2024-03-11 08:37:57,068 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:39:02,578 INFO =====> Total loss: 28108.115234375
+2024-03-11 08:39:03,036 INFO ===> New TaichiEnv created.
+2024-03-11 08:39:03,037 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:40:14,440 INFO =====> Total loss: 34752.13671875
+2024-03-11 08:40:14,441 INFO ========> Avg. Validation loss: point_distance_sr: 27024.345377604168
+2024-03-11 08:40:14,441 INFO ========> Avg. Validation loss: point_distance_rs: 6027.6587320963545
+2024-03-11 08:40:14,441 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 33052.004557291664
+2024-03-11 08:40:14,441 INFO ========> Avg. Validation loss: particle_distance_sr: 11555.853352864584
+2024-03-11 08:40:14,441 INFO ========> Avg. Validation loss: particle_distance_rs: 13101.936848958334
+2024-03-11 08:40:14,441 INFO ========> Avg. Validation loss: chamfer_loss_particle: 24657.7900390625
+2024-03-11 08:40:14,441 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3592.106648763021
+2024-03-11 08:40:14,441 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7876.950520833333
+2024-03-11 08:40:14,441 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 41221.1884765625
+2024-03-11 08:40:14,442 INFO ========> Avg. Validation loss: total_loss: 33052.004557291664
+2024-03-11 08:40:14,442 INFO ========> Num. aborted data so far: 0
+2024-03-11 08:40:15,130 INFO =====> Computing: epoch 57, motion 4, agent round, data 1
+2024-03-11 08:40:15,132 INFO ===> New TaichiEnv created.
+2024-03-11 08:40:15,132 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:42:01,658 INFO =====> Total loss: 27184.900390625
+2024-03-11 08:42:01,659 INFO =====> Grad: [ 1.2681116e-02  3.7745581e+03 -7.4678403e-01  3.7945262e-01
+  3.5232974e+03 -6.0723584e+03]
+2024-03-11 08:42:01,660 INFO ========> Avg. Loss: point_distance_sr: 21967.92578125
+2024-03-11 08:42:01,660 INFO ========> Avg. Loss: point_distance_rs: 5216.974609375
+2024-03-11 08:42:01,660 INFO ========> Avg. Loss: chamfer_loss_pcd: 27184.900390625
+2024-03-11 08:42:01,661 INFO ========> Avg. Loss: particle_distance_sr: 10735.609375
+2024-03-11 08:42:01,661 INFO ========> Avg. Loss: particle_distance_rs: 14001.0517578125
+2024-03-11 08:42:01,661 INFO ========> Avg. Loss: chamfer_loss_particle: 24736.66015625
+2024-03-11 08:42:01,661 INFO ========> Avg. Loss: height_map_loss_pcd: 2957.9765625
+2024-03-11 08:42:01,661 INFO ========> Avg. Loss: emd_point_distance_loss: 7059.265625
+2024-03-11 08:42:01,661 INFO ========> Avg. Loss: emd_particle_distance_loss: 45267.4375
+2024-03-11 08:42:01,661 INFO ========> Avg. Loss: total_loss: 27184.900390625
+2024-03-11 08:42:01,661 INFO ========> Avg. grads: [ 1.2681116e-02  3.7745581e+03 -7.4678403e-01  3.7945262e-01
+  3.5232974e+03 -6.0723584e+03]
+2024-03-11 08:42:01,662 INFO ========> Num. aborted data so far: 0
+2024-03-11 08:42:01,663 INFO =====> Run validation at epoch 57
+2024-03-11 08:42:02,141 INFO ===> New TaichiEnv created.
+2024-03-11 08:42:02,141 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:45:17,418 INFO =====> Total loss: 40367.53515625
+2024-03-11 08:45:17,850 INFO ===> New TaichiEnv created.
+2024-03-11 08:45:17,850 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:45:55,964 INFO =====> Total loss: 28014.54296875
+2024-03-11 08:45:56,411 INFO ===> New TaichiEnv created.
+2024-03-11 08:45:56,411 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:48:38,922 INFO =====> Total loss: 38076.29296875
+2024-03-11 08:48:39,369 INFO ===> New TaichiEnv created.
+2024-03-11 08:48:39,369 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:49:35,309 INFO =====> Total loss: 28839.3359375
+2024-03-11 08:49:35,769 INFO ===> New TaichiEnv created.
+2024-03-11 08:49:35,770 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:50:40,603 INFO =====> Total loss: 28079.626953125
+2024-03-11 08:50:41,070 INFO ===> New TaichiEnv created.
+2024-03-11 08:50:41,070 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:51:51,276 INFO =====> Total loss: 34610.1015625
+2024-03-11 08:51:51,277 INFO ========> Avg. Validation loss: point_distance_sr: 26990.510416666668
+2024-03-11 08:51:51,278 INFO ========> Avg. Validation loss: point_distance_rs: 6007.395833333333
+2024-03-11 08:51:51,278 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 32997.905924479164
+2024-03-11 08:51:51,278 INFO ========> Avg. Validation loss: particle_distance_sr: 11528.611409505209
+2024-03-11 08:51:51,278 INFO ========> Avg. Validation loss: particle_distance_rs: 13051.338541666666
+2024-03-11 08:51:51,278 INFO ========> Avg. Validation loss: chamfer_loss_particle: 24579.949544270832
+2024-03-11 08:51:51,278 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3608.0357259114585
+2024-03-11 08:51:51,278 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7837.202718098958
+2024-03-11 08:51:51,279 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 40942.45703125
+2024-03-11 08:51:51,279 INFO ========> Avg. Validation loss: total_loss: 32997.905924479164
+2024-03-11 08:51:51,279 INFO ========> Num. aborted data so far: 0
+2024-03-11 08:51:51,981 INFO =====> Computing: epoch 58, motion 4, agent round, data 1
+2024-03-11 08:51:51,982 INFO ===> New TaichiEnv created.
+2024-03-11 08:51:51,983 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:53:35,485 INFO =====> Total loss: 27080.6015625
+2024-03-11 08:53:35,485 INFO =====> Grad: [ 1.0693191e-02  3.0281528e+03 -6.5977263e-01  4.4328526e-01
+  2.6361802e+03 -3.6635188e+03]
+2024-03-11 08:53:35,486 INFO ========> Avg. Loss: point_distance_sr: 21925.185546875
+2024-03-11 08:53:35,486 INFO ========> Avg. Loss: point_distance_rs: 5155.41552734375
+2024-03-11 08:53:35,487 INFO ========> Avg. Loss: chamfer_loss_pcd: 27080.6015625
+2024-03-11 08:53:35,487 INFO ========> Avg. Loss: particle_distance_sr: 10706.1611328125
+2024-03-11 08:53:35,487 INFO ========> Avg. Loss: particle_distance_rs: 13934.25
+2024-03-11 08:53:35,487 INFO ========> Avg. Loss: chamfer_loss_particle: 24640.41015625
+2024-03-11 08:53:35,487 INFO ========> Avg. Loss: height_map_loss_pcd: 2831.359375
+2024-03-11 08:53:35,487 INFO ========> Avg. Loss: emd_point_distance_loss: 6929.69921875
+2024-03-11 08:53:35,487 INFO ========> Avg. Loss: emd_particle_distance_loss: 44286.015625
+2024-03-11 08:53:35,487 INFO ========> Avg. Loss: total_loss: 27080.6015625
+2024-03-11 08:53:35,487 INFO ========> Avg. grads: [ 1.0693191e-02  3.0281528e+03 -6.5977263e-01  4.4328526e-01
+  2.6361802e+03 -3.6635188e+03]
+2024-03-11 08:53:35,488 INFO ========> Num. aborted data so far: 0
+2024-03-11 08:53:35,490 INFO =====> Run validation at epoch 58
+2024-03-11 08:53:35,965 INFO ===> New TaichiEnv created.
+2024-03-11 08:53:35,965 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:56:52,648 INFO =====> Total loss: 40159.87890625
+2024-03-11 08:56:53,110 INFO ===> New TaichiEnv created.
+2024-03-11 08:56:53,110 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 08:57:31,778 INFO =====> Total loss: 28113.884765625
+2024-03-11 08:57:32,228 INFO ===> New TaichiEnv created.
+2024-03-11 08:57:32,228 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:00:14,620 INFO =====> Total loss: 38009.9296875
+2024-03-11 09:00:15,075 INFO ===> New TaichiEnv created.
+2024-03-11 09:00:15,075 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:01:11,242 INFO =====> Total loss: 28843.42578125
+2024-03-11 09:01:11,672 INFO ===> New TaichiEnv created.
+2024-03-11 09:01:11,672 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:02:15,551 INFO =====> Total loss: 28048.89453125
+2024-03-11 09:02:15,960 INFO ===> New TaichiEnv created.
+2024-03-11 09:02:15,960 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:03:24,283 INFO =====> Total loss: 34453.453125
+2024-03-11 09:03:24,284 INFO ========> Avg. Validation loss: point_distance_sr: 26956.804036458332
+2024-03-11 09:03:24,284 INFO ========> Avg. Validation loss: point_distance_rs: 5981.440185546875
+2024-03-11 09:03:24,285 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 32938.244466145836
+2024-03-11 09:03:24,285 INFO ========> Avg. Validation loss: particle_distance_sr: 11498.362711588541
+2024-03-11 09:03:24,285 INFO ========> Avg. Validation loss: particle_distance_rs: 12989.341227213541
+2024-03-11 09:03:24,285 INFO ========> Avg. Validation loss: chamfer_loss_particle: 24487.703776041668
+2024-03-11 09:03:24,285 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3595.5255533854165
+2024-03-11 09:03:24,285 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7787.320149739583
+2024-03-11 09:03:24,285 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 40601.134440104164
+2024-03-11 09:03:24,285 INFO ========> Avg. Validation loss: total_loss: 32938.244466145836
+2024-03-11 09:03:24,285 INFO ========> Num. aborted data so far: 0
+2024-03-11 09:03:24,997 INFO =====> Computing: epoch 59, motion 4, agent round, data 1
+2024-03-11 09:03:24,998 INFO ===> New TaichiEnv created.
+2024-03-11 09:03:24,998 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:05:07,126 INFO =====> Total loss: 26999.1328125
+2024-03-11 09:05:07,126 INFO =====> Grad: [ 1.0346915e-02  2.3956990e+03 -6.1230540e-01  4.1523549e-01
+  1.0753109e+03 -2.4493000e+03]
+2024-03-11 09:05:07,127 INFO ========> Avg. Loss: point_distance_sr: 21901.046875
+2024-03-11 09:05:07,127 INFO ========> Avg. Loss: point_distance_rs: 5098.0849609375
+2024-03-11 09:05:07,128 INFO ========> Avg. Loss: chamfer_loss_pcd: 26999.1328125
+2024-03-11 09:05:07,128 INFO ========> Avg. Loss: particle_distance_sr: 10689.5986328125
+2024-03-11 09:05:07,128 INFO ========> Avg. Loss: particle_distance_rs: 13865.400390625
+2024-03-11 09:05:07,128 INFO ========> Avg. Loss: chamfer_loss_particle: 24555.0
+2024-03-11 09:05:07,128 INFO ========> Avg. Loss: height_map_loss_pcd: 2691.73388671875
+2024-03-11 09:05:07,128 INFO ========> Avg. Loss: emd_point_distance_loss: 6804.09033203125
+2024-03-11 09:05:07,128 INFO ========> Avg. Loss: emd_particle_distance_loss: 43276.98828125
+2024-03-11 09:05:07,128 INFO ========> Avg. Loss: total_loss: 26999.1328125
+2024-03-11 09:05:07,128 INFO ========> Avg. grads: [ 1.0346915e-02  2.3956990e+03 -6.1230540e-01  4.1523549e-01
+  1.0753109e+03 -2.4493000e+03]
+2024-03-11 09:05:07,129 INFO ========> Num. aborted data so far: 0
+2024-03-11 09:05:07,131 INFO =====> Run validation at epoch 59
+2024-03-11 09:05:07,562 INFO ===> New TaichiEnv created.
+2024-03-11 09:05:07,562 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:08:23,568 INFO =====> Total loss: 39952.52734375
+2024-03-11 09:08:24,016 INFO ===> New TaichiEnv created.
+2024-03-11 09:08:24,016 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:09:02,385 INFO =====> Total loss: 28187.4453125
+2024-03-11 09:09:02,838 INFO ===> New TaichiEnv created.
+2024-03-11 09:09:02,838 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:11:44,532 INFO =====> Total loss: 37938.06640625
+2024-03-11 09:11:44,991 INFO ===> New TaichiEnv created.
+2024-03-11 09:11:44,991 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:12:40,558 INFO =====> Total loss: 28851.017578125
+2024-03-11 09:12:41,009 INFO ===> New TaichiEnv created.
+2024-03-11 09:12:41,009 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:13:44,592 INFO =====> Total loss: 28013.89453125
+2024-03-11 09:13:45,041 INFO ===> New TaichiEnv created.
+2024-03-11 09:13:45,041 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:14:50,925 INFO =====> Total loss: 34298.2890625
+2024-03-11 09:14:50,926 INFO ========> Avg. Validation loss: point_distance_sr: 26924.787109375
+2024-03-11 09:14:50,926 INFO ========> Avg. Validation loss: point_distance_rs: 5948.753336588542
+2024-03-11 09:14:50,926 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 32873.5400390625
+2024-03-11 09:14:50,926 INFO ========> Avg. Validation loss: particle_distance_sr: 11451.119466145834
+2024-03-11 09:14:50,927 INFO ========> Avg. Validation loss: particle_distance_rs: 12917.741617838541
+2024-03-11 09:14:50,927 INFO ========> Avg. Validation loss: chamfer_loss_particle: 24368.861002604168
+2024-03-11 09:14:50,927 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3572.7125244140625
+2024-03-11 09:14:50,927 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7728.612874348958
+2024-03-11 09:14:50,927 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 40223.69921875
+2024-03-11 09:14:50,927 INFO ========> Avg. Validation loss: total_loss: 32873.5400390625
+2024-03-11 09:14:50,927 INFO ========> Num. aborted data so far: 0
+2024-03-11 09:14:51,652 INFO =====> Computing: epoch 60, motion 4, agent round, data 1
+2024-03-11 09:14:51,654 INFO ===> New TaichiEnv created.
+2024-03-11 09:14:51,655 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:16:33,057 INFO =====> Total loss: 26936.408203125
+2024-03-11 09:16:33,057 INFO =====> Grad: [ 7.5751292e-03  1.5481925e+03 -5.3090131e-01  5.4568195e-01
+  7.3001141e+02 -1.2300652e+03]
+2024-03-11 09:16:33,058 INFO ========> Avg. Loss: point_distance_sr: 21894.525390625
+2024-03-11 09:16:33,059 INFO ========> Avg. Loss: point_distance_rs: 5041.88330078125
+2024-03-11 09:16:33,059 INFO ========> Avg. Loss: chamfer_loss_pcd: 26936.408203125
+2024-03-11 09:16:33,059 INFO ========> Avg. Loss: particle_distance_sr: 10658.8115234375
+2024-03-11 09:16:33,059 INFO ========> Avg. Loss: particle_distance_rs: 13769.533203125
+2024-03-11 09:16:33,060 INFO ========> Avg. Loss: chamfer_loss_particle: 24428.34375
+2024-03-11 09:16:33,060 INFO ========> Avg. Loss: height_map_loss_pcd: 2534.540771484375
+2024-03-11 09:16:33,060 INFO ========> Avg. Loss: emd_point_distance_loss: 6683.99365234375
+2024-03-11 09:16:33,060 INFO ========> Avg. Loss: emd_particle_distance_loss: 42288.078125
+2024-03-11 09:16:33,061 INFO ========> Avg. Loss: total_loss: 26936.408203125
+2024-03-11 09:16:33,062 INFO ========> Avg. grads: [ 7.5751292e-03  1.5481925e+03 -5.3090131e-01  5.4568195e-01
+  7.3001141e+02 -1.2300652e+03]
+2024-03-11 09:16:33,062 INFO ========> Num. aborted data so far: 0
+2024-03-11 09:16:33,065 INFO =====> Run validation at epoch 60
+2024-03-11 09:16:33,552 INFO ===> New TaichiEnv created.
+2024-03-11 09:16:33,552 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:19:48,916 INFO =====> Total loss: 39751.0390625
+2024-03-11 09:19:49,383 INFO ===> New TaichiEnv created.
+2024-03-11 09:19:49,383 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:20:27,853 INFO =====> Total loss: 28252.1015625
+2024-03-11 09:20:28,257 INFO ===> New TaichiEnv created.
+2024-03-11 09:20:28,258 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:23:09,850 INFO =====> Total loss: 37859.5390625
+2024-03-11 09:23:10,296 INFO ===> New TaichiEnv created.
+2024-03-11 09:23:10,296 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:24:05,181 INFO =====> Total loss: 28861.90234375
+2024-03-11 09:24:05,634 INFO ===> New TaichiEnv created.
+2024-03-11 09:24:05,634 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:25:08,167 INFO =====> Total loss: 27970.4453125
+2024-03-11 09:25:08,570 INFO ===> New TaichiEnv created.
+2024-03-11 09:25:08,570 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:26:11,160 INFO =====> Total loss: 34158.30859375
+2024-03-11 09:26:11,161 INFO ========> Avg. Validation loss: point_distance_sr: 26894.671223958332
+2024-03-11 09:26:11,162 INFO ========> Avg. Validation loss: point_distance_rs: 5914.217447916667
+2024-03-11 09:26:11,162 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 32808.889322916664
+2024-03-11 09:26:11,162 INFO ========> Avg. Validation loss: particle_distance_sr: 11395.527262369791
+2024-03-11 09:26:11,162 INFO ========> Avg. Validation loss: particle_distance_rs: 12846.830891927084
+2024-03-11 09:26:11,162 INFO ========> Avg. Validation loss: chamfer_loss_particle: 24242.357747395832
+2024-03-11 09:26:11,162 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3529.343058268229
+2024-03-11 09:26:11,162 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7667.214111328125
+2024-03-11 09:26:11,162 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 39837.062174479164
+2024-03-11 09:26:11,162 INFO ========> Avg. Validation loss: total_loss: 32808.889322916664
+2024-03-11 09:26:11,162 INFO ========> Num. aborted data so far: 0
+2024-03-11 09:26:11,870 INFO =====> Computing: epoch 61, motion 4, agent round, data 1
+2024-03-11 09:26:11,871 INFO ===> New TaichiEnv created.
+2024-03-11 09:26:11,871 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:27:50,972 INFO =====> Total loss: 26888.21484375
+2024-03-11 09:27:50,972 INFO =====> Grad: [ 6.7162472e-03  1.1974326e+03 -5.2004242e-01  6.3601017e-01
+  3.1894702e+02 -1.0484911e+03]
+2024-03-11 09:27:50,973 INFO ========> Avg. Loss: point_distance_sr: 21898.16796875
+2024-03-11 09:27:50,973 INFO ========> Avg. Loss: point_distance_rs: 4990.046875
+2024-03-11 09:27:50,974 INFO ========> Avg. Loss: chamfer_loss_pcd: 26888.21484375
+2024-03-11 09:27:50,974 INFO ========> Avg. Loss: particle_distance_sr: 10616.9189453125
+2024-03-11 09:27:50,974 INFO ========> Avg. Loss: particle_distance_rs: 13652.015625
+2024-03-11 09:27:50,974 INFO ========> Avg. Loss: chamfer_loss_particle: 24268.93359375
+2024-03-11 09:27:50,974 INFO ========> Avg. Loss: height_map_loss_pcd: 2465.56201171875
+2024-03-11 09:27:50,974 INFO ========> Avg. Loss: emd_point_distance_loss: 6574.17431640625
+2024-03-11 09:27:50,974 INFO ========> Avg. Loss: emd_particle_distance_loss: 41358.1640625
+2024-03-11 09:27:50,974 INFO ========> Avg. Loss: total_loss: 26888.21484375
+2024-03-11 09:27:50,975 INFO ========> Avg. grads: [ 6.7162472e-03  1.1974326e+03 -5.2004242e-01  6.3601017e-01
+  3.1894702e+02 -1.0484911e+03]
+2024-03-11 09:27:50,975 INFO ========> Num. aborted data so far: 0
+2024-03-11 09:27:50,978 INFO =====> Run validation at epoch 61
+2024-03-11 09:27:51,429 INFO ===> New TaichiEnv created.
+2024-03-11 09:27:51,429 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:31:09,647 INFO =====> Total loss: 39556.34765625
+2024-03-11 09:31:10,100 INFO ===> New TaichiEnv created.
+2024-03-11 09:31:10,100 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:31:48,552 INFO =====> Total loss: 28311.494140625
+2024-03-11 09:31:49,011 INFO ===> New TaichiEnv created.
+2024-03-11 09:31:49,011 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:34:30,138 INFO =====> Total loss: 37776.8984375
+2024-03-11 09:34:30,593 INFO ===> New TaichiEnv created.
+2024-03-11 09:34:30,593 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:35:24,983 INFO =====> Total loss: 28873.01953125
+2024-03-11 09:35:25,441 INFO ===> New TaichiEnv created.
+2024-03-11 09:35:25,441 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:36:27,836 INFO =====> Total loss: 27916.5546875
+2024-03-11 09:36:28,294 INFO ===> New TaichiEnv created.
+2024-03-11 09:36:28,294 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:37:29,757 INFO =====> Total loss: 34030.74609375
+2024-03-11 09:37:29,758 INFO ========> Avg. Validation loss: point_distance_sr: 26865.877278645832
+2024-03-11 09:37:29,758 INFO ========> Avg. Validation loss: point_distance_rs: 5878.299641927083
+2024-03-11 09:37:29,758 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 32744.1767578125
+2024-03-11 09:37:29,758 INFO ========> Avg. Validation loss: particle_distance_sr: 11341.701253255209
+2024-03-11 09:37:29,759 INFO ========> Avg. Validation loss: particle_distance_rs: 12776.244384765625
+2024-03-11 09:37:29,759 INFO ========> Avg. Validation loss: chamfer_loss_particle: 24117.945475260418
+2024-03-11 09:37:29,759 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3500.172607421875
+2024-03-11 09:37:29,759 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7605.900960286458
+2024-03-11 09:37:29,759 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 39457.403645833336
+2024-03-11 09:37:29,759 INFO ========> Avg. Validation loss: total_loss: 32744.1767578125
+2024-03-11 09:37:29,759 INFO ========> Num. aborted data so far: 0
+2024-03-11 09:37:30,470 INFO =====> Computing: epoch 62, motion 4, agent round, data 1
+2024-03-11 09:37:30,472 INFO ===> New TaichiEnv created.
+2024-03-11 09:37:30,472 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:39:07,487 INFO =====> Total loss: 26845.177734375
+2024-03-11 09:39:07,487 INFO =====> Grad: [ 6.3392799e-03  1.0684749e+03 -5.0482863e-01  6.5971386e-01
+  3.7425574e+02 -7.1535577e+02]
+2024-03-11 09:39:07,488 INFO ========> Avg. Loss: point_distance_sr: 21905.728515625
+2024-03-11 09:39:07,488 INFO ========> Avg. Loss: point_distance_rs: 4939.44970703125
+2024-03-11 09:39:07,488 INFO ========> Avg. Loss: chamfer_loss_pcd: 26845.177734375
+2024-03-11 09:39:07,488 INFO ========> Avg. Loss: particle_distance_sr: 10570.037109375
+2024-03-11 09:39:07,488 INFO ========> Avg. Loss: particle_distance_rs: 13533.4404296875
+2024-03-11 09:39:07,488 INFO ========> Avg. Loss: chamfer_loss_particle: 24103.4765625
+2024-03-11 09:39:07,489 INFO ========> Avg. Loss: height_map_loss_pcd: 2429.981201171875
+2024-03-11 09:39:07,489 INFO ========> Avg. Loss: emd_point_distance_loss: 6471.978515625
+2024-03-11 09:39:07,489 INFO ========> Avg. Loss: emd_particle_distance_loss: 40503.67578125
+2024-03-11 09:39:07,489 INFO ========> Avg. Loss: total_loss: 26845.177734375
+2024-03-11 09:39:07,489 INFO ========> Avg. grads: [ 6.3392799e-03  1.0684749e+03 -5.0482863e-01  6.5971386e-01
+  3.7425574e+02 -7.1535577e+02]
+2024-03-11 09:39:07,489 INFO ========> Num. aborted data so far: 0
+2024-03-11 09:39:07,492 INFO =====> Run validation at epoch 62
+2024-03-11 09:39:07,980 INFO ===> New TaichiEnv created.
+2024-03-11 09:39:07,980 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:42:25,708 INFO =====> Total loss: 39364.29296875
+2024-03-11 09:42:26,154 INFO ===> New TaichiEnv created.
+2024-03-11 09:42:26,154 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:43:05,006 INFO =====> Total loss: 28375.05078125
+2024-03-11 09:43:05,478 INFO ===> New TaichiEnv created.
+2024-03-11 09:43:05,478 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:45:46,674 INFO =====> Total loss: 37689.1875
+2024-03-11 09:45:47,134 INFO ===> New TaichiEnv created.
+2024-03-11 09:45:47,134 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:46:41,584 INFO =====> Total loss: 28883.79296875
+2024-03-11 09:46:42,029 INFO ===> New TaichiEnv created.
+2024-03-11 09:46:42,029 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:47:43,359 INFO =====> Total loss: 27854.482421875
+2024-03-11 09:47:43,803 INFO ===> New TaichiEnv created.
+2024-03-11 09:47:43,803 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:48:44,351 INFO =====> Total loss: 33880.88671875
+2024-03-11 09:48:44,352 INFO ========> Avg. Validation loss: point_distance_sr: 26833.228190104168
+2024-03-11 09:48:44,353 INFO ========> Avg. Validation loss: point_distance_rs: 5841.3881429036455
+2024-03-11 09:48:44,353 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 32674.615559895832
+2024-03-11 09:48:44,353 INFO ========> Avg. Validation loss: particle_distance_sr: 11284.410970052084
+2024-03-11 09:48:44,353 INFO ========> Avg. Validation loss: particle_distance_rs: 12700.141276041666
+2024-03-11 09:48:44,353 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23984.552408854168
+2024-03-11 09:48:44,353 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3486.124552408854
+2024-03-11 09:48:44,353 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7543.818359375
+2024-03-11 09:48:44,354 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 39084.322265625
+2024-03-11 09:48:44,354 INFO ========> Avg. Validation loss: total_loss: 32674.615559895832
+2024-03-11 09:48:44,354 INFO ========> Num. aborted data so far: 0
+2024-03-11 09:48:45,035 INFO =====> Computing: epoch 63, motion 4, agent round, data 1
+2024-03-11 09:48:45,036 INFO ===> New TaichiEnv created.
+2024-03-11 09:48:45,036 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:50:20,693 INFO =====> Total loss: 26802.783203125
+2024-03-11 09:50:20,694 INFO =====> Grad: [ 6.3435440e-03  1.1400327e+03 -5.3950816e-01  7.7415270e-01
+  6.9473871e+02 -1.1222617e+03]
+2024-03-11 09:50:20,694 INFO ========> Avg. Loss: point_distance_sr: 21913.384765625
+2024-03-11 09:50:20,695 INFO ========> Avg. Loss: point_distance_rs: 4889.3984375
+2024-03-11 09:50:20,695 INFO ========> Avg. Loss: chamfer_loss_pcd: 26802.783203125
+2024-03-11 09:50:20,695 INFO ========> Avg. Loss: particle_distance_sr: 10510.4521484375
+2024-03-11 09:50:20,695 INFO ========> Avg. Loss: particle_distance_rs: 13403.9794921875
+2024-03-11 09:50:20,695 INFO ========> Avg. Loss: chamfer_loss_particle: 23914.431640625
+2024-03-11 09:50:20,696 INFO ========> Avg. Loss: height_map_loss_pcd: 2412.509033203125
+2024-03-11 09:50:20,696 INFO ========> Avg. Loss: emd_point_distance_loss: 6376.81689453125
+2024-03-11 09:50:20,696 INFO ========> Avg. Loss: emd_particle_distance_loss: 39729.046875
+2024-03-11 09:50:20,696 INFO ========> Avg. Loss: total_loss: 26802.783203125
+2024-03-11 09:50:20,696 INFO ========> Avg. grads: [ 6.3435440e-03  1.1400327e+03 -5.3950816e-01  7.7415270e-01
+  6.9473871e+02 -1.1222617e+03]
+2024-03-11 09:50:20,696 INFO ========> Num. aborted data so far: 0
+2024-03-11 09:50:20,698 INFO =====> Run validation at epoch 63
+2024-03-11 09:50:21,176 INFO ===> New TaichiEnv created.
+2024-03-11 09:50:21,176 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:53:37,896 INFO =====> Total loss: 39176.328125
+2024-03-11 09:53:38,345 INFO ===> New TaichiEnv created.
+2024-03-11 09:53:38,345 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:54:17,072 INFO =====> Total loss: 28444.83203125
+2024-03-11 09:54:17,537 INFO ===> New TaichiEnv created.
+2024-03-11 09:54:17,537 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:56:59,184 INFO =====> Total loss: 37594.18359375
+2024-03-11 09:56:59,659 INFO ===> New TaichiEnv created.
+2024-03-11 09:56:59,659 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:57:52,977 INFO =====> Total loss: 28891.9140625
+2024-03-11 09:57:53,380 INFO ===> New TaichiEnv created.
+2024-03-11 09:57:53,380 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:58:54,486 INFO =====> Total loss: 27785.3359375
+2024-03-11 09:58:54,918 INFO ===> New TaichiEnv created.
+2024-03-11 09:58:54,918 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 09:59:54,137 INFO =====> Total loss: 33729.54296875
+2024-03-11 09:59:54,138 INFO ========> Avg. Validation loss: point_distance_sr: 26799.9208984375
+2024-03-11 09:59:54,138 INFO ========> Avg. Validation loss: point_distance_rs: 5803.7689208984375
+2024-03-11 09:59:54,138 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 32603.689453125
+2024-03-11 09:59:54,139 INFO ========> Avg. Validation loss: particle_distance_sr: 11225.735595703125
+2024-03-11 09:59:54,139 INFO ========> Avg. Validation loss: particle_distance_rs: 12615.611002604166
+2024-03-11 09:59:54,139 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23841.346354166668
+2024-03-11 09:59:54,139 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3479.7344563802085
+2024-03-11 09:59:54,139 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7481.334879557292
+2024-03-11 09:59:54,139 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 38709.147135416664
+2024-03-11 09:59:54,139 INFO ========> Avg. Validation loss: total_loss: 32603.689453125
+2024-03-11 09:59:54,139 INFO ========> Num. aborted data so far: 0
+2024-03-11 09:59:54,840 INFO =====> Computing: epoch 64, motion 4, agent round, data 1
+2024-03-11 09:59:54,841 INFO ===> New TaichiEnv created.
+2024-03-11 09:59:54,841 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:01:29,342 INFO =====> Total loss: 26757.08203125
+2024-03-11 10:01:29,342 INFO =====> Grad: [ 5.9728464e-03  1.0645477e+03 -5.9631664e-01  9.6222997e-01
+  5.0203769e+02 -1.3519131e+03]
+2024-03-11 10:01:29,343 INFO ========> Avg. Loss: point_distance_sr: 21919.1875
+2024-03-11 10:01:29,344 INFO ========> Avg. Loss: point_distance_rs: 4837.8935546875
+2024-03-11 10:01:29,344 INFO ========> Avg. Loss: chamfer_loss_pcd: 26757.08203125
+2024-03-11 10:01:29,344 INFO ========> Avg. Loss: particle_distance_sr: 10462.1826171875
+2024-03-11 10:01:29,344 INFO ========> Avg. Loss: particle_distance_rs: 13282.74609375
+2024-03-11 10:01:29,344 INFO ========> Avg. Loss: chamfer_loss_particle: 23744.9296875
+2024-03-11 10:01:29,344 INFO ========> Avg. Loss: height_map_loss_pcd: 2388.7353515625
+2024-03-11 10:01:29,344 INFO ========> Avg. Loss: emd_point_distance_loss: 6280.90283203125
+2024-03-11 10:01:29,344 INFO ========> Avg. Loss: emd_particle_distance_loss: 38982.6875
+2024-03-11 10:01:29,344 INFO ========> Avg. Loss: total_loss: 26757.08203125
+2024-03-11 10:01:29,345 INFO ========> Avg. grads: [ 5.9728464e-03  1.0645477e+03 -5.9631664e-01  9.6222997e-01
+  5.0203769e+02 -1.3519131e+03]
+2024-03-11 10:01:29,345 INFO ========> Num. aborted data so far: 0
+2024-03-11 10:01:29,347 INFO =====> Run validation at epoch 64
+2024-03-11 10:01:29,831 INFO ===> New TaichiEnv created.
+2024-03-11 10:01:29,831 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:04:45,523 INFO =====> Total loss: 38993.96875
+2024-03-11 10:04:45,926 INFO ===> New TaichiEnv created.
+2024-03-11 10:04:45,926 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:05:24,512 INFO =====> Total loss: 28512.841796875
+2024-03-11 10:05:24,976 INFO ===> New TaichiEnv created.
+2024-03-11 10:05:24,976 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:08:05,923 INFO =====> Total loss: 37489.890625
+2024-03-11 10:08:06,373 INFO ===> New TaichiEnv created.
+2024-03-11 10:08:06,373 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:08:59,367 INFO =====> Total loss: 28901.263671875
+2024-03-11 10:08:59,772 INFO ===> New TaichiEnv created.
+2024-03-11 10:08:59,772 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:09:59,810 INFO =====> Total loss: 27710.0234375
+2024-03-11 10:10:00,218 INFO ===> New TaichiEnv created.
+2024-03-11 10:10:00,219 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:10:58,194 INFO =====> Total loss: 33594.49609375
+2024-03-11 10:10:58,195 INFO ========> Avg. Validation loss: point_distance_sr: 26767.144856770832
+2024-03-11 10:10:58,195 INFO ========> Avg. Validation loss: point_distance_rs: 5766.6029052734375
+2024-03-11 10:10:58,195 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 32533.747395833332
+2024-03-11 10:10:58,195 INFO ========> Avg. Validation loss: particle_distance_sr: 11166.943929036459
+2024-03-11 10:10:58,196 INFO ========> Avg. Validation loss: particle_distance_rs: 12528.5029296875
+2024-03-11 10:10:58,196 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23695.447265625
+2024-03-11 10:10:58,196 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3497.7189127604165
+2024-03-11 10:10:58,196 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7418.990478515625
+2024-03-11 10:10:58,196 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 38327.877604166664
+2024-03-11 10:10:58,196 INFO ========> Avg. Validation loss: total_loss: 32533.747395833332
+2024-03-11 10:10:58,196 INFO ========> Num. aborted data so far: 0
+2024-03-11 10:10:58,945 INFO =====> Computing: epoch 65, motion 4, agent round, data 1
+2024-03-11 10:10:58,946 INFO ===> New TaichiEnv created.
+2024-03-11 10:10:58,946 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:12:31,574 INFO =====> Total loss: 26716.375
+2024-03-11 10:12:31,574 INFO =====> Grad: [ 4.5429622e-03  6.8696753e+02 -5.6909406e-01  1.0374312e+00
+  4.8878571e+02 -1.2317660e+03]
+2024-03-11 10:12:31,575 INFO ========> Avg. Loss: point_distance_sr: 21926.326171875
+2024-03-11 10:12:31,575 INFO ========> Avg. Loss: point_distance_rs: 4790.04931640625
+2024-03-11 10:12:31,575 INFO ========> Avg. Loss: chamfer_loss_pcd: 26716.375
+2024-03-11 10:12:31,576 INFO ========> Avg. Loss: particle_distance_sr: 10422.4375
+2024-03-11 10:12:31,576 INFO ========> Avg. Loss: particle_distance_rs: 13171.7939453125
+2024-03-11 10:12:31,576 INFO ========> Avg. Loss: chamfer_loss_particle: 23594.23046875
+2024-03-11 10:12:31,576 INFO ========> Avg. Loss: height_map_loss_pcd: 2365.781982421875
+2024-03-11 10:12:31,576 INFO ========> Avg. Loss: emd_point_distance_loss: 6192.55810546875
+2024-03-11 10:12:31,576 INFO ========> Avg. Loss: emd_particle_distance_loss: 38268.77734375
+2024-03-11 10:12:31,576 INFO ========> Avg. Loss: total_loss: 26716.375
+2024-03-11 10:12:31,576 INFO ========> Avg. grads: [ 4.5429622e-03  6.8696753e+02 -5.6909406e-01  1.0374312e+00
+  4.8878571e+02 -1.2317660e+03]
+2024-03-11 10:12:31,576 INFO ========> Num. aborted data so far: 0
+2024-03-11 10:12:31,578 INFO =====> Run validation at epoch 65
+2024-03-11 10:12:32,068 INFO ===> New TaichiEnv created.
+2024-03-11 10:12:32,068 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:15:49,701 INFO =====> Total loss: 38828.0078125
+2024-03-11 10:15:50,152 INFO ===> New TaichiEnv created.
+2024-03-11 10:15:50,152 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:16:29,111 INFO =====> Total loss: 28580.0625
+2024-03-11 10:16:29,570 INFO ===> New TaichiEnv created.
+2024-03-11 10:16:29,570 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:19:08,278 INFO =====> Total loss: 37380.6875
+2024-03-11 10:19:08,731 INFO ===> New TaichiEnv created.
+2024-03-11 10:19:08,731 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:20:00,606 INFO =====> Total loss: 28912.515625
+2024-03-11 10:20:01,010 INFO ===> New TaichiEnv created.
+2024-03-11 10:20:01,010 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:21:01,348 INFO =====> Total loss: 27627.181640625
+2024-03-11 10:21:01,812 INFO ===> New TaichiEnv created.
+2024-03-11 10:21:01,812 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:21:58,979 INFO =====> Total loss: 33464.0859375
+2024-03-11 10:21:58,980 INFO ========> Avg. Validation loss: point_distance_sr: 26735.3583984375
+2024-03-11 10:21:58,981 INFO ========> Avg. Validation loss: point_distance_rs: 5730.0655517578125
+2024-03-11 10:21:58,981 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 32465.423502604168
+2024-03-11 10:21:58,981 INFO ========> Avg. Validation loss: particle_distance_sr: 11103.365966796875
+2024-03-11 10:21:58,981 INFO ========> Avg. Validation loss: particle_distance_rs: 12442.163736979166
+2024-03-11 10:21:58,981 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23545.529296875
+2024-03-11 10:21:58,981 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3469.982950846354
+2024-03-11 10:21:58,981 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7357.225830078125
+2024-03-11 10:21:58,981 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 37950.464518229164
+2024-03-11 10:21:58,981 INFO ========> Avg. Validation loss: total_loss: 32465.423502604168
+2024-03-11 10:21:58,981 INFO ========> Num. aborted data so far: 0
+2024-03-11 10:21:59,719 INFO =====> Computing: epoch 66, motion 4, agent round, data 1
+2024-03-11 10:21:59,721 INFO ===> New TaichiEnv created.
+2024-03-11 10:21:59,721 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:23:30,757 INFO =====> Total loss: 26678.033203125
+2024-03-11 10:23:30,757 INFO =====> Grad: [ 3.8862601e-03  5.5925519e+02 -5.7576120e-01  1.1319475e+00
+  4.7065829e+02 -1.3204285e+03]
+2024-03-11 10:23:30,758 INFO ========> Avg. Loss: point_distance_sr: 21936.52734375
+2024-03-11 10:23:30,758 INFO ========> Avg. Loss: point_distance_rs: 4741.505859375
+2024-03-11 10:23:30,758 INFO ========> Avg. Loss: chamfer_loss_pcd: 26678.033203125
+2024-03-11 10:23:30,758 INFO ========> Avg. Loss: particle_distance_sr: 10386.0322265625
+2024-03-11 10:23:30,758 INFO ========> Avg. Loss: particle_distance_rs: 13070.875
+2024-03-11 10:23:30,758 INFO ========> Avg. Loss: chamfer_loss_particle: 23456.90625
+2024-03-11 10:23:30,758 INFO ========> Avg. Loss: height_map_loss_pcd: 2285.55419921875
+2024-03-11 10:23:30,758 INFO ========> Avg. Loss: emd_point_distance_loss: 6103.59326171875
+2024-03-11 10:23:30,758 INFO ========> Avg. Loss: emd_particle_distance_loss: 37597.98828125
+2024-03-11 10:23:30,759 INFO ========> Avg. Loss: total_loss: 26678.033203125
+2024-03-11 10:23:30,759 INFO ========> Avg. grads: [ 3.8862601e-03  5.5925519e+02 -5.7576120e-01  1.1319475e+00
+  4.7065829e+02 -1.3204285e+03]
+2024-03-11 10:23:30,759 INFO ========> Num. aborted data so far: 0
+2024-03-11 10:23:30,761 INFO =====> Run validation at epoch 66
+2024-03-11 10:23:31,193 INFO ===> New TaichiEnv created.
+2024-03-11 10:23:31,193 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:26:48,573 INFO =====> Total loss: 38670.9921875
+2024-03-11 10:26:49,026 INFO ===> New TaichiEnv created.
+2024-03-11 10:26:49,026 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:27:28,261 INFO =====> Total loss: 28649.712890625
+2024-03-11 10:27:28,717 INFO ===> New TaichiEnv created.
+2024-03-11 10:27:28,717 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:30:08,402 INFO =====> Total loss: 37269.265625
+2024-03-11 10:30:08,861 INFO ===> New TaichiEnv created.
+2024-03-11 10:30:08,861 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:31:01,148 INFO =====> Total loss: 28926.755859375
+2024-03-11 10:31:01,597 INFO ===> New TaichiEnv created.
+2024-03-11 10:31:01,597 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:32:00,900 INFO =====> Total loss: 27543.17578125
+2024-03-11 10:32:01,347 INFO ===> New TaichiEnv created.
+2024-03-11 10:32:01,347 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:32:58,101 INFO =====> Total loss: 33341.94921875
+2024-03-11 10:32:58,102 INFO ========> Avg. Validation loss: point_distance_sr: 26704.616861979168
+2024-03-11 10:32:58,102 INFO ========> Avg. Validation loss: point_distance_rs: 5695.6927490234375
+2024-03-11 10:32:58,102 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 32400.30859375
+2024-03-11 10:32:58,102 INFO ========> Avg. Validation loss: particle_distance_sr: 11029.760904947916
+2024-03-11 10:32:58,102 INFO ========> Avg. Validation loss: particle_distance_rs: 12348.430582682291
+2024-03-11 10:32:58,102 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23378.19140625
+2024-03-11 10:32:58,102 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3438.8855794270835
+2024-03-11 10:32:58,102 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7298.7733154296875
+2024-03-11 10:32:58,103 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 37575.021809895836
+2024-03-11 10:32:58,103 INFO ========> Avg. Validation loss: total_loss: 32400.30859375
+2024-03-11 10:32:58,103 INFO ========> Num. aborted data so far: 0
+2024-03-11 10:32:58,829 INFO =====> Computing: epoch 67, motion 4, agent round, data 1
+2024-03-11 10:32:58,831 INFO ===> New TaichiEnv created.
+2024-03-11 10:32:58,831 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:34:27,956 INFO =====> Total loss: 26642.150390625
+2024-03-11 10:34:27,956 INFO =====> Grad: [ 2.6809487e-03  2.2675572e+02 -5.6203997e-01  1.1937089e+00
+  7.5456451e+01 -1.2860817e+03]
+2024-03-11 10:34:27,957 INFO ========> Avg. Loss: point_distance_sr: 21945.767578125
+2024-03-11 10:34:27,957 INFO ========> Avg. Loss: point_distance_rs: 4696.3828125
+2024-03-11 10:34:27,957 INFO ========> Avg. Loss: chamfer_loss_pcd: 26642.150390625
+2024-03-11 10:34:27,957 INFO ========> Avg. Loss: particle_distance_sr: 10365.564453125
+2024-03-11 10:34:27,958 INFO ========> Avg. Loss: particle_distance_rs: 12987.8623046875
+2024-03-11 10:34:27,958 INFO ========> Avg. Loss: chamfer_loss_particle: 23353.42578125
+2024-03-11 10:34:27,958 INFO ========> Avg. Loss: height_map_loss_pcd: 2259.300537109375
+2024-03-11 10:34:27,958 INFO ========> Avg. Loss: emd_point_distance_loss: 6017.55712890625
+2024-03-11 10:34:27,958 INFO ========> Avg. Loss: emd_particle_distance_loss: 36963.2734375
+2024-03-11 10:34:27,958 INFO ========> Avg. Loss: total_loss: 26642.150390625
+2024-03-11 10:34:27,959 INFO ========> Avg. grads: [ 2.6809487e-03  2.2675572e+02 -5.6203997e-01  1.1937089e+00
+  7.5456451e+01 -1.2860817e+03]
+2024-03-11 10:34:27,959 INFO ========> Num. aborted data so far: 0
+2024-03-11 10:34:27,960 INFO =====> Run validation at epoch 67
+2024-03-11 10:34:28,439 INFO ===> New TaichiEnv created.
+2024-03-11 10:34:28,439 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:37:41,513 INFO =====> Total loss: 38524.9453125
+2024-03-11 10:37:41,977 INFO ===> New TaichiEnv created.
+2024-03-11 10:37:41,977 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:38:21,144 INFO =====> Total loss: 28715.77734375
+2024-03-11 10:38:21,559 INFO ===> New TaichiEnv created.
+2024-03-11 10:38:21,559 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:40:58,427 INFO =====> Total loss: 37156.375
+2024-03-11 10:40:58,880 INFO ===> New TaichiEnv created.
+2024-03-11 10:40:58,881 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:41:50,639 INFO =====> Total loss: 28942.9609375
+2024-03-11 10:41:51,099 INFO ===> New TaichiEnv created.
+2024-03-11 10:41:51,099 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:42:49,538 INFO =====> Total loss: 27446.111328125
+2024-03-11 10:42:49,985 INFO ===> New TaichiEnv created.
+2024-03-11 10:42:49,985 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:43:45,977 INFO =====> Total loss: 33250.59765625
+2024-03-11 10:43:45,978 INFO ========> Avg. Validation loss: point_distance_sr: 26676.048177083332
+2024-03-11 10:43:45,978 INFO ========> Avg. Validation loss: point_distance_rs: 5663.4126383463545
+2024-03-11 10:43:45,978 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 32339.461263020832
+2024-03-11 10:43:45,978 INFO ========> Avg. Validation loss: particle_distance_sr: 10952.581705729166
+2024-03-11 10:43:45,978 INFO ========> Avg. Validation loss: particle_distance_rs: 12253.343180338541
+2024-03-11 10:43:45,978 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23205.9248046875
+2024-03-11 10:43:45,978 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3404.2732747395835
+2024-03-11 10:43:45,978 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7244.8647867838545
+2024-03-11 10:43:45,978 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 37213.701822916664
+2024-03-11 10:43:45,978 INFO ========> Avg. Validation loss: total_loss: 32339.461263020832
+2024-03-11 10:43:45,978 INFO ========> Num. aborted data so far: 0
+2024-03-11 10:43:46,690 INFO =====> Computing: epoch 68, motion 4, agent round, data 1
+2024-03-11 10:43:46,691 INFO ===> New TaichiEnv created.
+2024-03-11 10:43:46,691 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:45:14,923 INFO =====> Total loss: 26610.060546875
+2024-03-11 10:45:14,924 INFO =====> Grad: [ 2.6056957e-03  2.1482426e+02 -5.9082854e-01  1.2600862e+00
+ -1.5412048e+02 -1.4194655e+03]
+2024-03-11 10:45:14,925 INFO ========> Avg. Loss: point_distance_sr: 21957.357421875
+2024-03-11 10:45:14,925 INFO ========> Avg. Loss: point_distance_rs: 4652.70361328125
+2024-03-11 10:45:14,925 INFO ========> Avg. Loss: chamfer_loss_pcd: 26610.060546875
+2024-03-11 10:45:14,925 INFO ========> Avg. Loss: particle_distance_sr: 10355.3046875
+2024-03-11 10:45:14,925 INFO ========> Avg. Loss: particle_distance_rs: 12919.0068359375
+2024-03-11 10:45:14,925 INFO ========> Avg. Loss: chamfer_loss_particle: 23274.3125
+2024-03-11 10:45:14,925 INFO ========> Avg. Loss: height_map_loss_pcd: 2219.650146484375
+2024-03-11 10:45:14,926 INFO ========> Avg. Loss: emd_point_distance_loss: 5937.623046875
+2024-03-11 10:45:14,926 INFO ========> Avg. Loss: emd_particle_distance_loss: 36381.26953125
+2024-03-11 10:45:14,926 INFO ========> Avg. Loss: total_loss: 26610.060546875
+2024-03-11 10:45:14,926 INFO ========> Avg. grads: [ 2.6056957e-03  2.1482426e+02 -5.9082854e-01  1.2600862e+00
+ -1.5412048e+02 -1.4194655e+03]
+2024-03-11 10:45:14,926 INFO ========> Num. aborted data so far: 0
+2024-03-11 10:45:14,929 INFO =====> Run validation at epoch 68
+2024-03-11 10:45:15,432 INFO ===> New TaichiEnv created.
+2024-03-11 10:45:15,432 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:48:32,208 INFO =====> Total loss: 38393.6796875
+2024-03-11 10:48:32,656 INFO ===> New TaichiEnv created.
+2024-03-11 10:48:32,656 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:49:12,039 INFO =====> Total loss: 28779.3046875
+2024-03-11 10:49:12,492 INFO ===> New TaichiEnv created.
+2024-03-11 10:49:12,492 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:51:47,245 INFO =====> Total loss: 37047.2734375
+2024-03-11 10:51:47,705 INFO ===> New TaichiEnv created.
+2024-03-11 10:51:47,706 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:52:38,855 INFO =====> Total loss: 28959.138671875
+2024-03-11 10:52:39,305 INFO ===> New TaichiEnv created.
+2024-03-11 10:52:39,306 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:53:38,018 INFO =====> Total loss: 27310.08984375
+2024-03-11 10:53:38,474 INFO ===> New TaichiEnv created.
+2024-03-11 10:53:38,474 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:54:33,071 INFO =====> Total loss: 33173.39453125
+2024-03-11 10:54:33,072 INFO ========> Avg. Validation loss: point_distance_sr: 26645.703450520832
+2024-03-11 10:54:33,072 INFO ========> Avg. Validation loss: point_distance_rs: 5631.442789713542
+2024-03-11 10:54:33,072 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 32277.146809895832
+2024-03-11 10:54:33,073 INFO ========> Avg. Validation loss: particle_distance_sr: 10892.63232421875
+2024-03-11 10:54:33,073 INFO ========> Avg. Validation loss: particle_distance_rs: 12167.137125651041
+2024-03-11 10:54:33,073 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23059.769856770832
+2024-03-11 10:54:33,073 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3387.310791015625
+2024-03-11 10:54:33,073 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7194.5063069661455
+2024-03-11 10:54:33,073 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 36873.444661458336
+2024-03-11 10:54:33,073 INFO ========> Avg. Validation loss: total_loss: 32277.146809895832
+2024-03-11 10:54:33,073 INFO ========> Num. aborted data so far: 0
+2024-03-11 10:54:33,802 INFO =====> Computing: epoch 69, motion 4, agent round, data 1
+2024-03-11 10:54:33,804 INFO ===> New TaichiEnv created.
+2024-03-11 10:54:33,804 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:56:00,036 INFO =====> Total loss: 26581.23046875
+2024-03-11 10:56:00,036 INFO =====> Grad: [ 1.7615249e-03 -2.0033028e+02 -5.6195658e-01  1.2721143e+00
+ -4.0262274e+02 -1.2560350e+03]
+2024-03-11 10:56:00,037 INFO ========> Avg. Loss: point_distance_sr: 21971.5078125
+2024-03-11 10:56:00,038 INFO ========> Avg. Loss: point_distance_rs: 4609.72314453125
+2024-03-11 10:56:00,038 INFO ========> Avg. Loss: chamfer_loss_pcd: 26581.23046875
+2024-03-11 10:56:00,038 INFO ========> Avg. Loss: particle_distance_sr: 10350.533203125
+2024-03-11 10:56:00,039 INFO ========> Avg. Loss: particle_distance_rs: 12862.884765625
+2024-03-11 10:56:00,039 INFO ========> Avg. Loss: chamfer_loss_particle: 23213.41796875
+2024-03-11 10:56:00,039 INFO ========> Avg. Loss: height_map_loss_pcd: 2211.077392578125
+2024-03-11 10:56:00,039 INFO ========> Avg. Loss: emd_point_distance_loss: 5863.74072265625
+2024-03-11 10:56:00,039 INFO ========> Avg. Loss: emd_particle_distance_loss: 35846.51953125
+2024-03-11 10:56:00,039 INFO ========> Avg. Loss: total_loss: 26581.23046875
+2024-03-11 10:56:00,040 INFO ========> Avg. grads: [ 1.7615249e-03 -2.0033028e+02 -5.6195658e-01  1.2721143e+00
+ -4.0262274e+02 -1.2560350e+03]
+2024-03-11 10:56:00,040 INFO ========> Num. aborted data so far: 0
+2024-03-11 10:56:00,042 INFO =====> Run validation at epoch 69
+2024-03-11 10:56:00,521 INFO ===> New TaichiEnv created.
+2024-03-11 10:56:00,522 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:59:14,764 INFO =====> Total loss: 38280.1640625
+2024-03-11 10:59:15,215 INFO ===> New TaichiEnv created.
+2024-03-11 10:59:15,215 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 10:59:55,316 INFO =====> Total loss: 28837.998046875
+2024-03-11 10:59:55,773 INFO ===> New TaichiEnv created.
+2024-03-11 10:59:55,773 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:02:28,666 INFO =====> Total loss: 36945.171875
+2024-03-11 11:02:29,132 INFO ===> New TaichiEnv created.
+2024-03-11 11:02:29,132 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:03:20,048 INFO =====> Total loss: 28976.33203125
+2024-03-11 11:03:20,502 INFO ===> New TaichiEnv created.
+2024-03-11 11:03:20,502 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:04:16,842 INFO =====> Total loss: 27032.84765625
+2024-03-11 11:04:17,302 INFO ===> New TaichiEnv created.
+2024-03-11 11:04:17,303 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:05:11,632 INFO =====> Total loss: 33095.5546875
+2024-03-11 11:05:11,633 INFO ========> Avg. Validation loss: point_distance_sr: 26600.055989583332
+2024-03-11 11:05:11,634 INFO ========> Avg. Validation loss: point_distance_rs: 5594.62158203125
+2024-03-11 11:05:11,634 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 32194.678059895832
+2024-03-11 11:05:11,634 INFO ========> Avg. Validation loss: particle_distance_sr: 10867.420979817709
+2024-03-11 11:05:11,634 INFO ========> Avg. Validation loss: particle_distance_rs: 12100.11962890625
+2024-03-11 11:05:11,634 INFO ========> Avg. Validation loss: chamfer_loss_particle: 22967.5400390625
+2024-03-11 11:05:11,634 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3422.6539713541665
+2024-03-11 11:05:11,634 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7140.9678955078125
+2024-03-11 11:05:11,634 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 36557.423502604164
+2024-03-11 11:05:11,634 INFO ========> Avg. Validation loss: total_loss: 32194.678059895832
+2024-03-11 11:05:11,634 INFO ========> Num. aborted data so far: 0
+2024-03-11 11:05:12,294 INFO =====> Computing: epoch 70, motion 4, agent round, data 1
+2024-03-11 11:05:12,295 INFO ===> New TaichiEnv created.
+2024-03-11 11:05:12,296 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:06:39,360 INFO =====> Total loss: 26557.833984375
+2024-03-11 11:06:39,361 INFO =====> Grad: [ 4.2552338e-04 -6.2468634e+02 -5.2471501e-01  1.2870964e+00
+ -6.4361346e+02 -9.9316125e+02]
+2024-03-11 11:06:39,362 INFO ========> Avg. Loss: point_distance_sr: 21986.916015625
+2024-03-11 11:06:39,362 INFO ========> Avg. Loss: point_distance_rs: 4570.91796875
+2024-03-11 11:06:39,362 INFO ========> Avg. Loss: chamfer_loss_pcd: 26557.833984375
+2024-03-11 11:06:39,362 INFO ========> Avg. Loss: particle_distance_sr: 10355.8564453125
+2024-03-11 11:06:39,362 INFO ========> Avg. Loss: particle_distance_rs: 12825.52734375
+2024-03-11 11:06:39,362 INFO ========> Avg. Loss: chamfer_loss_particle: 23181.3828125
+2024-03-11 11:06:39,362 INFO ========> Avg. Loss: height_map_loss_pcd: 2204.549072265625
+2024-03-11 11:06:39,362 INFO ========> Avg. Loss: emd_point_distance_loss: 5797.5078125
+2024-03-11 11:06:39,362 INFO ========> Avg. Loss: emd_particle_distance_loss: 35347.875
+2024-03-11 11:06:39,363 INFO ========> Avg. Loss: total_loss: 26557.833984375
+2024-03-11 11:06:39,363 INFO ========> Avg. grads: [ 4.2552338e-04 -6.2468634e+02 -5.2471501e-01  1.2870964e+00
+ -6.4361346e+02 -9.9316125e+02]
+2024-03-11 11:06:39,364 INFO ========> Num. aborted data so far: 0
+2024-03-11 11:06:39,367 INFO =====> Run validation at epoch 70
+2024-03-11 11:06:39,860 INFO ===> New TaichiEnv created.
+2024-03-11 11:06:39,860 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:09:56,353 INFO =====> Total loss: 38183.7734375
+2024-03-11 11:09:56,803 INFO ===> New TaichiEnv created.
+2024-03-11 11:09:56,803 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:10:36,520 INFO =====> Total loss: 28894.30078125
+2024-03-11 11:10:36,985 INFO ===> New TaichiEnv created.
+2024-03-11 11:10:36,985 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:13:09,257 INFO =====> Total loss: 36853.55078125
+2024-03-11 11:13:09,718 INFO ===> New TaichiEnv created.
+2024-03-11 11:13:09,718 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:14:01,077 INFO =====> Total loss: 28992.826171875
+2024-03-11 11:14:01,530 INFO ===> New TaichiEnv created.
+2024-03-11 11:14:01,530 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:14:55,502 INFO =====> Total loss: 26577.546875
+2024-03-11 11:14:55,982 INFO ===> New TaichiEnv created.
+2024-03-11 11:14:55,982 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:15:49,792 INFO =====> Total loss: 33018.234375
+2024-03-11 11:15:49,793 INFO ========> Avg. Validation loss: point_distance_sr: 26531.916015625
+2024-03-11 11:15:49,793 INFO ========> Avg. Validation loss: point_distance_rs: 5554.7894287109375
+2024-03-11 11:15:49,794 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 32086.705403645832
+2024-03-11 11:15:49,794 INFO ========> Avg. Validation loss: particle_distance_sr: 10886.001546223959
+2024-03-11 11:15:49,794 INFO ========> Avg. Validation loss: particle_distance_rs: 12059.453043619791
+2024-03-11 11:15:49,794 INFO ========> Avg. Validation loss: chamfer_loss_particle: 22945.454264322918
+2024-03-11 11:15:49,794 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3390.968221028646
+2024-03-11 11:15:49,794 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7086.954833984375
+2024-03-11 11:15:49,794 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 36295.783854166664
+2024-03-11 11:15:49,794 INFO ========> Avg. Validation loss: total_loss: 32086.705403645832
+2024-03-11 11:15:49,794 INFO ========> Num. aborted data so far: 0
+2024-03-11 11:15:50,553 INFO =====> Computing: epoch 71, motion 4, agent round, data 1
+2024-03-11 11:15:50,554 INFO ===> New TaichiEnv created.
+2024-03-11 11:15:50,554 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:17:15,906 INFO =====> Total loss: 26539.0625
+2024-03-11 11:17:15,906 INFO =====> Grad: [-2.6639935e-04 -1.0228634e+03 -5.1291823e-01  1.3083849e+00
+ -1.0495469e+03 -8.4306665e+02]
+2024-03-11 11:17:15,907 INFO ========> Avg. Loss: point_distance_sr: 22004.029296875
+2024-03-11 11:17:15,907 INFO ========> Avg. Loss: point_distance_rs: 4535.0341796875
+2024-03-11 11:17:15,907 INFO ========> Avg. Loss: chamfer_loss_pcd: 26539.0625
+2024-03-11 11:17:15,907 INFO ========> Avg. Loss: particle_distance_sr: 10363.990234375
+2024-03-11 11:17:15,907 INFO ========> Avg. Loss: particle_distance_rs: 12790.1337890625
+2024-03-11 11:17:15,907 INFO ========> Avg. Loss: chamfer_loss_particle: 23154.125
+2024-03-11 11:17:15,907 INFO ========> Avg. Loss: height_map_loss_pcd: 2245.813720703125
+2024-03-11 11:17:15,908 INFO ========> Avg. Loss: emd_point_distance_loss: 5741.42578125
+2024-03-11 11:17:15,908 INFO ========> Avg. Loss: emd_particle_distance_loss: 34908.1015625
+2024-03-11 11:17:15,908 INFO ========> Avg. Loss: total_loss: 26539.0625
+2024-03-11 11:17:15,908 INFO ========> Avg. grads: [-2.6639935e-04 -1.0228634e+03 -5.1291823e-01  1.3083849e+00
+ -1.0495469e+03 -8.4306665e+02]
+2024-03-11 11:17:15,908 INFO ========> Num. aborted data so far: 0
+2024-03-11 11:17:15,910 INFO =====> Run validation at epoch 71
+2024-03-11 11:17:16,391 INFO ===> New TaichiEnv created.
+2024-03-11 11:17:16,392 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:20:31,664 INFO =====> Total loss: 38101.46875
+2024-03-11 11:20:32,117 INFO ===> New TaichiEnv created.
+2024-03-11 11:20:32,117 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:21:11,852 INFO =====> Total loss: 28941.107421875
+2024-03-11 11:21:12,307 INFO ===> New TaichiEnv created.
+2024-03-11 11:21:12,307 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:23:43,874 INFO =====> Total loss: 36770.38671875
+2024-03-11 11:23:44,333 INFO ===> New TaichiEnv created.
+2024-03-11 11:23:44,333 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:24:35,328 INFO =====> Total loss: 29009.12109375
+2024-03-11 11:24:35,782 INFO ===> New TaichiEnv created.
+2024-03-11 11:24:35,782 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:25:26,433 INFO =====> Total loss: 25897.580078125
+2024-03-11 11:25:26,889 INFO ===> New TaichiEnv created.
+2024-03-11 11:25:26,889 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:26:20,328 INFO =====> Total loss: 32948.06640625
+2024-03-11 11:26:20,329 INFO ========> Avg. Validation loss: point_distance_sr: 26431.937825520832
+2024-03-11 11:26:20,329 INFO ========> Avg. Validation loss: point_distance_rs: 5512.684407552083
+2024-03-11 11:26:20,329 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31944.621744791668
+2024-03-11 11:26:20,329 INFO ========> Avg. Validation loss: particle_distance_sr: 10856.227132161459
+2024-03-11 11:26:20,329 INFO ========> Avg. Validation loss: particle_distance_rs: 12001.145345052084
+2024-03-11 11:26:20,329 INFO ========> Avg. Validation loss: chamfer_loss_particle: 22857.3720703125
+2024-03-11 11:26:20,329 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3369.189412434896
+2024-03-11 11:26:20,329 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7038.1121012369795
+2024-03-11 11:26:20,329 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 36171.083984375
+2024-03-11 11:26:20,329 INFO ========> Avg. Validation loss: total_loss: 31944.621744791668
+2024-03-11 11:26:20,329 INFO ========> Num. aborted data so far: 0
+2024-03-11 11:26:21,048 INFO =====> Computing: epoch 72, motion 4, agent round, data 1
+2024-03-11 11:26:21,049 INFO ===> New TaichiEnv created.
+2024-03-11 11:26:21,049 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:27:46,942 INFO =====> Total loss: 26524.919921875
+2024-03-11 11:27:46,942 INFO =====> Grad: [-1.8216176e-03 -1.5295527e+03 -4.6089327e-01  1.2718278e+00
+ -1.4716794e+03 -5.1838556e+02]
+2024-03-11 11:27:46,943 INFO ========> Avg. Loss: point_distance_sr: 22021.34765625
+2024-03-11 11:27:46,943 INFO ========> Avg. Loss: point_distance_rs: 4503.57275390625
+2024-03-11 11:27:46,943 INFO ========> Avg. Loss: chamfer_loss_pcd: 26524.919921875
+2024-03-11 11:27:46,943 INFO ========> Avg. Loss: particle_distance_sr: 10367.3759765625
+2024-03-11 11:27:46,943 INFO ========> Avg. Loss: particle_distance_rs: 12746.1494140625
+2024-03-11 11:27:46,943 INFO ========> Avg. Loss: chamfer_loss_particle: 23113.525390625
+2024-03-11 11:27:46,944 INFO ========> Avg. Loss: height_map_loss_pcd: 2238.069580078125
+2024-03-11 11:27:46,944 INFO ========> Avg. Loss: emd_point_distance_loss: 5694.41357421875
+2024-03-11 11:27:46,944 INFO ========> Avg. Loss: emd_particle_distance_loss: 34544.7421875
+2024-03-11 11:27:46,944 INFO ========> Avg. Loss: total_loss: 26524.919921875
+2024-03-11 11:27:46,944 INFO ========> Avg. grads: [-1.8216176e-03 -1.5295527e+03 -4.6089327e-01  1.2718278e+00
+ -1.4716794e+03 -5.1838556e+02]
+2024-03-11 11:27:46,944 INFO ========> Num. aborted data so far: 0
+2024-03-11 11:27:46,947 INFO =====> Run validation at epoch 72
+2024-03-11 11:27:47,442 INFO ===> New TaichiEnv created.
+2024-03-11 11:27:47,442 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:31:02,248 INFO =====> Total loss: 38036.55859375
+2024-03-11 11:31:02,702 INFO ===> New TaichiEnv created.
+2024-03-11 11:31:02,702 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:31:42,139 INFO =====> Total loss: 28971.30859375
+2024-03-11 11:31:42,592 INFO ===> New TaichiEnv created.
+2024-03-11 11:31:42,592 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:34:12,945 INFO =====> Total loss: 36699.7421875
+2024-03-11 11:34:13,395 INFO ===> New TaichiEnv created.
+2024-03-11 11:34:13,395 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:35:03,191 INFO =====> Total loss: 29023.228515625
+2024-03-11 11:35:03,650 INFO ===> New TaichiEnv created.
+2024-03-11 11:35:03,650 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:35:53,766 INFO =====> Total loss: 25504.607421875
+2024-03-11 11:35:54,198 INFO ===> New TaichiEnv created.
+2024-03-11 11:35:54,198 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:36:46,921 INFO =====> Total loss: 32886.203125
+2024-03-11 11:36:46,922 INFO ========> Avg. Validation loss: point_distance_sr: 26360.373697916668
+2024-03-11 11:36:46,923 INFO ========> Avg. Validation loss: point_distance_rs: 5493.233968098958
+2024-03-11 11:36:46,923 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31853.608072916668
+2024-03-11 11:36:46,923 INFO ========> Avg. Validation loss: particle_distance_sr: 10857.857503255209
+2024-03-11 11:36:46,923 INFO ========> Avg. Validation loss: particle_distance_rs: 12005.69921875
+2024-03-11 11:36:46,923 INFO ========> Avg. Validation loss: chamfer_loss_particle: 22863.556640625
+2024-03-11 11:36:46,924 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3351.040283203125
+2024-03-11 11:36:46,924 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7010.8095703125
+2024-03-11 11:36:46,924 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 36191.450520833336
+2024-03-11 11:36:46,924 INFO ========> Avg. Validation loss: total_loss: 31853.608072916668
+2024-03-11 11:36:46,924 INFO ========> Num. aborted data so far: 0
+2024-03-11 11:36:47,639 INFO =====> Computing: epoch 73, motion 4, agent round, data 1
+2024-03-11 11:36:47,641 INFO ===> New TaichiEnv created.
+2024-03-11 11:36:47,641 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:38:12,282 INFO =====> Total loss: 26512.54296875
+2024-03-11 11:38:12,282 INFO =====> Grad: [-2.3039437e-03 -1.7074259e+03 -4.2907861e-01  1.2312096e+00
+ -1.6175337e+03 -4.2581702e+02]
+2024-03-11 11:38:12,283 INFO ========> Avg. Loss: point_distance_sr: 22034.705078125
+2024-03-11 11:38:12,283 INFO ========> Avg. Loss: point_distance_rs: 4477.83837890625
+2024-03-11 11:38:12,283 INFO ========> Avg. Loss: chamfer_loss_pcd: 26512.54296875
+2024-03-11 11:38:12,283 INFO ========> Avg. Loss: particle_distance_sr: 10358.7099609375
+2024-03-11 11:38:12,284 INFO ========> Avg. Loss: particle_distance_rs: 12691.9501953125
+2024-03-11 11:38:12,284 INFO ========> Avg. Loss: chamfer_loss_particle: 23050.66015625
+2024-03-11 11:38:12,284 INFO ========> Avg. Loss: height_map_loss_pcd: 2249.180908203125
+2024-03-11 11:38:12,284 INFO ========> Avg. Loss: emd_point_distance_loss: 5658.3203125
+2024-03-11 11:38:12,284 INFO ========> Avg. Loss: emd_particle_distance_loss: 34275.55078125
+2024-03-11 11:38:12,284 INFO ========> Avg. Loss: total_loss: 26512.54296875
+2024-03-11 11:38:12,284 INFO ========> Avg. grads: [-2.3039437e-03 -1.7074259e+03 -4.2907861e-01  1.2312096e+00
+ -1.6175337e+03 -4.2581702e+02]
+2024-03-11 11:38:12,284 INFO ========> Num. aborted data so far: 0
+2024-03-11 11:38:12,287 INFO =====> Run validation at epoch 73
+2024-03-11 11:38:12,791 INFO ===> New TaichiEnv created.
+2024-03-11 11:38:12,791 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:41:25,611 INFO =====> Total loss: 37990.45703125
+2024-03-11 11:41:26,033 INFO ===> New TaichiEnv created.
+2024-03-11 11:41:26,033 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:42:05,646 INFO =====> Total loss: 28985.1875
+2024-03-11 11:42:06,098 INFO ===> New TaichiEnv created.
+2024-03-11 11:42:06,098 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:44:34,376 INFO =====> Total loss: 36640.453125
+2024-03-11 11:44:34,793 INFO ===> New TaichiEnv created.
+2024-03-11 11:44:34,793 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:45:24,928 INFO =====> Total loss: 29033.103515625
+2024-03-11 11:45:25,389 INFO ===> New TaichiEnv created.
+2024-03-11 11:45:25,389 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:46:15,554 INFO =====> Total loss: 25474.0078125
+2024-03-11 11:46:16,014 INFO ===> New TaichiEnv created.
+2024-03-11 11:46:16,015 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:47:08,725 INFO =====> Total loss: 32832.72265625
+2024-03-11 11:47:08,726 INFO ========> Avg. Validation loss: point_distance_sr: 26329.068359375
+2024-03-11 11:47:08,726 INFO ========> Avg. Validation loss: point_distance_rs: 5496.9206136067705
+2024-03-11 11:47:08,726 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31825.988606770832
+2024-03-11 11:47:08,726 INFO ========> Avg. Validation loss: particle_distance_sr: 10915.722249348959
+2024-03-11 11:47:08,726 INFO ========> Avg. Validation loss: particle_distance_rs: 12083.345133463541
+2024-03-11 11:47:08,726 INFO ========> Avg. Validation loss: chamfer_loss_particle: 22999.067545572918
+2024-03-11 11:47:08,726 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3350.580322265625
+2024-03-11 11:47:08,726 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7006.639567057292
+2024-03-11 11:47:08,726 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 36191.772135416664
+2024-03-11 11:47:08,726 INFO ========> Avg. Validation loss: total_loss: 31825.988606770832
+2024-03-11 11:47:08,726 INFO ========> Num. aborted data so far: 0
+2024-03-11 11:47:09,494 INFO =====> Computing: epoch 74, motion 4, agent round, data 1
+2024-03-11 11:47:09,496 INFO ===> New TaichiEnv created.
+2024-03-11 11:47:09,496 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:48:33,848 INFO =====> Total loss: 26498.828125
+2024-03-11 11:48:33,848 INFO =====> Grad: [-2.9635471e-03 -1.7970538e+03 -4.1136536e-01  1.2328031e+00
+ -1.5157441e+03 -3.2362549e+02]
+2024-03-11 11:48:33,849 INFO ========> Avg. Loss: point_distance_sr: 22042.66796875
+2024-03-11 11:48:33,849 INFO ========> Avg. Loss: point_distance_rs: 4456.15966796875
+2024-03-11 11:48:33,849 INFO ========> Avg. Loss: chamfer_loss_pcd: 26498.828125
+2024-03-11 11:48:33,849 INFO ========> Avg. Loss: particle_distance_sr: 10362.33203125
+2024-03-11 11:48:33,849 INFO ========> Avg. Loss: particle_distance_rs: 12658.12109375
+2024-03-11 11:48:33,850 INFO ========> Avg. Loss: chamfer_loss_particle: 23020.453125
+2024-03-11 11:48:33,850 INFO ========> Avg. Loss: height_map_loss_pcd: 2245.070556640625
+2024-03-11 11:48:33,850 INFO ========> Avg. Loss: emd_point_distance_loss: 5630.04541015625
+2024-03-11 11:48:33,850 INFO ========> Avg. Loss: emd_particle_distance_loss: 34084.10546875
+2024-03-11 11:48:33,850 INFO ========> Avg. Loss: total_loss: 26498.828125
+2024-03-11 11:48:33,850 INFO ========> Avg. grads: [-2.9635471e-03 -1.7970538e+03 -4.1136536e-01  1.2328031e+00
+ -1.5157441e+03 -3.2362549e+02]
+2024-03-11 11:48:33,850 INFO ========> Num. aborted data so far: 0
+2024-03-11 11:48:33,854 INFO =====> Run validation at epoch 74
+2024-03-11 11:48:34,353 INFO ===> New TaichiEnv created.
+2024-03-11 11:48:34,353 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:51:48,983 INFO =====> Total loss: 37959.0625
+2024-03-11 11:51:49,452 INFO ===> New TaichiEnv created.
+2024-03-11 11:51:49,452 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:52:29,119 INFO =====> Total loss: 28982.64453125
+2024-03-11 11:52:29,596 INFO ===> New TaichiEnv created.
+2024-03-11 11:52:29,596 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:54:56,424 INFO =====> Total loss: 36590.3828125
+2024-03-11 11:54:56,886 INFO ===> New TaichiEnv created.
+2024-03-11 11:54:56,886 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:55:47,137 INFO =====> Total loss: 29038.533203125
+2024-03-11 11:55:47,601 INFO ===> New TaichiEnv created.
+2024-03-11 11:55:47,602 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:56:37,895 INFO =====> Total loss: 25495.419921875
+2024-03-11 11:56:38,343 INFO ===> New TaichiEnv created.
+2024-03-11 11:56:38,343 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:57:30,484 INFO =====> Total loss: 32787.02734375
+2024-03-11 11:57:30,485 INFO ========> Avg. Validation loss: point_distance_sr: 26304.733072916668
+2024-03-11 11:57:30,486 INFO ========> Avg. Validation loss: point_distance_rs: 5504.1121012369795
+2024-03-11 11:57:30,486 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31808.845052083332
+2024-03-11 11:57:30,486 INFO ========> Avg. Validation loss: particle_distance_sr: 10954.895263671875
+2024-03-11 11:57:30,486 INFO ========> Avg. Validation loss: particle_distance_rs: 12144.545979817709
+2024-03-11 11:57:30,486 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23099.440755208332
+2024-03-11 11:57:30,486 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3346.282755533854
+2024-03-11 11:57:30,486 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7007.9631754557295
+2024-03-11 11:57:30,486 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 36202.3203125
+2024-03-11 11:57:30,486 INFO ========> Avg. Validation loss: total_loss: 31808.845052083332
+2024-03-11 11:57:30,486 INFO ========> Num. aborted data so far: 0
+2024-03-11 11:57:31,184 INFO =====> Computing: epoch 75, motion 4, agent round, data 1
+2024-03-11 11:57:31,186 INFO ===> New TaichiEnv created.
+2024-03-11 11:57:31,186 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 11:58:55,732 INFO =====> Total loss: 26482.771484375
+2024-03-11 11:58:55,732 INFO =====> Grad: [-3.3542505e-03 -1.9317600e+03 -3.8922280e-01  1.2091395e+00
+ -1.7189714e+03 -2.2296075e+02]
+2024-03-11 11:58:55,733 INFO ========> Avg. Loss: point_distance_sr: 22043.984375
+2024-03-11 11:58:55,734 INFO ========> Avg. Loss: point_distance_rs: 4438.787109375
+2024-03-11 11:58:55,734 INFO ========> Avg. Loss: chamfer_loss_pcd: 26482.771484375
+2024-03-11 11:58:55,734 INFO ========> Avg. Loss: particle_distance_sr: 10388.89453125
+2024-03-11 11:58:55,734 INFO ========> Avg. Loss: particle_distance_rs: 12654.708984375
+2024-03-11 11:58:55,734 INFO ========> Avg. Loss: chamfer_loss_particle: 23043.603515625
+2024-03-11 11:58:55,734 INFO ========> Avg. Loss: height_map_loss_pcd: 2253.9423828125
+2024-03-11 11:58:55,734 INFO ========> Avg. Loss: emd_point_distance_loss: 5608.4619140625
+2024-03-11 11:58:55,734 INFO ========> Avg. Loss: emd_particle_distance_loss: 33957.55859375
+2024-03-11 11:58:55,734 INFO ========> Avg. Loss: total_loss: 26482.771484375
+2024-03-11 11:58:55,735 INFO ========> Avg. grads: [-3.3542505e-03 -1.9317600e+03 -3.8922280e-01  1.2091395e+00
+ -1.7189714e+03 -2.2296075e+02]
+2024-03-11 11:58:55,735 INFO ========> Num. aborted data so far: 0
+2024-03-11 11:58:55,737 INFO =====> Run validation at epoch 75
+2024-03-11 11:58:56,221 INFO ===> New TaichiEnv created.
+2024-03-11 11:58:56,221 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:02:10,941 INFO =====> Total loss: 37941.1796875
+2024-03-11 12:02:11,393 INFO ===> New TaichiEnv created.
+2024-03-11 12:02:11,393 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:02:51,185 INFO =====> Total loss: 28986.21484375
+2024-03-11 12:02:51,645 INFO ===> New TaichiEnv created.
+2024-03-11 12:02:51,645 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:05:18,827 INFO =====> Total loss: 36549.89453125
+2024-03-11 12:05:19,294 INFO ===> New TaichiEnv created.
+2024-03-11 12:05:19,294 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:06:09,318 INFO =====> Total loss: 29038.83984375
+2024-03-11 12:06:09,775 INFO ===> New TaichiEnv created.
+2024-03-11 12:06:09,775 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:06:59,702 INFO =====> Total loss: 25505.96484375
+2024-03-11 12:07:00,156 INFO ===> New TaichiEnv created.
+2024-03-11 12:07:00,156 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:07:52,126 INFO =====> Total loss: 32746.263671875
+2024-03-11 12:07:52,127 INFO ========> Avg. Validation loss: point_distance_sr: 26283.551106770832
+2024-03-11 12:07:52,127 INFO ========> Avg. Validation loss: point_distance_rs: 5511.175455729167
+2024-03-11 12:07:52,127 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31794.726236979168
+2024-03-11 12:07:52,127 INFO ========> Avg. Validation loss: particle_distance_sr: 10968.104899088541
+2024-03-11 12:07:52,127 INFO ========> Avg. Validation loss: particle_distance_rs: 12178.823079427084
+2024-03-11 12:07:52,127 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23146.927734375
+2024-03-11 12:07:52,128 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3324.8834228515625
+2024-03-11 12:07:52,128 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7012.0262451171875
+2024-03-11 12:07:52,128 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 36229.4951171875
+2024-03-11 12:07:52,128 INFO ========> Avg. Validation loss: total_loss: 31794.726236979168
+2024-03-11 12:07:52,128 INFO ========> Num. aborted data so far: 0
+2024-03-11 12:07:52,861 INFO =====> Computing: epoch 76, motion 4, agent round, data 1
+2024-03-11 12:07:52,862 INFO ===> New TaichiEnv created.
+2024-03-11 12:07:52,862 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:09:16,421 INFO =====> Total loss: 26464.109375
+2024-03-11 12:09:16,422 INFO =====> Grad: [-3.7451619e-03 -1.9944570e+03 -3.7151644e-01  1.1919304e+00
+ -1.8061411e+03 -1.5982480e+02]
+2024-03-11 12:09:16,422 INFO ========> Avg. Loss: point_distance_sr: 22038.240234375
+2024-03-11 12:09:16,423 INFO ========> Avg. Loss: point_distance_rs: 4425.86962890625
+2024-03-11 12:09:16,423 INFO ========> Avg. Loss: chamfer_loss_pcd: 26464.109375
+2024-03-11 12:09:16,423 INFO ========> Avg. Loss: particle_distance_sr: 10426.8564453125
+2024-03-11 12:09:16,423 INFO ========> Avg. Loss: particle_distance_rs: 12670.009765625
+2024-03-11 12:09:16,423 INFO ========> Avg. Loss: chamfer_loss_particle: 23096.8671875
+2024-03-11 12:09:16,423 INFO ========> Avg. Loss: height_map_loss_pcd: 2258.861083984375
+2024-03-11 12:09:16,423 INFO ========> Avg. Loss: emd_point_distance_loss: 5592.87939453125
+2024-03-11 12:09:16,423 INFO ========> Avg. Loss: emd_particle_distance_loss: 33888.3203125
+2024-03-11 12:09:16,423 INFO ========> Avg. Loss: total_loss: 26464.109375
+2024-03-11 12:09:16,424 INFO ========> Avg. grads: [-3.7451619e-03 -1.9944570e+03 -3.7151644e-01  1.1919304e+00
+ -1.8061411e+03 -1.5982480e+02]
+2024-03-11 12:09:16,424 INFO ========> Num. aborted data so far: 0
+2024-03-11 12:09:16,426 INFO =====> Run validation at epoch 76
+2024-03-11 12:09:16,860 INFO ===> New TaichiEnv created.
+2024-03-11 12:09:16,860 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:12:31,412 INFO =====> Total loss: 37935.76171875
+2024-03-11 12:12:31,866 INFO ===> New TaichiEnv created.
+2024-03-11 12:12:31,867 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:13:11,656 INFO =====> Total loss: 28962.74609375
+2024-03-11 12:13:12,112 INFO ===> New TaichiEnv created.
+2024-03-11 12:13:12,112 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:15:40,413 INFO =====> Total loss: 36520.09765625
+2024-03-11 12:15:40,883 INFO ===> New TaichiEnv created.
+2024-03-11 12:15:40,883 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:16:30,939 INFO =====> Total loss: 29033.24609375
+2024-03-11 12:16:31,393 INFO ===> New TaichiEnv created.
+2024-03-11 12:16:31,393 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:17:21,802 INFO =====> Total loss: 25516.39453125
+2024-03-11 12:17:22,263 INFO ===> New TaichiEnv created.
+2024-03-11 12:17:22,263 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:18:14,388 INFO =====> Total loss: 32710.27734375
+2024-03-11 12:18:14,390 INFO ========> Avg. Validation loss: point_distance_sr: 26262.6826171875
+2024-03-11 12:18:14,390 INFO ========> Avg. Validation loss: point_distance_rs: 5517.0713297526045
+2024-03-11 12:18:14,390 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31779.75390625
+2024-03-11 12:18:14,390 INFO ========> Avg. Validation loss: particle_distance_sr: 10974.630615234375
+2024-03-11 12:18:14,390 INFO ========> Avg. Validation loss: particle_distance_rs: 12201.871826171875
+2024-03-11 12:18:14,390 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23176.501953125
+2024-03-11 12:18:14,390 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3308.9039713541665
+2024-03-11 12:18:14,390 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7017.849202473958
+2024-03-11 12:18:14,390 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 36280.07421875
+2024-03-11 12:18:14,390 INFO ========> Avg. Validation loss: total_loss: 31779.75390625
+2024-03-11 12:18:14,390 INFO ========> Num. aborted data so far: 0
+2024-03-11 12:18:15,061 INFO =====> Computing: epoch 77, motion 4, agent round, data 1
+2024-03-11 12:18:15,063 INFO ===> New TaichiEnv created.
+2024-03-11 12:18:15,063 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:19:37,982 INFO =====> Total loss: 26440.83984375
+2024-03-11 12:19:37,982 INFO =====> Grad: [-3.14051844e-03 -2.04145032e+03 -3.71631116e-01  1.18349421e+00
+ -2.08233350e+03 -1.02106224e+02]
+2024-03-11 12:19:37,983 INFO ========> Avg. Loss: point_distance_sr: 22024.14453125
+2024-03-11 12:19:37,983 INFO ========> Avg. Loss: point_distance_rs: 4416.6962890625
+2024-03-11 12:19:37,983 INFO ========> Avg. Loss: chamfer_loss_pcd: 26440.83984375
+2024-03-11 12:19:37,983 INFO ========> Avg. Loss: particle_distance_sr: 10474.201171875
+2024-03-11 12:19:37,983 INFO ========> Avg. Loss: particle_distance_rs: 12701.408203125
+2024-03-11 12:19:37,984 INFO ========> Avg. Loss: chamfer_loss_particle: 23175.609375
+2024-03-11 12:19:37,984 INFO ========> Avg. Loss: height_map_loss_pcd: 2255.984130859375
+2024-03-11 12:19:37,984 INFO ========> Avg. Loss: emd_point_distance_loss: 5582.68505859375
+2024-03-11 12:19:37,984 INFO ========> Avg. Loss: emd_particle_distance_loss: 33870.06640625
+2024-03-11 12:19:37,984 INFO ========> Avg. Loss: total_loss: 26440.83984375
+2024-03-11 12:19:37,984 INFO ========> Avg. grads: [-3.14051844e-03 -2.04145032e+03 -3.71631116e-01  1.18349421e+00
+ -2.08233350e+03 -1.02106224e+02]
+2024-03-11 12:19:37,984 INFO ========> Num. aborted data so far: 0
+2024-03-11 12:19:37,986 INFO =====> Run validation at epoch 77
+2024-03-11 12:19:38,480 INFO ===> New TaichiEnv created.
+2024-03-11 12:19:38,480 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:22:51,670 INFO =====> Total loss: 37941.36328125
+2024-03-11 12:22:52,122 INFO ===> New TaichiEnv created.
+2024-03-11 12:22:52,123 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:23:31,723 INFO =====> Total loss: 28919.87890625
+2024-03-11 12:23:32,183 INFO ===> New TaichiEnv created.
+2024-03-11 12:23:32,183 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:26:00,352 INFO =====> Total loss: 36499.4453125
+2024-03-11 12:26:00,834 INFO ===> New TaichiEnv created.
+2024-03-11 12:26:00,834 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:26:51,100 INFO =====> Total loss: 29020.982421875
+2024-03-11 12:26:51,507 INFO ===> New TaichiEnv created.
+2024-03-11 12:26:51,507 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:27:41,974 INFO =====> Total loss: 25528.951171875
+2024-03-11 12:27:42,432 INFO ===> New TaichiEnv created.
+2024-03-11 12:27:42,432 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:28:34,580 INFO =====> Total loss: 32676.77734375
+2024-03-11 12:28:34,581 INFO ========> Avg. Validation loss: point_distance_sr: 26240.680338541668
+2024-03-11 12:28:34,581 INFO ========> Avg. Validation loss: point_distance_rs: 5523.886067708333
+2024-03-11 12:28:34,582 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31764.56640625
+2024-03-11 12:28:34,582 INFO ========> Avg. Validation loss: particle_distance_sr: 10985.651204427084
+2024-03-11 12:28:34,582 INFO ========> Avg. Validation loss: particle_distance_rs: 12225.496256510416
+2024-03-11 12:28:34,582 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23211.147623697918
+2024-03-11 12:28:34,582 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3306.9916178385415
+2024-03-11 12:28:34,582 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7027.2681070963545
+2024-03-11 12:28:34,582 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 36363.990234375
+2024-03-11 12:28:34,582 INFO ========> Avg. Validation loss: total_loss: 31764.56640625
+2024-03-11 12:28:34,582 INFO ========> Num. aborted data so far: 0
+2024-03-11 12:28:35,319 INFO =====> Computing: epoch 78, motion 4, agent round, data 1
+2024-03-11 12:28:35,320 INFO ===> New TaichiEnv created.
+2024-03-11 12:28:35,321 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:29:59,294 INFO =====> Total loss: 26413.82421875
+2024-03-11 12:29:59,294 INFO =====> Grad: [-3.7500632e-03 -2.1568359e+03 -3.5406199e-01  1.1749808e+00
+ -1.9163950e+03 -3.2921619e+01]
+2024-03-11 12:29:59,295 INFO ========> Avg. Loss: point_distance_sr: 22003.4140625
+2024-03-11 12:29:59,295 INFO ========> Avg. Loss: point_distance_rs: 4410.4091796875
+2024-03-11 12:29:59,296 INFO ========> Avg. Loss: chamfer_loss_pcd: 26413.82421875
+2024-03-11 12:29:59,296 INFO ========> Avg. Loss: particle_distance_sr: 10525.8330078125
+2024-03-11 12:29:59,296 INFO ========> Avg. Loss: particle_distance_rs: 12744.7314453125
+2024-03-11 12:29:59,296 INFO ========> Avg. Loss: chamfer_loss_particle: 23270.564453125
+2024-03-11 12:29:59,296 INFO ========> Avg. Loss: height_map_loss_pcd: 2263.159912109375
+2024-03-11 12:29:59,296 INFO ========> Avg. Loss: emd_point_distance_loss: 5577.0791015625
+2024-03-11 12:29:59,296 INFO ========> Avg. Loss: emd_particle_distance_loss: 33894.296875
+2024-03-11 12:29:59,296 INFO ========> Avg. Loss: total_loss: 26413.82421875
+2024-03-11 12:29:59,297 INFO ========> Avg. grads: [-3.7500632e-03 -2.1568359e+03 -3.5406199e-01  1.1749808e+00
+ -1.9163950e+03 -3.2921619e+01]
+2024-03-11 12:29:59,297 INFO ========> Num. aborted data so far: 0
+2024-03-11 12:29:59,298 INFO =====> Run validation at epoch 78
+2024-03-11 12:29:59,783 INFO ===> New TaichiEnv created.
+2024-03-11 12:29:59,783 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:33:13,950 INFO =====> Total loss: 37958.10546875
+2024-03-11 12:33:14,358 INFO ===> New TaichiEnv created.
+2024-03-11 12:33:14,358 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:33:53,736 INFO =====> Total loss: 28874.052734375
+2024-03-11 12:33:54,188 INFO ===> New TaichiEnv created.
+2024-03-11 12:33:54,188 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:36:21,380 INFO =====> Total loss: 36489.05078125
+2024-03-11 12:36:21,829 INFO ===> New TaichiEnv created.
+2024-03-11 12:36:21,829 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:37:12,739 INFO =====> Total loss: 29003.09765625
+2024-03-11 12:37:13,199 INFO ===> New TaichiEnv created.
+2024-03-11 12:37:13,199 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:38:03,187 INFO =====> Total loss: 25543.90625
+2024-03-11 12:38:03,602 INFO ===> New TaichiEnv created.
+2024-03-11 12:38:03,602 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:38:56,157 INFO =====> Total loss: 32644.015625
+2024-03-11 12:38:56,158 INFO ========> Avg. Validation loss: point_distance_sr: 26220.76953125
+2024-03-11 12:38:56,158 INFO ========> Avg. Validation loss: point_distance_rs: 5531.2690022786455
+2024-03-11 12:38:56,158 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31752.0380859375
+2024-03-11 12:38:56,158 INFO ========> Avg. Validation loss: particle_distance_sr: 11004.127197265625
+2024-03-11 12:38:56,159 INFO ========> Avg. Validation loss: particle_distance_rs: 12252.188802083334
+2024-03-11 12:38:56,159 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23256.316080729168
+2024-03-11 12:38:56,159 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3309.972696940104
+2024-03-11 12:38:56,159 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7040.590494791667
+2024-03-11 12:38:56,159 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 36485.375
+2024-03-11 12:38:56,159 INFO ========> Avg. Validation loss: total_loss: 31752.0380859375
+2024-03-11 12:38:56,159 INFO ========> Num. aborted data so far: 0
+2024-03-11 12:38:56,912 INFO =====> Computing: epoch 79, motion 4, agent round, data 1
+2024-03-11 12:38:56,913 INFO ===> New TaichiEnv created.
+2024-03-11 12:38:56,913 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:40:20,516 INFO =====> Total loss: 26382.7265625
+2024-03-11 12:40:20,517 INFO =====> Grad: [-3.0515194e-03 -2.0633030e+03 -3.4850818e-01  1.1410621e+00
+ -1.8229749e+03 -4.3210522e+01]
+2024-03-11 12:40:20,517 INFO ========> Avg. Loss: point_distance_sr: 21975.6015625
+2024-03-11 12:40:20,518 INFO ========> Avg. Loss: point_distance_rs: 4407.1240234375
+2024-03-11 12:40:20,518 INFO ========> Avg. Loss: chamfer_loss_pcd: 26382.7265625
+2024-03-11 12:40:20,518 INFO ========> Avg. Loss: particle_distance_sr: 10569.498046875
+2024-03-11 12:40:20,518 INFO ========> Avg. Loss: particle_distance_rs: 12785.607421875
+2024-03-11 12:40:20,518 INFO ========> Avg. Loss: chamfer_loss_particle: 23355.10546875
+2024-03-11 12:40:20,518 INFO ========> Avg. Loss: height_map_loss_pcd: 2260.868408203125
+2024-03-11 12:40:20,518 INFO ========> Avg. Loss: emd_point_distance_loss: 5577.3857421875
+2024-03-11 12:40:20,519 INFO ========> Avg. Loss: emd_particle_distance_loss: 33973.7421875
+2024-03-11 12:40:20,519 INFO ========> Avg. Loss: total_loss: 26382.7265625
+2024-03-11 12:40:20,519 INFO ========> Avg. grads: [-3.0515194e-03 -2.0633030e+03 -3.4850818e-01  1.1410621e+00
+ -1.8229749e+03 -4.3210522e+01]
+2024-03-11 12:40:20,519 INFO ========> Num. aborted data so far: 0
+2024-03-11 12:40:20,521 INFO =====> Run validation at epoch 79
+2024-03-11 12:40:20,999 INFO ===> New TaichiEnv created.
+2024-03-11 12:40:20,999 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:43:35,563 INFO =====> Total loss: 37982.20703125
+2024-03-11 12:43:36,039 INFO ===> New TaichiEnv created.
+2024-03-11 12:43:36,039 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:44:15,221 INFO =====> Total loss: 28819.5234375
+2024-03-11 12:44:15,630 INFO ===> New TaichiEnv created.
+2024-03-11 12:44:15,630 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:46:43,334 INFO =====> Total loss: 36486.5546875
+2024-03-11 12:46:43,813 INFO ===> New TaichiEnv created.
+2024-03-11 12:46:43,813 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:47:35,505 INFO =====> Total loss: 28978.865234375
+2024-03-11 12:47:35,984 INFO ===> New TaichiEnv created.
+2024-03-11 12:47:35,984 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:48:26,666 INFO =====> Total loss: 25560.126953125
+2024-03-11 12:48:27,127 INFO ===> New TaichiEnv created.
+2024-03-11 12:48:27,127 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:49:19,330 INFO =====> Total loss: 32609.06640625
+2024-03-11 12:49:19,331 INFO ========> Avg. Validation loss: point_distance_sr: 26200.3154296875
+2024-03-11 12:49:19,331 INFO ========> Avg. Validation loss: point_distance_rs: 5539.075520833333
+2024-03-11 12:49:19,332 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31739.390625
+2024-03-11 12:49:19,332 INFO ========> Avg. Validation loss: particle_distance_sr: 11026.288492838541
+2024-03-11 12:49:19,332 INFO ========> Avg. Validation loss: particle_distance_rs: 12281.238606770834
+2024-03-11 12:49:19,332 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23307.527018229168
+2024-03-11 12:49:19,332 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3318.9921875
+2024-03-11 12:49:19,332 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7056.685628255208
+2024-03-11 12:49:19,332 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 36636.69921875
+2024-03-11 12:49:19,332 INFO ========> Avg. Validation loss: total_loss: 31739.390625
+2024-03-11 12:49:19,333 INFO ========> Num. aborted data so far: 0
+2024-03-11 12:49:20,023 INFO =====> Computing: epoch 80, motion 4, agent round, data 1
+2024-03-11 12:49:20,024 INFO ===> New TaichiEnv created.
+2024-03-11 12:49:20,024 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:50:44,291 INFO =====> Total loss: 26352.15625
+2024-03-11 12:50:44,291 INFO =====> Grad: [-3.4238675e-03 -1.9997681e+03 -3.5170898e-01  1.1643291e+00
+ -1.5497863e+03 -5.6951412e+01]
+2024-03-11 12:50:44,292 INFO ========> Avg. Loss: point_distance_sr: 21945.19921875
+2024-03-11 12:50:44,292 INFO ========> Avg. Loss: point_distance_rs: 4406.95654296875
+2024-03-11 12:50:44,292 INFO ========> Avg. Loss: chamfer_loss_pcd: 26352.15625
+2024-03-11 12:50:44,293 INFO ========> Avg. Loss: particle_distance_sr: 10618.94140625
+2024-03-11 12:50:44,293 INFO ========> Avg. Loss: particle_distance_rs: 12836.9345703125
+2024-03-11 12:50:44,293 INFO ========> Avg. Loss: chamfer_loss_particle: 23455.875
+2024-03-11 12:50:44,293 INFO ========> Avg. Loss: height_map_loss_pcd: 2269.1044921875
+2024-03-11 12:50:44,293 INFO ========> Avg. Loss: emd_point_distance_loss: 5582.5341796875
+2024-03-11 12:50:44,293 INFO ========> Avg. Loss: emd_particle_distance_loss: 34089.328125
+2024-03-11 12:50:44,293 INFO ========> Avg. Loss: total_loss: 26352.15625
+2024-03-11 12:50:44,294 INFO ========> Avg. grads: [-3.4238675e-03 -1.9997681e+03 -3.5170898e-01  1.1643291e+00
+ -1.5497863e+03 -5.6951412e+01]
+2024-03-11 12:50:44,294 INFO ========> Num. aborted data so far: 0
+2024-03-11 12:50:44,295 INFO =====> Run validation at epoch 80
+2024-03-11 12:50:44,783 INFO ===> New TaichiEnv created.
+2024-03-11 12:50:44,784 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:54:01,553 INFO =====> Total loss: 38010.25390625
+2024-03-11 12:54:02,009 INFO ===> New TaichiEnv created.
+2024-03-11 12:54:02,009 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:54:41,196 INFO =====> Total loss: 28762.578125
+2024-03-11 12:54:41,605 INFO ===> New TaichiEnv created.
+2024-03-11 12:54:41,606 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:57:10,202 INFO =====> Total loss: 36491.70703125
+2024-03-11 12:57:10,621 INFO ===> New TaichiEnv created.
+2024-03-11 12:57:10,621 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:58:02,228 INFO =====> Total loss: 28950.35546875
+2024-03-11 12:58:02,685 INFO ===> New TaichiEnv created.
+2024-03-11 12:58:02,685 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:58:52,975 INFO =====> Total loss: 25576.248046875
+2024-03-11 12:58:53,451 INFO ===> New TaichiEnv created.
+2024-03-11 12:58:53,451 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 12:59:46,936 INFO =====> Total loss: 32578.6953125
+2024-03-11 12:59:46,937 INFO ========> Avg. Validation loss: point_distance_sr: 26180.804036458332
+2024-03-11 12:59:46,937 INFO ========> Avg. Validation loss: point_distance_rs: 5547.502115885417
+2024-03-11 12:59:46,938 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31728.306315104168
+2024-03-11 12:59:46,938 INFO ========> Avg. Validation loss: particle_distance_sr: 11054.96142578125
+2024-03-11 12:59:46,938 INFO ========> Avg. Validation loss: particle_distance_rs: 12313.577311197916
+2024-03-11 12:59:46,938 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23368.5390625
+2024-03-11 12:59:46,938 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3310.5188802083335
+2024-03-11 12:59:46,938 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7075.1964111328125
+2024-03-11 12:59:46,938 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 36813.803385416664
+2024-03-11 12:59:46,938 INFO ========> Avg. Validation loss: total_loss: 31728.306315104168
+2024-03-11 12:59:46,938 INFO ========> Num. aborted data so far: 0
+2024-03-11 12:59:47,688 INFO =====> Computing: epoch 81, motion 4, agent round, data 1
+2024-03-11 12:59:47,689 INFO ===> New TaichiEnv created.
+2024-03-11 12:59:47,689 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:01:13,490 INFO =====> Total loss: 26321.58984375
+2024-03-11 13:01:13,490 INFO =====> Grad: [-2.9975548e-03 -1.7397521e+03 -3.6719447e-01  1.1897311e+00
+ -1.2173300e+03 -2.1577568e+02]
+2024-03-11 13:01:13,491 INFO ========> Avg. Loss: point_distance_sr: 21911.658203125
+2024-03-11 13:01:13,491 INFO ========> Avg. Loss: point_distance_rs: 4409.9326171875
+2024-03-11 13:01:13,491 INFO ========> Avg. Loss: chamfer_loss_pcd: 26321.58984375
+2024-03-11 13:01:13,491 INFO ========> Avg. Loss: particle_distance_sr: 10666.625
+2024-03-11 13:01:13,491 INFO ========> Avg. Loss: particle_distance_rs: 12891.990234375
+2024-03-11 13:01:13,491 INFO ========> Avg. Loss: chamfer_loss_particle: 23558.615234375
+2024-03-11 13:01:13,492 INFO ========> Avg. Loss: height_map_loss_pcd: 2274.187744140625
+2024-03-11 13:01:13,492 INFO ========> Avg. Loss: emd_point_distance_loss: 5591.79248046875
+2024-03-11 13:01:13,492 INFO ========> Avg. Loss: emd_particle_distance_loss: 34248.7109375
+2024-03-11 13:01:13,492 INFO ========> Avg. Loss: total_loss: 26321.58984375
+2024-03-11 13:01:13,492 INFO ========> Avg. grads: [-2.9975548e-03 -1.7397521e+03 -3.6719447e-01  1.1897311e+00
+ -1.2173300e+03 -2.1577568e+02]
+2024-03-11 13:01:13,492 INFO ========> Num. aborted data so far: 0
+2024-03-11 13:01:13,495 INFO =====> Run validation at epoch 81
+2024-03-11 13:01:13,997 INFO ===> New TaichiEnv created.
+2024-03-11 13:01:13,997 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:04:31,366 INFO =====> Total loss: 38042.33203125
+2024-03-11 13:04:31,823 INFO ===> New TaichiEnv created.
+2024-03-11 13:04:31,823 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:05:11,207 INFO =====> Total loss: 28712.10546875
+2024-03-11 13:05:11,617 INFO ===> New TaichiEnv created.
+2024-03-11 13:05:11,617 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:07:40,734 INFO =====> Total loss: 36503.37890625
+2024-03-11 13:07:41,142 INFO ===> New TaichiEnv created.
+2024-03-11 13:07:41,142 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:08:33,861 INFO =====> Total loss: 28919.244140625
+2024-03-11 13:08:34,315 INFO ===> New TaichiEnv created.
+2024-03-11 13:08:34,315 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:09:25,032 INFO =====> Total loss: 25590.04296875
+2024-03-11 13:09:25,482 INFO ===> New TaichiEnv created.
+2024-03-11 13:09:25,482 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:10:19,611 INFO =====> Total loss: 32561.43359375
+2024-03-11 13:10:19,612 INFO ========> Avg. Validation loss: point_distance_sr: 26163.78125
+2024-03-11 13:10:19,612 INFO ========> Avg. Validation loss: point_distance_rs: 5557.6415608723955
+2024-03-11 13:10:19,613 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31721.4228515625
+2024-03-11 13:10:19,613 INFO ========> Avg. Validation loss: particle_distance_sr: 11081.295654296875
+2024-03-11 13:10:19,613 INFO ========> Avg. Validation loss: particle_distance_rs: 12345.8603515625
+2024-03-11 13:10:19,613 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23427.155598958332
+2024-03-11 13:10:19,613 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3311.6127115885415
+2024-03-11 13:10:19,613 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7096.3886311848955
+2024-03-11 13:10:19,613 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 37013.210611979164
+2024-03-11 13:10:19,613 INFO ========> Avg. Validation loss: total_loss: 31721.4228515625
+2024-03-11 13:10:19,613 INFO ========> Num. aborted data so far: 0
+2024-03-11 13:10:20,356 INFO =====> Computing: epoch 82, motion 4, agent round, data 1
+2024-03-11 13:10:20,358 INFO ===> New TaichiEnv created.
+2024-03-11 13:10:20,358 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:11:46,116 INFO =====> Total loss: 26290.9609375
+2024-03-11 13:11:46,116 INFO =====> Grad: [-1.2136821e-03 -1.3691014e+03 -4.1348207e-01  1.2397248e+00
+ -1.4558209e+03 -4.4751694e+02]
+2024-03-11 13:11:46,117 INFO ========> Avg. Loss: point_distance_sr: 21874.466796875
+2024-03-11 13:11:46,117 INFO ========> Avg. Loss: point_distance_rs: 4416.49365234375
+2024-03-11 13:11:46,117 INFO ========> Avg. Loss: chamfer_loss_pcd: 26290.9609375
+2024-03-11 13:11:46,117 INFO ========> Avg. Loss: particle_distance_sr: 10704.556640625
+2024-03-11 13:11:46,117 INFO ========> Avg. Loss: particle_distance_rs: 12943.6533203125
+2024-03-11 13:11:46,117 INFO ========> Avg. Loss: chamfer_loss_particle: 23648.2109375
+2024-03-11 13:11:46,117 INFO ========> Avg. Loss: height_map_loss_pcd: 2276.654541015625
+2024-03-11 13:11:46,118 INFO ========> Avg. Loss: emd_point_distance_loss: 5605.8408203125
+2024-03-11 13:11:46,118 INFO ========> Avg. Loss: emd_particle_distance_loss: 34441.46484375
+2024-03-11 13:11:46,118 INFO ========> Avg. Loss: total_loss: 26290.9609375
+2024-03-11 13:11:46,118 INFO ========> Avg. grads: [-1.2136821e-03 -1.3691014e+03 -4.1348207e-01  1.2397248e+00
+ -1.4558209e+03 -4.4751694e+02]
+2024-03-11 13:11:46,118 INFO ========> Num. aborted data so far: 0
+2024-03-11 13:11:46,122 INFO =====> Run validation at epoch 82
+2024-03-11 13:11:46,581 INFO ===> New TaichiEnv created.
+2024-03-11 13:11:46,581 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:15:28,180 INFO =====> Total loss: 38075.59765625
+2024-03-11 13:15:28,643 INFO ===> New TaichiEnv created.
+2024-03-11 13:15:28,643 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:16:31,934 INFO =====> Total loss: 28673.56640625
+2024-03-11 13:16:32,395 INFO ===> New TaichiEnv created.
+2024-03-11 13:16:32,395 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:19:04,517 INFO =====> Total loss: 36517.13671875
+2024-03-11 13:19:04,975 INFO ===> New TaichiEnv created.
+2024-03-11 13:19:04,975 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:19:58,668 INFO =====> Total loss: 28885.34375
+2024-03-11 13:19:59,137 INFO ===> New TaichiEnv created.
+2024-03-11 13:19:59,137 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:20:50,659 INFO =====> Total loss: 25600.1171875
+2024-03-11 13:20:51,113 INFO ===> New TaichiEnv created.
+2024-03-11 13:20:51,113 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:21:45,584 INFO =====> Total loss: 32554.85546875
+2024-03-11 13:21:45,585 INFO ========> Avg. Validation loss: point_distance_sr: 26149.166666666668
+2024-03-11 13:21:45,586 INFO ========> Avg. Validation loss: point_distance_rs: 5568.602783203125
+2024-03-11 13:21:45,586 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31717.76953125
+2024-03-11 13:21:45,586 INFO ========> Avg. Validation loss: particle_distance_sr: 11101.298502604166
+2024-03-11 13:21:45,586 INFO ========> Avg. Validation loss: particle_distance_rs: 12374.665201822916
+2024-03-11 13:21:45,586 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23475.964029947918
+2024-03-11 13:21:45,586 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3313.785929361979
+2024-03-11 13:21:45,586 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7119.5142008463545
+2024-03-11 13:21:45,586 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 37225.879557291664
+2024-03-11 13:21:45,586 INFO ========> Avg. Validation loss: total_loss: 31717.76953125
+2024-03-11 13:21:45,586 INFO ========> Num. aborted data so far: 0
+2024-03-11 13:21:46,330 INFO =====> Computing: epoch 83, motion 4, agent round, data 1
+2024-03-11 13:21:46,331 INFO ===> New TaichiEnv created.
+2024-03-11 13:21:46,331 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:23:10,866 INFO =====> Total loss: 26257.53515625
+2024-03-11 13:23:10,867 INFO =====> Grad: [ 9.5172409e-06 -1.1078046e+03 -4.3392834e-01  1.2439673e+00
+ -1.2699617e+03 -5.6755792e+02]
+2024-03-11 13:23:10,867 INFO ========> Avg. Loss: point_distance_sr: 21834.076171875
+2024-03-11 13:23:10,868 INFO ========> Avg. Loss: point_distance_rs: 4423.45849609375
+2024-03-11 13:23:10,868 INFO ========> Avg. Loss: chamfer_loss_pcd: 26257.53515625
+2024-03-11 13:23:10,868 INFO ========> Avg. Loss: particle_distance_sr: 10735.3115234375
+2024-03-11 13:23:10,868 INFO ========> Avg. Loss: particle_distance_rs: 12993.048828125
+2024-03-11 13:23:10,868 INFO ========> Avg. Loss: chamfer_loss_particle: 23728.359375
+2024-03-11 13:23:10,868 INFO ========> Avg. Loss: height_map_loss_pcd: 2270.264892578125
+2024-03-11 13:23:10,869 INFO ========> Avg. Loss: emd_point_distance_loss: 5621.8857421875
+2024-03-11 13:23:10,869 INFO ========> Avg. Loss: emd_particle_distance_loss: 34646.4921875
+2024-03-11 13:23:10,869 INFO ========> Avg. Loss: total_loss: 26257.53515625
+2024-03-11 13:23:10,869 INFO ========> Avg. grads: [ 9.5172409e-06 -1.1078046e+03 -4.3392834e-01  1.2439673e+00
+ -1.2699617e+03 -5.6755792e+02]
+2024-03-11 13:23:10,869 INFO ========> Num. aborted data so far: 0
+2024-03-11 13:23:10,871 INFO =====> Run validation at epoch 83
+2024-03-11 13:23:11,354 INFO ===> New TaichiEnv created.
+2024-03-11 13:23:11,354 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:26:29,961 INFO =====> Total loss: 38104.84375
+2024-03-11 13:26:30,416 INFO ===> New TaichiEnv created.
+2024-03-11 13:26:30,416 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:27:09,966 INFO =====> Total loss: 28622.41796875
+2024-03-11 13:27:10,425 INFO ===> New TaichiEnv created.
+2024-03-11 13:27:10,425 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:29:41,452 INFO =====> Total loss: 36528.25
+2024-03-11 13:29:41,908 INFO ===> New TaichiEnv created.
+2024-03-11 13:29:41,908 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:30:36,161 INFO =====> Total loss: 28847.822265625
+2024-03-11 13:30:36,621 INFO ===> New TaichiEnv created.
+2024-03-11 13:30:36,621 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:31:28,116 INFO =====> Total loss: 25608.849609375
+2024-03-11 13:31:28,550 INFO ===> New TaichiEnv created.
+2024-03-11 13:31:28,550 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:32:22,808 INFO =====> Total loss: 32559.625
+2024-03-11 13:32:22,809 INFO ========> Avg. Validation loss: point_distance_sr: 26133.322265625
+2024-03-11 13:32:22,809 INFO ========> Avg. Validation loss: point_distance_rs: 5578.6456298828125
+2024-03-11 13:32:22,809 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31711.968098958332
+2024-03-11 13:32:22,809 INFO ========> Avg. Validation loss: particle_distance_sr: 11115.617513020834
+2024-03-11 13:32:22,809 INFO ========> Avg. Validation loss: particle_distance_rs: 12400.757080078125
+2024-03-11 13:32:22,810 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23516.374674479168
+2024-03-11 13:32:22,810 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3320.6397705078125
+2024-03-11 13:32:22,810 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7142.938069661458
+2024-03-11 13:32:22,810 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 37445.132486979164
+2024-03-11 13:32:22,810 INFO ========> Avg. Validation loss: total_loss: 31711.968098958332
+2024-03-11 13:32:22,810 INFO ========> Num. aborted data so far: 0
+2024-03-11 13:32:23,571 INFO =====> Computing: epoch 84, motion 4, agent round, data 1
+2024-03-11 13:32:23,572 INFO ===> New TaichiEnv created.
+2024-03-11 13:32:23,573 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:33:49,716 INFO =====> Total loss: 26225.697265625
+2024-03-11 13:33:49,716 INFO =====> Grad: [ 6.2552223e-05 -1.0613248e+03 -4.3240821e-01  1.2710487e+00
+ -9.7330847e+02 -6.7466687e+02]
+2024-03-11 13:33:49,717 INFO ========> Avg. Loss: point_distance_sr: 21794.935546875
+2024-03-11 13:33:49,717 INFO ========> Avg. Loss: point_distance_rs: 4430.76123046875
+2024-03-11 13:33:49,718 INFO ========> Avg. Loss: chamfer_loss_pcd: 26225.697265625
+2024-03-11 13:33:49,718 INFO ========> Avg. Loss: particle_distance_sr: 10758.318359375
+2024-03-11 13:33:49,718 INFO ========> Avg. Loss: particle_distance_rs: 13039.5068359375
+2024-03-11 13:33:49,718 INFO ========> Avg. Loss: chamfer_loss_particle: 23797.82421875
+2024-03-11 13:33:49,718 INFO ========> Avg. Loss: height_map_loss_pcd: 2259.27294921875
+2024-03-11 13:33:49,718 INFO ========> Avg. Loss: emd_point_distance_loss: 5639.18310546875
+2024-03-11 13:33:49,718 INFO ========> Avg. Loss: emd_particle_distance_loss: 34858.8125
+2024-03-11 13:33:49,718 INFO ========> Avg. Loss: total_loss: 26225.697265625
+2024-03-11 13:33:49,718 INFO ========> Avg. grads: [ 6.2552223e-05 -1.0613248e+03 -4.3240821e-01  1.2710487e+00
+ -9.7330847e+02 -6.7466687e+02]
+2024-03-11 13:33:49,718 INFO ========> Num. aborted data so far: 0
+2024-03-11 13:33:49,721 INFO =====> Run validation at epoch 84
+2024-03-11 13:33:50,207 INFO ===> New TaichiEnv created.
+2024-03-11 13:33:50,208 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:37:09,576 INFO =====> Total loss: 38131.34375
+2024-03-11 13:37:10,022 INFO ===> New TaichiEnv created.
+2024-03-11 13:37:10,022 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:37:49,438 INFO =====> Total loss: 28596.541015625
+2024-03-11 13:37:49,885 INFO ===> New TaichiEnv created.
+2024-03-11 13:37:49,886 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:40:20,499 INFO =====> Total loss: 36536.95703125
+2024-03-11 13:40:20,938 INFO ===> New TaichiEnv created.
+2024-03-11 13:40:20,938 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:41:15,949 INFO =====> Total loss: 28791.0546875
+2024-03-11 13:41:16,438 INFO ===> New TaichiEnv created.
+2024-03-11 13:41:16,438 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:42:07,319 INFO =====> Total loss: 25620.2734375
+2024-03-11 13:42:07,787 INFO ===> New TaichiEnv created.
+2024-03-11 13:42:07,787 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:43:02,964 INFO =====> Total loss: 32572.09765625
+2024-03-11 13:43:02,965 INFO ========> Avg. Validation loss: point_distance_sr: 26116.701822916668
+2024-03-11 13:43:02,966 INFO ========> Avg. Validation loss: point_distance_rs: 5591.342041015625
+2024-03-11 13:43:02,966 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31708.044596354168
+2024-03-11 13:43:02,966 INFO ========> Avg. Validation loss: particle_distance_sr: 11138.832275390625
+2024-03-11 13:43:02,966 INFO ========> Avg. Validation loss: particle_distance_rs: 12440.617513020834
+2024-03-11 13:43:02,966 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23579.449544270832
+2024-03-11 13:43:02,966 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3349.343790690104
+2024-03-11 13:43:02,966 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7169.448160807292
+2024-03-11 13:43:02,966 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 37693.310221354164
+2024-03-11 13:43:02,966 INFO ========> Avg. Validation loss: total_loss: 31708.044596354168
+2024-03-11 13:43:02,966 INFO ========> Num. aborted data so far: 0
+2024-03-11 13:43:03,729 INFO =====> Computing: epoch 85, motion 4, agent round, data 1
+2024-03-11 13:43:03,731 INFO ===> New TaichiEnv created.
+2024-03-11 13:43:03,731 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:44:30,759 INFO =====> Total loss: 26199.32421875
+2024-03-11 13:44:30,759 INFO =====> Grad: [ 1.2077283e-03 -7.0139807e+02 -4.5292360e-01  1.2926357e+00
+ -4.0979846e+02 -9.3379584e+02]
+2024-03-11 13:44:30,760 INFO ========> Avg. Loss: point_distance_sr: 21760.662109375
+2024-03-11 13:44:30,761 INFO ========> Avg. Loss: point_distance_rs: 4438.66259765625
+2024-03-11 13:44:30,761 INFO ========> Avg. Loss: chamfer_loss_pcd: 26199.32421875
+2024-03-11 13:44:30,761 INFO ========> Avg. Loss: particle_distance_sr: 10781.439453125
+2024-03-11 13:44:30,761 INFO ========> Avg. Loss: particle_distance_rs: 13084.951171875
+2024-03-11 13:44:30,761 INFO ========> Avg. Loss: chamfer_loss_particle: 23866.390625
+2024-03-11 13:44:30,761 INFO ========> Avg. Loss: height_map_loss_pcd: 2238.529296875
+2024-03-11 13:44:30,761 INFO ========> Avg. Loss: emd_point_distance_loss: 5656.451171875
+2024-03-11 13:44:30,761 INFO ========> Avg. Loss: emd_particle_distance_loss: 35072.7890625
+2024-03-11 13:44:30,761 INFO ========> Avg. Loss: total_loss: 26199.32421875
+2024-03-11 13:44:30,762 INFO ========> Avg. grads: [ 1.2077283e-03 -7.0139807e+02 -4.5292360e-01  1.2926357e+00
+ -4.0979846e+02 -9.3379584e+02]
+2024-03-11 13:44:30,762 INFO ========> Num. aborted data so far: 0
+2024-03-11 13:44:30,764 INFO =====> Run validation at epoch 85
+2024-03-11 13:44:31,254 INFO ===> New TaichiEnv created.
+2024-03-11 13:44:31,254 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:47:50,622 INFO =====> Total loss: 38153.4296875
+2024-03-11 13:47:51,092 INFO ===> New TaichiEnv created.
+2024-03-11 13:47:51,092 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:48:30,443 INFO =====> Total loss: 28561.421875
+2024-03-11 13:48:30,903 INFO ===> New TaichiEnv created.
+2024-03-11 13:48:30,903 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:51:02,757 INFO =====> Total loss: 36539.7578125
+2024-03-11 13:51:03,206 INFO ===> New TaichiEnv created.
+2024-03-11 13:51:03,206 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:51:59,374 INFO =====> Total loss: 28728.3984375
+2024-03-11 13:51:59,824 INFO ===> New TaichiEnv created.
+2024-03-11 13:51:59,824 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:52:50,831 INFO =====> Total loss: 25631.48046875
+2024-03-11 13:52:51,282 INFO ===> New TaichiEnv created.
+2024-03-11 13:52:51,282 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:53:46,815 INFO =====> Total loss: 32581.068359375
+2024-03-11 13:53:46,816 INFO ========> Avg. Validation loss: point_distance_sr: 26095.520833333332
+2024-03-11 13:53:46,816 INFO ========> Avg. Validation loss: point_distance_rs: 5603.738037109375
+2024-03-11 13:53:46,816 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31699.259440104168
+2024-03-11 13:53:46,816 INFO ========> Avg. Validation loss: particle_distance_sr: 11165.917073567709
+2024-03-11 13:53:46,816 INFO ========> Avg. Validation loss: particle_distance_rs: 12485.267415364584
+2024-03-11 13:53:46,816 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23651.184244791668
+2024-03-11 13:53:46,816 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3370.522501627604
+2024-03-11 13:53:46,816 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7196.316487630208
+2024-03-11 13:53:46,816 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 37940.190755208336
+2024-03-11 13:53:46,816 INFO ========> Avg. Validation loss: total_loss: 31699.259440104168
+2024-03-11 13:53:46,816 INFO ========> Num. aborted data so far: 0
+2024-03-11 13:53:47,552 INFO =====> Computing: epoch 86, motion 4, agent round, data 1
+2024-03-11 13:53:47,553 INFO ===> New TaichiEnv created.
+2024-03-11 13:53:47,553 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:55:13,682 INFO =====> Total loss: 26172.87109375
+2024-03-11 13:55:13,682 INFO =====> Grad: [ 2.1612977e-03 -4.5483789e+02 -4.9602008e-01  1.3808742e+00
+ -4.9297531e+02 -1.1646661e+03]
+2024-03-11 13:55:13,683 INFO ========> Avg. Loss: point_distance_sr: 21727.4765625
+2024-03-11 13:55:13,683 INFO ========> Avg. Loss: point_distance_rs: 4445.3955078125
+2024-03-11 13:55:13,683 INFO ========> Avg. Loss: chamfer_loss_pcd: 26172.87109375
+2024-03-11 13:55:13,683 INFO ========> Avg. Loss: particle_distance_sr: 10793.22265625
+2024-03-11 13:55:13,683 INFO ========> Avg. Loss: particle_distance_rs: 13117.6611328125
+2024-03-11 13:55:13,683 INFO ========> Avg. Loss: chamfer_loss_particle: 23910.8828125
+2024-03-11 13:55:13,683 INFO ========> Avg. Loss: height_map_loss_pcd: 2237.904541015625
+2024-03-11 13:55:13,684 INFO ========> Avg. Loss: emd_point_distance_loss: 5671.9501953125
+2024-03-11 13:55:13,684 INFO ========> Avg. Loss: emd_particle_distance_loss: 35270.66796875
+2024-03-11 13:55:13,684 INFO ========> Avg. Loss: total_loss: 26172.87109375
+2024-03-11 13:55:13,684 INFO ========> Avg. grads: [ 2.1612977e-03 -4.5483789e+02 -4.9602008e-01  1.3808742e+00
+ -4.9297531e+02 -1.1646661e+03]
+2024-03-11 13:55:13,684 INFO ========> Num. aborted data so far: 0
+2024-03-11 13:55:13,687 INFO =====> Run validation at epoch 86
+2024-03-11 13:55:14,182 INFO ===> New TaichiEnv created.
+2024-03-11 13:55:14,183 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:58:32,271 INFO =====> Total loss: 38157.046875
+2024-03-11 13:58:32,730 INFO ===> New TaichiEnv created.
+2024-03-11 13:58:32,730 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 13:59:11,716 INFO =====> Total loss: 28542.630859375
+2024-03-11 13:59:12,167 INFO ===> New TaichiEnv created.
+2024-03-11 13:59:12,167 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:01:44,741 INFO =====> Total loss: 36535.06640625
+2024-03-11 14:01:45,207 INFO ===> New TaichiEnv created.
+2024-03-11 14:01:45,207 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:02:43,087 INFO =====> Total loss: 28668.099609375
+2024-03-11 14:02:43,545 INFO ===> New TaichiEnv created.
+2024-03-11 14:02:43,545 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:03:35,111 INFO =====> Total loss: 25646.1328125
+2024-03-11 14:03:35,570 INFO ===> New TaichiEnv created.
+2024-03-11 14:03:35,570 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:04:31,222 INFO =====> Total loss: 32586.515625
+2024-03-11 14:04:31,223 INFO ========> Avg. Validation loss: point_distance_sr: 26073.121419270832
+2024-03-11 14:04:31,223 INFO ========> Avg. Validation loss: point_distance_rs: 5616.1268310546875
+2024-03-11 14:04:31,224 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31689.248697916668
+2024-03-11 14:04:31,224 INFO ========> Avg. Validation loss: particle_distance_sr: 11190.964436848959
+2024-03-11 14:04:31,224 INFO ========> Avg. Validation loss: particle_distance_rs: 12533.055338541666
+2024-03-11 14:04:31,224 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23724.019856770832
+2024-03-11 14:04:31,224 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3363.9822998046875
+2024-03-11 14:04:31,224 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7221.750813802083
+2024-03-11 14:04:31,224 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 38172.787434895836
+2024-03-11 14:04:31,224 INFO ========> Avg. Validation loss: total_loss: 31689.248697916668
+2024-03-11 14:04:31,224 INFO ========> Num. aborted data so far: 0
+2024-03-11 14:04:31,991 INFO =====> Computing: epoch 87, motion 4, agent round, data 1
+2024-03-11 14:04:31,993 INFO ===> New TaichiEnv created.
+2024-03-11 14:04:31,993 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:05:59,736 INFO =====> Total loss: 26144.43359375
+2024-03-11 14:05:59,736 INFO =====> Grad: [ 3.3125421e-03 -3.6333868e+02 -5.1602858e-01  1.4018873e+00
+ -6.3198816e+02 -1.3460964e+03]
+2024-03-11 14:05:59,737 INFO ========> Avg. Loss: point_distance_sr: 21694.88671875
+2024-03-11 14:05:59,737 INFO ========> Avg. Loss: point_distance_rs: 4449.54638671875
+2024-03-11 14:05:59,737 INFO ========> Avg. Loss: chamfer_loss_pcd: 26144.43359375
+2024-03-11 14:05:59,737 INFO ========> Avg. Loss: particle_distance_sr: 10790.716796875
+2024-03-11 14:05:59,737 INFO ========> Avg. Loss: particle_distance_rs: 13135.33203125
+2024-03-11 14:05:59,737 INFO ========> Avg. Loss: chamfer_loss_particle: 23926.048828125
+2024-03-11 14:05:59,737 INFO ========> Avg. Loss: height_map_loss_pcd: 2241.339599609375
+2024-03-11 14:05:59,738 INFO ========> Avg. Loss: emd_point_distance_loss: 5683.97802734375
+2024-03-11 14:05:59,738 INFO ========> Avg. Loss: emd_particle_distance_loss: 35434.93359375
+2024-03-11 14:05:59,738 INFO ========> Avg. Loss: total_loss: 26144.43359375
+2024-03-11 14:05:59,738 INFO ========> Avg. grads: [ 3.3125421e-03 -3.6333868e+02 -5.1602858e-01  1.4018873e+00
+ -6.3198816e+02 -1.3460964e+03]
+2024-03-11 14:05:59,738 INFO ========> Num. aborted data so far: 0
+2024-03-11 14:05:59,742 INFO =====> Run validation at epoch 87
+2024-03-11 14:06:00,198 INFO ===> New TaichiEnv created.
+2024-03-11 14:06:00,198 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:09:18,812 INFO =====> Total loss: 38159.15625
+2024-03-11 14:09:19,270 INFO ===> New TaichiEnv created.
+2024-03-11 14:09:19,270 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:09:58,589 INFO =====> Total loss: 28536.033203125
+2024-03-11 14:09:59,003 INFO ===> New TaichiEnv created.
+2024-03-11 14:09:59,003 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:12:32,826 INFO =====> Total loss: 36520.390625
+2024-03-11 14:12:33,281 INFO ===> New TaichiEnv created.
+2024-03-11 14:12:33,281 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:13:33,301 INFO =====> Total loss: 28610.244140625
+2024-03-11 14:13:33,772 INFO ===> New TaichiEnv created.
+2024-03-11 14:13:33,772 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:14:25,542 INFO =====> Total loss: 25663.80078125
+2024-03-11 14:14:26,010 INFO ===> New TaichiEnv created.
+2024-03-11 14:14:26,010 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:15:23,080 INFO =====> Total loss: 32580.23046875
+2024-03-11 14:15:23,081 INFO ========> Avg. Validation loss: point_distance_sr: 26049.656575520832
+2024-03-11 14:15:23,081 INFO ========> Avg. Validation loss: point_distance_rs: 5628.6533610026045
+2024-03-11 14:15:23,082 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31678.309244791668
+2024-03-11 14:15:23,082 INFO ========> Avg. Validation loss: particle_distance_sr: 11211.87109375
+2024-03-11 14:15:23,082 INFO ========> Avg. Validation loss: particle_distance_rs: 12577.780436197916
+2024-03-11 14:15:23,082 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23789.651529947918
+2024-03-11 14:15:23,082 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3372.905476888021
+2024-03-11 14:15:23,082 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7245.118326822917
+2024-03-11 14:15:23,082 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 38385.187174479164
+2024-03-11 14:15:23,082 INFO ========> Avg. Validation loss: total_loss: 31678.309244791668
+2024-03-11 14:15:23,082 INFO ========> Num. aborted data so far: 0
+2024-03-11 14:15:23,840 INFO =====> Computing: epoch 88, motion 4, agent round, data 1
+2024-03-11 14:15:23,841 INFO ===> New TaichiEnv created.
+2024-03-11 14:15:23,841 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:16:50,761 INFO =====> Total loss: 26114.173828125
+2024-03-11 14:16:50,761 INFO =====> Grad: [ 4.3254830e-03 -1.8127118e+02 -5.1447350e-01  1.3421227e+00
+ -5.1349005e+02 -1.4345842e+03]
+2024-03-11 14:16:50,762 INFO ========> Avg. Loss: point_distance_sr: 21664.015625
+2024-03-11 14:16:50,763 INFO ========> Avg. Loss: point_distance_rs: 4450.15869140625
+2024-03-11 14:16:50,763 INFO ========> Avg. Loss: chamfer_loss_pcd: 26114.173828125
+2024-03-11 14:16:50,763 INFO ========> Avg. Loss: particle_distance_sr: 10782.2509765625
+2024-03-11 14:16:50,763 INFO ========> Avg. Loss: particle_distance_rs: 13140.5673828125
+2024-03-11 14:16:50,763 INFO ========> Avg. Loss: chamfer_loss_particle: 23922.818359375
+2024-03-11 14:16:50,763 INFO ========> Avg. Loss: height_map_loss_pcd: 2265.4404296875
+2024-03-11 14:16:50,763 INFO ========> Avg. Loss: emd_point_distance_loss: 5691.1650390625
+2024-03-11 14:16:50,763 INFO ========> Avg. Loss: emd_particle_distance_loss: 35558.59765625
+2024-03-11 14:16:50,763 INFO ========> Avg. Loss: total_loss: 26114.173828125
+2024-03-11 14:16:50,763 INFO ========> Avg. grads: [ 4.3254830e-03 -1.8127118e+02 -5.1447350e-01  1.3421227e+00
+ -5.1349005e+02 -1.4345842e+03]
+2024-03-11 14:16:50,764 INFO ========> Num. aborted data so far: 0
+2024-03-11 14:16:50,766 INFO =====> Run validation at epoch 88
+2024-03-11 14:16:51,252 INFO ===> New TaichiEnv created.
+2024-03-11 14:16:51,252 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:20:11,382 INFO =====> Total loss: 38142.7109375
+2024-03-11 14:20:11,838 INFO ===> New TaichiEnv created.
+2024-03-11 14:20:11,838 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:20:51,145 INFO =====> Total loss: 28537.25
+2024-03-11 14:20:51,554 INFO ===> New TaichiEnv created.
+2024-03-11 14:20:51,555 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:23:22,347 INFO =====> Total loss: 36494.34765625
+2024-03-11 14:23:22,799 INFO ===> New TaichiEnv created.
+2024-03-11 14:23:22,799 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:24:24,072 INFO =====> Total loss: 28562.6640625
+2024-03-11 14:24:24,518 INFO ===> New TaichiEnv created.
+2024-03-11 14:24:24,518 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:25:15,442 INFO =====> Total loss: 25679.26953125
+2024-03-11 14:25:15,890 INFO ===> New TaichiEnv created.
+2024-03-11 14:25:15,890 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:26:12,477 INFO =====> Total loss: 32553.458984375
+2024-03-11 14:26:12,478 INFO ========> Avg. Validation loss: point_distance_sr: 26022.178059895832
+2024-03-11 14:26:12,479 INFO ========> Avg. Validation loss: point_distance_rs: 5639.4385986328125
+2024-03-11 14:26:12,479 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31661.616861979168
+2024-03-11 14:26:12,479 INFO ========> Avg. Validation loss: particle_distance_sr: 11223.135823567709
+2024-03-11 14:26:12,479 INFO ========> Avg. Validation loss: particle_distance_rs: 12613.563639322916
+2024-03-11 14:26:12,479 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23836.699544270832
+2024-03-11 14:26:12,479 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3364.934122721354
+2024-03-11 14:26:12,479 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7265.609130859375
+2024-03-11 14:26:12,479 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 38570.455403645836
+2024-03-11 14:26:12,479 INFO ========> Avg. Validation loss: total_loss: 31661.616861979168
+2024-03-11 14:26:12,479 INFO ========> Num. aborted data so far: 0
+2024-03-11 14:26:13,249 INFO =====> Computing: epoch 89, motion 4, agent round, data 1
+2024-03-11 14:26:13,251 INFO ===> New TaichiEnv created.
+2024-03-11 14:26:13,251 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:27:41,200 INFO =====> Total loss: 26085.86328125
+2024-03-11 14:27:41,200 INFO =====> Grad: [ 4.6806792e-03 -1.3290952e+02 -4.8583335e-01  1.2577658e+00
+ -3.4138538e+02 -1.4683218e+03]
+2024-03-11 14:27:41,201 INFO ========> Avg. Loss: point_distance_sr: 21638.9453125
+2024-03-11 14:27:41,202 INFO ========> Avg. Loss: point_distance_rs: 4446.9189453125
+2024-03-11 14:27:41,202 INFO ========> Avg. Loss: chamfer_loss_pcd: 26085.86328125
+2024-03-11 14:27:41,202 INFO ========> Avg. Loss: particle_distance_sr: 10765.509765625
+2024-03-11 14:27:41,202 INFO ========> Avg. Loss: particle_distance_rs: 13130.064453125
+2024-03-11 14:27:41,202 INFO ========> Avg. Loss: chamfer_loss_particle: 23895.57421875
+2024-03-11 14:27:41,202 INFO ========> Avg. Loss: height_map_loss_pcd: 2266.272216796875
+2024-03-11 14:27:41,202 INFO ========> Avg. Loss: emd_point_distance_loss: 5692.6552734375
+2024-03-11 14:27:41,202 INFO ========> Avg. Loss: emd_particle_distance_loss: 35635.86328125
+2024-03-11 14:27:41,202 INFO ========> Avg. Loss: total_loss: 26085.86328125
+2024-03-11 14:27:41,202 INFO ========> Avg. grads: [ 4.6806792e-03 -1.3290952e+02 -4.8583335e-01  1.2577658e+00
+ -3.4138538e+02 -1.4683218e+03]
+2024-03-11 14:27:41,202 INFO ========> Num. aborted data so far: 0
+2024-03-11 14:27:41,206 INFO =====> Run validation at epoch 89
+2024-03-11 14:27:41,700 INFO ===> New TaichiEnv created.
+2024-03-11 14:27:41,700 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:30:59,948 INFO =====> Total loss: 38115.4140625
+2024-03-11 14:31:00,409 INFO ===> New TaichiEnv created.
+2024-03-11 14:31:00,410 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:31:40,098 INFO =====> Total loss: 28552.015625
+2024-03-11 14:31:40,548 INFO ===> New TaichiEnv created.
+2024-03-11 14:31:40,548 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:34:10,584 INFO =====> Total loss: 36454.0859375
+2024-03-11 14:34:11,043 INFO ===> New TaichiEnv created.
+2024-03-11 14:34:11,043 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:35:13,012 INFO =====> Total loss: 28527.923828125
+2024-03-11 14:35:13,463 INFO ===> New TaichiEnv created.
+2024-03-11 14:35:13,463 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:36:04,182 INFO =====> Total loss: 25691.248046875
+2024-03-11 14:36:04,637 INFO ===> New TaichiEnv created.
+2024-03-11 14:36:04,637 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:37:02,081 INFO =====> Total loss: 32519.375
+2024-03-11 14:37:02,082 INFO ========> Avg. Validation loss: point_distance_sr: 25994.694986979168
+2024-03-11 14:37:02,083 INFO ========> Avg. Validation loss: point_distance_rs: 5648.648763020833
+2024-03-11 14:37:02,084 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31643.34375
+2024-03-11 14:37:02,084 INFO ========> Avg. Validation loss: particle_distance_sr: 11227.874267578125
+2024-03-11 14:37:02,084 INFO ========> Avg. Validation loss: particle_distance_rs: 12640.627604166666
+2024-03-11 14:37:02,084 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23868.501627604168
+2024-03-11 14:37:02,085 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3379.5125325520835
+2024-03-11 14:37:02,085 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7283.357259114583
+2024-03-11 14:37:02,085 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 38718.486002604164
+2024-03-11 14:37:02,085 INFO ========> Avg. Validation loss: total_loss: 31643.34375
+2024-03-11 14:37:02,086 INFO ========> Num. aborted data so far: 0
+2024-03-11 14:37:02,847 INFO =====> Computing: epoch 90, motion 4, agent round, data 1
+2024-03-11 14:37:02,850 INFO ===> New TaichiEnv created.
+2024-03-11 14:37:02,850 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:38:30,110 INFO =====> Total loss: 26058.25
+2024-03-11 14:38:30,111 INFO =====> Grad: [ 4.9784994e-03 -3.2822144e+01 -4.5961317e-01  1.1742667e+00
+ -9.1841652e+01 -1.4104381e+03]
+2024-03-11 14:38:30,112 INFO ========> Avg. Loss: point_distance_sr: 21618.935546875
+2024-03-11 14:38:30,112 INFO ========> Avg. Loss: point_distance_rs: 4439.31396484375
+2024-03-11 14:38:30,112 INFO ========> Avg. Loss: chamfer_loss_pcd: 26058.25
+2024-03-11 14:38:30,112 INFO ========> Avg. Loss: particle_distance_sr: 10740.1865234375
+2024-03-11 14:38:30,112 INFO ========> Avg. Loss: particle_distance_rs: 13103.8466796875
+2024-03-11 14:38:30,112 INFO ========> Avg. Loss: chamfer_loss_particle: 23844.033203125
+2024-03-11 14:38:30,112 INFO ========> Avg. Loss: height_map_loss_pcd: 2271.794189453125
+2024-03-11 14:38:30,112 INFO ========> Avg. Loss: emd_point_distance_loss: 5687.29150390625
+2024-03-11 14:38:30,113 INFO ========> Avg. Loss: emd_particle_distance_loss: 35657.78515625
+2024-03-11 14:38:30,113 INFO ========> Avg. Loss: total_loss: 26058.25
+2024-03-11 14:38:30,113 INFO ========> Avg. grads: [ 4.9784994e-03 -3.2822144e+01 -4.5961317e-01  1.1742667e+00
+ -9.1841652e+01 -1.4104381e+03]
+2024-03-11 14:38:30,113 INFO ========> Num. aborted data so far: 0
+2024-03-11 14:38:30,116 INFO =====> Run validation at epoch 90
+2024-03-11 14:38:30,625 INFO ===> New TaichiEnv created.
+2024-03-11 14:38:30,625 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:41:48,524 INFO =====> Total loss: 38044.67578125
+2024-03-11 14:41:48,939 INFO ===> New TaichiEnv created.
+2024-03-11 14:41:48,939 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:42:28,360 INFO =====> Total loss: 28574.23046875
+2024-03-11 14:42:28,819 INFO ===> New TaichiEnv created.
+2024-03-11 14:42:28,819 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:44:58,531 INFO =====> Total loss: 36399.40625
+2024-03-11 14:44:58,994 INFO ===> New TaichiEnv created.
+2024-03-11 14:44:58,994 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:46:03,872 INFO =====> Total loss: 28502.513671875
+2024-03-11 14:46:04,327 INFO ===> New TaichiEnv created.
+2024-03-11 14:46:04,328 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:46:55,666 INFO =====> Total loss: 25693.8203125
+2024-03-11 14:46:56,125 INFO ===> New TaichiEnv created.
+2024-03-11 14:46:56,125 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:47:53,240 INFO =====> Total loss: 32474.583984375
+2024-03-11 14:47:53,241 INFO ========> Avg. Validation loss: point_distance_sr: 25959.959309895832
+2024-03-11 14:47:53,241 INFO ========> Avg. Validation loss: point_distance_rs: 5654.9128824869795
+2024-03-11 14:47:53,241 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31614.871744791668
+2024-03-11 14:47:53,241 INFO ========> Avg. Validation loss: particle_distance_sr: 11217.265055338541
+2024-03-11 14:47:53,242 INFO ========> Avg. Validation loss: particle_distance_rs: 12653.455729166666
+2024-03-11 14:47:53,242 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23870.720703125
+2024-03-11 14:47:53,242 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3390.3597005208335
+2024-03-11 14:47:53,242 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7295.736979166667
+2024-03-11 14:47:53,242 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 38818.860677083336
+2024-03-11 14:47:53,242 INFO ========> Avg. Validation loss: total_loss: 31614.871744791668
+2024-03-11 14:47:53,242 INFO ========> Num. aborted data so far: 0
+2024-03-11 14:47:53,996 INFO =====> Computing: epoch 91, motion 4, agent round, data 1
+2024-03-11 14:47:53,998 INFO ===> New TaichiEnv created.
+2024-03-11 14:47:53,998 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:49:21,801 INFO =====> Total loss: 26028.642578125
+2024-03-11 14:49:21,802 INFO =====> Grad: [ 6.7520100e-03  3.1956332e+02 -4.7240046e-01  1.1222949e+00
+ -7.8258369e+01 -1.5457910e+03]
+2024-03-11 14:49:21,802 INFO ========> Avg. Loss: point_distance_sr: 21603.83984375
+2024-03-11 14:49:21,803 INFO ========> Avg. Loss: point_distance_rs: 4424.802734375
+2024-03-11 14:49:21,803 INFO ========> Avg. Loss: chamfer_loss_pcd: 26028.642578125
+2024-03-11 14:49:21,803 INFO ========> Avg. Loss: particle_distance_sr: 10704.556640625
+2024-03-11 14:49:21,803 INFO ========> Avg. Loss: particle_distance_rs: 13057.013671875
+2024-03-11 14:49:21,803 INFO ========> Avg. Loss: chamfer_loss_particle: 23761.5703125
+2024-03-11 14:49:21,804 INFO ========> Avg. Loss: height_map_loss_pcd: 2263.8798828125
+2024-03-11 14:49:21,804 INFO ========> Avg. Loss: emd_point_distance_loss: 5671.67431640625
+2024-03-11 14:49:21,804 INFO ========> Avg. Loss: emd_particle_distance_loss: 35601.1328125
+2024-03-11 14:49:21,804 INFO ========> Avg. Loss: total_loss: 26028.642578125
+2024-03-11 14:49:21,804 INFO ========> Avg. grads: [ 6.7520100e-03  3.1956332e+02 -4.7240046e-01  1.1222949e+00
+ -7.8258369e+01 -1.5457910e+03]
+2024-03-11 14:49:21,804 INFO ========> Num. aborted data so far: 0
+2024-03-11 14:49:21,806 INFO =====> Run validation at epoch 91
+2024-03-11 14:49:22,246 INFO ===> New TaichiEnv created.
+2024-03-11 14:49:22,246 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:52:40,173 INFO =====> Total loss: 37968.4140625
+2024-03-11 14:52:40,634 INFO ===> New TaichiEnv created.
+2024-03-11 14:52:40,634 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:53:20,319 INFO =====> Total loss: 28608.94140625
+2024-03-11 14:53:20,740 INFO ===> New TaichiEnv created.
+2024-03-11 14:53:20,740 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:55:51,219 INFO =====> Total loss: 36333.109375
+2024-03-11 14:55:51,631 INFO ===> New TaichiEnv created.
+2024-03-11 14:55:51,631 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:56:57,362 INFO =====> Total loss: 28491.54296875
+2024-03-11 14:56:57,819 INFO ===> New TaichiEnv created.
+2024-03-11 14:56:57,819 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:57:48,895 INFO =====> Total loss: 25684.96484375
+2024-03-11 14:57:49,356 INFO ===> New TaichiEnv created.
+2024-03-11 14:57:49,356 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 14:58:46,835 INFO =====> Total loss: 32414.158203125
+2024-03-11 14:58:46,836 INFO ========> Avg. Validation loss: point_distance_sr: 25924.366536458332
+2024-03-11 14:58:46,837 INFO ========> Avg. Validation loss: point_distance_rs: 5659.155680338542
+2024-03-11 14:58:46,837 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31583.521809895832
+2024-03-11 14:58:46,837 INFO ========> Avg. Validation loss: particle_distance_sr: 11199.260498046875
+2024-03-11 14:58:46,837 INFO ========> Avg. Validation loss: particle_distance_rs: 12654.224446614584
+2024-03-11 14:58:46,837 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23853.4853515625
+2024-03-11 14:58:46,837 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3381.3866373697915
+2024-03-11 14:58:46,837 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7303.247395833333
+2024-03-11 14:58:46,837 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 38879.466145833336
+2024-03-11 14:58:46,837 INFO ========> Avg. Validation loss: total_loss: 31583.521809895832
+2024-03-11 14:58:46,837 INFO ========> Num. aborted data so far: 0
+2024-03-11 14:58:47,604 INFO =====> Computing: epoch 92, motion 4, agent round, data 1
+2024-03-11 14:58:47,605 INFO ===> New TaichiEnv created.
+2024-03-11 14:58:47,606 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:00:15,270 INFO =====> Total loss: 26000.0234375
+2024-03-11 15:00:15,270 INFO =====> Grad: [ 5.9059877e-03  6.7702823e+00 -4.4265524e-01  1.0946484e+00
+  1.8806042e+02 -1.4220983e+03]
+2024-03-11 15:00:15,271 INFO ========> Avg. Loss: point_distance_sr: 21596.06640625
+2024-03-11 15:00:15,271 INFO ========> Avg. Loss: point_distance_rs: 4403.95703125
+2024-03-11 15:00:15,272 INFO ========> Avg. Loss: chamfer_loss_pcd: 26000.0234375
+2024-03-11 15:00:15,272 INFO ========> Avg. Loss: particle_distance_sr: 10659.80859375
+2024-03-11 15:00:15,272 INFO ========> Avg. Loss: particle_distance_rs: 12990.5078125
+2024-03-11 15:00:15,272 INFO ========> Avg. Loss: chamfer_loss_particle: 23650.31640625
+2024-03-11 15:00:15,272 INFO ========> Avg. Loss: height_map_loss_pcd: 2265.924560546875
+2024-03-11 15:00:15,272 INFO ========> Avg. Loss: emd_point_distance_loss: 5646.5234375
+2024-03-11 15:00:15,272 INFO ========> Avg. Loss: emd_particle_distance_loss: 35467.2734375
+2024-03-11 15:00:15,272 INFO ========> Avg. Loss: total_loss: 26000.0234375
+2024-03-11 15:00:15,272 INFO ========> Avg. grads: [ 5.9059877e-03  6.7702823e+00 -4.4265524e-01  1.0946484e+00
+  1.8806042e+02 -1.4220983e+03]
+2024-03-11 15:00:15,272 INFO ========> Num. aborted data so far: 0
+2024-03-11 15:00:15,275 INFO =====> Run validation at epoch 92
+2024-03-11 15:00:15,757 INFO ===> New TaichiEnv created.
+2024-03-11 15:00:15,757 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:03:30,724 INFO =====> Total loss: 37876.29296875
+2024-03-11 15:03:31,133 INFO ===> New TaichiEnv created.
+2024-03-11 15:03:31,133 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:04:11,257 INFO =====> Total loss: 28653.931640625
+2024-03-11 15:04:11,742 INFO ===> New TaichiEnv created.
+2024-03-11 15:04:11,742 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:06:38,952 INFO =====> Total loss: 36257.8046875
+2024-03-11 15:06:39,417 INFO ===> New TaichiEnv created.
+2024-03-11 15:06:39,417 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:07:47,013 INFO =====> Total loss: 28488.345703125
+2024-03-11 15:07:47,458 INFO ===> New TaichiEnv created.
+2024-03-11 15:07:47,458 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:08:38,142 INFO =====> Total loss: 25664.34375
+2024-03-11 15:08:38,602 INFO ===> New TaichiEnv created.
+2024-03-11 15:08:38,602 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:09:36,038 INFO =====> Total loss: 32340.3984375
+2024-03-11 15:09:36,039 INFO ========> Avg. Validation loss: point_distance_sr: 25888.619140625
+2024-03-11 15:09:36,039 INFO ========> Avg. Validation loss: point_distance_rs: 5658.233561197917
+2024-03-11 15:09:36,040 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31546.852864583332
+2024-03-11 15:09:36,040 INFO ========> Avg. Validation loss: particle_distance_sr: 11173.112060546875
+2024-03-11 15:09:36,040 INFO ========> Avg. Validation loss: particle_distance_rs: 12642.731770833334
+2024-03-11 15:09:36,040 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23815.844075520832
+2024-03-11 15:09:36,040 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3397.667032877604
+2024-03-11 15:09:36,040 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7301.6181640625
+2024-03-11 15:09:36,040 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 38878.375651041664
+2024-03-11 15:09:36,040 INFO ========> Avg. Validation loss: total_loss: 31546.852864583332
+2024-03-11 15:09:36,040 INFO ========> Num. aborted data so far: 0
+2024-03-11 15:09:36,798 INFO =====> Computing: epoch 93, motion 4, agent round, data 1
+2024-03-11 15:09:36,799 INFO ===> New TaichiEnv created.
+2024-03-11 15:09:36,800 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:11:03,024 INFO =====> Total loss: 25976.533203125
+2024-03-11 15:11:03,024 INFO =====> Grad: [ 4.6263020e-03 -2.1576625e+02 -4.1742402e-01  1.1177206e+00
+  3.7513113e+02 -1.3344625e+03]
+2024-03-11 15:11:03,025 INFO ========> Avg. Loss: point_distance_sr: 21597.078125
+2024-03-11 15:11:03,025 INFO ========> Avg. Loss: point_distance_rs: 4379.45556640625
+2024-03-11 15:11:03,025 INFO ========> Avg. Loss: chamfer_loss_pcd: 25976.533203125
+2024-03-11 15:11:03,025 INFO ========> Avg. Loss: particle_distance_sr: 10613.373046875
+2024-03-11 15:11:03,025 INFO ========> Avg. Loss: particle_distance_rs: 12912.1064453125
+2024-03-11 15:11:03,025 INFO ========> Avg. Loss: chamfer_loss_particle: 23525.48046875
+2024-03-11 15:11:03,025 INFO ========> Avg. Loss: height_map_loss_pcd: 2267.58935546875
+2024-03-11 15:11:03,026 INFO ========> Avg. Loss: emd_point_distance_loss: 5614.85400390625
+2024-03-11 15:11:03,026 INFO ========> Avg. Loss: emd_particle_distance_loss: 35270.08984375
+2024-03-11 15:11:03,026 INFO ========> Avg. Loss: total_loss: 25976.533203125
+2024-03-11 15:11:03,026 INFO ========> Avg. grads: [ 4.6263020e-03 -2.1576625e+02 -4.1742402e-01  1.1177206e+00
+  3.7513113e+02 -1.3344625e+03]
+2024-03-11 15:11:03,026 INFO ========> Num. aborted data so far: 0
+2024-03-11 15:11:03,029 INFO =====> Run validation at epoch 93
+2024-03-11 15:11:03,530 INFO ===> New TaichiEnv created.
+2024-03-11 15:11:03,531 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:14:23,030 INFO =====> Total loss: 37767.18359375
+2024-03-11 15:14:23,489 INFO ===> New TaichiEnv created.
+2024-03-11 15:14:23,489 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:15:03,681 INFO =====> Total loss: 28709.765625
+2024-03-11 15:15:04,134 INFO ===> New TaichiEnv created.
+2024-03-11 15:15:04,134 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:17:32,083 INFO =====> Total loss: 36178.87109375
+2024-03-11 15:17:32,494 INFO ===> New TaichiEnv created.
+2024-03-11 15:17:32,494 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:18:41,457 INFO =====> Total loss: 28487.916015625
+2024-03-11 15:18:41,914 INFO ===> New TaichiEnv created.
+2024-03-11 15:18:41,914 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:19:33,076 INFO =====> Total loss: 25634.791015625
+2024-03-11 15:19:33,532 INFO ===> New TaichiEnv created.
+2024-03-11 15:19:33,532 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:20:30,779 INFO =====> Total loss: 32257.203125
+2024-03-11 15:20:30,780 INFO ========> Avg. Validation loss: point_distance_sr: 25852.948893229168
+2024-03-11 15:20:30,781 INFO ========> Avg. Validation loss: point_distance_rs: 5653.006591796875
+2024-03-11 15:20:30,781 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31505.955078125
+2024-03-11 15:20:30,781 INFO ========> Avg. Validation loss: particle_distance_sr: 11137.961995442709
+2024-03-11 15:20:30,781 INFO ========> Avg. Validation loss: particle_distance_rs: 12620.939290364584
+2024-03-11 15:20:30,781 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23758.9013671875
+2024-03-11 15:20:30,781 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3410.059285481771
+2024-03-11 15:20:30,781 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7291.639892578125
+2024-03-11 15:20:30,781 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 38815.671875
+2024-03-11 15:20:30,781 INFO ========> Avg. Validation loss: total_loss: 31505.955078125
+2024-03-11 15:20:30,781 INFO ========> Num. aborted data so far: 0
+2024-03-11 15:20:31,538 INFO =====> Computing: epoch 94, motion 4, agent round, data 1
+2024-03-11 15:20:31,539 INFO ===> New TaichiEnv created.
+2024-03-11 15:20:31,539 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:21:58,243 INFO =====> Total loss: 25954.671875
+2024-03-11 15:21:58,244 INFO =====> Grad: [ 4.8108678e-03 -5.9667334e+02 -3.7593803e-01  1.0066230e+00
+ -2.4180939e+02 -1.0747521e+03]
+2024-03-11 15:21:58,244 INFO ========> Avg. Loss: point_distance_sr: 21602.2578125
+2024-03-11 15:21:58,245 INFO ========> Avg. Loss: point_distance_rs: 4352.41455078125
+2024-03-11 15:21:58,245 INFO ========> Avg. Loss: chamfer_loss_pcd: 25954.671875
+2024-03-11 15:21:58,245 INFO ========> Avg. Loss: particle_distance_sr: 10565.060546875
+2024-03-11 15:21:58,245 INFO ========> Avg. Loss: particle_distance_rs: 12824.41015625
+2024-03-11 15:21:58,245 INFO ========> Avg. Loss: chamfer_loss_particle: 23389.470703125
+2024-03-11 15:21:58,245 INFO ========> Avg. Loss: height_map_loss_pcd: 2272.80615234375
+2024-03-11 15:21:58,245 INFO ========> Avg. Loss: emd_point_distance_loss: 5578.86328125
+2024-03-11 15:21:58,245 INFO ========> Avg. Loss: emd_particle_distance_loss: 35022.71484375
+2024-03-11 15:21:58,245 INFO ========> Avg. Loss: total_loss: 25954.671875
+2024-03-11 15:21:58,246 INFO ========> Avg. grads: [ 4.8108678e-03 -5.9667334e+02 -3.7593803e-01  1.0066230e+00
+ -2.4180939e+02 -1.0747521e+03]
+2024-03-11 15:21:58,246 INFO ========> Num. aborted data so far: 0
+2024-03-11 15:21:58,248 INFO =====> Run validation at epoch 94
+2024-03-11 15:21:58,745 INFO ===> New TaichiEnv created.
+2024-03-11 15:21:58,745 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:25:15,774 INFO =====> Total loss: 37639.8671875
+2024-03-11 15:25:16,237 INFO ===> New TaichiEnv created.
+2024-03-11 15:25:16,237 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:25:56,356 INFO =====> Total loss: 28781.619140625
+2024-03-11 15:25:56,827 INFO ===> New TaichiEnv created.
+2024-03-11 15:25:56,827 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:28:26,260 INFO =====> Total loss: 36089.55078125
+2024-03-11 15:28:26,825 INFO ===> New TaichiEnv created.
+2024-03-11 15:28:26,825 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:29:53,501 INFO =====> Total loss: 28491.21875
+2024-03-11 15:29:53,937 INFO ===> New TaichiEnv created.
+2024-03-11 15:29:53,937 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:31:08,674 INFO =====> Total loss: 25594.478515625
+2024-03-11 15:31:09,137 INFO ===> New TaichiEnv created.
+2024-03-11 15:31:09,137 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:32:29,399 INFO =====> Total loss: 32168.767578125
+2024-03-11 15:32:29,400 INFO ========> Avg. Validation loss: point_distance_sr: 25820.661783854168
+2024-03-11 15:32:29,400 INFO ========> Avg. Validation loss: point_distance_rs: 5640.2552490234375
+2024-03-11 15:32:29,400 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31460.9169921875
+2024-03-11 15:32:29,400 INFO ========> Avg. Validation loss: particle_distance_sr: 11083.578531901041
+2024-03-11 15:32:29,400 INFO ========> Avg. Validation loss: particle_distance_rs: 12580.38623046875
+2024-03-11 15:32:29,400 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23663.964192708332
+2024-03-11 15:32:29,400 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3372.3741048177085
+2024-03-11 15:32:29,401 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7266.70166015625
+2024-03-11 15:32:29,401 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 38636.872721354164
+2024-03-11 15:32:29,401 INFO ========> Avg. Validation loss: total_loss: 31460.9169921875
+2024-03-11 15:32:29,401 INFO ========> Num. aborted data so far: 0
+2024-03-11 15:32:30,199 INFO =====> Computing: epoch 95, motion 4, agent round, data 1
+2024-03-11 15:32:30,201 INFO ===> New TaichiEnv created.
+2024-03-11 15:32:30,201 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:34:38,632 INFO =====> Total loss: 25936.650390625
+2024-03-11 15:34:38,632 INFO =====> Grad: [ 3.4196610e-03 -1.0677168e+03 -3.0874130e-01  8.6342853e-01
+ -3.7571872e+02 -7.2842194e+02]
+2024-03-11 15:34:38,634 INFO ========> Avg. Loss: point_distance_sr: 21615.146484375
+2024-03-11 15:34:38,634 INFO ========> Avg. Loss: point_distance_rs: 4321.50341796875
+2024-03-11 15:34:38,635 INFO ========> Avg. Loss: chamfer_loss_pcd: 25936.650390625
+2024-03-11 15:34:38,635 INFO ========> Avg. Loss: particle_distance_sr: 10511.55859375
+2024-03-11 15:34:38,636 INFO ========> Avg. Loss: particle_distance_rs: 12724.458984375
+2024-03-11 15:34:38,636 INFO ========> Avg. Loss: chamfer_loss_particle: 23236.017578125
+2024-03-11 15:34:38,636 INFO ========> Avg. Loss: height_map_loss_pcd: 2253.159423828125
+2024-03-11 15:34:38,636 INFO ========> Avg. Loss: emd_point_distance_loss: 5537.51904296875
+2024-03-11 15:34:38,636 INFO ========> Avg. Loss: emd_particle_distance_loss: 34707.83984375
+2024-03-11 15:34:38,637 INFO ========> Avg. Loss: total_loss: 25936.650390625
+2024-03-11 15:34:38,638 INFO ========> Avg. grads: [ 3.4196610e-03 -1.0677168e+03 -3.0874130e-01  8.6342853e-01
+ -3.7571872e+02 -7.2842194e+02]
+2024-03-11 15:34:38,638 INFO ========> Num. aborted data so far: 0
+2024-03-11 15:34:38,641 INFO =====> Run validation at epoch 95
+2024-03-11 15:34:39,637 INFO ===> New TaichiEnv created.
+2024-03-11 15:34:39,637 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:37:59,568 INFO =====> Total loss: 37508.21875
+2024-03-11 15:38:00,017 INFO ===> New TaichiEnv created.
+2024-03-11 15:38:00,017 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:38:40,019 INFO =====> Total loss: 28852.421875
+2024-03-11 15:38:40,477 INFO ===> New TaichiEnv created.
+2024-03-11 15:38:40,477 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:41:00,628 INFO =====> Total loss: 36000.7421875
+2024-03-11 15:41:01,086 INFO ===> New TaichiEnv created.
+2024-03-11 15:41:01,087 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:42:10,594 INFO =====> Total loss: 28497.533203125
+2024-03-11 15:42:11,049 INFO ===> New TaichiEnv created.
+2024-03-11 15:42:11,049 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:43:02,166 INFO =====> Total loss: 25553.91796875
+2024-03-11 15:43:02,629 INFO ===> New TaichiEnv created.
+2024-03-11 15:43:02,629 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:43:58,585 INFO =====> Total loss: 32079.482421875
+2024-03-11 15:43:58,586 INFO ========> Avg. Validation loss: point_distance_sr: 25791.549479166668
+2024-03-11 15:43:58,586 INFO ========> Avg. Validation loss: point_distance_rs: 5623.8360595703125
+2024-03-11 15:43:58,586 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31415.386067708332
+2024-03-11 15:43:58,586 INFO ========> Avg. Validation loss: particle_distance_sr: 11019.668375651041
+2024-03-11 15:43:58,586 INFO ========> Avg. Validation loss: particle_distance_rs: 12532.90673828125
+2024-03-11 15:43:58,586 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23552.575520833332
+2024-03-11 15:43:58,586 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3358.78271484375
+2024-03-11 15:43:58,586 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7235.6396484375
+2024-03-11 15:43:58,586 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 38401.638997395836
+2024-03-11 15:43:58,587 INFO ========> Avg. Validation loss: total_loss: 31415.386067708332
+2024-03-11 15:43:58,587 INFO ========> Num. aborted data so far: 0
+2024-03-11 15:43:59,349 INFO =====> Computing: epoch 96, motion 4, agent round, data 1
+2024-03-11 15:43:59,350 INFO ===> New TaichiEnv created.
+2024-03-11 15:43:59,350 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:45:24,674 INFO =====> Total loss: 25927.525390625
+2024-03-11 15:45:24,675 INFO =====> Grad: [-1.2903973e-03 -2.0353383e+03 -2.2894323e-01  8.6945701e-01
+ -6.1761615e+02 -2.4121327e+02]
+2024-03-11 15:45:24,675 INFO ========> Avg. Loss: point_distance_sr: 21636.01953125
+2024-03-11 15:45:24,676 INFO ========> Avg. Loss: point_distance_rs: 4291.50537109375
+2024-03-11 15:45:24,676 INFO ========> Avg. Loss: chamfer_loss_pcd: 25927.525390625
+2024-03-11 15:45:24,676 INFO ========> Avg. Loss: particle_distance_sr: 10457.2548828125
+2024-03-11 15:45:24,676 INFO ========> Avg. Loss: particle_distance_rs: 12619.9892578125
+2024-03-11 15:45:24,676 INFO ========> Avg. Loss: chamfer_loss_particle: 23077.244140625
+2024-03-11 15:45:24,676 INFO ========> Avg. Loss: height_map_loss_pcd: 2189.80859375
+2024-03-11 15:45:24,676 INFO ========> Avg. Loss: emd_point_distance_loss: 5497.1005859375
+2024-03-11 15:45:24,676 INFO ========> Avg. Loss: emd_particle_distance_loss: 34383.0078125
+2024-03-11 15:45:24,677 INFO ========> Avg. Loss: total_loss: 25927.525390625
+2024-03-11 15:45:24,677 INFO ========> Avg. grads: [-1.2903973e-03 -2.0353383e+03 -2.2894323e-01  8.6945701e-01
+ -6.1761615e+02 -2.4121327e+02]
+2024-03-11 15:45:24,677 INFO ========> Num. aborted data so far: 0
+2024-03-11 15:45:24,680 INFO =====> Run validation at epoch 96
+2024-03-11 15:45:25,200 INFO ===> New TaichiEnv created.
+2024-03-11 15:45:25,200 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:49:03,763 INFO =====> Total loss: 37381.828125
+2024-03-11 15:49:04,239 INFO ===> New TaichiEnv created.
+2024-03-11 15:49:04,239 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:49:44,426 INFO =====> Total loss: 28914.068359375
+2024-03-11 15:49:44,896 INFO ===> New TaichiEnv created.
+2024-03-11 15:49:44,896 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:52:25,163 INFO =====> Total loss: 35929.22265625
+2024-03-11 15:52:27,150 INFO ===> New TaichiEnv created.
+2024-03-11 15:52:27,151 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:54:03,691 INFO =====> Total loss: 28501.685546875
+2024-03-11 15:54:04,195 INFO ===> New TaichiEnv created.
+2024-03-11 15:54:04,195 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:55:21,267 INFO =====> Total loss: 25525.96875
+2024-03-11 15:55:21,760 INFO ===> New TaichiEnv created.
+2024-03-11 15:55:21,760 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:56:20,670 INFO =====> Total loss: 31994.515625
+2024-03-11 15:56:20,671 INFO ========> Avg. Validation loss: point_distance_sr: 25763.8095703125
+2024-03-11 15:56:20,671 INFO ========> Avg. Validation loss: point_distance_rs: 5610.7386474609375
+2024-03-11 15:56:20,671 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31374.548177083332
+2024-03-11 15:56:20,672 INFO ========> Avg. Validation loss: particle_distance_sr: 10965.897786458334
+2024-03-11 15:56:20,672 INFO ========> Avg. Validation loss: particle_distance_rs: 12500.12548828125
+2024-03-11 15:56:20,672 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23466.0234375
+2024-03-11 15:56:20,672 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3332.597696940104
+2024-03-11 15:56:20,672 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7211.247314453125
+2024-03-11 15:56:20,672 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 38211.744466145836
+2024-03-11 15:56:20,672 INFO ========> Avg. Validation loss: total_loss: 31374.548177083332
+2024-03-11 15:56:20,672 INFO ========> Num. aborted data so far: 0
+2024-03-11 15:56:21,438 INFO =====> Computing: epoch 97, motion 4, agent round, data 1
+2024-03-11 15:56:21,439 INFO ===> New TaichiEnv created.
+2024-03-11 15:56:21,439 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 15:57:45,697 INFO =====> Total loss: 25921.10546875
+2024-03-11 15:57:45,697 INFO =====> Grad: [-2.1134736e-03 -2.0686619e+03 -2.3712343e-01  9.2638326e-01
+ -6.6661322e+02 -1.8662267e+02]
+2024-03-11 15:57:45,698 INFO ========> Avg. Loss: point_distance_sr: 21655.6484375
+2024-03-11 15:57:45,698 INFO ========> Avg. Loss: point_distance_rs: 4265.45654296875
+2024-03-11 15:57:45,698 INFO ========> Avg. Loss: chamfer_loss_pcd: 25921.10546875
+2024-03-11 15:57:45,698 INFO ========> Avg. Loss: particle_distance_sr: 10413.2099609375
+2024-03-11 15:57:45,699 INFO ========> Avg. Loss: particle_distance_rs: 12535.3466796875
+2024-03-11 15:57:45,699 INFO ========> Avg. Loss: chamfer_loss_particle: 22948.556640625
+2024-03-11 15:57:45,699 INFO ========> Avg. Loss: height_map_loss_pcd: 2174.31201171875
+2024-03-11 15:57:45,699 INFO ========> Avg. Loss: emd_point_distance_loss: 5465.1240234375
+2024-03-11 15:57:45,699 INFO ========> Avg. Loss: emd_particle_distance_loss: 34117.05078125
+2024-03-11 15:57:45,699 INFO ========> Avg. Loss: total_loss: 25921.10546875
+2024-03-11 15:57:45,699 INFO ========> Avg. grads: [-2.1134736e-03 -2.0686619e+03 -2.3712343e-01  9.2638326e-01
+ -6.6661322e+02 -1.8662267e+02]
+2024-03-11 15:57:45,699 INFO ========> Num. aborted data so far: 0
+2024-03-11 15:57:45,702 INFO =====> Run validation at epoch 97
+2024-03-11 15:57:46,184 INFO ===> New TaichiEnv created.
+2024-03-11 15:57:46,184 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:00:59,006 INFO =====> Total loss: 37276.72265625
+2024-03-11 16:00:59,494 INFO ===> New TaichiEnv created.
+2024-03-11 16:00:59,495 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:01:40,384 INFO =====> Total loss: 28966.28125
+2024-03-11 16:01:40,861 INFO ===> New TaichiEnv created.
+2024-03-11 16:01:40,861 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:04:00,999 INFO =====> Total loss: 35871.14453125
+2024-03-11 16:04:01,464 INFO ===> New TaichiEnv created.
+2024-03-11 16:04:01,464 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:05:10,744 INFO =====> Total loss: 28505.822265625
+2024-03-11 16:05:11,213 INFO ===> New TaichiEnv created.
+2024-03-11 16:05:11,213 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:06:01,803 INFO =====> Total loss: 25507.90625
+2024-03-11 16:06:02,306 INFO ===> New TaichiEnv created.
+2024-03-11 16:06:02,306 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:06:57,956 INFO =====> Total loss: 31917.22265625
+2024-03-11 16:06:57,957 INFO ========> Avg. Validation loss: point_distance_sr: 25738.332356770832
+2024-03-11 16:06:57,957 INFO ========> Avg. Validation loss: point_distance_rs: 5602.5177815755205
+2024-03-11 16:06:57,958 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31340.849934895832
+2024-03-11 16:06:57,958 INFO ========> Avg. Validation loss: particle_distance_sr: 10927.735026041666
+2024-03-11 16:06:57,958 INFO ========> Avg. Validation loss: particle_distance_rs: 12480.54541015625
+2024-03-11 16:06:57,958 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23408.2802734375
+2024-03-11 16:06:57,958 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3324.066365559896
+2024-03-11 16:06:57,958 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7194.17041015625
+2024-03-11 16:06:57,958 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 38082.155924479164
+2024-03-11 16:06:57,958 INFO ========> Avg. Validation loss: total_loss: 31340.849934895832
+2024-03-11 16:06:57,958 INFO ========> Num. aborted data so far: 0
+2024-03-11 16:06:58,757 INFO =====> Computing: epoch 98, motion 4, agent round, data 1
+2024-03-11 16:06:58,758 INFO ===> New TaichiEnv created.
+2024-03-11 16:06:58,758 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:08:23,644 INFO =====> Total loss: 25915.5546875
+2024-03-11 16:08:23,644 INFO =====> Grad: [-4.2835651e-03 -2.3163916e+03 -2.1007951e-01  9.5652741e-01
+ -4.5669281e+02 -1.7314203e+02]
+2024-03-11 16:08:23,645 INFO ========> Avg. Loss: point_distance_sr: 21671.638671875
+2024-03-11 16:08:23,645 INFO ========> Avg. Loss: point_distance_rs: 4243.91552734375
+2024-03-11 16:08:23,646 INFO ========> Avg. Loss: chamfer_loss_pcd: 25915.5546875
+2024-03-11 16:08:23,646 INFO ========> Avg. Loss: particle_distance_sr: 10378.654296875
+2024-03-11 16:08:23,646 INFO ========> Avg. Loss: particle_distance_rs: 12471.21875
+2024-03-11 16:08:23,646 INFO ========> Avg. Loss: chamfer_loss_particle: 22849.873046875
+2024-03-11 16:08:23,646 INFO ========> Avg. Loss: height_map_loss_pcd: 2161.9296875
+2024-03-11 16:08:23,646 INFO ========> Avg. Loss: emd_point_distance_loss: 5439.162109375
+2024-03-11 16:08:23,646 INFO ========> Avg. Loss: emd_particle_distance_loss: 33898.55078125
+2024-03-11 16:08:23,646 INFO ========> Avg. Loss: total_loss: 25915.5546875
+2024-03-11 16:08:23,646 INFO ========> Avg. grads: [-4.2835651e-03 -2.3163916e+03 -2.1007951e-01  9.5652741e-01
+ -4.5669281e+02 -1.7314203e+02]
+2024-03-11 16:08:23,646 INFO ========> Num. aborted data so far: 0
+2024-03-11 16:08:23,649 INFO =====> Run validation at epoch 98
+2024-03-11 16:08:24,139 INFO ===> New TaichiEnv created.
+2024-03-11 16:08:24,140 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:11:38,229 INFO =====> Total loss: 37190.4453125
+2024-03-11 16:11:38,685 INFO ===> New TaichiEnv created.
+2024-03-11 16:11:38,685 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:12:19,008 INFO =====> Total loss: 29006.712890625
+2024-03-11 16:12:19,482 INFO ===> New TaichiEnv created.
+2024-03-11 16:12:19,482 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:15:05,951 INFO =====> Total loss: 35830.21875
+2024-03-11 16:15:06,538 INFO ===> New TaichiEnv created.
+2024-03-11 16:15:06,538 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:16:35,198 INFO =====> Total loss: 28510.169921875
+2024-03-11 16:16:35,616 INFO ===> New TaichiEnv created.
+2024-03-11 16:16:35,616 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:17:26,127 INFO =====> Total loss: 25502.03515625
+2024-03-11 16:17:26,587 INFO ===> New TaichiEnv created.
+2024-03-11 16:17:26,587 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:18:22,154 INFO =====> Total loss: 31848.421875
+2024-03-11 16:18:22,155 INFO ========> Avg. Validation loss: point_distance_sr: 25713.959635416668
+2024-03-11 16:18:22,155 INFO ========> Avg. Validation loss: point_distance_rs: 5600.707600911458
+2024-03-11 16:18:22,155 INFO ========> Avg. Validation loss: chamfer_loss_pcd: 31314.667317708332
+2024-03-11 16:18:22,155 INFO ========> Avg. Validation loss: particle_distance_sr: 10909.452880859375
+2024-03-11 16:18:22,155 INFO ========> Avg. Validation loss: particle_distance_rs: 12475.695475260416
+2024-03-11 16:18:22,155 INFO ========> Avg. Validation loss: chamfer_loss_particle: 23385.147786458332
+2024-03-11 16:18:22,155 INFO ========> Avg. Validation loss: height_map_loss_pcd: 3325.182861328125
+2024-03-11 16:18:22,156 INFO ========> Avg. Validation loss: emd_point_distance_loss: 7188.914794921875
+2024-03-11 16:18:22,156 INFO ========> Avg. Validation loss: emd_particle_distance_loss: 38041.450846354164
+2024-03-11 16:18:22,156 INFO ========> Avg. Validation loss: total_loss: 31314.667317708332
+2024-03-11 16:18:22,156 INFO ========> Num. aborted data so far: 0
+2024-03-11 16:18:22,906 INFO =====> Computing: epoch 99, motion 4, agent round, data 1
+2024-03-11 16:18:22,907 INFO ===> New TaichiEnv created.
+2024-03-11 16:18:22,907 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:19:48,520 INFO =====> Total loss: 25910.154296875
+2024-03-11 16:19:48,520 INFO =====> Grad: [-5.2271793e-03 -2.6371323e+03 -1.7517304e-01  8.8655752e-01
+ -7.3461230e+02 -2.4819460e+01]
+2024-03-11 16:19:48,521 INFO ========> Avg. Loss: point_distance_sr: 21680.490234375
+2024-03-11 16:19:48,521 INFO ========> Avg. Loss: point_distance_rs: 4229.66357421875
+2024-03-11 16:19:48,521 INFO ========> Avg. Loss: chamfer_loss_pcd: 25910.154296875
+2024-03-11 16:19:48,521 INFO ========> Avg. Loss: particle_distance_sr: 10353.9990234375
+2024-03-11 16:19:48,521 INFO ========> Avg. Loss: particle_distance_rs: 12430.5537109375
+2024-03-11 16:19:48,521 INFO ========> Avg. Loss: chamfer_loss_particle: 22784.552734375
+2024-03-11 16:19:48,522 INFO ========> Avg. Loss: height_map_loss_pcd: 2158.124755859375
+2024-03-11 16:19:48,522 INFO ========> Avg. Loss: emd_point_distance_loss: 5422.09423828125
+2024-03-11 16:19:48,522 INFO ========> Avg. Loss: emd_particle_distance_loss: 33764.0859375
+2024-03-11 16:19:48,522 INFO ========> Avg. Loss: total_loss: 25910.154296875
+2024-03-11 16:19:48,522 INFO ========> Avg. grads: [-5.2271793e-03 -2.6371323e+03 -1.7517304e-01  8.8655752e-01
+ -7.3461230e+02 -2.4819460e+01]
+2024-03-11 16:19:48,522 INFO ========> Num. aborted data so far: 0
+2024-03-11 16:19:48,525 INFO =====> Run validation at epoch 99
+2024-03-11 16:19:49,018 INFO ===> New TaichiEnv created.
+2024-03-11 16:19:49,018 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:24:07,502 INFO =====> Total loss: 37132.58984375
+2024-03-11 16:24:08,003 INFO ===> New TaichiEnv created.
+2024-03-11 16:24:08,003 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:24:50,983 INFO =====> Total loss: 29032.2421875
+2024-03-11 16:24:51,462 INFO ===> New TaichiEnv created.
+2024-03-11 16:24:51,462 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:27:10,724 INFO =====> Total loss: 35806.69140625
+2024-03-11 16:27:11,170 INFO ===> New TaichiEnv created.
+2024-03-11 16:27:11,170 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:28:21,572 INFO =====> Total loss: 28516.306640625
+2024-03-11 16:28:22,029 INFO ===> New TaichiEnv created.
+2024-03-11 16:28:22,029 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:29:17,765 INFO =====> Total loss: 25502.08203125
+2024-03-11 16:29:18,383 INFO ===> New TaichiEnv created.
+2024-03-11 16:29:18,383 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-03-11 16:30:44,427 INFO =====> Optimising param set 1 for 100 epochs for 1 random seeds.
+2024-03-11 16:30:44,427 INFO =====> Loss config: {'exponential_distance': False, 'averaging_loss': False, 'point_distance_rs_loss': True, 'point_distance_sr_loss': True, 'down_sample_voxel_size': 0.003, 'particle_distance_rs_loss': False, 'particle_distance_sr_loss': False, 'voxelise_res': 1080, 'ptcl_density': 80000000.0, 'load_height_map': True, 'height_map_loss': False, 'height_map_res': 32, 'height_map_size': 0.11, 'emd_point_distance_loss': False, 'emd_particle_distance_loss': False}
+2024-03-11 16:30:44,427 INFO =====> Training config: {'param_set': 1, 'lr_E': 4000.0, 'lr_nu': 0.001, 'lr_yield_stress': 100.0, 'lr_rho': 10, 'lr_manipulator_friction': 0.1, 'lr_ground_friction': 0.05, 'batch_size': 20, 'n_epoch': 100, 'seeds': [0]}
+2024-03-11 16:30:44,436 INFO =====> Seed: 2, initial parameters: E=[136438.52], nu=[0.02218533], yield_stress=[11443.587], rho=[1435.3224]
+2024-03-11 16:30:44,437 INFO =====> Seed: 2, initial parameters: manipulation friction=[0.8465319], ground friction=[0.66736627]
+2024-03-11 16:30:45,225 INFO =====> Computing: epoch 0, motion 4, agent round, data 1
+2024-03-11 16:30:45,227 INFO ===> New TaichiEnv created.
+2024-03-11 16:30:45,227 INFO ===> Specifications: horizon = 153, dt = 0.01, n_substeps = 50, dt_sub = 0.0002

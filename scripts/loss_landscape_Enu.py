@@ -101,8 +101,38 @@ def main(args):
 
         for i in range(len(loss_types)):
             loss_type = loss_types[i]
+            if args['param_set'] == 0:
+                if loss_type == 'chamfer_loss_pcd':
+                    min_val = 5600
+                    max_val = 10500
+                elif loss_type == 'chamfer_loss_particle':
+                    min_val = 3500
+                    max_val = 6800
+                elif loss_type == 'emd_point_distance_loss':
+                    min_val = 890
+                    max_val = 1100
+                elif loss_type == 'emd_particle_distance_loss':
+                    min_val = 4500
+                    max_val = 7200
+                else:
+                    raise ValueError('Invalid loss type.')
+            else:
+                if loss_type == 'chamfer_loss_pcd':
+                    min_val = 12000
+                    max_val = 32000
+                elif loss_type == 'chamfer_loss_particle':
+                    min_val = 7500
+                    max_val = 43000
+                elif loss_type == 'emd_point_distance_loss':
+                    min_val = 1430
+                    max_val = 8100
+                elif loss_type == 'emd_particle_distance_loss':
+                    min_val = 9000
+                    max_val = 78000
+                else:
+                    raise ValueError('Invalid loss type.')
             loss = np.load(os.path.join(fig_data_path, f'{loss_type}_{distance_type}_{xy_param}-{p_density_str}.npy'))
-            plot_loss_landscape(E, nu, loss, fig_title=None, colorbar=True, cmap='YlGnBu',
+            plot_loss_landscape(E, nu, loss, fig_title=None, colorbar=True, cmap='YlGnBu', min_val=min_val, max_val=max_val,
                                 x_label='E', y_label='nu', hm=True, show=False, save=True,
                                 path=os.path.join(fig_data_path, f"{loss_type}_{distance_type}_landscape_{xy_param}-topview-{p_density_str}.pdf"))
         return

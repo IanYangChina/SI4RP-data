@@ -37,23 +37,23 @@ with open(file_path, 'r') as file:
             print(loss_name, loss_value)
 
             if loss_name == 'point_distance_sr':
-                point_distance_sr[j, i] = loss_value
+                point_distance_sr[j, i] += loss_value
             elif loss_name == 'point_distance_rs':
-                point_distance_rs[j, i] = loss_value
+                point_distance_rs[j, i] += loss_value
             elif loss_name == 'chamfer_loss_pcd':
-                chamfer_loss_pcd[j, i] = loss_value
+                chamfer_loss_pcd[j, i] += loss_value
             elif loss_name == 'particle_distance_sr':
-                particle_distance_sr[j, i] = loss_value
+                particle_distance_sr[j, i] += loss_value
             elif loss_name == 'particle_distance_rs':
-                particle_distance_rs[j, i] = loss_value
+                particle_distance_rs[j, i] += loss_value
             elif loss_name == 'chamfer_loss_particle':
-                chamfer_loss_particle[j, i] = loss_value
+                chamfer_loss_particle[j, i] += loss_value
             elif loss_name == 'height_map_loss_pcd':
-                height_map_loss_pcd[j, i] = loss_value
+                height_map_loss_pcd[j, i] += loss_value
             elif loss_name == 'emd_point_distance_loss':
-                emd_point_distance_loss[j, i] = loss_value
+                emd_point_distance_loss[j, i] += loss_value
             elif loss_name == 'emd_particle_distance_loss':
-                emd_particle_distance_loss[j, i] = loss_value
+                emd_particle_distance_loss[j, i] += loss_value
             else:
                 pass
 

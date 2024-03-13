@@ -306,10 +306,10 @@ def read_losses(run_ids, param_set=0, fewshot=True, oneshot=False, save_meanstd=
 
 def plot_legends():
     legends = [
-        'PCD chamfer',
-        'Particle chamfer',
-        'PCD emd',
-        'Particle emd',
+        'PCD CD',
+        'PRT CD',
+        'PCD EMD',
+        'PRT EMD',
     ]
 
     plot.smoothed_plot_mean_deviation(
@@ -499,7 +499,7 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, onesh
                     window=10,
                     data=datas, colors=colors, linestyles=linestyles, linewidths=linewidths, alphas=alphas,
                     x_axis_off=True,
-                    y_label=None, y_axis_off=False, ylim=ylim_valid, yticks=yticks
+                    y_label=None, y_axis_off=y_axis_off, ylim=ylim_valid, yticks=yticks
                 )
 
     """Plot params"""
@@ -554,16 +554,16 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, onesh
             )
 
 
-# plot_legends()
+plot_legends()
 # read_losses(run_ids=[1], param_set=1, fewshot=False, oneshot=False, save_meanstd=True, realoneshot=True, agent_id=1)
 
 # plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', params=False, loss_curves=True,
 #             fewshot=True, oneshot=False, realoneshot=False, agent_id=0)
-# plot_losses(run_ids=[0, 1, 2, 3, 11], param_set=0, dist_type='Euclidean', params=False, loss_curves=True,
+# plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', params=False, loss_curves=True,
 #             fewshot=False, oneshot=True, realoneshot=False, agent_id=1)
-# plot_losses(run_ids=[0, 1, 2, 3, 11], param_set=0, dist_type='Euclidean', params=False, loss_curves=True,
+# plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', params=False, loss_curves=True,
 #             fewshot=False, oneshot=False, realoneshot=True, agent_id=0)
-plot_losses(run_ids=[0, 1, 2, 3, 11], param_set=0, dist_type='Euclidean', params=False, loss_curves=True,
-            fewshot=False, oneshot=False, realoneshot=True, agent_id=1)
-# plot_losses(run_ids=[0, 1, 2, 3], param_set=1, dist_type='Euclidean', params=False, loss_curves=True,
+# plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', params=False, loss_curves=True,
+#             fewshot=False, oneshot=False, realoneshot=True, agent_id=1)
+# plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', params=False, loss_curves=True,
 #             fewshot=False, oneshot=False, realoneshot=True, agent_id=2)

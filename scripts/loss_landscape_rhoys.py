@@ -132,8 +132,10 @@ def main(args):
                 else:
                     raise ValueError('Invalid loss type.')
             loss = np.load(os.path.join(fig_data_path, f'{loss_type}_{distance_type}_{xy_param}-{p_density_str}.npy'))
-            plot_loss_landscape(rho, yield_stress, loss, fig_title=None, colorbar=True, cmap='YlGnBu', min_val=min_val, max_val=max_val,
-                                x_label='rho', y_label='yield_stress', hm=True, show=False, save=True,
+            loss -= np.mean(loss)
+            plot_loss_landscape(rho, yield_stress, loss, fig_title=None, colorbar=False, cmap='YlGnBu', # min_val=min_val, max_val=max_val,
+                                # x_label='rho', y_label='yield_stress',
+                                hm=True, show=False, save=True,
                                 path=os.path.join(fig_data_path, f"{loss_type}_{distance_type}_landscape_{xy_param}-topview-{p_density_str}.pdf"))
         return
 

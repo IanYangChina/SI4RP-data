@@ -22,7 +22,7 @@ script_path = os.path.dirname(os.path.realpath(__file__))
 from doma.envs.sys_id_env import make_env, set_parameters
 
 
-def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=False,
+def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=False, eval=False,
             render=False, save_img=False, save_heightmap=False, image_dir=None, render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
             init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
 
@@ -54,17 +54,24 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
     if save_img or save_heightmap:
         img_dir = os.path.join(image_dir, str(n_episode))
         os.makedirs(img_dir, exist_ok=True)
+        if not eval:
+            frames_to_save = [
+                # 0,
+                # round(mpm_env.horizon/4),
+                # round(mpm_env.horizon/2),
+                # round(mpm_env.horizon*3/4),
+                mpm_env.horizon - 1
+            ]
+        else:
+            interval = mpm_env.horizon // 10
+            frames_to_save = [0, interval, 2 * interval, 3 * interval, 4 * interval, 5 * interval,
+                              6 * interval, 7 * interval, 8 * interval, 9 * interval, mpm_env.horizon - 1]
+
     for i in range(mpm_env.horizon):
         action = trajectory[i]
         mpm_env.step(action)
         # print(mpm_env.agent.effectors[0].pos[mpm_env.simulator.cur_substep_local])
         if save_img:
-            frame_skip = 1
-            frames_to_save = [0,
-                              round(mpm_env.horizon/4),
-                              round(mpm_env.horizon/2),
-                              round(mpm_env.horizon*3/4),
-                              mpm_env.horizon-1]
             if i in frames_to_save:
                 img = mpm_env.render(mode='rgb_array')
                 # np.save(os.path.join(img_dir, f'img_{i // frame_skip}.png'), img)
@@ -271,8 +278,8 @@ def main(args):
         yield_stress = params[2]
         rho = params[3]
         if p_set == 1:
-            gf = params[4]
-            mf = params[5]
+            mf = params[4]
+            gf = params[5]
         image_dir = os.path.join(save_dir, f'validation_tr_imgs-motion{motion_ind}-{agent}')
         if args['eval']:
             image_dir = os.path.join(save_dir, f'validation_tr_imgs-long_motion-{agent}')
@@ -326,7 +333,7 @@ def main(args):
         set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress,
                        rho=rho, ground_friction=gf, manipulator_friction=mf)
         forward(mpm_env, init_state, trajectory.copy(), n_episode=n_episode,
-                press_to_proceed=args['press_to_proceed'],
+                press_to_proceed=args['press_to_proceed'], eval=args['eval'],
                 render=args['render_human'], save_img=args['save_img'], save_heightmap=args['save_heightmap'], image_dir=image_dir,
                 render_init_pcd=args['render_init_pcd'],
                 render_end_pcd=args['render_end_pcd'], render_heightmap=args['render_heightmap'],

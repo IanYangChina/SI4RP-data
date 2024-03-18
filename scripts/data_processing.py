@@ -554,7 +554,87 @@ def plot_losses(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, onesh
             )
 
 
-plot_legends()
+def print_losses(run_ids, param_set=0, case='validation',
+                 fewshot=True, oneshot=False,
+                 realoneshot=True, agent_id=0):
+    assert len(run_ids) > 0
+    params = ['E', 'nu', 'yield_stress', 'rho', 'gf', 'mf']
+    if param_set == 0:
+        params = ['E', 'nu', 'yield_stress', 'rho']
+    if fewshot:
+        assert not oneshot
+        dir_prefix = f'optimisation-fewshot-param{param_set}'
+    elif oneshot:
+        dir_prefix = f'optimisation-oneshot-param{param_set}'
+    elif realoneshot:
+        agents = ['rectangle', 'round', 'cylinder']
+        agent = agents[agent_id]
+        dir_prefix = f'optimisation-realoneshot-{agent}-param{param_set}'
+    else:
+        dir_prefix = f'optimisation-param{param_set}'
+
+    print(f'Height map losses from {dir_prefix}')
+    data_dict = dict()
+    for run_id in run_ids:
+        run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', 'data')
+        losses = json.load(open(os.path.join(run_dir, 'raw_loss.json'), 'rb'))
+        mean_hm = 5000000
+        p_values = []
+        for seed in [0, 1, 2]:
+            mean_hm_ = np.mean(losses[f'seed-{seed}'][case]['height_map_loss_pcd'][-10:])
+            if mean_hm_ < mean_hm:
+                mean_hm = mean_hm_
+                p_values = []
+                for p in params:
+                    p_values.append(losses[f'seed-{seed}']['parameters'][p][-1])
+        data_dict.update({
+            f'run{run_id}': {
+                'min_mean_hm': mean_hm,
+                'best_p_values': p_values
+            }
+        })
+
+    return data_dict
+
+d1 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=True, oneshot=False, realoneshot=False, agent_id=0)
+d2 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=True, realoneshot=False, agent_id=0)
+d3 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=False, realoneshot=True, agent_id=0)
+d4 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=False, realoneshot=True, agent_id=1)
+d5 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=False, realoneshot=True, agent_id=2)
+
+print('& %.2f' %d1['run0']['min_mean_hm'], ' & %.2f' %d2['run0']['min_mean_hm'], ' & %.2f' %d3['run0']['min_mean_hm'], ' & %.2f' %d4['run0']['min_mean_hm'], ' & %.2f' %d5['run0']['min_mean_hm'], ' \\\\')
+print('& %.0f' %d1['run0']['best_p_values'][0], ' & %.0f' %d2['run0']['best_p_values'][0], ' & %.0f' %d3['run0']['best_p_values'][0], ' & %.0f' %d4['run0']['best_p_values'][0], ' & %.0f' %d5['run0']['best_p_values'][0], ' \\\\')
+print('& %.3f' %d1['run0']['best_p_values'][1], ' & %.3f' %d2['run0']['best_p_values'][1], ' & %.3f' %d3['run0']['best_p_values'][1], ' & %.3f' %d4['run0']['best_p_values'][1], ' & %.3f' %d5['run0']['best_p_values'][1], ' \\\\')
+print('& %.0f' %d1['run0']['best_p_values'][2], ' & %.0f' %d2['run0']['best_p_values'][2], ' & %.0f' %d3['run0']['best_p_values'][2], ' & %.0f' %d4['run0']['best_p_values'][2], ' & %.0f' %d5['run0']['best_p_values'][2], ' \\\\')
+print('& %.0f' %d1['run0']['best_p_values'][3], ' & %.0f' %d2['run0']['best_p_values'][3], ' & %.0f' %d3['run0']['best_p_values'][3], ' & %.0f' %d4['run0']['best_p_values'][3], ' & %.0f' %d5['run0']['best_p_values'][3], ' \\\\')
+print('& %.3f' %d1['run0']['best_p_values'][4], ' & %.3f' %d2['run0']['best_p_values'][4], ' & %.3f' %d3['run0']['best_p_values'][4], ' & %.3f' %d4['run0']['best_p_values'][4], ' & %.3f' %d5['run0']['best_p_values'][4], ' \\\\')
+print('& %.3f' %d1['run0']['best_p_values'][5], ' & %.3f' %d2['run0']['best_p_values'][5], ' & %.3f' %d3['run0']['best_p_values'][5], ' & %.3f' %d4['run0']['best_p_values'][5], ' & %.3f' %d5['run0']['best_p_values'][5], ' \\\\')
+
+print('& %.2f' %d1['run1']['min_mean_hm'], ' & %.2f' %d2['run1']['min_mean_hm'], ' & %.2f' %d3['run1']['min_mean_hm'], ' & %.2f' %d4['run1']['min_mean_hm'], ' & %.2f' %d5['run1']['min_mean_hm'], ' \\\\')
+print('& %.0f' %d1['run1']['best_p_values'][0], ' & %.0f' %d2['run1']['best_p_values'][0], ' & %.0f' %d3['run1']['best_p_values'][0], ' & %.0f' %d4['run1']['best_p_values'][0], ' & %.0f' %d5['run1']['best_p_values'][0], ' \\\\')
+print('& %.3f' %d1['run1']['best_p_values'][1], ' & %.3f' %d2['run1']['best_p_values'][1], ' & %.3f' %d3['run1']['best_p_values'][1], ' & %.3f' %d4['run1']['best_p_values'][1], ' & %.3f' %d5['run1']['best_p_values'][1], ' \\\\')
+print('& %.0f' %d1['run1']['best_p_values'][2], ' & %.0f' %d2['run1']['best_p_values'][2], ' & %.0f' %d3['run1']['best_p_values'][2], ' & %.0f' %d4['run1']['best_p_values'][2], ' & %.0f' %d5['run1']['best_p_values'][2], ' \\\\')
+print('& %.0f' %d1['run1']['best_p_values'][3], ' & %.0f' %d2['run1']['best_p_values'][3], ' & %.0f' %d3['run1']['best_p_values'][3], ' & %.0f' %d4['run1']['best_p_values'][3], ' & %.0f' %d5['run1']['best_p_values'][3], ' \\\\')
+print('& %.3f' %d1['run1']['best_p_values'][4], ' & %.3f' %d2['run1']['best_p_values'][4], ' & %.3f' %d3['run1']['best_p_values'][4], ' & %.3f' %d4['run1']['best_p_values'][4], ' & %.3f' %d5['run1']['best_p_values'][4], ' \\\\')
+print('& %.3f' %d1['run1']['best_p_values'][5], ' & %.3f' %d2['run1']['best_p_values'][5], ' & %.3f' %d3['run1']['best_p_values'][5], ' & %.3f' %d4['run1']['best_p_values'][5], ' & %.3f' %d5['run1']['best_p_values'][5], ' \\\\')
+
+print('& %.2f' %d1['run2']['min_mean_hm'], ' & %.2f' %d2['run2']['min_mean_hm'], ' & %.2f' %d3['run2']['min_mean_hm'], ' & %.2f' %d4['run2']['min_mean_hm'], ' & %.2f' %d5['run2']['min_mean_hm'], ' \\\\')
+print('& %.0f' %d1['run2']['best_p_values'][0], ' & %.0f' %d2['run2']['best_p_values'][0], ' & %.0f' %d3['run2']['best_p_values'][0], ' & %.0f' %d4['run2']['best_p_values'][0], ' & %.0f' %d5['run2']['best_p_values'][0], ' \\\\')
+print('& %.3f' %d1['run2']['best_p_values'][1], ' & %.3f' %d2['run2']['best_p_values'][1], ' & %.3f' %d3['run2']['best_p_values'][1], ' & %.3f' %d4['run2']['best_p_values'][1], ' & %.3f' %d5['run2']['best_p_values'][1], ' \\\\')
+print('& %.0f' %d1['run2']['best_p_values'][2], ' & %.0f' %d2['run2']['best_p_values'][2], ' & %.0f' %d3['run2']['best_p_values'][2], ' & %.0f' %d4['run2']['best_p_values'][2], ' & %.0f' %d5['run2']['best_p_values'][2], ' \\\\')
+print('& %.0f' %d1['run2']['best_p_values'][3], ' & %.0f' %d2['run2']['best_p_values'][3], ' & %.0f' %d3['run2']['best_p_values'][3], ' & %.0f' %d4['run2']['best_p_values'][3], ' & %.0f' %d5['run2']['best_p_values'][3], ' \\\\')
+print('& %.3f' %d1['run2']['best_p_values'][4], ' & %.3f' %d2['run2']['best_p_values'][4], ' & %.3f' %d3['run2']['best_p_values'][4], ' & %.3f' %d4['run2']['best_p_values'][4], ' & %.3f' %d5['run2']['best_p_values'][4], ' \\\\')
+print('& %.3f' %d1['run2']['best_p_values'][5], ' & %.3f' %d2['run2']['best_p_values'][5], ' & %.3f' %d3['run2']['best_p_values'][5], ' & %.3f' %d4['run2']['best_p_values'][5], ' & %.3f' %d5['run2']['best_p_values'][5], ' \\\\')
+
+print('& %.2f' %d1['run3']['min_mean_hm'], ' & %.2f' %d2['run3']['min_mean_hm'], ' & %.2f' %d3['run3']['min_mean_hm'], ' & %.2f' %d4['run3']['min_mean_hm'], ' & %.2f' %d5['run3']['min_mean_hm'], ' \\\\')
+print('& %.0f' %d1['run3']['best_p_values'][0], ' & %.0f' %d2['run3']['best_p_values'][0], ' & %.0f' %d3['run3']['best_p_values'][0], ' & %.0f' %d4['run3']['best_p_values'][0], ' & %.0f' %d5['run3']['best_p_values'][0], ' \\\\')
+print('& %.3f' %d1['run3']['best_p_values'][1], ' & %.3f' %d2['run3']['best_p_values'][1], ' & %.3f' %d3['run3']['best_p_values'][1], ' & %.3f' %d4['run3']['best_p_values'][1], ' & %.3f' %d5['run3']['best_p_values'][1], ' \\\\')
+print('& %.0f' %d1['run3']['best_p_values'][2], ' & %.0f' %d2['run3']['best_p_values'][2], ' & %.0f' %d3['run3']['best_p_values'][2], ' & %.0f' %d4['run3']['best_p_values'][2], ' & %.0f' %d5['run3']['best_p_values'][2], ' \\\\')
+print('& %.0f' %d1['run3']['best_p_values'][3], ' & %.0f' %d2['run3']['best_p_values'][3], ' & %.0f' %d3['run3']['best_p_values'][3], ' & %.0f' %d4['run3']['best_p_values'][3], ' & %.0f' %d5['run3']['best_p_values'][3], ' \\\\')
+print('& %.3f' %d1['run3']['best_p_values'][4], ' & %.3f' %d2['run3']['best_p_values'][4], ' & %.3f' %d3['run3']['best_p_values'][4], ' & %.3f' %d4['run3']['best_p_values'][4], ' & %.3f' %d5['run3']['best_p_values'][4], ' \\\\')
+print('& %.3f' %d1['run3']['best_p_values'][5], ' & %.3f' %d2['run3']['best_p_values'][5], ' & %.3f' %d3['run3']['best_p_values'][5], ' & %.3f' %d4['run3']['best_p_values'][5], ' & %.3f' %d5['run3']['best_p_values'][5], ' \\\\')
+
+# plot_legends()
 # read_losses(run_ids=[1], param_set=1, fewshot=False, oneshot=False, save_meanstd=True, realoneshot=True, agent_id=1)
 
 # plot_losses(run_ids=[0, 1, 2, 3], param_set=0, dist_type='Euclidean', params=False, loss_curves=True,

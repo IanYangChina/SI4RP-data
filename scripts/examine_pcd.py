@@ -43,7 +43,7 @@ vedo_light_1 = Light(pos=[0.5, 0.25, 0.2], c=[0.6, 0.6, 0.6])
 vedo_light_2 = Light(pos=[0.5, 0.5, 1.0], c=[0.6, 0.6, 0.6])
 vedo_light_3 = Light(pos=[0.5, 0.0, 1.0], c=[0.8, 0.8, 0.8])
 
-tr = '2'
+tr = 'validation'
 validation_dataind_dict = {
     '2': {
         'rectangle': [4, 8],
@@ -58,9 +58,10 @@ validation_dataind_dict = {
 }
 for agent in ['round', 'rectangle', 'cylinder']:
     data_path = os.path.join(script_path, '..', f'data-motion-{tr}', f'eef-{agent}')
-    for data_ind in validation_dataind_dict[tr][agent]:
+    for data_ind in [0, 1]:
         init_mesh_path = os.path.join(data_path, f'mesh_{data_ind}0_repaired_normalised.obj')
-        obj_start_centre_real = np.load(os.path.join(data_path, 'mesh_' + str(data_ind) + str(0) + '_repaired_centre.npy'))
+        obj_start_centre_real = np.load(
+            os.path.join(data_path, 'mesh_' + str(data_ind) + str(0) + '_repaired_centre.npy'))
         obj_start_centre_top_normalised = np.load(
             os.path.join(data_path, 'mesh_' + str(data_ind) + str(0) + '_repaired_normalised_centre_top.npy'))
         obj_start_initial_pos = np.array([0.25, 0.25, obj_start_centre_top_normalised[-1] + 0.01])
@@ -71,26 +72,27 @@ for agent in ['round', 'rectangle', 'cylinder']:
         # coords_init[:, 1] += 0.1
         # mesh_init.points(coords_init)
 
-        init_particles_from_mesh_np = generate_particles_from_mesh(file=init_mesh_path,
-                                                                     voxelize_res=1080,
-                                                                     particle_density=2e7,
-                                                                     pos=obj_start_initial_pos)
-        RGBA = np.ones((len(init_particles_from_mesh_np), 4)) * 255
-        RGBA[:, 0] = 255
-        RGBA[:, 1] = 151
-        RGBA[:, 2] = 48
-        init_particles_pts = Points(init_particles_from_mesh_np, r=20, c=RGBA).lighting('shiny')
-        vedo_plt = show([table_mesh, init_particles_pts, vedo_light_1, vedo_light_2, vedo_light_3], __doc__,
-                   axes=True, size=(640, 640), interactive=False,
-                   camera={'pos': (0.4, 0.1, 0.1), 'focal_point': (0.25, 0.25, 0.04), 'viewup': (0, 0, 1)})
-        arr = vedo_plt.screenshot(asarray=True)
-        plt.imshow(arr)
-        plt.xticks([])
-        plt.yticks([])
-        plt.box(False)
-        plt.show()
-        # plt.savefig(os.path.join(script_path, '..', f'data-motion-{tr}', f'eef-{agent}', f'prt_vis_{data_ind}1.png'), dpi=300, bbox_inches='tight')
-        vedo_plt.close()
+        # init_particles_from_mesh_np = generate_particles_from_mesh(file=init_mesh_path,
+        #                                                            voxelize_res=1080,
+        #                                                            particle_density=2e7,
+        #                                                            pos=obj_start_initial_pos)
+        # RGBA = np.ones((len(init_particles_from_mesh_np), 4)) * 255
+        # RGBA[:, 0] = 255
+        # RGBA[:, 1] = 151
+        # RGBA[:, 2] = 48
+        # init_particles_pts = Points(init_particles_from_mesh_np, r=20, c=RGBA).lighting('shiny')
+        # vedo_plt = show([table_mesh, init_particles_pts, vedo_light_1, vedo_light_2, vedo_light_3], __doc__,
+        #                 axes=True, size=(640, 640), interactive=False,
+        #                 camera={'pos': (0.4, 0.1, 0.1), 'focal_point': (0.25, 0.25, 0.04), 'viewup': (0, 0, 1)})
+        # arr = vedo_plt.screenshot(asarray=True)
+        # plt.imshow(arr)
+        # plt.xticks([])
+        # plt.yticks([])
+        # plt.box(False)
+        # plt.show()
+        # plt.savefig(os.path.join(script_path, '..', f'data-motion-{tr}', f'eef-{agent}',
+        #                          f'prt_vis_{data_ind}1.png'), dpi=300, bbox_inches='tight')
+        # vedo_plt.close()
 
         init_pcd_path = os.path.join(script_path, '..', f'data-motion-{tr}', f'eef-{agent}', f'pcd_{data_ind}0.ply')
         init_pcd_o3d = o3d.io.read_point_cloud(init_pcd_path).voxel_down_sample(voxel_size=0.003)
@@ -102,15 +104,16 @@ for agent in ['round', 'rectangle', 'cylinder']:
         init_pcd_offset = (-obj_start_centre_real + obj_start_initial_pos)
         init_pcd_pts = Points(init_pcd_pts_array + init_pcd_offset, r=20, c=RGBA).lighting('shiny')
         vedo_plt = show([table_mesh, init_pcd_pts, vedo_light_1, vedo_light_2, vedo_light_3], __doc__,
-                   axes=True, size=(640, 640), interactive=False,
-                   camera={'pos': (0.4, 0.1, 0.1), 'focal_point': (0.25, 0.25, 0.04), 'viewup': (0, 0, 1)})
+                        axes=True, size=(640, 640), interactive=False,
+                        camera={'pos': (0.4, 0.1, 0.1), 'focal_point': (0.25, 0.25, 0.04), 'viewup': (0, 0, 1)})
         arr = vedo_plt.screenshot(asarray=True)
         plt.imshow(arr)
         plt.xticks([])
         plt.yticks([])
         plt.box(False)
-        plt.show()
-        # plt.savefig(os.path.join(script_path, '..', f'data-motion-{tr}', f'eef-{agent}', f'pcd_vis_{data_ind}1.png'), dpi=300, bbox_inches='tight')
+        # plt.show()
+        plt.savefig(os.path.join(script_path, '..', f'data-motion-{tr}', f'eef-{agent}',
+                                 f'pcd_vis_{data_ind}0.png'), dpi=300, bbox_inches='tight', pad_inches=0)
         vedo_plt.close()
 
         # end_mesh_path = os.path.join(data_path, f'mesh_{data_ind}1_repaired.obj')
@@ -145,24 +148,25 @@ for agent in ['round', 'rectangle', 'cylinder']:
         # # plt.show()
         # plt.savefig(os.path.join(script_path, '..', f'data-motion-{tr}', f'eef-{agent}', f'prt_vis_{data_ind}1.png'), dpi=300, bbox_inches='tight')
         # vedo_plt.close()
-        #
-        # end_pcd_path = os.path.join(script_path, '..', f'data-motion-{tr}', f'eef-{agent}', f'pcd_{data_ind}1.ply')
-        # end_pcd_o3d = o3d.io.read_point_cloud(end_pcd_path).voxel_down_sample(voxel_size=0.003)
-        # end_pcd_pts_array = np.asarray(end_pcd_o3d.points)
-        # RGBA = np.ones((len(end_pcd_pts_array), 4)) * 255
-        # RGBA[:, 0] = 255
-        # RGBA[:, 1] = 151
-        # RGBA[:, 2] = 48
-        # pcd_end = end_pcd_pts_array + init_pcd_offset
-        # end_pcd_pts = Points(pcd_end, r=20, c=RGBA).lighting('shiny')
-        # vedo_plt = show([table_mesh, target_particles_pts, vedo_light_1, vedo_light_2, vedo_light_3], __doc__,
-        #            axes=True, size=(640, 640), interactive=False,
-        #            camera={'pos': (0.4, 0.1, 0.1), 'focal_point': (0.25, 0.25, 0.04), 'viewup': (0, 0, 1)})
-        # arr = vedo_plt.screenshot(asarray=True)
-        # plt.imshow(arr)
-        # plt.xticks([])
-        # plt.yticks([])
-        # plt.box(False)
-        # # plt.show()
-        # plt.savefig(os.path.join(script_path, '..', f'data-motion-{tr}', f'eef-{agent}', f'pcd_vis_{data_ind}1.png'), dpi=300, bbox_inches='tight')
-        # vedo_plt.close()
+
+        end_pcd_path = os.path.join(script_path, '..', f'data-motion-{tr}', f'eef-{agent}', f'pcd_{data_ind}1.ply')
+        end_pcd_o3d = o3d.io.read_point_cloud(end_pcd_path).voxel_down_sample(voxel_size=0.003)
+        end_pcd_pts_array = np.asarray(end_pcd_o3d.points)
+        RGBA = np.ones((len(end_pcd_pts_array), 4)) * 255
+        RGBA[:, 0] = 255
+        RGBA[:, 1] = 151
+        RGBA[:, 2] = 48
+        pcd_end = end_pcd_pts_array + init_pcd_offset
+        end_pcd_pts = Points(pcd_end, r=20, c=RGBA).lighting('shiny')
+        vedo_plt = show([table_mesh, end_pcd_pts, vedo_light_1, vedo_light_2, vedo_light_3], __doc__,
+                   axes=True, size=(640, 640), interactive=False,
+                   camera={'pos': (0.4, 0.1, 0.1), 'focal_point': (0.25, 0.25, 0.04), 'viewup': (0, 0, 1)})
+        arr = vedo_plt.screenshot(asarray=True)
+        plt.imshow(arr)
+        plt.xticks([])
+        plt.yticks([])
+        plt.box(False)
+        # plt.show()
+        plt.savefig(os.path.join(script_path, '..', f'data-motion-{tr}', f'eef-{agent}',
+                                 f'pcd_vis_{data_ind}1.png'), dpi=300, bbox_inches='tight', pad_inches=0)
+        vedo_plt.close()

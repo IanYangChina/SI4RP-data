@@ -8,10 +8,10 @@ import numpy as np
 
 cmap = 'YlOrBr'
 script_path = os.path.dirname(os.path.realpath(__file__))
-for res in ['32', '64']:
-    for tr in ['3', '4']:
+for res in ['32']:
+    for tr in ['validation']:
         for agent in ['rectangle', 'cylinder', 'round']:
-            for data_id in range(5):
+            for data_id in range(2):
                 hm_1 = np.load(os.path.join(script_path, '..', f'data-motion-{tr}', f'eef-{agent}',
                                             f'target_pcd_height_map-{data_id}-res{res}-vdsize0.001.npy'))
                 min_val, max_val = np.amin(hm_1), np.amax(hm_1)

@@ -23,7 +23,8 @@ from doma.envs.sys_id_env import make_env, set_parameters
 
 
 def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=False, eval=False,
-            render=False, save_img=False, save_heightmap=False, image_dir=None, render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
+            render=False, save_img=False, save_heightmap=False, image_dir=None, save_loss=True,
+            render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
             init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
 
     mpm_env.set_state(init_state['state'], grad_enabled=False)
@@ -51,7 +52,7 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
         coords_init[:, 1] += 0.2
         mesh_init.points(coords_init)
 
-    if save_img or save_heightmap:
+    if save_img or save_heightmap or save_loss:
         img_dir = os.path.join(image_dir, str(n_episode))
         os.makedirs(img_dir, exist_ok=True)
         if not eval:
@@ -81,7 +82,7 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
                 # sleep(0.1)
         if render:
             mpm_env.render(mode='human')
-        if i == 0 and press_to_proceed:
+        if press_to_proceed:
             input('Press any key to proceed')
 
     loss_info = mpm_env.get_final_loss()
@@ -90,6 +91,11 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
             print(f'===> {i}: {v:.4f}')
         else:
             pass
+    if save_loss:
+        loss_info_to_save = loss_info.copy()
+        loss_info_to_save['final_height_map'] = None
+        with open(os.path.join(img_dir, 'loss_info.json'), 'w') as f:
+            json.dump(loss_info_to_save, f, indent=4)
 
     if render_heightmap:
         cmap = 'YlOrBr'
@@ -156,8 +162,29 @@ def main(args):
     process = psutil.Process(os.getpid())
     script_path = os.path.dirname(os.path.realpath(__file__))
 
-    cam_cfg = {
-        'pos': (0.4, 0.1, 0.1),
+    cam_cfg_cylinder = {
+        'pos': (0.40, 0.07, 0.08),
+        'lookat': (0.25, 0.25, 0.05),
+        'fov': 30,
+        'lights': [{'pos': (0.5, 0.25, 0.2), 'color': (0.6, 0.6, 0.6)},
+                   {'pos': (0.5, 0.5, 1.0), 'color': (0.6, 0.6, 0.6)},
+                   {'pos': (0.5, 0.0, 1.0), 'color': (0.8, 0.8, 0.8)}],
+        'particle_radius': 0.002,
+        'res': (640, 640)
+    }
+    cam_cfg_rectangle = {
+        # todo: wierd camera position for rectangle
+        'pos': (0.40, 0.05, 0.09),
+        'lookat': (0.25, 0.25, 0.05),
+        'fov': 30,
+        'lights': [{'pos': (0.5, 0.25, 0.2), 'color': (0.6, 0.6, 0.6)},
+                   {'pos': (0.5, 0.5, 1.0), 'color': (0.6, 0.6, 0.6)},
+                   {'pos': (0.5, 0.0, 1.0), 'color': (0.8, 0.8, 0.8)}],
+        'particle_radius': 0.002,
+        'res': (640, 640)
+    }
+    cam_cfg_round = {
+        'pos': (0.47, 0.17, 0.06),
         'lookat': (0.25, 0.25, 0.03),
         'fov': 30,
         'lights': [{'pos': (0.5, 0.25, 0.2), 'color': (0.6, 0.6, 0.6)},
@@ -195,9 +222,15 @@ def main(args):
     agents = ['rectangle', 'round', 'cylinder']
     agent = agents[args['agent_ind']]
     if agent == 'rectangle':
+        cam_cfg = cam_cfg_rectangle
         agent_init_euler = (0, 0, 45)
     else:
         agent_init_euler = (0, 0, 0)
+
+    if agent == 'cylinder':
+        cam_cfg = cam_cfg_cylinder
+    elif agent == 'round':
+        cam_cfg = cam_cfg_round
 
     motion_ind = str(args['motion_ind'])
     if not args['dt_avg']:
@@ -333,7 +366,7 @@ def main(args):
         set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress,
                        rho=rho, ground_friction=gf, manipulator_friction=mf)
         forward(mpm_env, init_state, trajectory.copy(), n_episode=n_episode,
-                press_to_proceed=args['press_to_proceed'], eval=args['eval'],
+                press_to_proceed=args['press_to_proceed'], eval=args['eval'], save_loss=args['save_loss'],
                 render=args['render_human'], save_img=args['save_img'], save_heightmap=args['save_heightmap'], image_dir=image_dir,
                 render_init_pcd=args['render_init_pcd'],
                 render_end_pcd=args['render_end_pcd'], render_heightmap=args['render_heightmap'],
@@ -367,6 +400,7 @@ if __name__ == '__main__':
     parser.add_argument('--m_id', dest='motion_ind', type=int, default=1)
     parser.add_argument('--agent_ind', dest='agent_ind', type=int, default=0)
     parser.add_argument('--r_human', dest='render_human', default=False, action='store_true')
+    parser.add_argument('--save_loss', dest='save_loss', default=False, action='store_true')
     parser.add_argument('--save_img', dest='save_img', default=False, action='store_true')
     parser.add_argument('--save_heightmap', dest='save_heightmap', default=False, action='store_true')
     parser.add_argument('--r_init_pcd', dest='render_init_pcd', default=False, action='store_true')

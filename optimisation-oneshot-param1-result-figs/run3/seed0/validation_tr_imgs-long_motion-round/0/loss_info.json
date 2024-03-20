@@ -1,0 +1,14 @@
+{
+    "particle_has_naninf": false,
+    "point_distance_sr": 46165.8515625,
+    "point_distance_rs": 3630.332763671875,
+    "chamfer_loss_pcd": 49796.18359375,
+    "particle_distance_sr": 18728.0,
+    "particle_distance_rs": 21157.109375,
+    "chamfer_loss_particle": 39885.109375,
+    "final_height_map": null,
+    "height_map_loss_pcd": 6201.2314453125,
+    "emd_point_distance_loss": 3671.106689453125,
+    "emd_particle_distance_loss": 29719.40625,
+    "total_loss": 0.0
+}

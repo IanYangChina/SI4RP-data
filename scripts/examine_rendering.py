@@ -9,6 +9,7 @@ import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pylab as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+SUB = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
 
 from doma.engine.utils.misc import get_gpu_memory
 import psutil
@@ -67,6 +68,7 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
             interval = mpm_env.horizon // 10
             frames_to_save = [0, interval, 2 * interval, 3 * interval, 4 * interval, 5 * interval,
                               6 * interval, 7 * interval, 8 * interval, 9 * interval, mpm_env.horizon - 1]
+        frames = []
 
     for i in range(mpm_env.horizon):
         action = trajectory[i]
@@ -75,14 +77,13 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
         if save_img:
             if i in frames_to_save:
                 img = mpm_env.render(mode='rgb_array')
-                # np.save(os.path.join(img_dir, f'img_{i // frame_skip}.png'), img)
-                Image.fromarray(img).save(os.path.join(img_dir, f'img_{i}.png'))
-                # plt.imshow(img)
-                # plt.show()
-                # sleep(0.1)
+                if not eval:
+                    Image.fromarray(img).save(os.path.join(img_dir, f'img_{i}.png'))
+                frames.append(img)
+
         if render:
             mpm_env.render(mode='human')
-        if press_to_proceed:
+        if press_to_proceed and i == 0:
             input('Press any key to proceed')
 
     loss_info = mpm_env.get_final_loss()
@@ -96,6 +97,20 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
         loss_info_to_save['final_height_map'] = None
         with open(os.path.join(img_dir, 'loss_info.json'), 'w') as f:
             json.dump(loss_info_to_save, f, indent=4)
+
+    if save_img and eval:
+        fig, axes = plt.subplots(1, len(frames_to_save), figsize=(len(frames_to_save) * 2, 2))
+        plt.subplots_adjust(wspace=0.01)
+        for i in range(len(frames_to_save)):
+            img = frames[i]
+            axes[i].imshow(img)
+            # axes[i].set_xlabel(f't{img_id}'.translate(SUB))
+            axes[i].get_xaxis().set_visible(False)
+            axes[i].get_yaxis().set_visible(False)
+            axes[i].set_frame_on(False)
+        # plt.tight_layout()
+        plt.savefig(os.path.join(img_dir, f'img_combine.pdf'), bbox_inches='tight', pad_inches=0)
+        plt.close(fig)
 
     if render_heightmap:
         cmap = 'YlOrBr'
@@ -161,6 +176,16 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
 def main(args):
     process = psutil.Process(os.getpid())
     script_path = os.path.dirname(os.path.realpath(__file__))
+    cam_cfg = {
+        'pos': (0.4, 0.1, 0.1),
+        'lookat': (0.25, 0.25, 0.03),
+        'fov': 30,
+        'lights': [{'pos': (0.5, 0.25, 0.2), 'color': (0.6, 0.6, 0.6)},
+                   {'pos': (0.5, 0.5, 1.0), 'color': (0.6, 0.6, 0.6)},
+                   {'pos': (0.5, 0.0, 1.0), 'color': (0.8, 0.8, 0.8)}],
+        'particle_radius': 0.002,
+        'res': (640, 640)
+    }
 
     cam_cfg_cylinder = {
         'pos': (0.40, 0.07, 0.08),
@@ -173,9 +198,8 @@ def main(args):
         'res': (640, 640)
     }
     cam_cfg_rectangle = {
-        # todo: wierd camera position for rectangle
-        'pos': (0.40, 0.05, 0.09),
-        'lookat': (0.25, 0.25, 0.05),
+        'pos': (0.46, 0.1, 0.067),
+        'lookat': (0.25, 0.25, 0.06),
         'fov': 30,
         'lights': [{'pos': (0.5, 0.25, 0.2), 'color': (0.6, 0.6, 0.6)},
                    {'pos': (0.5, 0.5, 1.0), 'color': (0.6, 0.6, 0.6)},
@@ -184,8 +208,8 @@ def main(args):
         'res': (640, 640)
     }
     cam_cfg_round = {
-        'pos': (0.47, 0.17, 0.06),
-        'lookat': (0.25, 0.25, 0.03),
+        'pos': (0.45, 0.17, 0.07),
+        'lookat': (0.25, 0.25, 0.055),
         'fov': 30,
         'lights': [{'pos': (0.5, 0.25, 0.2), 'color': (0.6, 0.6, 0.6)},
                    {'pos': (0.5, 0.5, 1.0), 'color': (0.6, 0.6, 0.6)},
@@ -222,15 +246,17 @@ def main(args):
     agents = ['rectangle', 'round', 'cylinder']
     agent = agents[args['agent_ind']]
     if agent == 'rectangle':
-        cam_cfg = cam_cfg_rectangle
+        if args['eval']:
+            cam_cfg = cam_cfg_rectangle
         agent_init_euler = (0, 0, 45)
     else:
         agent_init_euler = (0, 0, 0)
 
-    if agent == 'cylinder':
-        cam_cfg = cam_cfg_cylinder
-    elif agent == 'round':
-        cam_cfg = cam_cfg_round
+    if args['eval']:
+        if agent == 'cylinder':
+            cam_cfg = cam_cfg_cylinder
+        elif agent == 'round':
+            cam_cfg = cam_cfg_round
 
     motion_ind = str(args['motion_ind'])
     if not args['dt_avg']:
@@ -330,10 +356,10 @@ def main(args):
         }
     }
 
-    data_ids = validation_dataind_dict[motion_ind][agent]
     if args['eval']:
         data_ids = [0, 1]
-
+    else:
+        data_ids = validation_dataind_dict[motion_ind][agent]
     n_episode = 0
     for data_ind in data_ids:
         ti.reset()

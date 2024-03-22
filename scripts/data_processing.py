@@ -596,43 +596,121 @@ def print_losses(run_ids, param_set=0, case='validation',
 
     return data_dict
 
-d1 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=True, oneshot=False, realoneshot=False, agent_id=0)
-d2 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=True, realoneshot=False, agent_id=0)
-d3 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=False, realoneshot=True, agent_id=0)
-d4 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=False, realoneshot=True, agent_id=1)
-d5 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=False, realoneshot=True, agent_id=2)
+# d1 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=True, oneshot=False, realoneshot=False, agent_id=0)
+# d2 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=True, realoneshot=False, agent_id=0)
+# d3 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=False, realoneshot=True, agent_id=0)
+# d4 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=False, realoneshot=True, agent_id=1)
+# d5 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=False, realoneshot=True, agent_id=2)
+#
+# print('& %.2f' %d1['run0']['min_mean_hm'], ' & %.2f' %d2['run0']['min_mean_hm'], ' & %.2f' %d3['run0']['min_mean_hm'], ' & %.2f' %d4['run0']['min_mean_hm'], ' & %.2f' %d5['run0']['min_mean_hm'], ' \\\\')
+# print('& %.0f' %d1['run0']['best_p_values'][0], ' & %.0f' %d2['run0']['best_p_values'][0], ' & %.0f' %d3['run0']['best_p_values'][0], ' & %.0f' %d4['run0']['best_p_values'][0], ' & %.0f' %d5['run0']['best_p_values'][0], ' \\\\')
+# print('& %.3f' %d1['run0']['best_p_values'][1], ' & %.3f' %d2['run0']['best_p_values'][1], ' & %.3f' %d3['run0']['best_p_values'][1], ' & %.3f' %d4['run0']['best_p_values'][1], ' & %.3f' %d5['run0']['best_p_values'][1], ' \\\\')
+# print('& %.0f' %d1['run0']['best_p_values'][2], ' & %.0f' %d2['run0']['best_p_values'][2], ' & %.0f' %d3['run0']['best_p_values'][2], ' & %.0f' %d4['run0']['best_p_values'][2], ' & %.0f' %d5['run0']['best_p_values'][2], ' \\\\')
+# print('& %.0f' %d1['run0']['best_p_values'][3], ' & %.0f' %d2['run0']['best_p_values'][3], ' & %.0f' %d3['run0']['best_p_values'][3], ' & %.0f' %d4['run0']['best_p_values'][3], ' & %.0f' %d5['run0']['best_p_values'][3], ' \\\\')
+# print('& %.3f' %d1['run0']['best_p_values'][4], ' & %.3f' %d2['run0']['best_p_values'][4], ' & %.3f' %d3['run0']['best_p_values'][4], ' & %.3f' %d4['run0']['best_p_values'][4], ' & %.3f' %d5['run0']['best_p_values'][4], ' \\\\')
+# print('& %.3f' %d1['run0']['best_p_values'][5], ' & %.3f' %d2['run0']['best_p_values'][5], ' & %.3f' %d3['run0']['best_p_values'][5], ' & %.3f' %d4['run0']['best_p_values'][5], ' & %.3f' %d5['run0']['best_p_values'][5], ' \\\\')
+#
+# print('& %.2f' %d1['run1']['min_mean_hm'], ' & %.2f' %d2['run1']['min_mean_hm'], ' & %.2f' %d3['run1']['min_mean_hm'], ' & %.2f' %d4['run1']['min_mean_hm'], ' & %.2f' %d5['run1']['min_mean_hm'], ' \\\\')
+# print('& %.0f' %d1['run1']['best_p_values'][0], ' & %.0f' %d2['run1']['best_p_values'][0], ' & %.0f' %d3['run1']['best_p_values'][0], ' & %.0f' %d4['run1']['best_p_values'][0], ' & %.0f' %d5['run1']['best_p_values'][0], ' \\\\')
+# print('& %.3f' %d1['run1']['best_p_values'][1], ' & %.3f' %d2['run1']['best_p_values'][1], ' & %.3f' %d3['run1']['best_p_values'][1], ' & %.3f' %d4['run1']['best_p_values'][1], ' & %.3f' %d5['run1']['best_p_values'][1], ' \\\\')
+# print('& %.0f' %d1['run1']['best_p_values'][2], ' & %.0f' %d2['run1']['best_p_values'][2], ' & %.0f' %d3['run1']['best_p_values'][2], ' & %.0f' %d4['run1']['best_p_values'][2], ' & %.0f' %d5['run1']['best_p_values'][2], ' \\\\')
+# print('& %.0f' %d1['run1']['best_p_values'][3], ' & %.0f' %d2['run1']['best_p_values'][3], ' & %.0f' %d3['run1']['best_p_values'][3], ' & %.0f' %d4['run1']['best_p_values'][3], ' & %.0f' %d5['run1']['best_p_values'][3], ' \\\\')
+# print('& %.3f' %d1['run1']['best_p_values'][4], ' & %.3f' %d2['run1']['best_p_values'][4], ' & %.3f' %d3['run1']['best_p_values'][4], ' & %.3f' %d4['run1']['best_p_values'][4], ' & %.3f' %d5['run1']['best_p_values'][4], ' \\\\')
+# print('& %.3f' %d1['run1']['best_p_values'][5], ' & %.3f' %d2['run1']['best_p_values'][5], ' & %.3f' %d3['run1']['best_p_values'][5], ' & %.3f' %d4['run1']['best_p_values'][5], ' & %.3f' %d5['run1']['best_p_values'][5], ' \\\\')
+#
+# print('& %.2f' %d1['run2']['min_mean_hm'], ' & %.2f' %d2['run2']['min_mean_hm'], ' & %.2f' %d3['run2']['min_mean_hm'], ' & %.2f' %d4['run2']['min_mean_hm'], ' & %.2f' %d5['run2']['min_mean_hm'], ' \\\\')
+# print('& %.0f' %d1['run2']['best_p_values'][0], ' & %.0f' %d2['run2']['best_p_values'][0], ' & %.0f' %d3['run2']['best_p_values'][0], ' & %.0f' %d4['run2']['best_p_values'][0], ' & %.0f' %d5['run2']['best_p_values'][0], ' \\\\')
+# print('& %.3f' %d1['run2']['best_p_values'][1], ' & %.3f' %d2['run2']['best_p_values'][1], ' & %.3f' %d3['run2']['best_p_values'][1], ' & %.3f' %d4['run2']['best_p_values'][1], ' & %.3f' %d5['run2']['best_p_values'][1], ' \\\\')
+# print('& %.0f' %d1['run2']['best_p_values'][2], ' & %.0f' %d2['run2']['best_p_values'][2], ' & %.0f' %d3['run2']['best_p_values'][2], ' & %.0f' %d4['run2']['best_p_values'][2], ' & %.0f' %d5['run2']['best_p_values'][2], ' \\\\')
+# print('& %.0f' %d1['run2']['best_p_values'][3], ' & %.0f' %d2['run2']['best_p_values'][3], ' & %.0f' %d3['run2']['best_p_values'][3], ' & %.0f' %d4['run2']['best_p_values'][3], ' & %.0f' %d5['run2']['best_p_values'][3], ' \\\\')
+# print('& %.3f' %d1['run2']['best_p_values'][4], ' & %.3f' %d2['run2']['best_p_values'][4], ' & %.3f' %d3['run2']['best_p_values'][4], ' & %.3f' %d4['run2']['best_p_values'][4], ' & %.3f' %d5['run2']['best_p_values'][4], ' \\\\')
+# print('& %.3f' %d1['run2']['best_p_values'][5], ' & %.3f' %d2['run2']['best_p_values'][5], ' & %.3f' %d3['run2']['best_p_values'][5], ' & %.3f' %d4['run2']['best_p_values'][5], ' & %.3f' %d5['run2']['best_p_values'][5], ' \\\\')
+#
+# print('& %.2f' %d1['run3']['min_mean_hm'], ' & %.2f' %d2['run3']['min_mean_hm'], ' & %.2f' %d3['run3']['min_mean_hm'], ' & %.2f' %d4['run3']['min_mean_hm'], ' & %.2f' %d5['run3']['min_mean_hm'], ' \\\\')
+# print('& %.0f' %d1['run3']['best_p_values'][0], ' & %.0f' %d2['run3']['best_p_values'][0], ' & %.0f' %d3['run3']['best_p_values'][0], ' & %.0f' %d4['run3']['best_p_values'][0], ' & %.0f' %d5['run3']['best_p_values'][0], ' \\\\')
+# print('& %.3f' %d1['run3']['best_p_values'][1], ' & %.3f' %d2['run3']['best_p_values'][1], ' & %.3f' %d3['run3']['best_p_values'][1], ' & %.3f' %d4['run3']['best_p_values'][1], ' & %.3f' %d5['run3']['best_p_values'][1], ' \\\\')
+# print('& %.0f' %d1['run3']['best_p_values'][2], ' & %.0f' %d2['run3']['best_p_values'][2], ' & %.0f' %d3['run3']['best_p_values'][2], ' & %.0f' %d4['run3']['best_p_values'][2], ' & %.0f' %d5['run3']['best_p_values'][2], ' \\\\')
+# print('& %.0f' %d1['run3']['best_p_values'][3], ' & %.0f' %d2['run3']['best_p_values'][3], ' & %.0f' %d3['run3']['best_p_values'][3], ' & %.0f' %d4['run3']['best_p_values'][3], ' & %.0f' %d5['run3']['best_p_values'][3], ' \\\\')
+# print('& %.3f' %d1['run3']['best_p_values'][4], ' & %.3f' %d2['run3']['best_p_values'][4], ' & %.3f' %d3['run3']['best_p_values'][4], ' & %.3f' %d4['run3']['best_p_values'][4], ' & %.3f' %d5['run3']['best_p_values'][4], ' \\\\')
+# print('& %.3f' %d1['run3']['best_p_values'][5], ' & %.3f' %d2['run3']['best_p_values'][5], ' & %.3f' %d3['run3']['best_p_values'][5], ' & %.3f' %d4['run3']['best_p_values'][5], ' & %.3f' %d5['run3']['best_p_values'][5], ' \\\\')
 
-print('& %.2f' %d1['run0']['min_mean_hm'], ' & %.2f' %d2['run0']['min_mean_hm'], ' & %.2f' %d3['run0']['min_mean_hm'], ' & %.2f' %d4['run0']['min_mean_hm'], ' & %.2f' %d5['run0']['min_mean_hm'], ' \\\\')
-print('& %.0f' %d1['run0']['best_p_values'][0], ' & %.0f' %d2['run0']['best_p_values'][0], ' & %.0f' %d3['run0']['best_p_values'][0], ' & %.0f' %d4['run0']['best_p_values'][0], ' & %.0f' %d5['run0']['best_p_values'][0], ' \\\\')
-print('& %.3f' %d1['run0']['best_p_values'][1], ' & %.3f' %d2['run0']['best_p_values'][1], ' & %.3f' %d3['run0']['best_p_values'][1], ' & %.3f' %d4['run0']['best_p_values'][1], ' & %.3f' %d5['run0']['best_p_values'][1], ' \\\\')
-print('& %.0f' %d1['run0']['best_p_values'][2], ' & %.0f' %d2['run0']['best_p_values'][2], ' & %.0f' %d3['run0']['best_p_values'][2], ' & %.0f' %d4['run0']['best_p_values'][2], ' & %.0f' %d5['run0']['best_p_values'][2], ' \\\\')
-print('& %.0f' %d1['run0']['best_p_values'][3], ' & %.0f' %d2['run0']['best_p_values'][3], ' & %.0f' %d3['run0']['best_p_values'][3], ' & %.0f' %d4['run0']['best_p_values'][3], ' & %.0f' %d5['run0']['best_p_values'][3], ' \\\\')
-print('& %.3f' %d1['run0']['best_p_values'][4], ' & %.3f' %d2['run0']['best_p_values'][4], ' & %.3f' %d3['run0']['best_p_values'][4], ' & %.3f' %d4['run0']['best_p_values'][4], ' & %.3f' %d5['run0']['best_p_values'][4], ' \\\\')
-print('& %.3f' %d1['run0']['best_p_values'][5], ' & %.3f' %d2['run0']['best_p_values'][5], ' & %.3f' %d3['run0']['best_p_values'][5], ' & %.3f' %d4['run0']['best_p_values'][5], ' & %.3f' %d5['run0']['best_p_values'][5], ' \\\\')
 
-print('& %.2f' %d1['run1']['min_mean_hm'], ' & %.2f' %d2['run1']['min_mean_hm'], ' & %.2f' %d3['run1']['min_mean_hm'], ' & %.2f' %d4['run1']['min_mean_hm'], ' & %.2f' %d5['run1']['min_mean_hm'], ' \\\\')
-print('& %.0f' %d1['run1']['best_p_values'][0], ' & %.0f' %d2['run1']['best_p_values'][0], ' & %.0f' %d3['run1']['best_p_values'][0], ' & %.0f' %d4['run1']['best_p_values'][0], ' & %.0f' %d5['run1']['best_p_values'][0], ' \\\\')
-print('& %.3f' %d1['run1']['best_p_values'][1], ' & %.3f' %d2['run1']['best_p_values'][1], ' & %.3f' %d3['run1']['best_p_values'][1], ' & %.3f' %d4['run1']['best_p_values'][1], ' & %.3f' %d5['run1']['best_p_values'][1], ' \\\\')
-print('& %.0f' %d1['run1']['best_p_values'][2], ' & %.0f' %d2['run1']['best_p_values'][2], ' & %.0f' %d3['run1']['best_p_values'][2], ' & %.0f' %d4['run1']['best_p_values'][2], ' & %.0f' %d5['run1']['best_p_values'][2], ' \\\\')
-print('& %.0f' %d1['run1']['best_p_values'][3], ' & %.0f' %d2['run1']['best_p_values'][3], ' & %.0f' %d3['run1']['best_p_values'][3], ' & %.0f' %d4['run1']['best_p_values'][3], ' & %.0f' %d5['run1']['best_p_values'][3], ' \\\\')
-print('& %.3f' %d1['run1']['best_p_values'][4], ' & %.3f' %d2['run1']['best_p_values'][4], ' & %.3f' %d3['run1']['best_p_values'][4], ' & %.3f' %d4['run1']['best_p_values'][4], ' & %.3f' %d5['run1']['best_p_values'][4], ' \\\\')
-print('& %.3f' %d1['run1']['best_p_values'][5], ' & %.3f' %d2['run1']['best_p_values'][5], ' & %.3f' %d3['run1']['best_p_values'][5], ' & %.3f' %d4['run1']['best_p_values'][5], ' & %.3f' %d5['run1']['best_p_values'][5], ' \\\\')
+def print_validation_losses(run_ids, param_set=1,
+                 fewshot=True, oneshot=False,
+                 realoneshot=True, agent_id=0):
+    if fewshot:
+        assert not oneshot
+        dir_prefix = f'optimisation-fewshot-param{param_set}'
+    elif oneshot:
+        dir_prefix = f'optimisation-oneshot-param{param_set}'
+    elif realoneshot:
+        agents = ['rectangle', 'round', 'cylinder']
+        agent = agents[agent_id]
+        dir_prefix = f'optimisation-realoneshot-{agent}-param{param_set}'
+    else:
+        dir_prefix = f'optimisation-param{param_set}'
 
-print('& %.2f' %d1['run2']['min_mean_hm'], ' & %.2f' %d2['run2']['min_mean_hm'], ' & %.2f' %d3['run2']['min_mean_hm'], ' & %.2f' %d4['run2']['min_mean_hm'], ' & %.2f' %d5['run2']['min_mean_hm'], ' \\\\')
-print('& %.0f' %d1['run2']['best_p_values'][0], ' & %.0f' %d2['run2']['best_p_values'][0], ' & %.0f' %d3['run2']['best_p_values'][0], ' & %.0f' %d4['run2']['best_p_values'][0], ' & %.0f' %d5['run2']['best_p_values'][0], ' \\\\')
-print('& %.3f' %d1['run2']['best_p_values'][1], ' & %.3f' %d2['run2']['best_p_values'][1], ' & %.3f' %d3['run2']['best_p_values'][1], ' & %.3f' %d4['run2']['best_p_values'][1], ' & %.3f' %d5['run2']['best_p_values'][1], ' \\\\')
-print('& %.0f' %d1['run2']['best_p_values'][2], ' & %.0f' %d2['run2']['best_p_values'][2], ' & %.0f' %d3['run2']['best_p_values'][2], ' & %.0f' %d4['run2']['best_p_values'][2], ' & %.0f' %d5['run2']['best_p_values'][2], ' \\\\')
-print('& %.0f' %d1['run2']['best_p_values'][3], ' & %.0f' %d2['run2']['best_p_values'][3], ' & %.0f' %d3['run2']['best_p_values'][3], ' & %.0f' %d4['run2']['best_p_values'][3], ' & %.0f' %d5['run2']['best_p_values'][3], ' \\\\')
-print('& %.3f' %d1['run2']['best_p_values'][4], ' & %.3f' %d2['run2']['best_p_values'][4], ' & %.3f' %d3['run2']['best_p_values'][4], ' & %.3f' %d4['run2']['best_p_values'][4], ' & %.3f' %d5['run2']['best_p_values'][4], ' \\\\')
-print('& %.3f' %d1['run2']['best_p_values'][5], ' & %.3f' %d2['run2']['best_p_values'][5], ' & %.3f' %d3['run2']['best_p_values'][5], ' & %.3f' %d4['run2']['best_p_values'][5], ' & %.3f' %d5['run2']['best_p_values'][5], ' \\\\')
+    print(f'Height map losses from {dir_prefix}')
+    data_dict = {
+        'rectangle-motion': {},
+        'round-motion': {},
+        'cylinder-motion': {}
+    }
+    for run_id in run_ids:
+        run_dir = os.path.join(cwd, '..', f'{dir_prefix}-result-figs', f'run{run_id}')
+        for seed in [0, 1, 2]:
+            seed_dir = os.path.join(run_dir, f'seed{seed}')
+            if os.path.isdir(seed_dir):
+                break
+        for motion_agent in ['rectangle', 'round', 'cylinder']:
+            data_dir_0 = os.path.join(seed_dir, f'validation_tr_imgs-long_motion-{motion_agent}', '0')
+            losses_0 = json.load(open(os.path.join(data_dir_0, 'loss_info.json'), 'rb'))
+            hm_loss_0 = losses_0['height_map_loss_pcd']
+            data_dir_1 = os.path.join(seed_dir, f'validation_tr_imgs-long_motion-{motion_agent}', '1')
+            losses_1 = json.load(open(os.path.join(data_dir_1, 'loss_info.json'), 'rb'))
+            hm_loss_1 = losses_1['height_map_loss_pcd']
+            data_dict[f'{motion_agent}-motion'].update({
+                    f'data-0-run{run_id}': hm_loss_0,
+                    f'data-1-run{run_id}': hm_loss_1
+            })
 
-print('& %.2f' %d1['run3']['min_mean_hm'], ' & %.2f' %d2['run3']['min_mean_hm'], ' & %.2f' %d3['run3']['min_mean_hm'], ' & %.2f' %d4['run3']['min_mean_hm'], ' & %.2f' %d5['run3']['min_mean_hm'], ' \\\\')
-print('& %.0f' %d1['run3']['best_p_values'][0], ' & %.0f' %d2['run3']['best_p_values'][0], ' & %.0f' %d3['run3']['best_p_values'][0], ' & %.0f' %d4['run3']['best_p_values'][0], ' & %.0f' %d5['run3']['best_p_values'][0], ' \\\\')
-print('& %.3f' %d1['run3']['best_p_values'][1], ' & %.3f' %d2['run3']['best_p_values'][1], ' & %.3f' %d3['run3']['best_p_values'][1], ' & %.3f' %d4['run3']['best_p_values'][1], ' & %.3f' %d5['run3']['best_p_values'][1], ' \\\\')
-print('& %.0f' %d1['run3']['best_p_values'][2], ' & %.0f' %d2['run3']['best_p_values'][2], ' & %.0f' %d3['run3']['best_p_values'][2], ' & %.0f' %d4['run3']['best_p_values'][2], ' & %.0f' %d5['run3']['best_p_values'][2], ' \\\\')
-print('& %.0f' %d1['run3']['best_p_values'][3], ' & %.0f' %d2['run3']['best_p_values'][3], ' & %.0f' %d3['run3']['best_p_values'][3], ' & %.0f' %d4['run3']['best_p_values'][3], ' & %.0f' %d5['run3']['best_p_values'][3], ' \\\\')
-print('& %.3f' %d1['run3']['best_p_values'][4], ' & %.3f' %d2['run3']['best_p_values'][4], ' & %.3f' %d3['run3']['best_p_values'][4], ' & %.3f' %d4['run3']['best_p_values'][4], ' & %.3f' %d5['run3']['best_p_values'][4], ' \\\\')
-print('& %.3f' %d1['run3']['best_p_values'][5], ' & %.3f' %d2['run3']['best_p_values'][5], ' & %.3f' %d3['run3']['best_p_values'][5], ' & %.3f' %d4['run3']['best_p_values'][5], ' & %.3f' %d5['run3']['best_p_values'][5], ' \\\\')
+    return data_dict
+
+d1 = print_validation_losses(run_ids=[0, 1, 2, 3], fewshot=True, oneshot=False, realoneshot=False, agent_id=0)
+d2 = print_validation_losses(run_ids=[0, 1, 2, 3], fewshot=False, oneshot=True, realoneshot=False, agent_id=0)
+d3 = print_validation_losses(run_ids=[0, 1, 2, 3], fewshot=False, oneshot=False, realoneshot=True, agent_id=0)
+d4 = print_validation_losses(run_ids=[0, 1, 2, 3], fewshot=False, oneshot=False, realoneshot=True, agent_id=1)
+d5 = print_validation_losses(run_ids=[0, 1, 2, 3], fewshot=False, oneshot=False, realoneshot=True, agent_id=2)
+
+print('Rectangle motion')
+print('& %.2f' %d1['rectangle-motion']['data-0-run0'], '& %.2f' %d2['rectangle-motion']['data-0-run0'], '& %.2f' %d3['rectangle-motion']['data-0-run0'], '& %.2f' %d4['rectangle-motion']['data-0-run0'], '& %.2f' %d5['rectangle-motion']['data-0-run0'],' \\\\')
+print('& %.2f' %d1['rectangle-motion']['data-1-run0'], '& %.2f' %d2['rectangle-motion']['data-1-run0'], '& %.2f' %d3['rectangle-motion']['data-1-run0'], '& %.2f' %d4['rectangle-motion']['data-1-run0'], '& %.2f' %d5['rectangle-motion']['data-1-run0'],' \\\\')
+print('& %.2f' %d1['rectangle-motion']['data-0-run1'], '& %.2f' %d2['rectangle-motion']['data-0-run1'], '& %.2f' %d3['rectangle-motion']['data-0-run1'], '& %.2f' %d4['rectangle-motion']['data-0-run1'], '& %.2f' %d5['rectangle-motion']['data-0-run1'],' \\\\')
+print('& %.2f' %d1['rectangle-motion']['data-1-run1'], '& %.2f' %d2['rectangle-motion']['data-1-run1'], '& %.2f' %d3['rectangle-motion']['data-1-run1'], '& %.2f' %d4['rectangle-motion']['data-1-run1'], '& %.2f' %d5['rectangle-motion']['data-1-run1'],' \\\\')
+print('& %.2f' %d1['rectangle-motion']['data-0-run2'], '& %.2f' %d2['rectangle-motion']['data-0-run2'], '& %.2f' %d3['rectangle-motion']['data-0-run2'], '& %.2f' %d4['rectangle-motion']['data-0-run2'], '& %.2f' %d5['rectangle-motion']['data-0-run2'],' \\\\')
+print('& %.2f' %d1['rectangle-motion']['data-1-run2'], '& %.2f' %d2['rectangle-motion']['data-1-run2'], '& %.2f' %d3['rectangle-motion']['data-1-run2'], '& %.2f' %d4['rectangle-motion']['data-1-run2'], '& %.2f' %d5['rectangle-motion']['data-1-run2'],' \\\\')
+print('& %.2f' %d1['rectangle-motion']['data-0-run3'], '& %.2f' %d2['rectangle-motion']['data-0-run3'], '& %.2f' %d3['rectangle-motion']['data-0-run3'], '& %.2f' %d4['rectangle-motion']['data-0-run3'], '& %.2f' %d5['rectangle-motion']['data-0-run3'],' \\\\')
+print('& %.2f' %d1['rectangle-motion']['data-1-run3'], '& %.2f' %d2['rectangle-motion']['data-1-run3'], '& %.2f' %d3['rectangle-motion']['data-1-run3'], '& %.2f' %d4['rectangle-motion']['data-1-run3'], '& %.2f' %d5['rectangle-motion']['data-1-run3'],' \\\\')
+
+print('Round motion')
+print('& %.2f' %d1['round-motion']['data-0-run0'], '& %.2f' %d2['round-motion']['data-0-run0'], '& %.2f' %d3['round-motion']['data-0-run0'], '& %.2f' %d4['round-motion']['data-0-run0'], '& %.2f' %d5['round-motion']['data-0-run0'],' \\\\')
+print('& %.2f' %d1['round-motion']['data-1-run0'], '& %.2f' %d2['round-motion']['data-1-run0'], '& %.2f' %d3['round-motion']['data-1-run0'], '& %.2f' %d4['round-motion']['data-1-run0'], '& %.2f' %d5['round-motion']['data-1-run0'],' \\\\')
+print('& %.2f' %d1['round-motion']['data-0-run1'], '& %.2f' %d2['round-motion']['data-0-run1'], '& %.2f' %d3['round-motion']['data-0-run1'], '& %.2f' %d4['round-motion']['data-0-run1'], '& %.2f' %d5['round-motion']['data-0-run1'],' \\\\')
+print('& %.2f' %d1['round-motion']['data-1-run1'], '& %.2f' %d2['round-motion']['data-1-run1'], '& %.2f' %d3['round-motion']['data-1-run1'], '& %.2f' %d4['round-motion']['data-1-run1'], '& %.2f' %d5['round-motion']['data-1-run1'],' \\\\')
+print('& %.2f' %d1['round-motion']['data-0-run2'], '& %.2f' %d2['round-motion']['data-0-run2'], '& %.2f' %d3['round-motion']['data-0-run2'], '& %.2f' %d4['round-motion']['data-0-run2'], '& %.2f' %d5['round-motion']['data-0-run2'],' \\\\')
+print('& %.2f' %d1['round-motion']['data-1-run2'], '& %.2f' %d2['round-motion']['data-1-run2'], '& %.2f' %d3['round-motion']['data-1-run2'], '& %.2f' %d4['round-motion']['data-1-run2'], '& %.2f' %d5['round-motion']['data-1-run2'],' \\\\')
+print('& %.2f' %d1['round-motion']['data-0-run3'], '& %.2f' %d2['round-motion']['data-0-run3'], '& %.2f' %d3['round-motion']['data-0-run3'], '& %.2f' %d4['round-motion']['data-0-run3'], '& %.2f' %d5['round-motion']['data-0-run3'],' \\\\')
+print('& %.2f' %d1['round-motion']['data-1-run3'], '& %.2f' %d2['round-motion']['data-1-run3'], '& %.2f' %d3['round-motion']['data-1-run3'], '& %.2f' %d4['round-motion']['data-1-run3'], '& %.2f' %d5['round-motion']['data-1-run3'],' \\\\')
+
+print('Cylinder motion')
+print('& %.2f' %d1['cylinder-motion']['data-0-run0'], '& %.2f' %d2['cylinder-motion']['data-0-run0'], '& %.2f' %d3['cylinder-motion']['data-0-run0'], '& %.2f' %d4['cylinder-motion']['data-0-run0'], '& %.2f' %d5['cylinder-motion']['data-0-run0'],' \\\\')
+print('& %.2f' %d1['cylinder-motion']['data-1-run0'], '& %.2f' %d2['cylinder-motion']['data-1-run0'], '& %.2f' %d3['cylinder-motion']['data-1-run0'], '& %.2f' %d4['cylinder-motion']['data-1-run0'], '& %.2f' %d5['cylinder-motion']['data-1-run0'],' \\\\')
+print('& %.2f' %d1['cylinder-motion']['data-0-run1'], '& %.2f' %d2['cylinder-motion']['data-0-run1'], '& %.2f' %d3['cylinder-motion']['data-0-run1'], '& %.2f' %d4['cylinder-motion']['data-0-run1'], '& %.2f' %d5['cylinder-motion']['data-0-run1'],' \\\\')
+print('& %.2f' %d1['cylinder-motion']['data-1-run1'], '& %.2f' %d2['cylinder-motion']['data-1-run1'], '& %.2f' %d3['cylinder-motion']['data-1-run1'], '& %.2f' %d4['cylinder-motion']['data-1-run1'], '& %.2f' %d5['cylinder-motion']['data-1-run1'],' \\\\')
+print('& %.2f' %d1['cylinder-motion']['data-0-run2'], '& %.2f' %d2['cylinder-motion']['data-0-run2'], '& %.2f' %d3['cylinder-motion']['data-0-run2'], '& %.2f' %d4['cylinder-motion']['data-0-run2'], '& %.2f' %d5['cylinder-motion']['data-0-run2'],' \\\\')
+print('& %.2f' %d1['cylinder-motion']['data-1-run2'], '& %.2f' %d2['cylinder-motion']['data-1-run2'], '& %.2f' %d3['cylinder-motion']['data-1-run2'], '& %.2f' %d4['cylinder-motion']['data-1-run2'], '& %.2f' %d5['cylinder-motion']['data-1-run2'],' \\\\')
+print('& %.2f' %d1['cylinder-motion']['data-0-run3'], '& %.2f' %d2['cylinder-motion']['data-0-run3'], '& %.2f' %d3['cylinder-motion']['data-0-run3'], '& %.2f' %d4['cylinder-motion']['data-0-run3'], '& %.2f' %d5['cylinder-motion']['data-0-run3'],' \\\\')
+print('& %.2f' %d1['cylinder-motion']['data-1-run3'], '& %.2f' %d2['cylinder-motion']['data-1-run3'], '& %.2f' %d3['cylinder-motion']['data-1-run3'], '& %.2f' %d4['cylinder-motion']['data-1-run3'], '& %.2f' %d5['cylinder-motion']['data-1-run3'],' \\\\')
 
 # plot_legends()
 # read_losses(run_ids=[1], param_set=1, fewshot=False, oneshot=False, save_meanstd=True, realoneshot=True, agent_id=1)

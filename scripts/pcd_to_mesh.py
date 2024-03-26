@@ -12,12 +12,12 @@ box_mesh = box_mesh.subdivide_midpoint(number_of_iterations=5)
 
 motion_ind = str(4)
 agent = 'round'
-data_ind = '3'
+data_ind = '0'
 pcd_index = '1'
 
 script_path = os.path.dirname(os.path.abspath(__file__))
 # data_path = os.path.join(script_path, '..', 'data-motion-'+motion_ind, f'eef-{agent}')
-data_path = os.path.join(script_path, '..', 'data-motion-validation', 'pcd_to_mesh')
+data_path = os.path.join(script_path, '..', 'demo_files', 'pcd_to_mesh')
 print(f'Processing data {data_ind} and pcd {pcd_index}.')
 pcd_path = os.path.join(data_path, 'pcd_'+data_ind+pcd_index+'.ply')
 bounding_box_array = np.load(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'))

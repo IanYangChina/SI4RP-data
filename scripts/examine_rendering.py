@@ -24,7 +24,7 @@ from doma.envs.sys_id_env import make_env, set_parameters
 
 
 def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=False, eval=False,
-            render=False, save_img=False, save_heightmap=False, image_dir=None, save_loss=True,
+            render=False, save_img=False, save_heightmap=False, image_dir=None, save_loss=True, save_video=False,
             render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
             init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
 
@@ -53,7 +53,7 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
         coords_init[:, 1] += 0.2
         mesh_init.points(coords_init)
 
-    if save_img or save_heightmap or save_loss:
+    if save_img or save_heightmap or save_loss or save_video:
         img_dir = os.path.join(image_dir, str(n_episode))
         os.makedirs(img_dir, exist_ok=True)
         if not eval:
@@ -68,18 +68,20 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
             interval = mpm_env.horizon // 10
             frames_to_save = [0, interval, 2 * interval, 3 * interval, 4 * interval, 5 * interval,
                               6 * interval, 7 * interval, 8 * interval, 9 * interval, mpm_env.horizon - 1]
+        if save_video:
+            frames_to_save = list(range(mpm_env.horizon))
         frames = []
 
     for i in range(mpm_env.horizon):
         action = trajectory[i]
         mpm_env.step(action)
         # print(mpm_env.agent.effectors[0].pos[mpm_env.simulator.cur_substep_local])
-        if save_img:
+        if save_img or save_video:
             if i in frames_to_save:
                 img = mpm_env.render(mode='rgb_array')
-                if not eval:
-                    Image.fromarray(img).save(os.path.join(img_dir, f'img_{i}.png'))
-                frames.append(img)
+                Image.fromarray(img).save(os.path.join(img_dir, f'img_{i}.png'))
+                if eval:
+                    frames.append(img)
 
         if render:
             mpm_env.render(mode='human')
@@ -339,9 +341,12 @@ def main(args):
         if p_set == 1:
             mf = params[4]
             gf = params[5]
-        image_dir = os.path.join(save_dir, f'validation_tr_imgs-motion{motion_ind}-{agent}')
-        if args['eval']:
-            image_dir = os.path.join(save_dir, f'validation_tr_imgs-long_motion-{agent}')
+        if args['img_dir'] is None:
+            image_dir = os.path.join(save_dir, f'validation_tr_imgs-motion{motion_ind}-{agent}')
+            if args['eval']:
+                image_dir = os.path.join(save_dir, f'validation_tr_imgs-long_motion-{agent}')
+        else:
+            image_dir = os.path.join(script_path, '..', args['img_dir'])
 
     validation_dataind_dict = {
         '2': {
@@ -392,7 +397,7 @@ def main(args):
         set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress,
                        rho=rho, ground_friction=gf, manipulator_friction=mf)
         forward(mpm_env, init_state, trajectory.copy(), n_episode=n_episode,
-                press_to_proceed=args['press_to_proceed'], eval=args['eval'], save_loss=args['save_loss'],
+                press_to_proceed=args['press_to_proceed'], eval=args['eval'], save_loss=args['save_loss'], save_video=args['save_video'],
                 render=args['render_human'], save_img=args['save_img'], save_heightmap=args['save_heightmap'], image_dir=image_dir,
                 render_init_pcd=args['render_init_pcd'],
                 render_end_pcd=args['render_end_pcd'], render_heightmap=args['render_heightmap'],
@@ -432,5 +437,7 @@ if __name__ == '__main__':
     parser.add_argument('--r_init_pcd', dest='render_init_pcd', default=False, action='store_true')
     parser.add_argument('--r_end_pcd', dest='render_end_pcd', default=False, action='store_true')
     parser.add_argument('--r_hm', dest='render_heightmap', default=False, action='store_true')
+    parser.add_argument('--img_dir', dest='img_dir', type=str, default=None)
+    parser.add_argument('--save_video', dest='save_video', default=False, action='store_true')
     args = vars(parser.parse_args())
     main(args)

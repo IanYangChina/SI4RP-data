@@ -5,6 +5,7 @@ from time import time, sleep
 import open3d as o3d
 from vedo import Points, show, Mesh
 from PIL import Image
+import imageio
 import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pylab as plt
@@ -24,7 +25,7 @@ from doma.envs.sys_id_env import make_env, set_parameters
 
 
 def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=False, eval=False,
-            render=False, save_img=False, save_heightmap=False, image_dir=None, save_loss=True, save_video=False,
+            render=False, save_img=False, save_heightmap=False, image_dir=None, save_loss=True, save_gif=False,
             render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
             init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
 
@@ -53,7 +54,7 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
         coords_init[:, 1] += 0.2
         mesh_init.points(coords_init)
 
-    if save_img or save_heightmap or save_loss or save_video:
+    if save_img or save_heightmap or save_loss or save_gif:
         img_dir = os.path.join(image_dir, str(n_episode))
         os.makedirs(img_dir, exist_ok=True)
         if not eval:
@@ -68,7 +69,7 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
             interval = mpm_env.horizon // 10
             frames_to_save = [0, interval, 2 * interval, 3 * interval, 4 * interval, 5 * interval,
                               6 * interval, 7 * interval, 8 * interval, 9 * interval, mpm_env.horizon - 1]
-        if save_video:
+        if save_gif:
             frames_to_save = list(range(mpm_env.horizon))
         frames = []
 
@@ -76,12 +77,13 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
         action = trajectory[i]
         mpm_env.step(action)
         # print(mpm_env.agent.effectors[0].pos[mpm_env.simulator.cur_substep_local])
-        if save_img or save_video:
+        if save_img or save_gif:
             if i in frames_to_save:
                 img = mpm_env.render(mode='rgb_array')
-                Image.fromarray(img).save(os.path.join(img_dir, f'img_{i}.png'))
-                if eval:
+                if eval or save_gif:
                     frames.append(img)
+                else:
+                    Image.fromarray(img).save(os.path.join(img_dir, f'img_{i}.png'))
 
         if render:
             mpm_env.render(mode='human')
@@ -99,6 +101,13 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
         loss_info_to_save['final_height_map'] = None
         with open(os.path.join(img_dir, 'loss_info.json'), 'w') as f:
             json.dump(loss_info_to_save, f, indent=4)
+
+    if save_gif:
+        with imageio.get_writer(os.path.join(img_dir, f'video.gif'), mode='I') as writer:
+            for i in range(mpm_env.horizon):
+                if i % 5 != 0:
+                    continue
+                writer.append_data(frames[i])
 
     if save_img and eval:
         fig, axes = plt.subplots(1, len(frames_to_save), figsize=(len(frames_to_save) * 2, 2))
@@ -397,7 +406,7 @@ def main(args):
         set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress,
                        rho=rho, ground_friction=gf, manipulator_friction=mf)
         forward(mpm_env, init_state, trajectory.copy(), n_episode=n_episode,
-                press_to_proceed=args['press_to_proceed'], eval=args['eval'], save_loss=args['save_loss'], save_video=args['save_video'],
+                press_to_proceed=args['press_to_proceed'], eval=args['eval'], save_loss=args['save_loss'], save_gif=args['save_gif'],
                 render=args['render_human'], save_img=args['save_img'], save_heightmap=args['save_heightmap'], image_dir=image_dir,
                 render_init_pcd=args['render_init_pcd'],
                 render_end_pcd=args['render_end_pcd'], render_heightmap=args['render_heightmap'],
@@ -438,6 +447,6 @@ if __name__ == '__main__':
     parser.add_argument('--r_end_pcd', dest='render_end_pcd', default=False, action='store_true')
     parser.add_argument('--r_hm', dest='render_heightmap', default=False, action='store_true')
     parser.add_argument('--img_dir', dest='img_dir', type=str, default=None)
-    parser.add_argument('--save_video', dest='save_video', default=False, action='store_true')
+    parser.add_argument('--save_gif', dest='save_gif', default=False, action='store_true')
     args = vars(parser.parse_args())
     main(args)

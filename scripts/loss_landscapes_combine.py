@@ -114,7 +114,6 @@ for case_id in range(5):
             if loss_id == 2:
                 axes[loss_id, case_id].text(-11.5, 0.5, '$E$', style='italic')
 
-
     xy_param = 'rho-yieldstress'
     for loss_id in range(4):
         loss_type = loss_types[loss_id]

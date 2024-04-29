@@ -356,6 +356,7 @@ def main(args):
                 image_dir = os.path.join(save_dir, f'validation_tr_imgs-long_motion-{agent}')
         else:
             image_dir = os.path.join(script_path, '..', args['img_dir'])
+        print(f"Images/videos will be saved in {image_dir}, if any.")
 
     validation_dataind_dict = {
         '2': {

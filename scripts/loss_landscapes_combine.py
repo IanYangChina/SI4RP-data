@@ -104,7 +104,7 @@ for case_id in range(5):
         axes[loss_id, case_id].set_xticks([])
         axes[loss_id, case_id].set_yticks([])
         if loss_id == 0:
-            # axes[loss_id, case_id].set_title(case_titles[case_id], pad=50)
+            axes[loss_id, case_id].set_title(case_titles[case_id], pad=50)
             if case_id == 2:
                 axes[loss_id, case_id].set_xlabel('$\\nu$', labelpad=-205, style='italic')
         if case_id == 0:
@@ -131,7 +131,7 @@ for case_id in range(5):
         if case_id == 0:
             axes[loss_id+4, case_id].set_ylabel(loss_titles[loss_id], rotation='horizontal',
                                                 horizontalalignment='left')
-            axes[loss_id+4, case_id].yaxis.set_label_coords(-1.0, .2)
+            axes[loss_id+4, case_id].yaxis.set_label_coords(-1.05, .2)
             if loss_id == 2:
                 axes[loss_id+4, case_id].text(-11.5, 0.5, '$\sigma_y$', style='italic')
 
@@ -150,11 +150,11 @@ for case_id in range(5):
         if case_id == 0:
             axes[loss_id+8, case_id].set_ylabel(loss_titles[loss_id], rotation='horizontal',
                                                 horizontalalignment='left')
-            axes[loss_id+8, case_id].yaxis.set_label_coords(-1.1, .2)
+            axes[loss_id+8, case_id].yaxis.set_label_coords(-1.05, .2)
             if loss_id == 2:
                 axes[loss_id+8, case_id].text(-11.5, 0.5, '$\mu_t$', style='italic')
 
-axes[0, 2].text(-80, -15, 'Level 2 contact complexity', fontsize=80)
+axes[0, 2].text(-80, -38, 'Level 2 contact complexity', fontsize=80)
 plt.savefig(os.path.join(save_fig_data_path, f'loss-lv2.pdf'),
             bbox_inches='tight', pad_inches=0, dpi=500)
 plt.close(fig)

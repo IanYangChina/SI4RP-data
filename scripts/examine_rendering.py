@@ -25,7 +25,7 @@ from doma.envs.sys_id_env import make_env, set_parameters
 
 
 def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=False, eval=False,
-            render=False, save_img=False, save_heightmap=False, image_dir=None, save_loss=True, save_gif=False,
+            render=False, save_img=False, save_heightmap=False, img_dir=None, save_loss=True, save_gif=False,
             render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
             init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
 
@@ -55,7 +55,7 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
         mesh_init.points(coords_init)
 
     if save_img or save_heightmap or save_loss or save_gif:
-        img_dir = os.path.join(image_dir, str(n_episode))
+        # img_dir = os.path.join(img_dir, str(n_episode))
         os.makedirs(img_dir, exist_ok=True)
         if not eval:
             frames_to_save = [
@@ -103,7 +103,14 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
             json.dump(loss_info_to_save, f, indent=4)
 
     if save_gif:
-        with imageio.get_writer(os.path.join(img_dir, f'video.gif'), mode='I') as writer:
+        n = 0
+        done = False
+        while not done:
+            if os.path.exists(os.path.join(img_dir, f'video-{n}.gif')):
+                n += 1
+            else:
+                done = True
+        with imageio.get_writer(os.path.join(img_dir, f'video-{n}.gif'), mode='I') as writer:
             for i in range(mpm_env.horizon):
                 if i % 5 != 0:
                     continue
@@ -257,17 +264,15 @@ def main(args):
     agents = ['rectangle', 'round', 'cylinder']
     agent = agents[args['agent_ind']]
     if agent == 'rectangle':
-        if args['eval']:
-            cam_cfg = cam_cfg_rectangle
+        cam_cfg = cam_cfg_rectangle
         agent_init_euler = (0, 0, 45)
     else:
         agent_init_euler = (0, 0, 0)
 
-    if args['eval']:
-        if agent == 'cylinder':
-            cam_cfg = cam_cfg_cylinder
-        elif agent == 'round':
-            cam_cfg = cam_cfg_round
+    if agent == 'cylinder':
+        cam_cfg = cam_cfg_cylinder
+    elif agent == 'round':
+        cam_cfg = cam_cfg_round
 
     motion_ind = str(args['motion_ind'])
     if not args['dt_avg']:
@@ -372,9 +377,12 @@ def main(args):
     }
 
     if args['eval']:
-        data_ids = [0, 1]
+        data_ids = [0]
     else:
-        data_ids = validation_dataind_dict[motion_ind][agent]
+        try:
+            data_ids = validation_dataind_dict[motion_ind][agent]
+        except:
+            data_ids = [0]
     n_episode = 0
     for data_ind in data_ids:
         ti.reset()
@@ -408,7 +416,7 @@ def main(args):
                        rho=rho, ground_friction=gf, manipulator_friction=mf)
         forward(mpm_env, init_state, trajectory.copy(), n_episode=n_episode,
                 press_to_proceed=args['press_to_proceed'], eval=args['eval'], save_loss=args['save_loss'], save_gif=args['save_gif'],
-                render=args['render_human'], save_img=args['save_img'], save_heightmap=args['save_heightmap'], image_dir=image_dir,
+                render=args['render_human'], save_img=args['save_img'], save_heightmap=args['save_heightmap'], img_dir=image_dir,
                 render_init_pcd=args['render_init_pcd'],
                 render_end_pcd=args['render_end_pcd'], render_heightmap=args['render_heightmap'],
                 init_pcd_path=os.path.join(training_data_path, 'pcd_' + str(data_ind) + str(0) + '.ply'),

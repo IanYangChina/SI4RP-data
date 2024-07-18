@@ -1,3 +1,0 @@
-python optimise.py --fewshot --n_run 13 --seed 0 --backend cuda --param_set 1 --pd_rs_loss --pd_sr_loss --ptcl_d 8e7 --dsvs 0.003 --device_mem 6
-python optimise.py --fewshot --n_run 13 --seed 1 --backend cuda --param_set 1 --pd_rs_loss --pd_sr_loss --ptcl_d 8e7 --dsvs 0.003 --device_mem 6
-python optimise.py --fewshot --n_run 13 --seed 2 --backend cuda --param_set 1 --pd_rs_loss --pd_sr_loss --ptcl_d 8e7 --dsvs 0.003 --device_mem 6

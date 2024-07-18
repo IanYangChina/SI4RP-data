@@ -1,0 +1,14 @@
+{
+  "param_set": 0,
+  "lr_E": 4000.0,
+  "lr_nu": 0.01,
+  "lr_yield_stress": 500.0,
+  "lr_rho": 10,
+  "lr_manipulator_friction": 0.01,
+  "lr_ground_friction": 0.01,
+  "batch_size": 20,
+  "n_epoch": 100,
+  "seeds": [
+    1
+  ]
+}

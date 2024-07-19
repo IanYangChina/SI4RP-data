@@ -57,18 +57,9 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
     if save_img or save_heightmap or save_loss or save_gif:
         # img_dir = os.path.join(img_dir, str(n_episode))
         os.makedirs(img_dir, exist_ok=True)
-        if not eval:
-            frames_to_save = [
-                # 0,
-                # round(mpm_env.horizon/4),
-                # round(mpm_env.horizon/2),
-                # round(mpm_env.horizon*3/4),
-                mpm_env.horizon - 1
-            ]
-        else:
-            interval = mpm_env.horizon // 10
-            frames_to_save = [0, interval, 2 * interval, 3 * interval, 4 * interval, 5 * interval,
-                              6 * interval, 7 * interval, 8 * interval, 9 * interval, mpm_env.horizon - 1]
+        interval = mpm_env.horizon // 10
+        frames_to_save = [0, interval, 2 * interval, 3 * interval, 4 * interval, 5 * interval,
+                          6 * interval, 7 * interval, 8 * interval, 9 * interval, mpm_env.horizon - 1]
         if save_gif:
             frames_to_save = list(range(mpm_env.horizon))
         frames = []
@@ -187,7 +178,7 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
 
 def main(args):
     process = psutil.Process(os.getpid())
-    script_path = os.path.dirname(os.path.realpath(__file__))
+
     cam_cfg = {
         'pos': (0.4, 0.1, 0.1),
         'lookat': (0.25, 0.25, 0.03),
@@ -237,7 +228,7 @@ def main(args):
 
     p_density = args['ptcl_density']
     loss_cfg = {
-        'exponential_distance': True,
+        'exponential_distance': False,
         'averaging_loss': False,
         'point_distance_rs_loss': False,
         'point_distance_sr_loss': False,
@@ -268,34 +259,27 @@ def main(args):
     elif agent == 'round':
         cam_cfg = cam_cfg_round
 
+    contact_level = args['contact_level']
+    motion_name = 'poking' if contact_level == 1 else 'poking-shifting'
     motion_ind = str(args['motion_ind'])
+    data_path = os.path.join(script_path, '..', f'data-motion-{motion_name}-{motion_ind}', f'eef-{agent}')
     if not args['dt_avg']:
         dt_global = args['dt']
-        trajectory = np.load(
-            os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
+        trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_{motion_name}_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
     else:
-        dt_global = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_dt_avg.npy'))
-        trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_v_dt_avg.npy'))
-    n_substeps = 50
+        dt_global = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_{motion_name}_{motion_ind}_dt_avg.npy'))
+        trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_{motion_name}_{motion_ind}_v_dt_avg.npy'))
 
-    if args['demo']:
-        trajectory = np.load(os.path.join(script_path, '..', 'demo_files', 'eef_v_trajectory_test.npy'))
-        dt_global = 0.003
-        n_substeps = 10
-
-    if args['eval']:
+    if args['long_motion']:
+        data_path = os.path.join(script_path, '..', 'data-motion-long-horizon', f'eef-{agent}')
         if not args['dt_avg']:
             dt_global = args['dt']
-            trajectory = np.load(
-                os.path.join(script_path, '..', 'trajectories', f'tr_valid_{agent}_v_dt_{dt_global:0.2f}.npy'))
+            trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_long-horizon-{agent}_v_dt_{dt_global:0.2f}.npy'))
         else:
-            dt_global = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_valid_{agent}_dt_avg.npy'))
-            trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_valid_{agent}_v_dt_avg.npy'))
+            dt_global = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_long-horizon-{agent}_dt_avg.npy'))
+            trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_long-horizon-{agent}_v_dt_avg.npy'))
 
     horizon = trajectory.shape[0]
-    training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
-    if args['eval']:
-        training_data_path = os.path.join(script_path, '..', 'data-motion-validation', f'eef-{agent}')
 
     E = 1e4  # [1e4, 3e5]
     nu = 0.3  # [0.01, 0.48]
@@ -307,90 +291,46 @@ def main(args):
     if args['load_params']:
         run_id = args['load_params_run']
         seed_id = args['load_params_seed']
-        p_set = args['param_set']
-        if args['oneshot']:
-            assert not args['fewshot'], 'Cannot load oneshot and fewshot parameters at the same time'
-            print(f'Loading optimised parameters from oneshot result, param set {p_set}, run {run_id} seed {seed_id}...')
-            data_dir = os.path.join(script_path, '..',
-                                    f'optimisation-oneshot-param{p_set}-run{run_id}-logs',
-                                    f'seed-{seed_id}')
-            save_dir = os.path.join(script_path, '..',
-                                    f'optimisation-oneshot-param{p_set}-result-figs',
-                                    f'run{run_id}', f'seed{seed_id}')
-        elif args['fewshot']:
-            assert not args['oneshot'], 'Cannot load oneshot and fewshot parameters at the same time'
-            print(f'Loading optimised parameters from fewshot result, param set {p_set}, run {run_id} seed {seed_id}...')
-            data_dir = os.path.join(script_path, '..',
-                                    f'optimisation-fewshot-param{p_set}-run{run_id}-logs',
-                                    f'seed-{seed_id}')
-            save_dir = os.path.join(script_path, '..',
-                                    f'optimisation-fewshot-param{p_set}-result-figs',
-                                    f'run{run_id}', f'seed{seed_id}')
-        elif args['realoneshot']:
-            assert not args['oneshot'] and not args['fewshot'], \
-                'Cannot load oneshot and fewshot parameters at the same time'
-            realoneshot_agent = agents[args['realoneshot_agent_ind']]
-            print(f'Loading optimised parameters from realoneshot result, '
-                  f'param set {p_set}, agent {realoneshot_agent}, run {run_id} seed {seed_id}...')
-            data_dir = os.path.join(script_path, '..',
-                                    f'optimisation-realoneshot-{realoneshot_agent}-param{p_set}-run{run_id}-logs',
-                                    f'seed-{seed_id}')
-            save_dir = os.path.join(script_path, '..',
-                                    f'optimisation-realoneshot-{realoneshot_agent}-param{p_set}-result-figs',
-                                    f'run{run_id}', f'seed{seed_id}')
-        else:
-            raise ValueError('Please specify either oneshot or fewshot')
+        dataset = args['load_params_dataset']
+        print(f'Loading parameters from optimisation result at contact level {contact_level} with dataset {dataset}, '
+              f'run {run_id} seed {seed_id}...')
+        data_dir = os.path.join(script_path, '..', 'optimisation-results',
+                                f'level{contact_level}-{dataset}-run{run_id}-logs',
+                                f'seed-{seed_id}')
+        save_dir = os.path.join(script_path, '..', 'optimisation-results', 'figures',
+                                f'level{contact_level}-{dataset}', f'run{run_id}', f'seed{seed_id}')
 
         params = np.load(os.path.join(data_dir, 'final_params.npy')).flatten()
         E = params[0]
         nu = params[1]
         yield_stress = params[2]
         rho = params[3]
-        if p_set == 1:
+        if contact_level == 2:
             mf = params[4]
             gf = params[5]
         if args['img_dir'] is None:
             image_dir = os.path.join(save_dir, f'validation_tr_imgs-motion{motion_ind}-{agent}')
-            if args['eval']:
+            if args['long_motion']:
                 image_dir = os.path.join(save_dir, f'validation_tr_imgs-long_motion-{agent}')
         else:
             image_dir = os.path.join(script_path, '..', args['img_dir'])
         print(f"Images/videos will be saved in {image_dir}, if any.")
 
-    validation_dataind_dict = {
-        '2': {
-            'rectangle': [4, 8],
-            'round': [4, 7],
-            'cylinder': [4, 7]
-        },
-        '4': {
-            'rectangle': [2, 4],
-            'round': [2, 3],
-            'cylinder': [1, 3]
-        }
-    }
-
-    if args['eval']:
-        data_ids = [0]
-    else:
-        try:
-            data_ids = validation_dataind_dict[motion_ind][agent]
-        except:
-            data_ids = [0]
+    data_ids = [0, 1]
     n_episode = 0
     for data_ind in data_ids:
         ti.reset()
         ti.init(arch=ti.cuda, default_fp=DTYPE_TI, default_ip=ti.i32, debug=False, device_memory_GB=3,
                 fast_math=True, advanced_optimization=True, random_seed=1)
         data_cfg = {
-            'data_path': training_data_path,
+            'data_path': data_path,
             'data_ind': str(data_ind),
         }
         env_cfg = {
             'p_density': p_density,
             'horizon': horizon,
             'dt_global': dt_global,
-            'n_substeps': n_substeps,
+            'n_substeps': 50,
             'material_id': 2,
             'agent_name': agent,
             'agent_init_euler': agent_init_euler,
@@ -409,11 +349,11 @@ def main(args):
         set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress,
                        rho=rho, ground_friction=gf, manipulator_friction=mf)
         forward(mpm_env, init_state, trajectory.copy(), n_episode=n_episode,
-                press_to_proceed=args['press_to_proceed'], eval=args['eval'], save_loss=args['save_loss'], save_gif=args['save_gif'],
+                press_to_proceed=args['press_to_proceed'], eval=args['long_motion'], save_loss=args['save_loss'], save_gif=args['save_gif'],
                 render=args['render_human'], save_img=args['save_img'], save_heightmap=args['save_heightmap'], img_dir=image_dir,
                 render_init_pcd=args['render_init_pcd'],
                 render_end_pcd=args['render_end_pcd'], render_heightmap=args['render_heightmap'],
-                init_pcd_path=os.path.join(training_data_path, 'pcd_' + str(data_ind) + str(0) + '.ply'),
+                init_pcd_path=os.path.join(data_path, 'pcd_' + str(data_ind) + str(0) + '.ply'),
                 init_pcd_offset=env.target_pcd_offset,
                 init_mesh_path=env.mesh_file,
                 init_mesh_pos=env.initial_pos)
@@ -426,21 +366,18 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
-    parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.006)
+    parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.005)
     parser.add_argument('--ptp', dest='press_to_proceed', default=False, action='store_true')
-    parser.add_argument('--demo', dest='demo', default=False, action='store_true')
-    parser.add_argument('--eval', dest='eval', default=False, action='store_true')
+    parser.add_argument('--long_motion', dest='long_motion', default=False, action='store_true')
     parser.add_argument('--load_params', dest='load_params', default=False, action='store_true')
     parser.add_argument('--load_params_run', dest='load_params_run', type=int, default=0)
     parser.add_argument('--load_params_seed', dest='load_params_seed', type=int, default=0)
-    parser.add_argument('--fewshot', dest='fewshot', default=False, action='store_true')
-    parser.add_argument('--oneshot', dest='oneshot', default=False, action='store_true')
-    parser.add_argument('--realoneshot', dest='realoneshot', default=False, action='store_true')
-    parser.add_argument('--realoneshot_agent_ind', dest='realoneshot_agent_ind', type=int, default=0)
-    parser.add_argument('--param_set', dest='param_set', type=int, default=0)
+    parser.add_argument('--load_params_dataset', dest='load_params_dataset', type=str, default='12mix',
+                        choices=['12mix', '6mix', '1cyl', '1rec', '1round'])
+    parser.add_argument('--con_lv', dest='contact_level', type=int, default=0, choices=[0, 1])
     parser.add_argument('--dt', dest='dt', type=float, default=0.01)
     parser.add_argument('--dt_avg', dest='dt_avg', default=False, action='store_true')
-    parser.add_argument('--m_id', dest='motion_ind', type=int, default=1)
+    parser.add_argument('--m_id', dest='motion_ind', type=int, default=1, choices=[1, 2])
     parser.add_argument('--agent_ind', dest='agent_ind', type=int, default=0)
     parser.add_argument('--r_human', dest='render_human', default=False, action='store_true')
     parser.add_argument('--save_loss', dest='save_loss', default=False, action='store_true')

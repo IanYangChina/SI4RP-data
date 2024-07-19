@@ -50,23 +50,25 @@ def main(arguments):
         backend = ti.cpu
 
     script_path = os.path.dirname(os.path.realpath(__file__))
+    result_path = os.path.join(script_path, '..', 'new-optimisation-results')
+
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
+    dt_global = 0.01
     particle_density = arguments['ptcl_density']
-    assert arguments['hm_res'] in [32, 64], 'height map resolution must be 32 or 64'
     loss_cfg = {
-        'exponential_distance': arguments['exp_dist'],
+        'exponential_distance': False,
         'averaging_loss': False,
         'point_distance_rs_loss': arguments['pd_rs_loss'],
         'point_distance_sr_loss': arguments['pd_sr_loss'],
-        'down_sample_voxel_size': arguments['down_sample_voxel_size'],
+        'down_sample_voxel_size': 0.005,
         'particle_distance_rs_loss': arguments['prd_rs_loss'],
         'particle_distance_sr_loss': arguments['prd_sr_loss'],
         'voxelise_res': 1080,
         'ptcl_density': particle_density,
         'load_height_map': True,
         'height_map_loss': arguments['hm_loss'],
-        'height_map_res': arguments['hm_res'],
+        'height_map_res': 32,
         'height_map_size': 0.11,
         'emd_point_distance_loss': arguments['emd_p_loss'],
         'emd_particle_distance_loss': arguments['emd_pr_loss'],
@@ -81,10 +83,11 @@ def main(arguments):
     gf_range = (0.01, 2.0)
 
     agents = ['rectangle', 'round', 'cylinder']
-    mini_batch_size = arguments['batchsize']
-
-    param_set = arguments['param_set']
-    assert param_set in [0, 1], 'param_set must be 0 or 1'
+    contact_level = arguments['contact_level']
+    assert contact_level in [0, 1], 'contact_level must be 0 or 1'
+    dataset = arguments['dataset']
+    assert dataset in ['12mix', '6mix', '1cyl', '1rec', '1round'], 'dataset must be 12mix, 6mix, 1cyl, 1rec, or 1round'
+    motion_name = 'poking' if contact_level == 1 else 'poking-shifting'
 
     n_epoch = 100
     n_aborted_data = 0
@@ -95,28 +98,12 @@ def main(arguments):
     if arguments['n_run'] != -1:
         # Append experiment into existing folder
         n = arguments['n_run']
-        if arguments['fewshot']:
-            log_p_dir = os.path.join(script_path, '..', f'optimisation-fewshot-param{param_set}-run{n}-logs')
-        elif arguments['oneshot']:
-            log_p_dir = os.path.join(script_path, '..', f'optimisation-oneshot-param{param_set}-run{n}-logs')
-        elif arguments['realoneshot']:
-            agent_name = agents[arguments['realoneshot_agent_id']]
-            log_p_dir = os.path.join(script_path, '..', f'optimisation-realoneshot-{agent_name}-param{param_set}-run{n}-logs')
-        else:
-            log_p_dir = os.path.join(script_path, '..', f'optimisation-param{param_set}-run{n}-logs')
+        log_p_dir = os.path.join(result_path, f'level{contact_level}-{dataset}-run{n}-logs')
     else:
         # New experiments
         n = 0
         while True:
-            if arguments['fewshot']:
-                log_p_dir = os.path.join(script_path, '..', f'optimisation-fewshot-param{param_set}-run{n}-logs')
-            elif arguments['oneshot']:
-                log_p_dir = os.path.join(script_path, '..', f'optimisation-oneshot-param{param_set}-run{n}-logs')
-            elif arguments['realoneshot']:
-                agent_name = agents[arguments['realoneshot_agent_id']]
-                log_p_dir = os.path.join(script_path, '..', f'optimisation-realoneshot-{agent_name}-param{param_set}-run{n}-logs')
-            else:
-                log_p_dir = os.path.join(script_path, '..', f'optimisation-param{param_set}-run{n}-logs')
+            log_p_dir = os.path.join(result_path, f'level{contact_level}-{dataset}-run{n}-logs')
             if os.path.exists(log_p_dir):
                 n += 1
             else:
@@ -139,16 +126,16 @@ def main(arguments):
     logging.basicConfig(level=logging.NOTSET, filemode=filemode,
                         filename=log_file_name,
                         format="%(asctime)s %(levelname)s %(message)s")
+    logging.info(f"=====> Logging to {log_file_name}")
 
     training_config = {
-        'param_set': param_set,
+        'contact_level': contact_level,
         'lr_E': 4e3,
         'lr_nu': 1e-2,
         'lr_yield_stress': 5e2,
         'lr_rho': 10,
         'lr_manipulator_friction': 1e-2,
         'lr_ground_friction': 1e-2,
-        'batch_size': arguments['batchsize'],
         'n_epoch': n_epoch,
         'seeds': seeds,
     }
@@ -165,10 +152,10 @@ def main(arguments):
         with open(training_config_file, 'w') as f_ac:
             json.dump(training_config, f_ac, indent=2)
 
-    print(f"=====> Optimising param set {param_set} for {n_epoch} epochs for {len(seeds)} random seeds.")
+    print(f"=====> Optimisation at contact_level {contact_level} with dataset {dataset} for {n_epoch} epochs for {len(seeds)} random seeds.")
     print(f"=====> Loss config: {loss_cfg}")
     print(f"=====> Training config: {training_config}")
-    logging.info(f"=====> Optimising param set {param_set} for {n_epoch} epochs for {len(seeds)} random seeds.")
+    logging.info(f"=====> Optimisation at contact_level {contact_level} with dataset {dataset} for {n_epoch} epochs for {len(seeds)} random seeds.")
     logging.info(f"=====> Loss config: {loss_cfg}")
     logging.info(f"=====> Training config: {training_config}")
 
@@ -202,13 +189,7 @@ def main(arguments):
                                   cfg={'lr': training_config['lr_yield_stress'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
         optim_rho = Adam(parameters_shape=rho.shape,
                                     cfg={'lr': training_config['lr_rho'], 'beta_1': 0.9, 'beta_2': 0.999, 'epsilon': 1e-8})
-        if arguments['param_set'] == 1:
-            # Initialising parameters
-            # E = np.asarray([40000], dtype=DTYPE_NP).reshape((1,))  # Young's modulus
-            # nu = np.asarray([0.4], dtype=DTYPE_NP).reshape((1,))
-            # yield_stress = np.asarray([1000], dtype=DTYPE_NP).reshape((1,))
-            # rho = np.asarray([1000], dtype=DTYPE_NP).reshape((1,))
-
+        if contact_level == 2:
             manipulator_friction = np.asarray(np.random.uniform(mf_range[0], mf_range[1]), dtype=DTYPE_NP).reshape((1,))  # Manipulator friction
             ground_friction = np.asarray(np.random.uniform(gf_range[0], gf_range[1]), dtype=DTYPE_NP).reshape((1,))
 
@@ -236,65 +217,43 @@ def main(arguments):
                 'total_loss': []
             }
             grads = []
-            data_id_dict = {
-                '1': {'rectangle': [3, 5], 'round': [0, 1], 'cylinder': [1, 2]},
-                '2': {'rectangle': [1, 3], 'round': [0, 2], 'cylinder': [0, 2]},
-                '3': {'rectangle': [1, 2], 'round': [0, 1], 'cylinder': [0, 4]},
-                '4': {'rectangle': [1, 3], 'round': [1, 4], 'cylinder': [0, 4]},
-            }
-            if arguments['fewshot']:
+
+            # datasets
+            if arguments['dataset'] == '12mix':
                 mini_batch_size = 12
-                if arguments['param_set'] == 0:
-                    motion_ids = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]
-                    agent_ids = [0, 0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 2]
-                    data_ids = [3, 5, 0, 1, 1, 2, 1, 3, 0, 2, 0, 2]
-                else:
-                    motion_ids = [3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4]
-                    agent_ids = [0, 0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 2]
-                    data_ids = [1, 2, 0, 1, 0, 4, 1, 3, 1, 4, 0, 4]
-            elif arguments['oneshot']:
+                motion_ids = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]
+                agent_ids = [0, 0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 2]
+                data_inds = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
+            elif arguments['dataset'] == '6mix':
                 mini_batch_size = 6
-                if arguments['param_set'] == 0:
-                    motion_ids = [1, 1, 1, 2, 2, 2]
-                    agent_ids = [0, 1, 2, 0, 1, 2]
-                    data_ids = [3, 0, 1, 1, 0, 0]
-                else:
-                    motion_ids = [3, 3, 3, 4, 4, 4]
-                    agent_ids = [0, 1, 2, 0, 1, 2]
-                    data_ids = [1, 0, 0, 1, 1, 0]
-            elif arguments['realoneshot']:
-                mini_batch_size = 1
-                if arguments['param_set'] == 0:
-                    motion_ids = [2]
-                    agent_ids = [arguments['realoneshot_agent_id']]
-                    data_ids = [data_id_dict['2'][agents[arguments['realoneshot_agent_id']]][0]]
-                else:
-                    motion_ids = [4]
-                    agent_ids = [arguments['realoneshot_agent_id']]
-                    data_ids = [data_id_dict['4'][agents[arguments['realoneshot_agent_id']]][0]]
+                motion_ids = [1, 1, 1, 2, 2, 2]
+                agent_ids = [0, 1, 2, 0, 1, 2]
+                data_inds = [0, 0, 0, 0, 0, 0]
             else:
-                if arguments['param_set'] == 0:
-                    motion_ids = np.random.randint(1, 3, size=mini_batch_size, dtype=np.int32).tolist()
-                    data_ids = np.random.randint(9, size=mini_batch_size, dtype=np.int32).tolist()
+                mini_batch_size = 1
+                motion_ids = [2]
+                data_inds = [0]
+
+                if arguments['dataset'] == '1cyl':
+                    agent_ids = [2]
+                elif arguments['dataset'] == '1rec':
+                    agent_ids = [0]
                 else:
-                    motion_ids = np.random.randint(3, 5, size=mini_batch_size, dtype=np.int32).tolist()
-                    data_ids = np.random.randint(5, size=mini_batch_size, dtype=np.int32).tolist()
-                agent_ids = np.random.randint(3, size=mini_batch_size, dtype=np.int32).tolist()
+                    agent_ids = [1]
 
             for i in range(mini_batch_size):
-                motion_ind = str(motion_ids[i])
-                dt_global = 0.01
-                trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
+                motion_id = str(motion_ids[i])
+                trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_name}_{motion_id}_v_dt_{dt_global:0.2f}.npy'))
                 horizon = trajectory.shape[0]
-                n_substeps = 50
 
                 agent = agents[agent_ids[i]]
                 agent_init_euler = (0, 0, 0)
                 if agent == 'rectangle':
                     agent_init_euler = (0, 0, 45)
-                training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
+                training_data_path = os.path.join(script_path, '..', 'data',
+                                                  f'data-motion-{motion_name}-{motion_id}', f'eef-{agent}')
 
-                data_ind = data_ids[i]
+                data_ind = data_inds[i]
 
                 ti.reset()
                 ti.init(arch=backend, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
@@ -307,13 +266,13 @@ def main(arguments):
                     'p_density': particle_density,
                     'horizon': horizon,
                     'dt_global': dt_global,
-                    'n_substeps': n_substeps,
+                    'n_substeps': 50,
                     'material_id': 2,
                     'agent_name': agent,
                     'agent_init_euler': agent_init_euler,
                 }
-                print(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
-                logging.info(f'=====> Computing: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
+                print(f'=====> Computing: epoch {epoch}, motion {motion_name}-{motion_id}, agent {agent}, data {data_ind}')
+                logging.info(f'=====> Computing: epoch {epoch}, motion {motion_name}-{motion_id}, agent {agent}, data {data_ind}')
                 env, mpm_env, init_state = make_env(data_cfg, env_cfg, loss_cfg, logger=logging)
                 set_parameters(mpm_env, env_cfg['material_id'],
                                E=E.copy(), nu=nu.copy(), yield_stress=yield_stress.copy(), rho=rho.copy(),
@@ -327,6 +286,7 @@ def main(arguments):
                                  mpm_env.simulator.particle_param.grad[MATERIAL_ID].rho,
                                  mpm_env.simulator.system_param.grad[None].manipulator_friction,
                                  mpm_env.simulator.system_param.grad[None].ground_friction], dtype=DTYPE_NP)
+
                 # Check if the loss is strange
                 abort = False
                 particle_has_naninf = loss_info['particle_has_naninf']
@@ -355,12 +315,12 @@ def main(arguments):
                         abort = True
 
                 if abort:
-                    print(f'===> [Warning] Aborting datapoint: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
+                    print(f'===> [Warning] Aborting datapoint: epoch {epoch}, motion {motion_name}-{motion_id}, agent {agent}, data {data_ind}')
                     print(f'===> [Warning] Particle has nan or inf: {particle_has_naninf}')
                     print(f'===> [Warning] Strange loss or gradient.')
                     print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
                     print(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
-                    logging.error(f'===> [Warning] Aborting datapoint: epoch {epoch}, motion {motion_ind}, agent {agent}, data {data_ind}')
+                    logging.error(f'===> [Warning] Aborting datapoint: epoch {epoch}, motion {motion_name}-{motion_id}, agent {agent}, data {data_ind}')
                     logging.error(f'===> [Warning] Particle has nan or inf: {particle_has_naninf}')
                     logging.error(f'===> [Warning] Strange loss or gradient.')
                     logging.error(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
@@ -442,100 +402,76 @@ def main(arguments):
                 'emd_particle_distance_loss': [],
                 'total_loss': []
             }
-            dt_global = 0.01
-            n_substeps = 50
-            # training data_id_dict = {
-            #     '1': {'rectangle': [3, 5], 'round': [0, 1], 'cylinder': [1, 2]},
-            #     '2': {'rectangle': [1, 3], 'round': [0, 2], 'cylinder': [0, 2]},
-            #     '3': {'rectangle': [1, 2], 'round': [0, 1], 'cylinder': [0, 4]},
-            #     '4': {'rectangle': [1, 3], 'round': [1, 4], 'cylinder': [0, 4]},
-            # }
-            validation_dataind_dict = {
-                '2': {
-                    'rectangle': [4, 8],
-                    'round': [4, 7],
-                    'cylinder': [4, 7]
-                },
-                '4': {
-                    'rectangle': [2, 4],
-                    'round': [2, 3],
-                    'cylinder': [1, 3]
-                }
-            }
-            if arguments['param_set'] == 0:
-                validation_motions = [2]
-            else:
-                validation_motions = [4]
-            for validation_motion in validation_motions:
-                for agent in agents:
-                    agent_init_euler = (0, 0, 0)
-                    if agent == 'rectangle':
-                        agent_init_euler = (0, 0, 45)
+            for agent in agents:
+                agent_init_euler = (0, 0, 0)
+                if agent == 'rectangle':
+                    agent_init_euler = (0, 0, 45)
 
-                    trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{validation_motion}_v_dt_{dt_global:0.2f}.npy'))
-                    validation_data_path = os.path.join(script_path, '..', f'data-motion-{validation_motion}', f'eef-{agent}')
-                    data_inds = validation_dataind_dict[str(validation_motion)][agent]
+                trajectory = np.load(os.path.join(script_path, '..',
+                                                  'trajectories', f'tr_{motion_name}_2_v_dt_{dt_global:0.2f}.npy'))
+                validation_data_path = os.path.join(script_path, '..',
+                                                    f'data-motion-{motion_name}-2', f'eef-{agent}', 'validation_data')
+                data_inds = [0, 1]
+                horizon = trajectory.shape[0]
+                for data_ind in data_inds:
+                    ti.reset()
+                    ti.init(arch=backend, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
+                            debug=False, check_out_of_bound=False, device_memory_GB=arguments['device_memory_GB'])
+                    validation_data_cfg = {
+                        'data_path': validation_data_path,
+                        'data_ind': str(data_ind),
+                    }
+                    validation_env_cfg = {
+                        'p_density': particle_density,
+                        'horizon': horizon,
+                        'dt_global': dt_global,
+                        'n_substeps': 50,
+                        'material_id': 2,
+                        'agent_name': agent,
+                        'agent_init_euler': agent_init_euler,
+                    }
+                    env, mpm_env, init_state = make_env(validation_data_cfg, validation_env_cfg,
+                                                        validation_loss_config, logger=logging)
+                    set_parameters(mpm_env, validation_env_cfg['material_id'],
+                                   E=E.copy(), nu=nu.copy(), yield_stress=yield_stress.copy(), rho=rho.copy(),
+                                   ground_friction=ground_friction.copy(),
+                                   manipulator_friction=manipulator_friction.copy())
+                    loss_info = forward_backward(mpm_env, init_state, trajectory, backward=False)
+                    # Check if the loss is strange
+                    abort = False
+                    particle_has_naninf = loss_info['particle_has_naninf']
+                    if particle_has_naninf:
+                        abort = True
 
-                    horizon = trajectory.shape[0]
-                    for data_ind in data_inds:
-                        ti.reset()
-                        ti.init(arch=backend, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
-                                debug=False, check_out_of_bound=False, device_memory_GB=arguments['device_memory_GB'])
-                        validation_data_cfg = {
-                            'data_path': validation_data_path,
-                            'data_ind': str(data_ind),
-                        }
-                        validation_env_cfg = {
-                            'p_density': particle_density,
-                            'horizon': horizon,
-                            'dt_global': dt_global,
-                            'n_substeps': n_substeps,
-                            'material_id': 2,
-                            'agent_name': agent,
-                            'agent_init_euler': agent_init_euler,
-                        }
-                        env, mpm_env, init_state = make_env(validation_data_cfg, validation_env_cfg,
-                                                            validation_loss_config, logger=logging)
-                        set_parameters(mpm_env, validation_env_cfg['material_id'],
-                                       E=E.copy(), nu=nu.copy(), yield_stress=yield_stress.copy(), rho=rho.copy(),
-                                       ground_friction=ground_friction.copy(),
-                                       manipulator_friction=manipulator_friction.copy())
-                        loss_info = forward_backward(mpm_env, init_state, trajectory, backward=False)
-                        # Check if the loss is strange
-                        abort = False
-                        particle_has_naninf = loss_info['particle_has_naninf']
-                        if particle_has_naninf:
-                            abort = True
+                    if not abort:
+                        for i, v in loss_info.items():
+                            if i == 'final_height_map' or i == 'particle_has_naninf':
+                                pass
+                            else:
+                                if np.isinf(v) or np.isnan(v):
+                                    abort = True
+                                    break
 
-                        if not abort:
-                            for i, v in loss_info.items():
-                                if i == 'final_height_map' or i == 'particle_has_naninf':
-                                    pass
-                                else:
-                                    if np.isinf(v) or np.isnan(v):
-                                        abort = True
-                                        break
+                    if abort:
+                        print(f'===> [Warning] Aborting validation run: agent {agent}, data {data_ind}')
+                        print(f'===> [Warning] Particle has nan or inf: {particle_has_naninf}')
+                        print(f'===> [Warning] Strange loss.')
+                        print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
+                        print(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
+                        logging.error(f'===> [Warning] Aborting validation run: agent {agent}, data {data_ind}')
+                        logging.error(f'===> [Warning] Particle has nan or inf: {particle_has_naninf}')
+                        logging.error(f'===> [Warning] Strange loss.')
+                        logging.error(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
+                        logging.error(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
+                        n_aborted_data += 1
+                    else:
+                        for i, v in validation_loss.items():
+                            validation_loss[i].append(loss_info[i])
 
-                        if abort:
-                            print(f'===> [Warning] Aborting validation run: agent {agent}, data {data_ind}')
-                            print(f'===> [Warning] Particle has nan or inf: {particle_has_naninf}')
-                            print(f'===> [Warning] Strange loss.')
-                            print(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
-                            print(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
-                            logging.error(f'===> [Warning] Aborting validation run: agent {agent}, data {data_ind}')
-                            logging.error(f'===> [Warning] Particle has nan or inf: {particle_has_naninf}')
-                            logging.error(f'===> [Warning] Strange loss.')
-                            logging.error(f'===> [Warning] E: {E}, nu: {nu}, yield stress: {yield_stress}')
-                            logging.error(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
-                            n_aborted_data += 1
-                        else:
-                            for i, v in validation_loss.items():
-                                validation_loss[i].append(loss_info[i])
+                    print(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
+                    logging.info(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
 
-                        print(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
-                        logging.info(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
-
-                        mpm_env.simulator.clear_ckpt()
+                    mpm_env.simulator.clear_ckpt()
 
             for i, v in validation_loss.items():
                 validation_loss[i] = np.mean(v)
@@ -551,7 +487,7 @@ def main(arguments):
             logger.add_scalar(tag='Aborted', scalar_value=n_aborted_data, global_step=epoch)
 
         logger.close()
-        if arguments['param_set'] == 0:
+        if contact_level == 1:
             print(f"Final parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
             logging.info(f"Final parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
             np.save(os.path.join(log_dir, 'final_params.npy'), np.array([E, nu, yield_stress, rho], dtype=DTYPE_NP))
@@ -567,14 +503,10 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--n_run', dest='n_run', type=int, default=-1)
     parser.add_argument('--seed', dest='seed', type=int, default=-1)
-    parser.add_argument('--param_set', dest='param_set', type=int, default=0)
-    parser.add_argument('--fewshot', dest='fewshot', default=False, action='store_true')
-    parser.add_argument('--oneshot', dest='oneshot', default=False, action='store_true')
-    parser.add_argument('--realoneshot', dest='realoneshot', default=False, action='store_true')
-    parser.add_argument('--realoneshot_agent_id', dest='realoneshot_agent_id', type=int, default=0)
+    parser.add_argument('--con_lv', dest='contact_level', type=int, default=0, choices=[1, 2])
+    parser.add_argument('--dataset', dest='dataset', type=str, default='12mix',
+                        choices=['12mix', '6mix', '1cyl', '1rec', '1round'])
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
-    parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.005)
-    parser.add_argument('--exp_dist', dest='exp_dist', default=False, action='store_true')
     parser.add_argument('--pd_rs_loss', dest='pd_rs_loss', default=False, action='store_true')
     parser.add_argument('--pd_sr_loss', dest='pd_sr_loss', default=False, action='store_true')
     parser.add_argument('--prd_rs_loss', dest='prd_rs_loss', default=False, action='store_true')
@@ -582,7 +514,6 @@ if __name__ == '__main__':
     parser.add_argument('--emd_p_loss', dest='emd_p_loss', default=False, action='store_true')
     parser.add_argument('--emd_pr_loss', dest='emd_pr_loss', default=False, action='store_true')
     parser.add_argument('--hm_loss', dest='hm_loss', default=False, action='store_true')
-    parser.add_argument('--hm_res', dest='hm_res', default=32, type=int)
     parser.add_argument('--bs', dest='batchsize', default=20, type=int)
     parser.add_argument('--backend', dest='backend', default='cuda', type=str)
     parser.add_argument('--device_mem', dest='device_memory_GB', default=3, type=int)

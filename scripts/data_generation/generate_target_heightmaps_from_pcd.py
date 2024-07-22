@@ -3,8 +3,6 @@ import numpy as np
 import open3d as o3d
 import matplotlib.pyplot as plt
 import taichi as ti
-from doma.engine.utils.mesh_ops import generate_particles_from_mesh
-from vedo import Points, show, Mesh
 from doma.engine.utils.misc import get_gpu_memory
 import psutil
 import argparse
@@ -33,10 +31,12 @@ def run(args):
 
     process = psutil.Process(os.getpid())
     script_path = os.path.dirname(os.path.realpath(__file__))
-    for motion_ind in ['validation']:
-        for agent in ['cylinder']:
+    script_path = os.path.join(script_path, '..')
+    for motion in ['poking-1', 'poking-2', 'poking-shifting-1', 'poking-shifting-2', 'long-horizon']:
+        for agent in ['cylinder', 'rectangle', 'round']:
             for data_ind in [str(_) for _ in range(2)]:
-                data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
+                data_path = os.path.join(script_path, '..', 'data',
+                                         f'data-motion-{motion}', f'eef-{agent}')
                 # hm = np.load(os.path.join(data_path, f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(down_sample_voxel_size)}.npy'))
                 # plt.imshow(hm, cmap='Greys')
                 # plt.show()

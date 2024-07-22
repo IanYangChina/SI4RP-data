@@ -101,21 +101,18 @@ def main(args):
         print('[Warning] Debug mode on, printing gradients.')
     process = psutil.Process(os.getpid())
     script_path = os.path.dirname(os.path.realpath(__file__))
-    if args['fewshot']:
-        if args['param_set'] == 0:
-            gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-few-shot')
-        else:
-            gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-mf-gf-few-shot')
-    else:
-        if args['param_set'] == 0:
-            gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho')
-        else:
-            gradient_file_path = os.path.join(script_path, '..', 'gradients-E-nu-ys-rho-mf-gf')
+    script_path = os.path.join(script_path, '..')
+    contact_level = args['contact_level']
+    assert contact_level in [1, 2], 'Invalid contact level.'
+    gradient_file_path = os.path.join(script_path, '..', 'gradient-analysis',
+                                      f'level{contact_level}-12mix')
 
     os.makedirs(gradient_file_path, exist_ok=True)
     np.random.seed(1)
 
     material_id = 2
+    n_substeps = 50
+    dt_global = 0.01
 
     E_range = (1e4, 3e5)
     nu_range = (0.01, 0.49)
@@ -125,7 +122,7 @@ def main(args):
 
     p_density = args['ptcl_density']
     loss_cfg = {
-        'exponential_distance': args['exponential_distance'],
+        'exponential_distance': False,
         'averaging_loss': False,
         'point_distance_rs_loss': args['point_distance_rs_loss'],
         'point_distance_sr_loss': args['point_distance_sr_loss'],
@@ -135,7 +132,7 @@ def main(args):
         'emd_point_distance_loss': args['emd_point_distance_loss'],
         'emd_particle_distance_loss': args['emd_particle_distance_loss'],
         'ptcl_density': p_density,
-        'down_sample_voxel_size': args['down_sample_voxel_size'],
+        'down_sample_voxel_size': 0.005,
         'voxelise_res': 1080,
         'load_height_map': True,
         'height_map_res': 32,
@@ -160,44 +157,22 @@ def main(args):
         with open(loss_cfg_file_name, 'w') as f_ac:
             json.dump(loss_cfg, f_ac, indent=2)
 
-    data_id_dict = {
-        '1': {'rectangle': [3, 5], 'round': [0, 1], 'cylinder': [1, 2]},
-        '2': {'rectangle': [1, 3], 'round': [0, 2], 'cylinder': [0, 2]},
-        '3': {'rectangle': [1, 2], 'round': [0, 1], 'cylinder': [0, 4]},
-        '4': {'rectangle': [1, 3], 'round': [1, 4], 'cylinder': [0, 4]},
-    }
-
     grads = []
-    if args['param_set'] == 0:
-        motions = ['1', '2']
-    else:
-        motions = ['3', '4']
-    for motion_ind in motions:
-        dt_global = 0.01
-        trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
+    motion_name = 'poking' if contact_level == 1 else 'poking-shifting'
+    for motion_ind in ['1', '2']:
+        trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories',
+                                          f'tr_{motion_name}_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
         horizon = trajectory.shape[0]
-        n_substeps = 50
 
-        for agent in [
-            'rectangle',
-            'round',
-            'cylinder'
-        ]:
+        for agent in ['rectangle', 'round', 'cylinder']:
             if agent == 'rectangle':
                 agent_init_euler = (0, 0, 45)
             else:
                 agent_init_euler = (0, 0, 0)
-            training_data_path = os.path.join(script_path, '..', f'data-motion-{motion_ind}', f'eef-{agent}')
+            training_data_path = os.path.join(script_path, '..', 'data',
+                                              f'data-motion-{motion_name}-{motion_ind}', f'eef-{agent}')
 
-            if args['fewshot']:
-                data_ids = data_id_dict[motion_ind][agent]
-            else:
-                if args['param_set'] == 0:
-                    data_ids = np.random.randint(9, size=3, dtype=np.int32).tolist()
-                else:
-                    data_ids = np.random.randint(5, size=3, dtype=np.int32).tolist()
-
-            for data_ind in data_ids:
+            for data_ind in [0, 1]:
                 ti.reset()
                 ti.init(arch=backend, default_fp=DTYPE_TI, default_ip=ti.i32, device_memory_GB=3,
                         debug=False, advanced_optimization=True, fast_math=True,
@@ -328,7 +303,7 @@ def main(args):
     logging.info(f"Avg. gradient of nu: {grad_mean[1]}, std: {grad_std[1]}")
     logging.info(f"Avg. gradient of yield stress: {grad_mean[2]}, std: {grad_std[2]}")
     logging.info(f"Avg. gradient of rho: {grad_mean[3]}, std: {grad_std[3]}")
-    if args['param_set'] == 1:
+    if contact_level == 2:
         print(f"Avg. gradient of manipulator friction: {grad_mean[4]}, std: {grad_std[4]}")
         print(f"Avg. gradient of ground friction: {grad_mean[5]}, std: {grad_std[5]}")
         logging.info(f"Avg. gradient of manipulator friction: {grad_mean[4]}, std: {grad_std[4]}")
@@ -341,12 +316,9 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--param_set', dest='param_set', type=int, default=0)
-    parser.add_argument('--fewshot', dest='fewshot', default=False, action='store_true')
+    parser.add_argument('--con_lv', dest='contact_level', type=int, default=0)
     parser.add_argument('--debug', dest='debug', default=False, action='store_true')
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
-    parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.005)
-    parser.add_argument('--exp_dist', dest='exponential_distance', default=False, action='store_true')
     parser.add_argument('--pd_rs_loss', dest='point_distance_rs_loss', default=False, action='store_true')
     parser.add_argument('--pd_sr_loss', dest='point_distance_sr_loss', default=False, action='store_true')
     parser.add_argument('--prd_rs_loss', dest='particle_distance_rs_loss', default=False, action='store_true')

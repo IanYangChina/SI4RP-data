@@ -17,6 +17,7 @@ plt.rcParams["mathtext.fontset"] = "stix"
 plt.rcParams['font.serif'] = ['Times New Roman'] + plt.rcParams['font.serif']
 plt.rcParams["font.weight"] = "normal"
 cwd = os.path.dirname(os.path.realpath(__file__))
+cwd = os.path.join(cwd, '..')
 loss_types = ['point_distance_sr',
               'point_distance_rs',
               'chamfer_loss_pcd',
@@ -30,81 +31,15 @@ loss_types = ['point_distance_sr',
 params = ['E', 'nu', 'yield_stress', 'rho', 'mf', 'gf']
 
 
-def read_plot_params_scatter(run_ids, param_set=0, dist_type='Euclidean', fewshot=True, oneshot=False):
-    """Read/plot params"""
+def read_losses(run_ids, contact_level=0, dataset='12mix', save_meanstd=False):
+    """generate mean and deviation data from tensorboard logs"""
+    assert contact_level in [1, 2]
+    assert dataset in ['12mix', '6mix', '1rec', '1round', '1cyl']
     assert len(run_ids) > 0
-    legends = [
-        f'{dist_type}: PCD chamfer - 0',
-        f'{dist_type}: PCD chamfer - 1',
-        f'{dist_type}: PCD chamfer - 2',
-        f'{dist_type}: Particle chamfer - 0',
-        f'{dist_type}: Particle chamfer - 1',
-        f'{dist_type}: Particle chamfer - 2',
-        f'{dist_type}: PCD emd - 0',
-        f'{dist_type}: PCD emd - 1',
-        f'{dist_type}: PCD emd - 2',
-        f'{dist_type}: Particle emd - 0',
-        f'{dist_type}: Particle emd - 1',
-        f'{dist_type}: Particle emd - 2',
-        f'{dist_type}: Height map - 0',
-        f'{dist_type}: Height map - 1',
-        f'{dist_type}: Height map - 2'
-    ]
-    print(f'[Warning]: make sure the run ids are in the correct order based on \n'
-          f'{legends[0]}\n{legends[3]}\n{legends[6]}\n{legends[9]}\n{legends[12]}')
-    colors = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
-              'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan', 'k']
-    param_names = ['E', 'nu', 'yield stress', 'rho', 'mf', 'gf']
-    if fewshot:
-        assert not oneshot
-        dir_prefix = f'optimisation-fewshot-param{param_set}'
-    elif oneshot:
-        dir_prefix = f'optimisation-oneshot-param{param_set}'
-    else:
-        dir_prefix = f'optimisation-param{param_set}'
-    for p_id in range(4):
-        n = 0
-        if p_id != 3:
-            plt.figure(figsize=(8, 2.5))
-        else:
-            plt.figure(figsize=(8, 5))
-        for k in range(len(run_ids)):
-            run_id = run_ids[k]
-            run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', )
-            values = []
-            for seed in [0, 1, 2]:
-                seed_dir = os.path.join(run_dir, f'seed-{str(seed)}')
-                params = np.load(os.path.join(seed_dir, 'final_params.npy'))
-                plt.scatter(n, params.flatten()[p_id], color=colors[k])
-                n += 1
-        plt.title(f'Final value of {param_names[p_id]}')
-        plt.xticks(np.arange(15), legends, rotation=90)
-        if p_id != 3:
-            plt.xlabel(None)
-            plt.xticks([])
-        plt.tight_layout()
-        plt.savefig(os.path.join(cwd, '..', f'{dir_prefix}-result-figs',
-                                 f'fewshot-param{param_set}-{dist_type}-final-{param_names[p_id]}.pdf'),
-                    bbox_inches='tight', dpi=500)
-        plt.close()
-
-
-def read_losses(run_ids, param_set=0, fewshot=True, oneshot=False, save_meanstd=False, realoneshot=True, agent_id=0):
-    """generate mean and deviation data"""
-    assert len(run_ids) > 0
-    if fewshot:
-        assert not oneshot
-        dir_prefix = f'optimisation-fewshot-param{param_set}'
-    elif oneshot:
-        dir_prefix = f'optimisation-oneshot-param{param_set}'
-    elif realoneshot:
-        agents = ['rectangle', 'round', 'cylinder']
-        agent = agents[agent_id]
-        dir_prefix = f'optimisation-realoneshot-{agent}-param{param_set}'
-    else:
-        dir_prefix = f'optimisation-param{param_set}'
+    dir_prefix = f'level{contact_level}-{dataset}'
     for run_id in run_ids:
-        run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', )
+        run_dir = os.path.join(cwd, '..', 'optimisation-results',
+                               f'{dir_prefix}-run{run_id}-logs', )
         save_data_dir = os.path.join(run_dir, 'data')
         os.makedirs(save_data_dir, exist_ok=True)
 
@@ -323,7 +258,8 @@ def plot_legends():
         data_dict_list=[None for _ in range(len(legends))], legend_only=True)
 
 
-def plot_losses(param_set=0):
+def plot_loss_param_curves(contact_level=1):
+    assert contact_level in [1, 2]
     loss_types = ['chamfer_loss_pcd',
                   'chamfer_loss_particle',
                   'emd_point_distance_loss',
@@ -331,21 +267,21 @@ def plot_losses(param_set=0):
                   'height_map_loss_pcd'
                   ]
     params = ['E', 'nu', 'yield_stress', 'rho', 'mf', 'gf']
-    if param_set == 0:
+    if contact_level == 1:
         params = ['E', 'nu', 'yield_stress', 'rho']
     plt.rcParams.update({'font.size': 40})
-    result_dir = os.path.join(cwd, '..', 'result-figs')
+    result_dir = os.path.join(cwd, '..', 'fugures', 'result-figs')
     os.makedirs(result_dir, exist_ok=True)
 
     fig, axes = plt.subplots(5, 5, figsize=(5 * 5, 5 * 4))
     plt.subplots_adjust(wspace=0.05, hspace=0.1)
-    datasets = ['fewshot', 'oneshot', 'realoneshot-rectangle', 'realoneshot-round', 'realoneshot-cylinder']
+    datasets = ['12mix', '6mix', '1rec', '1round', '1cyl']
     dataset_name = ['12-mix', '6-mix', '1-rec.', '1-round', '1-cyl.']
     case = 'validation'
     for dataset_id in range(5):
         dataset = datasets[dataset_id]
-        dir_prefix = f'optimisation-{dataset}-param{param_set}'
-        if dataset == 'fewshot':
+        dir_prefix = f'level{contact_level}-{dataset}'
+        if dataset == '12mix':
             y_axis_off = False
         else:
             y_axis_off = True
@@ -356,33 +292,32 @@ def plot_losses(param_set=0):
                 title = dataset_name[dataset_id]
                 y_label = 'PCD\nCD'
                 ylim_valid = [8690, 9650]
-                if param_set == 1:
+                if contact_level == 2:
                     ylim_valid = [16000, 19800]
             elif loss_type == 'chamfer_loss_particle':
                 y_label = 'PRT\nCD'
                 ylim_valid = [5880, 6480]
-                if param_set == 1:
+                if contact_level == 2:
                     ylim_valid = [10250, 15100]
             elif loss_type == 'emd_point_distance_loss':
                 y_label = 'PCD\nEMD'
                 ylim_valid = [1170, 1390]
-                if param_set == 1:
+                if contact_level == 2:
                     ylim_valid = [1670, 2800]
             elif loss_type == 'emd_particle_distance_loss':
                 y_label = 'PRT\nEMD'
                 ylim_valid = [5240, 7200]
-                if param_set == 1:
+                if contact_level == 2:
                     ylim_valid = [10750, 26000]
             elif loss_type == 'height_map_loss_pcd':
                 y_label = 'Height\nMap'
                 ylim_valid = [1970, 2400]
-                if param_set == 1:
+                if contact_level == 2:
                     ylim_valid = [2500, 4000]
             else:
                 raise ValueError('Unknown loss type')
 
             yticks = (round(ylim_valid[0] * 1.03),
-                      # round((ylim_valid[1] + ylim_valid[0]) / 2),
                       round(ylim_valid[1] * 0.97))
 
             color_pool = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
@@ -394,7 +329,7 @@ def plot_losses(param_set=0):
             alphas = []
             n = 0
             for run_id in [0, 1, 2, 3]:
-                run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', 'data')
+                run_dir = os.path.join(cwd, '..', 'optimisation-results', f'{dir_prefix}-run{run_id}-logs', 'data')
                 losses = json.load(open(os.path.join(run_dir, 'raw_loss.json'), 'rb'))
                 for seed in [0, 1, 2]:
                     datas.append(losses[f'seed-{seed}'][case][loss_type])
@@ -449,7 +384,7 @@ def plot_losses(param_set=0):
                 axes[loss_id, dataset_id].plot(x, running_avg,
                                                c=colors[t], linestyle=linestyles[t],
                                                linewidth=linewidths[t], alpha=alphas[t])
-    plt.savefig(os.path.join(result_dir, f'loss-curves-param{param_set}.pdf'),
+    plt.savefig(os.path.join(result_dir, f'loss-curves-level{contact_level}.pdf'),
                 bbox_inches='tight', pad_inches=0, dpi=500)
     plt.close(fig)
 
@@ -457,8 +392,8 @@ def plot_losses(param_set=0):
     plt.subplots_adjust(wspace=0.05, hspace=0.1)
     for dataset_id in range(5):
         dataset = datasets[dataset_id]
-        dir_prefix = f'optimisation-{dataset}-param{param_set}'
-        if dataset == 'fewshot':
+        dir_prefix = f'level{contact_level}-{dataset}'
+        if dataset == '12mix':
             y_axis_off = False
         else:
             y_axis_off = True
@@ -504,7 +439,7 @@ def plot_losses(param_set=0):
             linewidths = []
             n = 0
             for run_id in [0, 1, 2, 3]:
-                run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', 'data')
+                run_dir = os.path.join(cwd, '..', 'optimisation-results', f'{dir_prefix}-run{run_id}-logs', 'data')
                 losses = json.load(open(os.path.join(run_dir, 'raw_loss.json'), 'rb'))
                 for seed in [0, 1, 2]:
                     datas.append(losses[f'seed-{seed}']['parameters'][p])
@@ -540,33 +475,23 @@ def plot_losses(param_set=0):
                                                c=colors[t], linestyle='-',
                                                linewidth=linewidths[t], alpha=1)
 
-    plt.savefig(os.path.join(result_dir, f'param-curves-param{param_set}.pdf'),
+    plt.savefig(os.path.join(result_dir, f'param-curves-level{contact_level}.pdf'),
                 bbox_inches='tight', pad_inches=0, dpi=500)
     plt.close(fig)
 
-def print_losses(run_ids, param_set=0, case='validation',
-                 fewshot=True, oneshot=False,
-                 realoneshot=True, agent_id=0):
+
+def collect_validation_losses(run_ids, contact_level=0, dataset='12mix'):
+    case = 'validation'
+    assert contact_level in [1, 2]
+    assert dataset in ['12mix', '6mix', '1rec', '1round', '1cyl']
     assert len(run_ids) > 0
     params = ['E', 'nu', 'yield_stress', 'rho', 'gf', 'mf']
-    if param_set == 0:
+    if contact_level == 1:
         params = ['E', 'nu', 'yield_stress', 'rho']
-    if fewshot:
-        assert not oneshot
-        dir_prefix = f'optimisation-fewshot-param{param_set}'
-    elif oneshot:
-        dir_prefix = f'optimisation-oneshot-param{param_set}'
-    elif realoneshot:
-        agents = ['rectangle', 'round', 'cylinder']
-        agent = agents[agent_id]
-        dir_prefix = f'optimisation-realoneshot-{agent}-param{param_set}'
-    else:
-        dir_prefix = f'optimisation-param{param_set}'
-
-    print(f'Height map losses from {dir_prefix}')
+    dir_prefix = f'level{contact_level}-{dataset}'
     data_dict = dict()
     for run_id in run_ids:
-        run_dir = os.path.join(cwd, '..', f'{dir_prefix}-run{run_id}-logs', 'data')
+        run_dir = os.path.join(cwd, '..', 'optimisation-results', f'{dir_prefix}-run{run_id}-logs', 'data')
         losses = json.load(open(os.path.join(run_dir, 'raw_loss.json'), 'rb'))
         mean_hm = 5000000
         p_values = []
@@ -584,122 +509,38 @@ def print_losses(run_ids, param_set=0, case='validation',
             }
         })
 
-    return data_dict
-
-plot_legends()
-
-# d1 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=True, oneshot=False, realoneshot=False, agent_id=0)
-# d2 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=True, realoneshot=False, agent_id=0)
-# d3 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=False, realoneshot=True, agent_id=0)
-# d4 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=False, realoneshot=True, agent_id=1)
-# d5 = print_losses(run_ids=[0, 1, 2, 3], param_set=1, case='validation', fewshot=False, oneshot=False, realoneshot=True, agent_id=2)
-#
-# print('& %.2f' %d1['run0']['min_mean_hm'], ' & %.2f' %d2['run0']['min_mean_hm'], ' & %.2f' %d3['run0']['min_mean_hm'], ' & %.2f' %d4['run0']['min_mean_hm'], ' & %.2f' %d5['run0']['min_mean_hm'], ' \\\\')
-# print('& %.0f' %d1['run0']['best_p_values'][0], ' & %.0f' %d2['run0']['best_p_values'][0], ' & %.0f' %d3['run0']['best_p_values'][0], ' & %.0f' %d4['run0']['best_p_values'][0], ' & %.0f' %d5['run0']['best_p_values'][0], ' \\\\')
-# print('& %.3f' %d1['run0']['best_p_values'][1], ' & %.3f' %d2['run0']['best_p_values'][1], ' & %.3f' %d3['run0']['best_p_values'][1], ' & %.3f' %d4['run0']['best_p_values'][1], ' & %.3f' %d5['run0']['best_p_values'][1], ' \\\\')
-# print('& %.0f' %d1['run0']['best_p_values'][2], ' & %.0f' %d2['run0']['best_p_values'][2], ' & %.0f' %d3['run0']['best_p_values'][2], ' & %.0f' %d4['run0']['best_p_values'][2], ' & %.0f' %d5['run0']['best_p_values'][2], ' \\\\')
-# print('& %.0f' %d1['run0']['best_p_values'][3], ' & %.0f' %d2['run0']['best_p_values'][3], ' & %.0f' %d3['run0']['best_p_values'][3], ' & %.0f' %d4['run0']['best_p_values'][3], ' & %.0f' %d5['run0']['best_p_values'][3], ' \\\\')
-# print('& %.3f' %d1['run0']['best_p_values'][4], ' & %.3f' %d2['run0']['best_p_values'][4], ' & %.3f' %d3['run0']['best_p_values'][4], ' & %.3f' %d4['run0']['best_p_values'][4], ' & %.3f' %d5['run0']['best_p_values'][4], ' \\\\')
-# print('& %.3f' %d1['run0']['best_p_values'][5], ' & %.3f' %d2['run0']['best_p_values'][5], ' & %.3f' %d3['run0']['best_p_values'][5], ' & %.3f' %d4['run0']['best_p_values'][5], ' & %.3f' %d5['run0']['best_p_values'][5], ' \\\\')
-#
-# print('& %.2f' %d1['run1']['min_mean_hm'], ' & %.2f' %d2['run1']['min_mean_hm'], ' & %.2f' %d3['run1']['min_mean_hm'], ' & %.2f' %d4['run1']['min_mean_hm'], ' & %.2f' %d5['run1']['min_mean_hm'], ' \\\\')
-# print('& %.0f' %d1['run1']['best_p_values'][0], ' & %.0f' %d2['run1']['best_p_values'][0], ' & %.0f' %d3['run1']['best_p_values'][0], ' & %.0f' %d4['run1']['best_p_values'][0], ' & %.0f' %d5['run1']['best_p_values'][0], ' \\\\')
-# print('& %.3f' %d1['run1']['best_p_values'][1], ' & %.3f' %d2['run1']['best_p_values'][1], ' & %.3f' %d3['run1']['best_p_values'][1], ' & %.3f' %d4['run1']['best_p_values'][1], ' & %.3f' %d5['run1']['best_p_values'][1], ' \\\\')
-# print('& %.0f' %d1['run1']['best_p_values'][2], ' & %.0f' %d2['run1']['best_p_values'][2], ' & %.0f' %d3['run1']['best_p_values'][2], ' & %.0f' %d4['run1']['best_p_values'][2], ' & %.0f' %d5['run1']['best_p_values'][2], ' \\\\')
-# print('& %.0f' %d1['run1']['best_p_values'][3], ' & %.0f' %d2['run1']['best_p_values'][3], ' & %.0f' %d3['run1']['best_p_values'][3], ' & %.0f' %d4['run1']['best_p_values'][3], ' & %.0f' %d5['run1']['best_p_values'][3], ' \\\\')
-# print('& %.3f' %d1['run1']['best_p_values'][4], ' & %.3f' %d2['run1']['best_p_values'][4], ' & %.3f' %d3['run1']['best_p_values'][4], ' & %.3f' %d4['run1']['best_p_values'][4], ' & %.3f' %d5['run1']['best_p_values'][4], ' \\\\')
-# print('& %.3f' %d1['run1']['best_p_values'][5], ' & %.3f' %d2['run1']['best_p_values'][5], ' & %.3f' %d3['run1']['best_p_values'][5], ' & %.3f' %d4['run1']['best_p_values'][5], ' & %.3f' %d5['run1']['best_p_values'][5], ' \\\\')
-#
-# print('& %.2f' %d1['run2']['min_mean_hm'], ' & %.2f' %d2['run2']['min_mean_hm'], ' & %.2f' %d3['run2']['min_mean_hm'], ' & %.2f' %d4['run2']['min_mean_hm'], ' & %.2f' %d5['run2']['min_mean_hm'], ' \\\\')
-# print('& %.0f' %d1['run2']['best_p_values'][0], ' & %.0f' %d2['run2']['best_p_values'][0], ' & %.0f' %d3['run2']['best_p_values'][0], ' & %.0f' %d4['run2']['best_p_values'][0], ' & %.0f' %d5['run2']['best_p_values'][0], ' \\\\')
-# print('& %.3f' %d1['run2']['best_p_values'][1], ' & %.3f' %d2['run2']['best_p_values'][1], ' & %.3f' %d3['run2']['best_p_values'][1], ' & %.3f' %d4['run2']['best_p_values'][1], ' & %.3f' %d5['run2']['best_p_values'][1], ' \\\\')
-# print('& %.0f' %d1['run2']['best_p_values'][2], ' & %.0f' %d2['run2']['best_p_values'][2], ' & %.0f' %d3['run2']['best_p_values'][2], ' & %.0f' %d4['run2']['best_p_values'][2], ' & %.0f' %d5['run2']['best_p_values'][2], ' \\\\')
-# print('& %.0f' %d1['run2']['best_p_values'][3], ' & %.0f' %d2['run2']['best_p_values'][3], ' & %.0f' %d3['run2']['best_p_values'][3], ' & %.0f' %d4['run2']['best_p_values'][3], ' & %.0f' %d5['run2']['best_p_values'][3], ' \\\\')
-# print('& %.3f' %d1['run2']['best_p_values'][4], ' & %.3f' %d2['run2']['best_p_values'][4], ' & %.3f' %d3['run2']['best_p_values'][4], ' & %.3f' %d4['run2']['best_p_values'][4], ' & %.3f' %d5['run2']['best_p_values'][4], ' \\\\')
-# print('& %.3f' %d1['run2']['best_p_values'][5], ' & %.3f' %d2['run2']['best_p_values'][5], ' & %.3f' %d3['run2']['best_p_values'][5], ' & %.3f' %d4['run2']['best_p_values'][5], ' & %.3f' %d5['run2']['best_p_values'][5], ' \\\\')
-#
-# print('& %.2f' %d1['run3']['min_mean_hm'], ' & %.2f' %d2['run3']['min_mean_hm'], ' & %.2f' %d3['run3']['min_mean_hm'], ' & %.2f' %d4['run3']['min_mean_hm'], ' & %.2f' %d5['run3']['min_mean_hm'], ' \\\\')
-# print('& %.0f' %d1['run3']['best_p_values'][0], ' & %.0f' %d2['run3']['best_p_values'][0], ' & %.0f' %d3['run3']['best_p_values'][0], ' & %.0f' %d4['run3']['best_p_values'][0], ' & %.0f' %d5['run3']['best_p_values'][0], ' \\\\')
-# print('& %.3f' %d1['run3']['best_p_values'][1], ' & %.3f' %d2['run3']['best_p_values'][1], ' & %.3f' %d3['run3']['best_p_values'][1], ' & %.3f' %d4['run3']['best_p_values'][1], ' & %.3f' %d5['run3']['best_p_values'][1], ' \\\\')
-# print('& %.0f' %d1['run3']['best_p_values'][2], ' & %.0f' %d2['run3']['best_p_values'][2], ' & %.0f' %d3['run3']['best_p_values'][2], ' & %.0f' %d4['run3']['best_p_values'][2], ' & %.0f' %d5['run3']['best_p_values'][2], ' \\\\')
-# print('& %.0f' %d1['run3']['best_p_values'][3], ' & %.0f' %d2['run3']['best_p_values'][3], ' & %.0f' %d3['run3']['best_p_values'][3], ' & %.0f' %d4['run3']['best_p_values'][3], ' & %.0f' %d5['run3']['best_p_values'][3], ' \\\\')
-# print('& %.3f' %d1['run3']['best_p_values'][4], ' & %.3f' %d2['run3']['best_p_values'][4], ' & %.3f' %d3['run3']['best_p_values'][4], ' & %.3f' %d4['run3']['best_p_values'][4], ' & %.3f' %d5['run3']['best_p_values'][4], ' \\\\')
-# print('& %.3f' %d1['run3']['best_p_values'][5], ' & %.3f' %d2['run3']['best_p_values'][5], ' & %.3f' %d3['run3']['best_p_values'][5], ' & %.3f' %d4['run3']['best_p_values'][5], ' & %.3f' %d5['run3']['best_p_values'][5], ' \\\\')
+    with open(os.path.join(cwd, '..', 'optimisation-results', 'figures', dir_prefix,
+                           'best-seed-visualisation', 'validation_losses.json'), 'w') as f:
+        json.dump(data_dict, f)
 
 
-# def print_validation_losses(run_ids, param_set=1,
-#                  fewshot=True, oneshot=False,
-#                  realoneshot=True, agent_id=0):
-#     if fewshot:
-#         assert not oneshot
-#         dir_prefix = f'optimisation-fewshot-param{param_set}'
-#     elif oneshot:
-#         dir_prefix = f'optimisation-oneshot-param{param_set}'
-#     elif realoneshot:
-#         agents = ['rectangle', 'round', 'cylinder']
-#         agent = agents[agent_id]
-#         dir_prefix = f'optimisation-realoneshot-{agent}-param{param_set}'
-#     else:
-#         dir_prefix = f'optimisation-param{param_set}'
-#
-#     print(f'Height map losses from {dir_prefix}')
-#     data_dict = {
-#         'rectangle-motion': {},
-#         'round-motion': {},
-#         'cylinder-motion': {}
-#     }
-#     for run_id in run_ids:
-#         run_dir = os.path.join(cwd, '..', f'{dir_prefix}-result-figs', f'run{run_id}')
-#         for seed in [0, 1, 2]:
-#             seed_dir = os.path.join(run_dir, f'seed{seed}')
-#             if os.path.isdir(seed_dir):
-#                 break
-#         for motion_agent in ['rectangle', 'round', 'cylinder']:
-#             data_dir_0 = os.path.join(seed_dir, f'validation_tr_imgs-long_motion-{motion_agent}', '0')
-#             losses_0 = json.load(open(os.path.join(data_dir_0, 'loss_info.json'), 'rb'))
-#             hm_loss_0 = losses_0['height_map_loss_pcd']
-#             data_dir_1 = os.path.join(seed_dir, f'validation_tr_imgs-long_motion-{motion_agent}', '1')
-#             losses_1 = json.load(open(os.path.join(data_dir_1, 'loss_info.json'), 'rb'))
-#             hm_loss_1 = losses_1['height_map_loss_pcd']
-#             data_dict[f'{motion_agent}-motion'].update({
-#                     f'data-0-run{run_id}': hm_loss_0,
-#                     f'data-1-run{run_id}': hm_loss_1
-#             })
-#
-#     return data_dict
-#
-# d1 = print_validation_losses(run_ids=[0, 1, 2, 3], fewshot=True, oneshot=False, realoneshot=False, agent_id=0)
-# d2 = print_validation_losses(run_ids=[0, 1, 2, 3], fewshot=False, oneshot=True, realoneshot=False, agent_id=0)
-# d3 = print_validation_losses(run_ids=[0, 1, 2, 3], fewshot=False, oneshot=False, realoneshot=True, agent_id=0)
-# d4 = print_validation_losses(run_ids=[0, 1, 2, 3], fewshot=False, oneshot=False, realoneshot=True, agent_id=1)
-# d5 = print_validation_losses(run_ids=[0, 1, 2, 3], fewshot=False, oneshot=False, realoneshot=True, agent_id=2)
-#
-# print('Rectangle motion')
-# print('& %.2f' %d1['rectangle-motion']['data-0-run0'], '& %.2f' %d2['rectangle-motion']['data-0-run0'], '& %.2f' %d3['rectangle-motion']['data-0-run0'], '& %.2f' %d4['rectangle-motion']['data-0-run0'], '& %.2f' %d5['rectangle-motion']['data-0-run0'],' \\\\')
-# print('& %.2f' %d1['rectangle-motion']['data-1-run0'], '& %.2f' %d2['rectangle-motion']['data-1-run0'], '& %.2f' %d3['rectangle-motion']['data-1-run0'], '& %.2f' %d4['rectangle-motion']['data-1-run0'], '& %.2f' %d5['rectangle-motion']['data-1-run0'],' \\\\')
-# print('& %.2f' %d1['rectangle-motion']['data-0-run1'], '& %.2f' %d2['rectangle-motion']['data-0-run1'], '& %.2f' %d3['rectangle-motion']['data-0-run1'], '& %.2f' %d4['rectangle-motion']['data-0-run1'], '& %.2f' %d5['rectangle-motion']['data-0-run1'],' \\\\')
-# print('& %.2f' %d1['rectangle-motion']['data-1-run1'], '& %.2f' %d2['rectangle-motion']['data-1-run1'], '& %.2f' %d3['rectangle-motion']['data-1-run1'], '& %.2f' %d4['rectangle-motion']['data-1-run1'], '& %.2f' %d5['rectangle-motion']['data-1-run1'],' \\\\')
-# print('& %.2f' %d1['rectangle-motion']['data-0-run2'], '& %.2f' %d2['rectangle-motion']['data-0-run2'], '& %.2f' %d3['rectangle-motion']['data-0-run2'], '& %.2f' %d4['rectangle-motion']['data-0-run2'], '& %.2f' %d5['rectangle-motion']['data-0-run2'],' \\\\')
-# print('& %.2f' %d1['rectangle-motion']['data-1-run2'], '& %.2f' %d2['rectangle-motion']['data-1-run2'], '& %.2f' %d3['rectangle-motion']['data-1-run2'], '& %.2f' %d4['rectangle-motion']['data-1-run2'], '& %.2f' %d5['rectangle-motion']['data-1-run2'],' \\\\')
-# print('& %.2f' %d1['rectangle-motion']['data-0-run3'], '& %.2f' %d2['rectangle-motion']['data-0-run3'], '& %.2f' %d3['rectangle-motion']['data-0-run3'], '& %.2f' %d4['rectangle-motion']['data-0-run3'], '& %.2f' %d5['rectangle-motion']['data-0-run3'],' \\\\')
-# print('& %.2f' %d1['rectangle-motion']['data-1-run3'], '& %.2f' %d2['rectangle-motion']['data-1-run3'], '& %.2f' %d3['rectangle-motion']['data-1-run3'], '& %.2f' %d4['rectangle-motion']['data-1-run3'], '& %.2f' %d5['rectangle-motion']['data-1-run3'],' \\\\')
-#
-# print('Round motion')
-# print('& %.2f' %d1['round-motion']['data-0-run0'], '& %.2f' %d2['round-motion']['data-0-run0'], '& %.2f' %d3['round-motion']['data-0-run0'], '& %.2f' %d4['round-motion']['data-0-run0'], '& %.2f' %d5['round-motion']['data-0-run0'],' \\\\')
-# print('& %.2f' %d1['round-motion']['data-1-run0'], '& %.2f' %d2['round-motion']['data-1-run0'], '& %.2f' %d3['round-motion']['data-1-run0'], '& %.2f' %d4['round-motion']['data-1-run0'], '& %.2f' %d5['round-motion']['data-1-run0'],' \\\\')
-# print('& %.2f' %d1['round-motion']['data-0-run1'], '& %.2f' %d2['round-motion']['data-0-run1'], '& %.2f' %d3['round-motion']['data-0-run1'], '& %.2f' %d4['round-motion']['data-0-run1'], '& %.2f' %d5['round-motion']['data-0-run1'],' \\\\')
-# print('& %.2f' %d1['round-motion']['data-1-run1'], '& %.2f' %d2['round-motion']['data-1-run1'], '& %.2f' %d3['round-motion']['data-1-run1'], '& %.2f' %d4['round-motion']['data-1-run1'], '& %.2f' %d5['round-motion']['data-1-run1'],' \\\\')
-# print('& %.2f' %d1['round-motion']['data-0-run2'], '& %.2f' %d2['round-motion']['data-0-run2'], '& %.2f' %d3['round-motion']['data-0-run2'], '& %.2f' %d4['round-motion']['data-0-run2'], '& %.2f' %d5['round-motion']['data-0-run2'],' \\\\')
-# print('& %.2f' %d1['round-motion']['data-1-run2'], '& %.2f' %d2['round-motion']['data-1-run2'], '& %.2f' %d3['round-motion']['data-1-run2'], '& %.2f' %d4['round-motion']['data-1-run2'], '& %.2f' %d5['round-motion']['data-1-run2'],' \\\\')
-# print('& %.2f' %d1['round-motion']['data-0-run3'], '& %.2f' %d2['round-motion']['data-0-run3'], '& %.2f' %d3['round-motion']['data-0-run3'], '& %.2f' %d4['round-motion']['data-0-run3'], '& %.2f' %d5['round-motion']['data-0-run3'],' \\\\')
-# print('& %.2f' %d1['round-motion']['data-1-run3'], '& %.2f' %d2['round-motion']['data-1-run3'], '& %.2f' %d3['round-motion']['data-1-run3'], '& %.2f' %d4['round-motion']['data-1-run3'], '& %.2f' %d5['round-motion']['data-1-run3'],' \\\\')
-#
-# print('Cylinder motion')
-# print('& %.2f' %d1['cylinder-motion']['data-0-run0'], '& %.2f' %d2['cylinder-motion']['data-0-run0'], '& %.2f' %d3['cylinder-motion']['data-0-run0'], '& %.2f' %d4['cylinder-motion']['data-0-run0'], '& %.2f' %d5['cylinder-motion']['data-0-run0'],' \\\\')
-# print('& %.2f' %d1['cylinder-motion']['data-1-run0'], '& %.2f' %d2['cylinder-motion']['data-1-run0'], '& %.2f' %d3['cylinder-motion']['data-1-run0'], '& %.2f' %d4['cylinder-motion']['data-1-run0'], '& %.2f' %d5['cylinder-motion']['data-1-run0'],' \\\\')
-# print('& %.2f' %d1['cylinder-motion']['data-0-run1'], '& %.2f' %d2['cylinder-motion']['data-0-run1'], '& %.2f' %d3['cylinder-motion']['data-0-run1'], '& %.2f' %d4['cylinder-motion']['data-0-run1'], '& %.2f' %d5['cylinder-motion']['data-0-run1'],' \\\\')
-# print('& %.2f' %d1['cylinder-motion']['data-1-run1'], '& %.2f' %d2['cylinder-motion']['data-1-run1'], '& %.2f' %d3['cylinder-motion']['data-1-run1'], '& %.2f' %d4['cylinder-motion']['data-1-run1'], '& %.2f' %d5['cylinder-motion']['data-1-run1'],' \\\\')
-# print('& %.2f' %d1['cylinder-motion']['data-0-run2'], '& %.2f' %d2['cylinder-motion']['data-0-run2'], '& %.2f' %d3['cylinder-motion']['data-0-run2'], '& %.2f' %d4['cylinder-motion']['data-0-run2'], '& %.2f' %d5['cylinder-motion']['data-0-run2'],' \\\\')
-# print('& %.2f' %d1['cylinder-motion']['data-1-run2'], '& %.2f' %d2['cylinder-motion']['data-1-run2'], '& %.2f' %d3['cylinder-motion']['data-1-run2'], '& %.2f' %d4['cylinder-motion']['data-1-run2'], '& %.2f' %d5['cylinder-motion']['data-1-run2'],' \\\\')
-# print('& %.2f' %d1['cylinder-motion']['data-0-run3'], '& %.2f' %d2['cylinder-motion']['data-0-run3'], '& %.2f' %d3['cylinder-motion']['data-0-run3'], '& %.2f' %d4['cylinder-motion']['data-0-run3'], '& %.2f' %d5['cylinder-motion']['data-0-run3'],' \\\\')
-# print('& %.2f' %d1['cylinder-motion']['data-1-run3'], '& %.2f' %d2['cylinder-motion']['data-1-run3'], '& %.2f' %d3['cylinder-motion']['data-1-run3'], '& %.2f' %d4['cylinder-motion']['data-1-run3'], '& %.2f' %d5['cylinder-motion']['data-1-run3'],' \\\\')
+def collect_long_horizon_motion_losses(run_ids, dataset='12mix'):
+    dir_prefix = f'level2-{dataset}'
+
+    data_dict = {
+        'rectangle-motion': {},
+        'round-motion': {},
+        'cylinder-motion': {}
+    }
+    for run_id in run_ids:
+        run_dir = os.path.join(cwd, '..', 'optimisation-results', 'figures', dir_prefix,
+                               'best-seed-visualisation', f'run{run_id}')
+        for seed in [0, 1, 2]:
+            seed_dir = os.path.join(run_dir, f'seed{seed}')
+            if os.path.isdir(seed_dir):
+                break
+        for motion_agent in ['rectangle', 'round', 'cylinder']:
+            data_dir_0 = os.path.join(seed_dir, f'validation_tr_imgs-long_motion-{motion_agent}', '0')
+            losses_0 = json.load(open(os.path.join(data_dir_0, 'loss_info.json'), 'rb'))
+            hm_loss_0 = losses_0['height_map_loss_pcd']
+            data_dir_1 = os.path.join(seed_dir, f'validation_tr_imgs-long_motion-{motion_agent}', '1')
+            losses_1 = json.load(open(os.path.join(data_dir_1, 'loss_info.json'), 'rb'))
+            hm_loss_1 = losses_1['height_map_loss_pcd']
+            data_dict[f'{motion_agent}-motion'].update({
+                    f'data-0-run{run_id}': hm_loss_0,
+                    f'data-1-run{run_id}': hm_loss_1
+            })
+
+    with open(os.path.join(cwd, '..', 'optimisation-results', 'figures', dir_prefix,
+                           'best-seed-visualisation', 'long_motion_losses.json'), 'w') as f:
+        json.dump(data_dict, f)

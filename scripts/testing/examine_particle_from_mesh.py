@@ -7,18 +7,20 @@ import pickle as pkl
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 agent = 'round'  # 'round' 'cylinder'
-tr = '4'
+motion = 'poking-1'
+assert motion in ['poking-1', 'poking-2', 'poking-shifting-1', 'poking-shifting-2']
 res = 1080
 particle_density = 3e7
 particle_r = 0.002
 
-for data_ind in ['0', '1', '2', '3', '4']:
+for data_ind in ['0', '1']:
     for pcd_index in ['0', '1']:
-        mesh_path = os.path.join(script_path, '..', f'data-motion-{tr}', f'eef-{agent}',
+        mesh_path = os.path.join(script_path, '..', '..', 'data',
+                                 f'data-motion-{motion}', f'eef-{agent}',
                                  f'mesh_{data_ind}{pcd_index}_repaired_normalised.obj')
 
         particles = generate_particles_from_mesh(mesh_path, pos=(0.25, 0.25, 0.04),
-                                                      voxelize_res=res, particle_density=particle_density)
+                                                 voxelize_res=res, particle_density=particle_density)
         RGB = np.zeros((len(particles), 3))
         RGB[:, 0] = particles[:, 2] / particles[:, 2].max() * 255
         RGB[:, 1] = particles[:, 2] / particles[:, 2].max() * 255
@@ -27,9 +29,9 @@ for data_ind in ['0', '1', '2', '3', '4']:
               f'Number of particles: {len(particles)}')
         del particles, RGB
 
-        # voxels = pkl.load(open(f"{mesh_path.replace('.obj', '')}-{res}.vox", 'rb'))
-        # voxels.show()
-        # del voxels
+        voxels = pkl.load(open(f"{mesh_path.replace('.obj', '')}-{res}.vox", 'rb'))
+        voxels.show()
+        del voxels
 
         mesh = Mesh(mesh_path)
         coords = mesh.points()

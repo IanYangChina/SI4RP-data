@@ -9,8 +9,6 @@ import imageio
 import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pylab as plt
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-SUB = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
 
 from doma.engine.utils.misc import get_gpu_memory
 import psutil
@@ -20,12 +18,14 @@ import argparse
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
 script_path = os.path.dirname(os.path.realpath(__file__))
+script_path = os.path.join(script_path, '..')
 
 from doma.envs.sys_id_env import make_env, set_parameters
 
 
-def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=False, eval=False,
-            render=False, save_img=False, save_heightmap=False, img_dir=None, save_loss=True, save_gif=False,
+def forward(mpm_env, init_state, trajectory, render=False,
+            save_img=False, save_heightmap=False,  save_gif=False, save_tr_combined_img=False,
+            img_dir=None, save_loss=True,
             render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
             init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
 
@@ -67,18 +67,15 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
     for i in range(mpm_env.horizon):
         action = trajectory[i]
         mpm_env.step(action)
-        if save_img or save_gif:
+        if save_img or save_gif or save_tr_combined_img:
             if i in frames_to_save:
                 img = mpm_env.render(mode='rgb_array')
-                if eval or save_gif:
+                Image.fromarray(img).save(os.path.join(img_dir, f'img_{i}.png'))
+                if save_gif or save_tr_combined_img:
                     frames.append(img)
-                else:
-                    Image.fromarray(img).save(os.path.join(img_dir, f'img_{i}.png'))
 
         if render:
             mpm_env.render(mode='human')
-        if press_to_proceed and i == 0:
-            input('Press any key to proceed')
 
     loss_info = mpm_env.get_final_loss()
     for i, v in loss_info.items():
@@ -86,6 +83,7 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
             print(f'===> {i}: {v:.4f}')
         else:
             pass
+
     if save_loss:
         loss_info_to_save = loss_info.copy()
         loss_info_to_save['final_height_map'] = None
@@ -106,7 +104,7 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
                     continue
                 writer.append_data(frames[i])
 
-    if save_img and eval:
+    if save_img:
         fig, axes = plt.subplots(1, len(frames_to_save), figsize=(len(frames_to_save) * 2, 2))
         plt.subplots_adjust(wspace=0.01)
         for i in range(len(frames_to_save)):
@@ -118,7 +116,7 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
         plt.savefig(os.path.join(img_dir, f'img_combine.pdf'), bbox_inches='tight', pad_inches=0)
         plt.close(fig)
 
-    if render_heightmap:
+    if save_heightmap or render_heightmap:
         cmap = 'YlOrBr'
         target_hm = mpm_env.loss.height_map_pcd_target.to_numpy()
         min_val, max_val = np.amin(target_hm), np.amax(target_hm)
@@ -127,10 +125,10 @@ def forward(mpm_env, init_state, trajectory, n_episode=-1, press_to_proceed=Fals
         plt.xticks([])
         plt.yticks([])
 
+        if render_heightmap:
+            plt.show()
         if save_heightmap:
             plt.savefig(os.path.join(img_dir, 'end_heightmap.png'), bbox_inches='tight', dpi=300)
-        else:
-            plt.show()
 
     if render_end_pcd:
         y_offset = 0.0
@@ -232,7 +230,7 @@ def main(args):
         'averaging_loss': False,
         'point_distance_rs_loss': False,
         'point_distance_sr_loss': False,
-        'down_sample_voxel_size': args['down_sample_voxel_size'],
+        'down_sample_voxel_size': 0.005,
         'particle_distance_rs_loss': False,
         'particle_distance_sr_loss': False,
         'voxelise_res': 1080,
@@ -262,14 +260,6 @@ def main(args):
     contact_level = args['contact_level']
     motion_name = 'poking' if contact_level == 1 else 'poking-shifting'
     motion_ind = str(args['motion_ind'])
-    data_path = os.path.join(script_path, '..', f'data-motion-{motion_name}-{motion_ind}', f'eef-{agent}')
-    if not args['dt_avg']:
-        dt_global = args['dt']
-        trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_{motion_name}_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
-    else:
-        dt_global = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_{motion_name}_{motion_ind}_dt_avg.npy'))
-        trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_{motion_name}_{motion_ind}_v_dt_avg.npy'))
-
     if args['long_motion']:
         data_path = os.path.join(script_path, '..', 'data-motion-long-horizon', f'eef-{agent}')
         if not args['dt_avg']:
@@ -278,6 +268,14 @@ def main(args):
         else:
             dt_global = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_long-horizon-{agent}_dt_avg.npy'))
             trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_long-horizon-{agent}_v_dt_avg.npy'))
+    else:
+        data_path = os.path.join(script_path, '..', f'data-motion-{motion_name}-{motion_ind}', f'eef-{agent}')
+        if not args['dt_avg']:
+            dt_global = args['dt']
+            trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_{motion_name}_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
+        else:
+            dt_global = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_{motion_name}_{motion_ind}_dt_avg.npy'))
+            trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_{motion_name}_{motion_ind}_v_dt_avg.npy'))
 
     horizon = trajectory.shape[0]
 
@@ -287,11 +285,12 @@ def main(args):
     rho = 1300  # [1000, 2000]
     gf = 2.0  # [0.01, 2.0]
     mf = 0.3  # [0.01, 2.0]
-    image_dir = None
+    save_dir = os.path.join(script_path, '..', 'optimisation-results', 'figures')
     if args['load_params']:
         run_id = args['load_params_run']
         seed_id = args['load_params_seed']
         dataset = args['load_params_dataset']
+        assert dataset in ['12mix', '6mix', '1cyl', '1rec', '1round'], f"Dataset {dataset} not found."
         print(f'Loading parameters from optimisation result at contact level {contact_level} with dataset {dataset}, '
               f'run {run_id} seed {seed_id}...')
         data_dir = os.path.join(script_path, '..', 'optimisation-results',
@@ -308,13 +307,15 @@ def main(args):
         if contact_level == 2:
             mf = params[4]
             gf = params[5]
-        if args['img_dir'] is None:
-            image_dir = os.path.join(save_dir, f'validation_tr_imgs-motion{motion_ind}-{agent}')
-            if args['long_motion']:
-                image_dir = os.path.join(save_dir, f'validation_tr_imgs-long_motion-{agent}')
+
+    if args['img_dir'] is None:
+        if args['long_motion']:
+            image_dir = os.path.join(save_dir, 'rendering-results', f'long_motion-{agent}')
         else:
-            image_dir = os.path.join(script_path, '..', args['img_dir'])
-        print(f"Images/videos will be saved in {image_dir}, if any.")
+            image_dir = os.path.join(save_dir, 'rendering-results', f'motion{motion_ind}-{agent}')
+    else:
+        image_dir = os.path.join(save_dir, 'rendering-results', args['img_dir'])
+    print(f"Images/videos will be saved in {image_dir}, if any.")
 
     data_ids = [0, 1]
     n_episode = 0
@@ -348,11 +349,16 @@ def main(args):
         print(f'===> Parameters: E = {E}, nu = {nu}, yield_stress = {yield_stress}, rho = {rho}, gf = {gf}, mf = {mf}')
         set_parameters(mpm_env, env_cfg['material_id'], E, nu, yield_stress,
                        rho=rho, ground_friction=gf, manipulator_friction=mf)
-        forward(mpm_env, init_state, trajectory.copy(), n_episode=n_episode,
-                press_to_proceed=args['press_to_proceed'], eval=args['long_motion'], save_loss=args['save_loss'], save_gif=args['save_gif'],
-                render=args['render_human'], save_img=args['save_img'], save_heightmap=args['save_heightmap'], img_dir=image_dir,
+        forward(mpm_env, init_state, trajectory.copy(),
+                render=args['render_human'],
+                save_loss=args['save_loss'],
+                save_gif=args['save_gif'],
+                save_img=args['save_img'],
+                save_heightmap=args['save_heightmap'],
+                img_dir=image_dir,
                 render_init_pcd=args['render_init_pcd'],
-                render_end_pcd=args['render_end_pcd'], render_heightmap=args['render_heightmap'],
+                render_end_pcd=args['render_end_pcd'],
+                render_heightmap=args['render_heightmap'],
                 init_pcd_path=os.path.join(data_path, 'pcd_' + str(data_ind) + str(0) + '.ply'),
                 init_pcd_offset=env.target_pcd_offset,
                 init_mesh_path=env.mesh_file,
@@ -366,27 +372,24 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
-    parser.add_argument('--dsvs', dest='down_sample_voxel_size', type=float, default=0.005)
-    parser.add_argument('--ptp', dest='press_to_proceed', default=False, action='store_true')
-    parser.add_argument('--long_motion', dest='long_motion', default=False, action='store_true')
     parser.add_argument('--load_params', dest='load_params', default=False, action='store_true')
+    parser.add_argument('--load_params_dataset', dest='load_params_dataset', type=str, default='12mix')
     parser.add_argument('--load_params_run', dest='load_params_run', type=int, default=0)
     parser.add_argument('--load_params_seed', dest='load_params_seed', type=int, default=0)
-    parser.add_argument('--load_params_dataset', dest='load_params_dataset', type=str, default='12mix',
-                        choices=['12mix', '6mix', '1cyl', '1rec', '1round'])
     parser.add_argument('--con_lv', dest='contact_level', type=int, default=0, choices=[0, 1])
     parser.add_argument('--dt', dest='dt', type=float, default=0.01)
     parser.add_argument('--dt_avg', dest='dt_avg', default=False, action='store_true')
+    parser.add_argument('--long_motion', dest='long_motion', default=False, action='store_true')
     parser.add_argument('--m_id', dest='motion_ind', type=int, default=1, choices=[1, 2])
     parser.add_argument('--agent_ind', dest='agent_ind', type=int, default=0)
     parser.add_argument('--r_human', dest='render_human', default=False, action='store_true')
-    parser.add_argument('--save_loss', dest='save_loss', default=False, action='store_true')
-    parser.add_argument('--save_img', dest='save_img', default=False, action='store_true')
-    parser.add_argument('--save_heightmap', dest='save_heightmap', default=False, action='store_true')
     parser.add_argument('--r_init_pcd', dest='render_init_pcd', default=False, action='store_true')
     parser.add_argument('--r_end_pcd', dest='render_end_pcd', default=False, action='store_true')
     parser.add_argument('--r_hm', dest='render_heightmap', default=False, action='store_true')
-    parser.add_argument('--img_dir', dest='img_dir', type=str, default=None)
+    parser.add_argument('--save_loss', dest='save_loss', default=False, action='store_true')
+    parser.add_argument('--save_img', dest='save_img', default=False, action='store_true')
+    parser.add_argument('--save_heightmap', dest='save_heightmap', default=False, action='store_true')
     parser.add_argument('--save_gif', dest='save_gif', default=False, action='store_true')
+    parser.add_argument('--img_dir', dest='img_dir', type=str, default=None)
     args = vars(parser.parse_args())
     main(args)

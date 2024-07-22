@@ -50,7 +50,8 @@ def main(arguments):
         backend = ti.cpu
 
     script_path = os.path.dirname(os.path.realpath(__file__))
-    result_path = os.path.join(script_path, '..', 'new-optimisation-results')
+    script_path = os.path.join(script_path, '..')
+    result_path = os.path.join(script_path, '..', 'optimisation-results')
 
     DTYPE_NP = np.float32
     DTYPE_TI = ti.f32
@@ -84,7 +85,7 @@ def main(arguments):
 
     agents = ['rectangle', 'round', 'cylinder']
     contact_level = arguments['contact_level']
-    assert contact_level in [0, 1], 'contact_level must be 0 or 1'
+    assert contact_level in [1, 2], 'contact_level must be 1 or 2'
     dataset = arguments['dataset']
     assert dataset in ['12mix', '6mix', '1cyl', '1rec', '1round'], 'dataset must be 12mix, 6mix, 1cyl, 1rec, or 1round'
     motion_name = 'poking' if contact_level == 1 else 'poking-shifting'
@@ -243,7 +244,8 @@ def main(arguments):
 
             for i in range(mini_batch_size):
                 motion_id = str(motion_ids[i])
-                trajectory = np.load(os.path.join(script_path, '..', 'trajectories', f'tr_{motion_name}_{motion_id}_v_dt_{dt_global:0.2f}.npy'))
+                trajectory = np.load(os.path.join(script_path, '..', 'trajectories',
+                                                  f'tr_{motion_name}_{motion_id}_v_dt_{dt_global:0.2f}.npy'))
                 horizon = trajectory.shape[0]
 
                 agent = agents[agent_ids[i]]
@@ -504,8 +506,7 @@ if __name__ == '__main__':
     parser.add_argument('--n_run', dest='n_run', type=int, default=-1)
     parser.add_argument('--seed', dest='seed', type=int, default=-1)
     parser.add_argument('--con_lv', dest='contact_level', type=int, default=0, choices=[1, 2])
-    parser.add_argument('--dataset', dest='dataset', type=str, default='12mix',
-                        choices=['12mix', '6mix', '1cyl', '1rec', '1round'])
+    parser.add_argument('--dataset', dest='dataset', type=str, default='12mix', choices=['12mix', '6mix', '1cyl', '1rec', '1round'])
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
     parser.add_argument('--pd_rs_loss', dest='pd_rs_loss', default=False, action='store_true')
     parser.add_argument('--pd_sr_loss', dest='pd_sr_loss', default=False, action='store_true')

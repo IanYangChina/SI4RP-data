@@ -10,14 +10,28 @@ box_mesh = o3d.geometry.TriangleMesh.create_box(width=0.1, height=0.1, depth=0.0
 box_mesh = box_mesh.translate((0.0, 0.0, -0.0199))
 box_mesh = box_mesh.subdivide_midpoint(number_of_iterations=5)
 
-motion_ind = str(4)
+motion_name = 'poking'
+assert motion_name in ['poking', 'poking-shifting']
+motion_ind = str(1)
+assert motion_ind in ['1', '2']
 agent = 'round'
+assert agent in ['round', 'rectangle', 'cylinder']
 data_ind = '0'
 pcd_index = '1'
 
 script_path = os.path.dirname(os.path.abspath(__file__))
-# data_path = os.path.join(script_path, '..', 'data-motion-'+motion_ind, f'eef-{agent}')
-data_path = os.path.join(script_path, '..', 'demo_files', 'pcd_to_mesh')
+script_path = os.path.join(script_path, '..')
+data_path = os.path.join(script_path, '..', 'data',
+                         f'data-motion-{motion_name}-{motion_ind}',
+                         f'eef-{agent}')
+extra_data = False
+if extra_data:
+    data_path = os.path.join(data_path, 'extra_data')
+validation_data = False
+if validation_data:
+    assert motion_ind == '2', 'Validation data is only available for motion 2.'
+    data_path = os.path.join(data_path, 'validation_data')
+
 print(f'Processing data {data_ind} and pcd {pcd_index}.')
 pcd_path = os.path.join(data_path, 'pcd_'+data_ind+pcd_index+'.ply')
 bounding_box_array = np.load(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'))
@@ -67,7 +81,7 @@ o3d.io.write_triangle_mesh(mesh_path, mesh)
 mesh = pv.read(mesh_path)
 os.remove(mesh_path)
 mesh_path = os.path.join(data_path, 'mesh_'+data_ind+pcd_index+'.ply')
-mesh.save(mesh_path)
+# mesh.save(mesh_path)
 
 mesh_to_fix = _meshfix.PyTMesh()
 mesh_to_fix.load_file(mesh_path)
@@ -85,7 +99,7 @@ mesh_top_centre = mesh_centre.copy()
 mesh_top_centre[-1] = points.max(0)[-1]
 print(f"Original mesh central top z: {points.max(0)[-1]}")
 print(f"Normalised mesh top z: {points.max(0)[-1] - mesh_centre[-1]}")
-np.save(os.path.join(data_path, 'mesh_'+data_ind+pcd_index+'_repaired_centre_top.npy'), mesh_top_centre)
+# np.save(os.path.join(data_path, 'mesh_'+data_ind+pcd_index+'_repaired_centre_top.npy'), mesh_top_centre)
 
 end_effector_target_xyz = mesh_top_centre.copy()
 end_effector_target_xyz[0] += 0.011  # real robot eef link offset = 0.008 m
@@ -108,4 +122,4 @@ repaired_mesh_0_to_normalised.export(normalised_mesh_path, file_type='obj')
 normalised_mesh_top_centre = mesh_top_centre.copy() - mesh_centre
 print(f"Normalised mesh top centre: {normalised_mesh_top_centre}")
 print(f"Normalised mesh top centre z: {repaired_mesh_0_to_normalised.vertices.max(0)[-1]}")
-np.save(os.path.join(data_path, 'mesh_'+data_ind+pcd_index+'_repaired_normalised_centre_top.npy'), normalised_mesh_top_centre)
+# np.save(os.path.join(data_path, 'mesh_'+data_ind+pcd_index+'_repaired_normalised_centre_top.npy'), normalised_mesh_top_centre)

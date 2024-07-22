@@ -5,11 +5,12 @@ np.set_printoptions(precision=3)
 import matplotlib.pyplot as plt
 
 script_path = os.path.dirname(os.path.realpath(__file__))
+script_path = os.path.join(script_path, '..')
 
 
-def main(data_ids=None, data_folder='gradients-E-nu-ys-rho', plot=False):
-    data_path = os.path.join(script_path, '..', data_folder)
-    fig_path = os.path.join(data_path, 'figures')
+def main(data_ids=None, contact_level=1, plot=False):
+    data_path = os.path.join(script_path, '..', 'gradient-analysis', f'level{contact_level}-12mix')
+    fig_path = os.path.join(script_path, '..', 'gradient-analysis', 'figures')
     if not os.path.exists(fig_path):
         os.makedirs(fig_path)
 
@@ -115,4 +116,4 @@ def main(data_ids=None, data_folder='gradients-E-nu-ys-rho', plot=False):
             plt.close()
 
 
-main(data_ids=[3, 8, 18], data_folder='gradients-E-nu-ys-rho', plot=False)
+main(data_ids=[3, 8, 18], contact_level=1, plot=False)

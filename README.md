@@ -1,29 +1,29 @@
 ## Physics Parameter Identification for Robotic Elastoplastic Object Manipulation via Differentiable Physics
 ### Experiment scripts and data
-#### **It is highly suggestted that you download the codes from Code Ocean and run them at your local Ubuntu machine.
+#### **It is highly suggestted that you download the codes from Code Ocean and run them at your local Ubuntu machine. Because Code Ocean doesn't support online visualisation.
 
 ### Instructions for reviewers
-- Launch an Ubuntu 20.04 machine and download the code and data
+- Launch an Ubuntu 20.04 machine, launch a terminal and run:
   - `sudo apt-get update`
   - `sudo apt-get install build-essential`
   - `sudo apt-get install libx11-6`
-- Launch a terminal
-- Install the simulation package, which should be found in `~/capsule/code`
+- Download the code and data. They should be in three folders: 
+  - `deformable-object-manipulation-1.0`
+  - `DRL_Implementation`
+  - `SI4RP-data`
+- Install the simulation package, from a terminal:
   - `cd deformable-object-manipulation-1.0`
   - create your conda env `conda env create -f environment.yml`
   - `conda activate DPS`
   - `pip install .`
 - (Optional) If you would like to verify some of the plotting scripts
-  - Make sure you launch an Ubuntu
-  - `cd ~/capsule/code` 
-  - `git clone git@github.com:IanYangChina/DRL_Implementation.git`
   - `cd DRL_Implementation`
   - `pip install .`
-- `cd ~/capsule/data/SI4RP-data`
+- You are ready to run the scripts.
+  - `cd SI4RP-data`
   - **Read the structure of the folder below**
-  - `cd scripts`
   - `conda activate DPS`
-  - Understand what a script does in detail: `python ANY_SCRIPT_FOLDER/ANY_SCRIPT.py -h`
+  - Understand what a script does in detail: `python scripts/ANY_SCRIPT_FOLDER/ANY_SCRIPT.py -h`
 
 #### Structure of the data folder
 - `data/SI4RP-data/data` contains the data for the SI4RP dataset

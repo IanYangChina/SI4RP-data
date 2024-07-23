@@ -1,11 +1,12 @@
 import os
 import json
 import numpy as np
-np.set_printoptions(precision=3)
+np.set_printoptions(precision=3, suppress=True)
 import matplotlib.pyplot as plt
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 script_path = os.path.join(script_path, '..')
+import argparse
 
 
 def main(data_ids=None, contact_level=1, plot=False):
@@ -25,7 +26,6 @@ def main(data_ids=None, contact_level=1, plot=False):
     y_ = []
     y__ = []
     y___ = []
-    e = []
     legends = []
     for n in data_ids:
         if not os.path.exists(os.path.join(data_path, f'grads-mean-{n}.npy')):
@@ -56,8 +56,8 @@ def main(data_ids=None, contact_level=1, plot=False):
             legend += 'emd_pr'
 
         print(f'Loss {n}: {legend}')
-        print(f'Mean: {mean}, OoM: {np.log(np.abs(mean))}')
-        print(f'Std: {std}, OoM: {np.log(np.abs(std))}')
+        print(f'Mean: {mean}\nLog-magnitude: {np.log(np.abs(mean))}')
+        print(f'Std: {std}\nLog-magnitude: {np.log(np.abs(std))}')
 
         x.append(n)
         legends.append(legend)
@@ -68,6 +68,7 @@ def main(data_ids=None, contact_level=1, plot=False):
         y___.append(std)
 
     if plot:
+        print(f"Plots will be saved in {fig_path}")
         y = np.asarray(y)
         y_ = np.asarray(y_)
         y__ = np.asarray(y__)
@@ -116,4 +117,15 @@ def main(data_ids=None, contact_level=1, plot=False):
             plt.close()
 
 
-main(data_ids=[3, 8, 18], contact_level=1, plot=False)
+if __name__ == '__main__':
+    description = ("This script reads the computed gradients stored in the gradient-analysis folder and prints them."
+                   "Optionally, it can plot the gradients."
+                   "The gradients are computed for the following parameters: E, nu, ys, rho, mani_fric, g_fric"
+                   "Pass multiple data_ids to plot multiple gradients within one plot."
+                   "The data_ids can be modified within the script.")
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument('--con_lv', dest='contact_level', type=int, default=0, choices=[1, 2])
+    parser.add_argument('--plot', dest='plot', type=str, default=None)
+    args = vars(parser.parse_args())
+    data_ids = [0]
+    main(data_ids=data_ids, contact_level=args['contact_level'], plot=args['plot'])

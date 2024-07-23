@@ -10,6 +10,8 @@ from tensorflow.python.summary.summary_iterator import summary_iterator
 
 np.set_printoptions(2, suppress=True)
 
+import argparse
+
 plt.rcParams['pdf.fonttype'] = 42
 plt.rcParams['ps.fonttype'] = 42
 plt.rcParams['font.family'] = 'serif'
@@ -480,7 +482,7 @@ def plot_loss_param_curves(contact_level=1):
     plt.close(fig)
 
 
-def collect_validation_losses(run_ids, contact_level=0, dataset='12mix'):
+def collect_best_validation_losses(run_ids, contact_level=0, dataset='12mix'):
     case = 'validation'
     assert contact_level in [1, 2]
     assert dataset in ['12mix', '6mix', '1rec', '1round', '1cyl']
@@ -514,7 +516,7 @@ def collect_validation_losses(run_ids, contact_level=0, dataset='12mix'):
         json.dump(data_dict, f)
 
 
-def collect_long_horizon_motion_losses(run_ids, dataset='12mix'):
+def collect_beset_long_horizon_motion_losses(run_ids, dataset='12mix'):
     dir_prefix = f'level2-{dataset}'
 
     data_dict = {
@@ -544,3 +546,32 @@ def collect_long_horizon_motion_losses(run_ids, dataset='12mix'):
     with open(os.path.join(cwd, '..', 'optimisation-results', 'figures', dir_prefix,
                            'best-seed-visualisation', 'long_motion_losses.json'), 'w') as f:
         json.dump(data_dict, f)
+
+
+if __name__ == '__main__':
+    description = ("This scripts contains various functions that were used to read the optimisation logs and plot the figures embedded in the paper."
+                   "If you want to run them yourselves, modify this script by uncommenting the function calls and providing the necessary arguments."
+                   "To run some of these functions you need to install the DRL_implementation package as instructed in the README.md file.")
+    parser = argparse.ArgumentParser(description=description)
+    """
+    The read_losses function reads the tensorboard logs and store the training and validation statistics as well as their means and standard deviations.
+    Examples:
+    """
+    # read_losses(run_ids=[0, 1, 2, 3], contact_level=1, dataset='12mix', save_meanstd=True)
+    # read_losses(run_ids=[0, 1, 2, 3], contact_level=2, dataset='12mix', save_meanstd=True)
+    """
+    The plot_loss_param_curves() function plots the curves of the training and validation losses and the parameters using the statistics saved by the read_losses() function.
+    Examples:
+    """
+    # plot_loss_param_curves(contact_level=1)
+    # plot_loss_param_curves(contact_level=2)
+    """
+    The collect_best_validation_losses() and collect_beset_long_horizon_motion_losses() functions collect the best losses of simulating the validation motions and long horizon motions.
+    The best validation losses are determined by the mean of the last 10 validation heightmap losses during training.
+    The best long horizon motion losses are determined by the heightmap loss of the last frame of the long horizon motion.
+    Their results were summarised as two tables in the paper.
+    Examples:
+    """
+    # collect_best_validation_losses(run_ids=[0, 1, 2, 3], contact_level=1, dataset='12mix')
+    # collect_best_validation_losses(run_ids=[0, 1, 2, 3], contact_level=2, dataset='12mix')
+    # collect_beset_long_horizon_motion_losses(run_ids=[0, 1, 2, 3], dataset='12mix')

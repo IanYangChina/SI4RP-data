@@ -57,22 +57,34 @@ def main(arguments):
     DTYPE_TI = ti.f32
     dt_global = 0.01
     particle_density = arguments['ptcl_density']
+    if args['cd_point_distance_loss']:
+        point_distance_rs_loss = True
+        point_distance_sr_loss = True
+    else:
+        point_distance_rs_loss = False
+        point_distance_sr_loss = False
+    if args['cd_particle_distance_loss']:
+        particle_distance_rs_loss = True
+        particle_distance_sr_loss = True
+    else:
+        particle_distance_rs_loss = False
+        particle_distance_sr_loss = False
     loss_cfg = {
         'exponential_distance': False,
         'averaging_loss': False,
-        'point_distance_rs_loss': arguments['pd_rs_loss'],
-        'point_distance_sr_loss': arguments['pd_sr_loss'],
+        'point_distance_rs_loss': point_distance_rs_loss,
+        'point_distance_sr_loss': point_distance_sr_loss,
+        'particle_distance_rs_loss': particle_distance_rs_loss,
+        'particle_distance_sr_loss': particle_distance_sr_loss,
+        'emd_point_distance_loss': arguments['emd_p_loss'],
+        'emd_particle_distance_loss': arguments['emd_pr_loss'],
+        'height_map_loss': arguments['hm_loss'],
         'down_sample_voxel_size': 0.005,
-        'particle_distance_rs_loss': arguments['prd_rs_loss'],
-        'particle_distance_sr_loss': arguments['prd_sr_loss'],
         'voxelise_res': 1080,
         'ptcl_density': particle_density,
         'load_height_map': True,
-        'height_map_loss': arguments['hm_loss'],
         'height_map_res': 32,
         'height_map_size': 0.11,
-        'emd_point_distance_loss': arguments['emd_p_loss'],
-        'emd_particle_distance_loss': arguments['emd_pr_loss'],
     }
 
     # Parameter ranges
@@ -221,17 +233,17 @@ def main(arguments):
 
             # datasets
             if arguments['dataset'] == '12mix':
-                mini_batch_size = 12
+                n_datapoints = 12
                 motion_ids = [1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2]
                 agent_ids = [0, 0, 1, 1, 2, 2, 0, 0, 1, 1, 2, 2]
                 data_inds = [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]
             elif arguments['dataset'] == '6mix':
-                mini_batch_size = 6
+                n_datapoints = 6
                 motion_ids = [1, 1, 1, 2, 2, 2]
                 agent_ids = [0, 1, 2, 0, 1, 2]
                 data_inds = [0, 0, 0, 0, 0, 0]
             else:
-                mini_batch_size = 1
+                n_datapoints = 1
                 motion_ids = [2]
                 data_inds = [0]
 
@@ -242,7 +254,7 @@ def main(arguments):
                 else:
                     agent_ids = [1]
 
-            for i in range(mini_batch_size):
+            for i in range(n_datapoints):
                 motion_id = str(motion_ids[i])
                 trajectory = np.load(os.path.join(script_path, '..', 'trajectories',
                                                   f'tr_{motion_name}_{motion_id}_v_dt_{dt_global:0.2f}.npy'))
@@ -503,20 +515,17 @@ def main(arguments):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--n_run', dest='n_run', type=int, default=-1)
-    parser.add_argument('--seed', dest='seed', type=int, default=-1)
-    parser.add_argument('--con_lv', dest='contact_level', type=int, default=0, choices=[1, 2])
-    parser.add_argument('--dataset', dest='dataset', type=str, default='12mix', choices=['12mix', '6mix', '1cyl', '1rec', '1round'])
-    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
-    parser.add_argument('--pd_rs_loss', dest='pd_rs_loss', default=False, action='store_true')
-    parser.add_argument('--pd_sr_loss', dest='pd_sr_loss', default=False, action='store_true')
-    parser.add_argument('--prd_rs_loss', dest='prd_rs_loss', default=False, action='store_true')
-    parser.add_argument('--prd_sr_loss', dest='prd_sr_loss', default=False, action='store_true')
-    parser.add_argument('--emd_p_loss', dest='emd_p_loss', default=False, action='store_true')
-    parser.add_argument('--emd_pr_loss', dest='emd_pr_loss', default=False, action='store_true')
-    parser.add_argument('--hm_loss', dest='hm_loss', default=False, action='store_true')
-    parser.add_argument('--bs', dest='batchsize', default=20, type=int)
-    parser.add_argument('--backend', dest='backend', default='cuda', type=str)
-    parser.add_argument('--device_mem', dest='device_memory_GB', default=3, type=int)
+    parser.add_argument('--n_run', dest='n_run', type=int, default=-1, help='Run number. If -1, create a new run, otherwise store into the given run folder.')
+    parser.add_argument('--seed', dest='seed', type=int, default=-1, help='Random seed. If -1, use 0, 1, 2.')
+    parser.add_argument('--con_lv', dest='contact_level', type=int, default=1, choices=[1, 2], help='Contact level: 1 or 2')
+    parser.add_argument('--dataset', dest='dataset', type=str, default='12mix', choices=['12mix', '6mix', '1cyl', '1rec', '1round'], help='Dataset: 12mix, 6mix, 1cyl, 1rec, 1round')
+    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7, help='Particle density')
+    parser.add_argument('--cd_p_loss', dest='cd_point_distance_loss', default=False, action='store_true', help='Count Chamfer loss between real points and simulated particles into loss computation.')
+    parser.add_argument('--cd_pr_loss', dest='cd_particle_distance_loss', default=False, action='store_true', help='Count Chamfer loss between reconstructed particles and simulated particles into loss computation.')
+    parser.add_argument('--emd_p_loss', dest='emd_p_loss', default=False, action='store_true', help='Count EMD loss between real points and simulated particles into loss computation.')
+    parser.add_argument('--emd_pr_loss', dest='emd_pr_loss', default=False, action='store_true', help='Count EMD loss between reconstructed particles and simulated particles into loss computation.')
+    parser.add_argument('--hm_loss', dest='hm_loss', default=False, action='store_true', help='Count height map loss into loss computation.')
+    parser.add_argument('--backend', dest='backend', default='cuda', type=str, choices=['opengl', 'cuda', 'vulkan'], help='Computation backend: opengl, cuda, vulkan')
+    parser.add_argument('--device_mem', dest='device_memory_GB', default=5, type=int, help='Device memory in GB, depending on your GPU device, if out of memory, increase this value.')
     args = vars(parser.parse_args())
     main(args)

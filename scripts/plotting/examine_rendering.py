@@ -1,8 +1,6 @@
 import numpy as np
 import os
 import taichi as ti
-from time import time, sleep
-import open3d as o3d
 from vedo import Points, show, Mesh
 from PIL import Image
 import imageio
@@ -371,25 +369,25 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
-    parser.add_argument('--load_params', dest='load_params', default=False, action='store_true')
-    parser.add_argument('--load_params_dataset', dest='load_params_dataset', type=str, default='12mix')
-    parser.add_argument('--load_params_run', dest='load_params_run', type=int, default=0)
-    parser.add_argument('--load_params_seed', dest='load_params_seed', type=int, default=0)
-    parser.add_argument('--con_lv', dest='contact_level', type=int, default=0, choices=[0, 1])
-    parser.add_argument('--dt', dest='dt', type=float, default=0.01)
-    parser.add_argument('--dt_avg', dest='dt_avg', default=False, action='store_true')
-    parser.add_argument('--long_motion', dest='long_motion', default=False, action='store_true')
-    parser.add_argument('--m_id', dest='motion_ind', type=int, default=1, choices=[1, 2])
-    parser.add_argument('--agent_ind', dest='agent_ind', type=int, default=0)
-    parser.add_argument('--r_human', dest='render_human', default=False, action='store_true')
-    parser.add_argument('--r_init_pcd', dest='render_init_pcd', default=False, action='store_true')
-    parser.add_argument('--r_end_pcd', dest='render_end_pcd', default=False, action='store_true')
-    parser.add_argument('--r_hm', dest='render_heightmap', default=False, action='store_true')
-    parser.add_argument('--save_loss', dest='save_loss', default=False, action='store_true')
-    parser.add_argument('--save_img', dest='save_img', default=False, action='store_true')
-    parser.add_argument('--save_heightmap', dest='save_heightmap', default=False, action='store_true')
-    parser.add_argument('--save_gif', dest='save_gif', default=False, action='store_true')
-    parser.add_argument('--img_dir', dest='img_dir', type=str, default=None)
+    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7, help='Particle density')
+    parser.add_argument('--load_params', dest='load_params', default=False, action='store_true', help='Load optimised parameters')
+    parser.add_argument('--load_params_dataset', dest='load_params_dataset', type=str, default='12mix', help='Dataset used for identifying the loaded optimised parameters')
+    parser.add_argument('--load_params_run', dest='load_params_run', type=int, default=0, help='Run ID for the optimised parameters')
+    parser.add_argument('--load_params_seed', dest='load_params_seed', type=int, default=0, help='Seed for the optimised parameters')
+    parser.add_argument('--dt', dest='dt', type=float, default=0.01, choices=[0.01, 0.02, 0.03, 0.04], help='Global time step, change this value to verify that the identified parameters are robust against simulation step size.')
+    parser.add_argument('--dt_avg', dest='dt_avg', default=False, action='store_true', help='Use dt computed by averaging the MOVEIT! trajectory duration over its time steps')
+    parser.add_argument('--con_lv', dest='contact_level', type=int, default=1, choices=[1, 2], help='Examing motions from contact level 1 or 2')
+    parser.add_argument('--m_id', dest='motion_ind', type=int, default=1, choices=[1, 2], help='Motion index')
+    parser.add_argument('--long_motion', dest='long_motion', default=False, action='store_true', help='Examine long horizon motion simulation. This diseffects the contact_level and motion_ind arguments.')
+    parser.add_argument('--agent_ind', dest='agent_ind', type=int, default=0, choices=[0, 1, 2], help='Examine the motion executed by which end-effector: 0 - rectangle, 1 - round, 2 - cylinder')
+    parser.add_argument('--r_human', dest='render_human', default=False, action='store_true', help='Render the simulation with a pop-up window')
+    parser.add_argument('--r_init_pcd', dest='render_init_pcd', default=False, action='store_true', help='Render the initial point cloud with a pop-up window')
+    parser.add_argument('--r_end_pcd', dest='render_end_pcd', default=False, action='store_true', help='Render the final point cloud with a pop-up window')
+    parser.add_argument('--r_hm', dest='render_heightmap', default=False, action='store_true', help='Render the final height map with a pop-up window')
+    parser.add_argument('--save_loss', dest='save_loss', default=False, action='store_true', help='Save the loss information')
+    parser.add_argument('--save_img', dest='save_img', default=False, action='store_true', help='Save the images')
+    parser.add_argument('--save_heightmap', dest='save_heightmap', default=False, action='store_true', help='Save the height map')
+    parser.add_argument('--save_gif', dest='save_gif', default=False, action='store_true', help='Save the simulation as a .gif file')
+    parser.add_argument('--img_dir', dest='img_dir', type=str, default=None, help='Directory to save the images, if unspecified, the images will be saved in the default directory')
     args = vars(parser.parse_args())
     main(args)

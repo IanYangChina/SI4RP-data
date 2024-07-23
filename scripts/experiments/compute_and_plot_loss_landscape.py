@@ -110,6 +110,7 @@ def main(args):
         for i in range(len(loss_types_to_plot)):
             loss_type = loss_types_to_plot[i]
             loss = np.load(os.path.join(fig_data_path, f'{loss_type}_{distance_type}_{xy_param}-{p_density_str}.npy'))
+            # Normalize the loss to focus on only distributional differences
             loss -= np.mean(loss)
             plot_fig_title = False
             if plot_fig_title:
@@ -279,13 +280,14 @@ def main(args):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--con_lv', dest='contact_level', default=0, type=int)
-    parser.add_argument('--p_pair', dest='param_pair', default=0, type=int)
-    parser.add_argument('--rap', dest='read_and_plot', default=True, action='store_true')
+    description = "This script computes and saves the loss landscape for pairs of material parameters."
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument('--con_lv', dest='contact_level', default=1, type=int, help='contact level: 1 or 2')
+    parser.add_argument('--p_pair', dest='param_pair', default=0, type=int, help='parameter pair id: 0 (E/nu), 1 (rho/yield stress), or 2 (manipulation/ground friction)')
+    parser.add_argument('--rap', dest='read_and_plot', default=True, action='store_true', help='read the saved values and plot the loss landscapes')
     parser.add_argument('--dataset', dest='dataset', type=str, default='12mix',
-                        choices=['12mix', '6mix', '1cyl', '1rec', '1round'])
-    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
-    parser.add_argument('--backend', dest='backend', default='opengl', type=str)
+                        choices=['12mix', '6mix', '1cyl', '1rec', '1round'], help='dataset name')
+    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7, help='particle density')
+    parser.add_argument('--backend', dest='backend', default='cuda', type=str, help='Computation backend: opengl, cuda, vulkan, or cpu')
     args = vars(parser.parse_args())
     main(args)

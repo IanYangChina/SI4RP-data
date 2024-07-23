@@ -9,13 +9,14 @@ import argparse
 
 DTYPE_NP = np.float32
 DTYPE_TI = ti.f32
-ti.init(arch=ti.opengl,
-        # offline_cache=False, log_level=ti.TRACE,
-        default_fp=DTYPE_TI, default_ip=ti.i32,
-        fast_math=False, random_seed=1)
 
 
 def run(args):
+    ti.init(arch=ti.opengl,
+            # offline_cache=False, log_level=ti.TRACE,
+            default_fp=DTYPE_TI, default_ip=ti.i32,
+            fast_math=False, random_seed=1)
+
     height_map_res = args['hmr']
     height_map_size = 0.11  # meter
     height_map_xy_offset = (0.25 * 1000, 0.25 * 1000)
@@ -79,9 +80,10 @@ def run(args):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--pd', dest='pd', default=3e7, type=float)
-    parser.add_argument('--vds', dest='vds', default=0.001, type=float)
-    parser.add_argument('--hmr', dest='hmr', default=32, type=int)
+    description = "This script generates target height maps from the fused point clouds."
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument('--pd', dest='pd', default=3e7, type=float, help="Particle density")
+    parser.add_argument('--vds', dest='vds', default=0.001, type=float, help="Voxel down sample size")
+    parser.add_argument('--hmr', dest='hmr', default=32, type=int, help="Height map resolution")
     arguments = vars(parser.parse_args())
     run(arguments)

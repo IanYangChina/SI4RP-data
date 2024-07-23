@@ -121,13 +121,25 @@ def main(args):
     f_range = (0.0, 2.0)
 
     p_density = args['ptcl_density']
+    if args['cd_point_distance_loss']:
+        point_distance_rs_loss = True
+        point_distance_sr_loss = True
+    else:
+        point_distance_rs_loss = False
+        point_distance_sr_loss = False
+    if args['cd_particle_distance_loss']:
+        particle_distance_rs_loss = True
+        particle_distance_sr_loss = True
+    else:
+        particle_distance_rs_loss = False
+        particle_distance_sr_loss = False
     loss_cfg = {
         'exponential_distance': False,
         'averaging_loss': False,
-        'point_distance_rs_loss': args['point_distance_rs_loss'],
-        'point_distance_sr_loss': args['point_distance_sr_loss'],
-        'particle_distance_rs_loss': args['particle_distance_rs_loss'],
-        'particle_distance_sr_loss': args['particle_distance_sr_loss'],
+        'point_distance_rs_loss': point_distance_rs_loss,
+        'point_distance_sr_loss': point_distance_sr_loss,
+        'particle_distance_rs_loss': particle_distance_rs_loss,
+        'particle_distance_sr_loss': particle_distance_sr_loss,
         'height_map_loss': args['height_map_loss'],
         'emd_point_distance_loss': args['emd_point_distance_loss'],
         'emd_particle_distance_loss': args['emd_particle_distance_loss'],
@@ -315,17 +327,16 @@ def main(args):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--con_lv', dest='contact_level', type=int, default=0)
-    parser.add_argument('--debug', dest='debug', default=False, action='store_true')
-    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7)
-    parser.add_argument('--pd_rs_loss', dest='point_distance_rs_loss', default=False, action='store_true')
-    parser.add_argument('--pd_sr_loss', dest='point_distance_sr_loss', default=False, action='store_true')
-    parser.add_argument('--prd_rs_loss', dest='particle_distance_rs_loss', default=False, action='store_true')
-    parser.add_argument('--prd_sr_loss', dest='particle_distance_sr_loss', default=False, action='store_true')
-    parser.add_argument('--hm_loss', dest='height_map_loss', default=False, action='store_true')
-    parser.add_argument('--emd_p_loss', dest='emd_point_distance_loss', default=False, action='store_true')
-    parser.add_argument('--emd_pr_loss', dest='emd_particle_distance_loss', default=False, action='store_true')
-    parser.add_argument('--backend', dest='backend', default='opengl', type=str)
+    description = 'Compute the means and standard deviations of the gradients for material parameters using the 12mix dataset with randomly sampled parameter values.'
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument('--con_lv', dest='contact_level', type=int, default=1, help='Contact level: 1 or 2')
+    parser.add_argument('--debug', dest='debug', default=False, action='store_true', help='Debug mode, print gradients for every computation kernel.')
+    parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7, help='Particle density')
+    parser.add_argument('--cd_p_loss', dest='cd_point_distance_loss', default=False, action='store_true', help='Count Chamfer loss between real points and simulated particles into loss computation.')
+    parser.add_argument('--cd_pr_loss', dest='cd_particle_distance_loss', default=False, action='store_true', help='Count Chamfer loss between reconstructed particles and simulated particles into loss computation.')
+    parser.add_argument('--emd_p_loss', dest='emd_point_distance_loss', default=False, action='store_true', help='Count EMD loss from real points to simulated particles into loss computation.')
+    parser.add_argument('--emd_pr_loss', dest='emd_particle_distance_loss', default=False, action='store_true', help='Count EMD loss from reconstructed particles to simulated particles into loss computation.')
+    parser.add_argument('--hm_loss', dest='height_map_loss', default=False, action='store_true', help='Count height map loss into loss computation.')
+    parser.add_argument('--backend', dest='backend', default='cuda', type=str, help='Computation backend: cuda, opengl, or cpu')
     args = vars(parser.parse_args())
     main(args)

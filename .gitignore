@@ -1,5 +1,8 @@
 /.idea
 imgui.ini
+/data/data-motion-long-horizon/eef-cylinder/*.vox
+/data/data-motion-long-horizon/eef-rectangle/*.vox
+/data/data-motion-long-horizon/eef-round/*.vox
 /data/data-motion-poking-1/eef-cylinder/*.vox
 /data/data-motion-poking-1/eef-rectangle/*.vox
 /data/data-motion-poking-1/eef-round/*.vox
@@ -12,6 +15,9 @@ imgui.ini
 /data/data-motion-poking-shifting-2/eef-cylinder/*.vox
 /data/data-motion-poking-shifting-2/eef-rectangle/*.vox
 /data/data-motion-poking-shifting-2/eef-round/*.vox
+/data/data-motion-long-horizon/eef-cylinder/validation_data/*.vox
+/data/data-motion-long-horizon/eef-rectangle/validation_data/*.vox
+/data/data-motion-long-horizon/eef-round/validation_data/*.vox
 /data/data-motion-poking-1/eef-cylinder/validation_data/*.vox
 /data/data-motion-poking-1/eef-rectangle/validation_data/*.vox
 /data/data-motion-poking-1/eef-round/validation_data/*.vox

@@ -14713,3 +14713,717 @@
 2024-03-03 13:27:15,944 INFO ========> Avg. Validation loss: total_loss: 5316.023600260417
 2024-03-03 13:27:15,944 INFO ========> Num. aborted data so far: 0
 2024-03-03 13:27:16,145 INFO Final parameters: E=[300000.], nu=[0.48], yield_stress=[1291.8137], rho=[1552.745]
+2024-10-25 15:13:45,249 INFO =====> Logging to /home/xintong/Documents/PyProjects/SI4RP-data/scripts/experiments/../../optimisation-results/level1-1rec-run3-logs/optimisation.log
+2024-10-25 15:13:45,282 INFO =====> Optimisation at contact_level 1 with dataset 1rec for 100 epochs for 1 random seeds.
+2024-10-25 15:13:45,282 INFO =====> Loss config: {'exponential_distance': False, 'averaging_loss': False, 'point_distance_rs_loss': False, 'point_distance_sr_loss': False, 'down_sample_voxel_size': 0.005, 'particle_distance_rs_loss': False, 'particle_distance_sr_loss': False, 'voxelise_res': 1080, 'ptcl_density': 40000000.0, 'load_height_map': True, 'height_map_loss': False, 'height_map_res': 32, 'height_map_size': 0.11, 'emd_point_distance_loss': False, 'emd_particle_distance_loss': True}
+2024-10-25 15:13:45,282 INFO =====> Training config: {'param_set': 0, 'lr_E': 4000.0, 'lr_nu': 0.01, 'lr_yield_stress': 500.0, 'lr_rho': 10, 'lr_manipulator_friction': 0.01, 'lr_ground_friction': 0.01, 'batch_size': 20, 'n_epoch': 100, 'seeds': [0]}
+2024-10-25 15:13:45,436 Level 1 Registering FakeQuantWithMinMaxArgs (<function _FakeQuantWithMinMaxArgsGradient at 0x7f0ee036bb00>) in gradient.
+2024-10-25 15:13:45,436 Level 1 Registering FakeQuantWithMinMaxVars (<function _FakeQuantWithMinMaxVarsGradient at 0x7f0ee036bb90>) in gradient.
+2024-10-25 15:13:45,436 Level 1 Registering FakeQuantWithMinMaxVarsPerChannel (<function _FakeQuantWithMinMaxVarsPerChannelGradient at 0x7f0ee036bc20>) in gradient.
+2024-10-25 15:13:45,462 Level 1 Registering MatMul,flops (<function _calc_mat_mul_flops at 0x7f0ee00f1170>) in statistical functions.
+2024-10-25 15:13:45,462 Level 1 Registering BatchMatMul,flops (<function _calc_batch_mat_mul_flops at 0x7f0ee00f1560>) in statistical functions.
+2024-10-25 15:13:45,462 Level 1 Registering AccumulateNV2 (<function _accumulate_n_grad at 0x7f0ee00f15f0>) in gradient.
+2024-10-25 15:13:45,467 Level 1 Registering TensorListConcatLists (None) in gradient.
+2024-10-25 15:13:45,467 Level 1 Registering TensorListElementShape (None) in gradient.
+2024-10-25 15:13:45,467 Level 1 Registering TensorListLength (None) in gradient.
+2024-10-25 15:13:45,468 Level 1 Registering TensorListPushBackBatch (None) in gradient.
+2024-10-25 15:13:45,468 Level 1 Registering TensorListPushBack (<function _PushBackGrad at 0x7f0ee0036560>) in gradient.
+2024-10-25 15:13:45,468 Level 1 Registering TensorListPopBack (<function _PopBackGrad at 0x7f0ee00365f0>) in gradient.
+2024-10-25 15:13:45,468 Level 1 Registering TensorListStack (<function _TensorListStackGrad at 0x7f0ee0036680>) in gradient.
+2024-10-25 15:13:45,468 Level 1 Registering TensorListConcatV2 (<function _TensorListConcatGrad at 0x7f0ee0036710>) in gradient.
+2024-10-25 15:13:45,468 Level 1 Registering TensorListConcat (<function _TensorListConcatGrad at 0x7f0ee0036710>) in gradient.
+2024-10-25 15:13:45,468 Level 1 Registering TensorListSplit (<function _TensorListSplitGrad at 0x7f0ee00367a0>) in gradient.
+2024-10-25 15:13:45,468 Level 1 Registering TensorListFromTensor (<function _TensorListFromTensorGrad at 0x7f0ee0036830>) in gradient.
+2024-10-25 15:13:45,468 Level 1 Registering TensorListGetItem (<function _TensorListGetItemGrad at 0x7f0ee00368c0>) in gradient.
+2024-10-25 15:13:45,468 Level 1 Registering TensorListSetItem (<function _TensorListSetItemGrad at 0x7f0ee0036950>) in gradient.
+2024-10-25 15:13:45,468 Level 1 Registering TensorListResize (<function _TensorListResizeGrad at 0x7f0ee00369e0>) in gradient.
+2024-10-25 15:13:45,468 Level 1 Registering TensorListGather (<function _TensorListGatherGrad at 0x7f0ee0036a70>) in gradient.
+2024-10-25 15:13:45,468 Level 1 Registering TensorListScatterV2 (<function _TensorListScatterGrad at 0x7f0ee0036b00>) in gradient.
+2024-10-25 15:13:45,468 Level 1 Registering TensorListScatter (<function _TensorListScatterGrad at 0x7f0ee0036b00>) in gradient.
+2024-10-25 15:13:45,468 Level 1 Registering TensorListScatterIntoExistingList (<function _TensorListScatterIntoExistingListGrad at 0x7f0ee0036b90>) in gradient.
+2024-10-25 15:13:45,469 Level 1 Registering cond_context ((<class 'tensorflow.core.protobuf.control_flow_pb2.CondContextDef'>, <function CondContext.to_proto at 0x7f0ee0045ef0>, <function CondContext.from_proto at 0x7f0ee0045f80>)) in proto functions.
+2024-10-25 15:13:45,469 Level 1 Registering while_context ((<class 'tensorflow.core.protobuf.control_flow_pb2.WhileContextDef'>, <function WhileContext.to_proto at 0x7f0ee0046f80>, <function WhileContext.from_proto at 0x7f0ee004b0e0>)) in proto functions.
+2024-10-25 15:13:45,474 Level 1 Registering ReadVariableOp (<function _ReadGrad at 0x7f0ec49dca70>) in gradient.
+2024-10-25 15:13:45,474 Level 1 Registering ResourceGather (<function _GatherGrad at 0x7f0ec49dcef0>) in gradient.
+2024-10-25 15:13:45,474 Level 1 Registering variables ((<class 'tensorflow.core.framework.variable_pb2.VariableDef'>, <function _to_proto_fn at 0x7f0ec49dcf80>, <function _from_proto_fn at 0x7f0ec49dd050>)) in proto functions.
+2024-10-25 15:13:45,474 Level 1 Registering trainable_variables ((<class 'tensorflow.core.framework.variable_pb2.VariableDef'>, <function _to_proto_fn at 0x7f0ec49dcf80>, <function _from_proto_fn at 0x7f0ec49dd050>)) in proto functions.
+2024-10-25 15:13:45,474 Level 1 Registering moving_average_variables ((<class 'tensorflow.core.framework.variable_pb2.VariableDef'>, <function _to_proto_fn at 0x7f0ec49dcf80>, <function _from_proto_fn at 0x7f0ec49dd050>)) in proto functions.
+2024-10-25 15:13:45,474 Level 1 Registering local_variables ((<class 'tensorflow.core.framework.variable_pb2.VariableDef'>, <function _to_proto_fn at 0x7f0ec49dcf80>, <function _from_proto_fn at 0x7f0ec49dd050>)) in proto functions.
+2024-10-25 15:13:45,474 Level 1 Registering model_variables ((<class 'tensorflow.core.framework.variable_pb2.VariableDef'>, <function _to_proto_fn at 0x7f0ec49dcf80>, <function _from_proto_fn at 0x7f0ec49dd050>)) in proto functions.
+2024-10-25 15:13:45,474 Level 1 Registering global_step ((<class 'tensorflow.core.framework.variable_pb2.VariableDef'>, <function _to_proto_fn at 0x7f0ec49dcf80>, <function _from_proto_fn at 0x7f0ec49dd050>)) in proto functions.
+2024-10-25 15:13:45,474 Level 1 Registering metric_variables ((<class 'tensorflow.core.framework.variable_pb2.VariableDef'>, <function _to_proto_fn at 0x7f0ec49dcf80>, <function _from_proto_fn at 0x7f0ec49dd050>)) in proto functions.
+2024-10-25 15:13:45,474 Level 1 Registering Assert (None) in gradient.
+2024-10-25 15:13:45,474 Level 1 Registering VarIsInitializedOp (None) in gradient.
+2024-10-25 15:13:45,474 Level 1 Registering VariableShape (None) in gradient.
+2024-10-25 15:13:45,479 Level 1 Registering RandomStandardNormal (None) in gradient.
+2024-10-25 15:13:45,479 Level 1 Registering ParameterizedTruncatedNormal (None) in gradient.
+2024-10-25 15:13:45,479 Level 1 Registering TruncatedNormal (None) in gradient.
+2024-10-25 15:13:45,479 Level 1 Registering RandomUniform (None) in gradient.
+2024-10-25 15:13:45,479 Level 1 Registering Multinomial (None) in gradient.
+2024-10-25 15:13:45,502 Level 1 Registering EnsureShape (<function _ensure_shape_grad at 0x7f0ec48904d0>) in gradient.
+2024-10-25 15:13:45,502 Level 1 Registering EagerPyFunc (<function _EagerPyFuncGrad at 0x7f0ec4899200>) in gradient.
+2024-10-25 15:13:45,502 Level 1 Registering PyFunc (None) in gradient.
+2024-10-25 15:13:45,502 Level 1 Registering PyFuncStateless (None) in gradient.
+2024-10-25 15:13:45,516 Level 1 Registering Conv3D,flops (<function _calc_conv3d_flops at 0x7f0ec46bed40>) in statistical functions.
+2024-10-25 15:13:45,516 Level 1 Registering Conv2D,flops (<function _calc_conv_flops at 0x7f0ec46bedd0>) in statistical functions.
+2024-10-25 15:13:45,516 Level 1 Registering DepthwiseConv2dNative,flops (<function _calc_depthwise_conv_flops at 0x7f0ec46bee60>) in statistical functions.
+2024-10-25 15:13:45,516 Level 1 Registering BiasAdd,flops (<function _calc_bias_add_flops at 0x7f0ec46beef0>) in statistical functions.
+2024-10-25 15:13:45,517 Level 1 Registering Dilation2D,flops (<function _calc_dilation2d_flops at 0x7f0ec46c38c0>) in statistical functions.
+2024-10-25 15:13:45,519 Level 1 Registering RaggedTensorToSparse (<function _ragged_tensor_to_sparse_gradient at 0x7f0ec46f7950>) in gradient.
+2024-10-25 15:13:45,519 Level 1 Registering RaggedTensorToVariant (None) in gradient.
+2024-10-25 15:13:45,520 Level 1 Registering RaggedRange (None) in gradient.
+2024-10-25 15:13:45,520 Level 1 Registering RaggedGather (<function _ragged_gather_grad at 0x7f0ec4680950>) in gradient.
+2024-10-25 15:13:45,526 Level 1 Registering DecodeRaw (None) in gradient.
+2024-10-25 15:13:45,526 Level 1 Registering DecodePaddedRaw (None) in gradient.
+2024-10-25 15:13:45,526 Level 1 Registering ParseTensor (None) in gradient.
+2024-10-25 15:13:45,526 Level 1 Registering SerializeTensor (None) in gradient.
+2024-10-25 15:13:45,526 Level 1 Registering StringToNumber (None) in gradient.
+2024-10-25 15:13:45,530 Level 1 Registering RegexReplace (None) in gradient.
+2024-10-25 15:13:45,530 Level 1 Registering StringToHashBucket (None) in gradient.
+2024-10-25 15:13:45,530 Level 1 Registering StringToHashBucketFast (None) in gradient.
+2024-10-25 15:13:45,530 Level 1 Registering StringToHashBucketStrong (None) in gradient.
+2024-10-25 15:13:45,530 Level 1 Registering ReduceJoin (None) in gradient.
+2024-10-25 15:13:45,530 Level 1 Registering StringJoin (None) in gradient.
+2024-10-25 15:13:45,530 Level 1 Registering StringSplit (None) in gradient.
+2024-10-25 15:13:45,530 Level 1 Registering AsString (None) in gradient.
+2024-10-25 15:13:45,530 Level 1 Registering EncodeBase64 (None) in gradient.
+2024-10-25 15:13:45,530 Level 1 Registering DecodeBase64 (None) in gradient.
+2024-10-25 15:13:45,544 Level 1 Registering ReaderRead (None) in gradient.
+2024-10-25 15:13:45,544 Level 1 Registering ReaderReadUpTo (None) in gradient.
+2024-10-25 15:13:45,544 Level 1 Registering ReaderNumRecordsProduced (None) in gradient.
+2024-10-25 15:13:45,544 Level 1 Registering ReaderNumWorkUnitsCompleted (None) in gradient.
+2024-10-25 15:13:45,545 Level 1 Registering ReaderSerializeState (None) in gradient.
+2024-10-25 15:13:45,545 Level 1 Registering ReaderRestoreState (None) in gradient.
+2024-10-25 15:13:45,545 Level 1 Registering ReaderReset (None) in gradient.
+2024-10-25 15:13:45,545 Level 1 Registering WholeFileReader (None) in gradient.
+2024-10-25 15:13:45,545 Level 1 Registering TextLineReader (None) in gradient.
+2024-10-25 15:13:45,545 Level 1 Registering FixedLengthRecordReader (None) in gradient.
+2024-10-25 15:13:45,545 Level 1 Registering TFRecordReader (None) in gradient.
+2024-10-25 15:13:45,545 Level 1 Registering LMDBReader (None) in gradient.
+2024-10-25 15:13:45,545 Level 1 Registering IdentityReader (None) in gradient.
+2024-10-25 15:13:45,546 Level 1 Registering savers ((<class 'tensorflow.core.protobuf.saver_pb2.SaverDef'>, <function Saver.to_proto at 0x7f0ec44e80e0>, <function Saver.from_proto at 0x7f0ec44e8170>)) in proto functions.
+2024-10-25 15:13:45,553 Level 1 Registering ReduceDataset (None) in gradient.
+2024-10-25 15:13:45,562 Level 1 Registering Print (<function _PrintGrad at 0x7f0ec4303c20>) in gradient.
+2024-10-25 15:13:45,562 Level 1 Registering HistogramSummary (None) in gradient.
+2024-10-25 15:13:45,562 Level 1 Registering ImageSummary (None) in gradient.
+2024-10-25 15:13:45,562 Level 1 Registering AudioSummary (None) in gradient.
+2024-10-25 15:13:45,563 Level 1 Registering AudioSummaryV2 (None) in gradient.
+2024-10-25 15:13:45,563 Level 1 Registering MergeSummary (None) in gradient.
+2024-10-25 15:13:45,563 Level 1 Registering ScalarSummary (None) in gradient.
+2024-10-25 15:13:45,563 Level 1 Registering TensorSummary (None) in gradient.
+2024-10-25 15:13:45,563 Level 1 Registering TensorSummaryV2 (None) in gradient.
+2024-10-25 15:13:45,563 Level 1 Registering Timestamp (None) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering Pack (<function _PackGrad at 0x7f0ec490e710>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering Unpack (<function _UnpackGrad at 0x7f0ec41d5cb0>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering Concat (<function _ConcatGrad at 0x7f0ec41d5dd0>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering ConcatV2 (<function _ConcatGradV2 at 0x7f0ec41d5e60>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering ConcatOffset (None) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering Slice (<function _SliceGrad at 0x7f0ec41d5ef0>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering StridedSlice (<function _StridedSliceGrad at 0x7f0ec41d5f80>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering StridedSliceGrad (<function _StridedSliceGradGrad at 0x7f0ec41d9050>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering Split (<function _SplitGrad at 0x7f0ec41d90e0>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering SplitV (<function _SplitVGrad at 0x7f0ec41d9170>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering Const (None) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering Diag (<function _DiagGrad at 0x7f0ec41d9200>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering DiagPart (<function _DiagPartGrad at 0x7f0ec41d9290>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering MatrixDiag (<function _MatrixDiagGrad at 0x7f0ec41d9320>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering MatrixDiagV2 (<function _MatrixDiagV2Grad at 0x7f0ec41d93b0>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering MatrixDiagPart (<function _MatrixDiagPartGrad at 0x7f0ec41d9440>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering MatrixDiagPartV2 (<function _MatrixDiagPartV2Grad at 0x7f0ec41d94d0>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering MatrixSetDiag (<function _MatrixSetDiagGrad at 0x7f0ec41d9560>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering MatrixSetDiagV2 (<function _MatrixSetDiagGradV2 at 0x7f0ec41d95f0>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering MatrixBandPart (<function _MatrixBandPartGrad at 0x7f0ec41d9680>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering EditDistance (None) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering Fill (<function _FillGrad at 0x7f0ec41d9710>) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering ZerosLike (None) in gradient.
+2024-10-25 15:13:45,579 Level 1 Registering OnesLike (None) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering PreventGradient (<function _PreventGradientGrad at 0x7f0ec41d97a0>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering Gather (<function _GatherGrad at 0x7f0ec41d9830>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering GatherV2 (<function _GatherV2Grad at 0x7f0ec41d99e0>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering GatherNd (<function _GatherNdGrad at 0x7f0ec41d9a70>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering ResourceGatherNd (<function _ResourceGatherNdGrad at 0x7f0ec41d9b00>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering CheckNumerics (<function _CheckNumericsGrad at 0x7f0ec41d9b90>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering Identity (<function _IdGrad at 0x7f0ec41d9c20>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering PlaceholderWithDefault (<function _IdGrad at 0x7f0ec41d9c20>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering RefIdentity (<function _RefIdGrad at 0x7f0ec41d9cb0>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering IdentityN (<function _IdNGrad at 0x7f0ec41d9d40>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering StopGradient (None) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering Reshape (<function _ReshapeGrad at 0x7f0ec41d9dd0>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering InvertPermutation (None) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering ExpandDims (<function _ExpandDimsGrad at 0x7f0ec41d9ef0>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering Squeeze (<function _SqueezeGrad at 0x7f0ec41d9f80>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering Transpose (<function _TransposeGrad at 0x7f0ec41dc050>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering ConjugateTranspose (<function _ConjugateTransposeGrad at 0x7f0ec41dc0e0>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering Shape (None) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering ShapeN (None) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering Rank (None) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering Size (None) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering Tile (<function _TileGrad at 0x7f0ec41dc170>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering BroadcastGradientArgs (None) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering Pad (<function _PadGrad at 0x7f0ec41dc200>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering PadV2 (<function _PadGrad at 0x7f0ec41dc200>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering ReverseSequence (<function _ReverseSequenceGrad at 0x7f0ec41dc290>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering Reverse (<function _ReverseGrad at 0x7f0ec41dc320>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering ReverseV2 (<function _ReverseV2Grad at 0x7f0ec41dc3b0>) in gradient.
+2024-10-25 15:13:45,580 Level 1 Registering SpaceToBatch (<function _SpaceToBatchGrad at 0x7f0ec41dc440>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering SpaceToBatchND (<function _SpaceToBatchNDGrad at 0x7f0ec41dc4d0>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering BatchToSpace (<function _BatchToSpaceGrad at 0x7f0ec41dc560>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering BatchToSpaceND (<function _BatchToSpaceNDGrad at 0x7f0ec41dc5f0>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering SpaceToDepth (<function _SpaceToDepthGrad at 0x7f0ec41dc680>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering DepthToSpace (<function _DepthToSpaceGrad at 0x7f0ec41dc710>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering OneHot (None) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering MirrorPad (<function _MirrorPadGrad at 0x7f0ec41dc7a0>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering MirrorPadGrad (<function _MirrorPadGradGrad at 0x7f0ec41dc830>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering QuantizeAndDequantize (<function _QuantizeAndDequantizeGrad at 0x7f0ec41dc8c0>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering QuantizeAndDequantizeV2 (<function _QuantizeAndDequantizeV2Grad at 0x7f0ec41dc950>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering QuantizeAndDequantizeV3 (<function _QuantizeAndDequantizeV3Grad at 0x7f0ec41dc9e0>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering ExtractImagePatches (<function _ExtractImagePatchesGrad at 0x7f0ec41dca70>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering ExtractVolumePatches (<function _ExtractVolumePatchesGrad at 0x7f0ec41dcb00>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering ScatterNd (<function _ScatterNdGrad at 0x7f0ec41dcb90>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering TensorScatterUpdate (<function _TensorScatterUpdateGrad at 0x7f0ec41dcc20>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering TensorScatterAdd (<function _TensorScatterAddGrad at 0x7f0ec41dccb0>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering TensorScatterSub (<function _TensorScatterSubGrad at 0x7f0ec41dcd40>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering ScatterNdNonAliasingAdd (<function _ScatterNdNonAliasingAddGrad at 0x7f0ec41dcdd0>) in gradient.
+2024-10-25 15:13:45,581 Level 1 Registering BroadcastTo (<function _BroadcastToGrad at 0x7f0ec41dce60>) in gradient.
+2024-10-25 15:13:45,583 Level 1 Registering CudnnRNN (<function _cudnn_rnn_backward at 0x7f0ec41d5c20>) in gradient.
+2024-10-25 15:13:45,583 Level 1 Registering CudnnRNNV2 (<function _cudnn_rnn_backward_v2 at 0x7f0ec41ee440>) in gradient.
+2024-10-25 15:13:45,583 Level 1 Registering CudnnRNNV3 (<function _cudnn_rnn_backwardv3 at 0x7f0ec417e5f0>) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering DynamicPartition (<function _DynamicPartitionGrads at 0x7f0ec41e20e0>) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering ParallelDynamicStitch (<function _DynamicStitchGrads at 0x7f0ec417e9e0>) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering DynamicStitch (<function _DynamicStitchGrads at 0x7f0ec417e9e0>) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering Queue (None) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering QueueEnqueue (None) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering QueueEnqueueMany (None) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering QueueDequeue (None) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering QueueDequeueMany (None) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering QueueDequeueUpTo (None) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering QueueClose (None) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering QueueSize (None) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering Stack (None) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering StackPush (None) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering StackPop (None) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering StackClose (None) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering GetSessionHandle (None) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering GetSessionHandleV2 (None) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering GetSessionTensor (None) in gradient.
+2024-10-25 15:13:45,584 Level 1 Registering DeleteSessionTensor (None) in gradient.
+2024-10-25 15:13:45,585 Level 1 Registering Roll (<function _RollGrad at 0x7f0ec417e950>) in gradient.
+2024-10-25 15:13:45,585 Level 1 Registering ArgMax (<function _ArgMaxGrad at 0x7f0ec41a0830>) in gradient.
+2024-10-25 15:13:45,585 Level 1 Registering ArgMin (<function _ArgMinGrad at 0x7f0ec41a08c0>) in gradient.
+2024-10-25 15:13:45,585 Level 1 Registering EuclideanNorm (None) in gradient.
+2024-10-25 15:13:45,585 Level 1 Registering Sum (<function _SumGrad at 0x7f0ec41a0a70>) in gradient.
+2024-10-25 15:13:45,585 Level 1 Registering Max (<function _MaxGrad at 0x7f0ec41a0b90>) in gradient.
+2024-10-25 15:13:45,585 Level 1 Registering Min (<function _MinGrad at 0x7f0ec41a0c20>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering Mean (<function _MeanGrad at 0x7f0ec41a0cb0>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering Prod (<function _ProdGrad at 0x7f0ec41a0d40>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering SegmentSum (<function _SegmentSumGrad at 0x7f0ec41a0dd0>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering SegmentMean (<function _SegmentMeanGrad at 0x7f0ec41a0e60>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering SparseSegmentSum (<function _SparseSegmentSumGrad at 0x7f0ec41a0ef0>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering SparseSegmentSumWithNumSegments (<function _SparseSegmentSumWithNumSegmentsGrad at 0x7f0ec41a0f80>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering SparseSegmentMean (<function _SparseSegmentMeanGrad at 0x7f0ec41a3050>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering SparseSegmentMeanWithNumSegments (<function _SparseSegmentMeanWithNumSegmentsGrad at 0x7f0ec41a30e0>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering SparseSegmentSqrtN (<function _SparseSegmentSqrtNGrad at 0x7f0ec41a3170>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering SparseSegmentSqrtNWithNumSegments (<function _SparseSegmentSqrtNWithNumSegmentsGrad at 0x7f0ec41a3200>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering SegmentMin (<function _SegmentMinGrad at 0x7f0ec41a3320>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering SegmentMax (<function _SegmentMaxGrad at 0x7f0ec41a33b0>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering UnsortedSegmentSum (<function _UnsortedSegmentSumGrad at 0x7f0ec41a3560>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering UnsortedSegmentMax (<function _UnsortedSegmentMaxGrad at 0x7f0ec41a35f0>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering UnsortedSegmentMin (<function _UnsortedSegmentMinGrad at 0x7f0ec41a3680>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering UnsortedSegmentProd (<function _UnsortedSegmentProdGrad at 0x7f0ec41a3710>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering Abs (<function _AbsGrad at 0x7f0ec41a37a0>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering Neg (<function _NegGrad at 0x7f0ec41a3830>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering Inv (<function _InvGrad at 0x7f0ec41a38c0>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering Reciprocal (<function _ReciprocalGrad at 0x7f0ec41a3950>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering InvGrad (<function _InvGradGrad at 0x7f0ec41a39e0>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering ReciprocalGrad (<function _ReciprocalGradGrad at 0x7f0ec41a3a70>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering Square (<function _SquareGrad at 0x7f0ec41a3b00>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering Sqrt (<function _SqrtGrad at 0x7f0ec41a3b90>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering SqrtGrad (<function _SqrtGradGrad at 0x7f0ec41a3c20>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering Rsqrt (<function _RsqrtGrad at 0x7f0ec41a3cb0>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering RsqrtGrad (<function _RsqrtGradGrad at 0x7f0ec41a3d40>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering Exp (<function _ExpGrad at 0x7f0ec41a3dd0>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering Expm1 (<function _Expm1Grad at 0x7f0ec41a3e60>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering Log (<function _LogGrad at 0x7f0ec41a3ef0>) in gradient.
+2024-10-25 15:13:45,586 Level 1 Registering Log1p (<function _Log1pGrad at 0x7f0ec41a3f80>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Xlogy (<function _XLogyGrad at 0x7f0ec41a7050>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Xdivy (<function _XDivyGrad at 0x7f0ec41a70e0>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Sinh (<function _SinhGrad at 0x7f0ec41a7170>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Cosh (<function _CoshGrad at 0x7f0ec41a7200>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Tanh (<function _TanhGrad at 0x7f0ec41a7290>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Asinh (<function _AsinhGrad at 0x7f0ec41a7320>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Acosh (<function _AcoshGrad at 0x7f0ec41a73b0>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Atanh (<function _AtanhGrad at 0x7f0ec41a7440>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering TanhGrad (<function _TanhGradGrad at 0x7f0ec41a74d0>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Erf (<function _ErfGrad at 0x7f0ec41a7560>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Erfc (<function _ErfcGrad at 0x7f0ec41a75f0>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Lgamma (<function _LgammaGrad at 0x7f0ec41a7680>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Digamma (<function _DigammaGrad at 0x7f0ec41a7710>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering BesselI0e (<function _BesselI0eGrad at 0x7f0ec41a77a0>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering BesselI1e (<function _BesselI1eGrad at 0x7f0ec41a7830>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Igamma (<function _IgammaGrad at 0x7f0ec41a78c0>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Igammac (<function _IgammacGrad at 0x7f0ec41a7950>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Betainc (<function _BetaincGrad at 0x7f0ec41a79e0>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Zeta (<function _ZetaGrad at 0x7f0ec41a7a70>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Polygamma (<function _PolygammaGrad at 0x7f0ec41a7b00>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Sigmoid (<function _SigmoidGrad at 0x7f0ec41a7b90>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering SigmoidGrad (<function _SigmoidGradGrad at 0x7f0ec41a7c20>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Sign (<function _SignGrad at 0x7f0ec41a7cb0>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Sin (<function _SinGrad at 0x7f0ec41a7d40>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Cos (<function _CosGrad at 0x7f0ec41a7dd0>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Tan (<function _TanGrad at 0x7f0ec41a7e60>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Asin (<function _AsinGrad at 0x7f0ec41a7ef0>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Acos (<function _AcosGrad at 0x7f0ec41a7f80>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Atan (<function _AtanGrad at 0x7f0ec41aa050>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering Atan2 (<function _Atan2Grad at 0x7f0ec41aa0e0>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering AddN (<function _AddNGrad at 0x7f0ec41aa170>) in gradient.
+2024-10-25 15:13:45,587 Level 1 Registering AddV2 (<function _AddGrad at 0x7f0ec41aa290>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering Add (<function _AddGrad at 0x7f0ec41aa290>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering Sub (<function _SubGrad at 0x7f0ec41aa320>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering Mul (<function _MulGrad at 0x7f0ec41aa3b0>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering MulNoNan (<function _MulNoNanGrad at 0x7f0ec41aa440>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering Div (<function _DivGrad at 0x7f0ec41aa4d0>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering FloorDiv (<function _FloorDivGrad at 0x7f0ec41aa560>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering FloorMod (<function _FloorModGrad at 0x7f0ec41aa5f0>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering TruncateDiv (<function _TruncateDivGrad at 0x7f0ec41aa680>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering RealDiv (<function _RealDivGrad at 0x7f0ec41aa710>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering DivNoNan (<function _DivNoNanGrad at 0x7f0ec41aa7a0>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering Pow (<function _PowGrad at 0x7f0ec41aa830>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering Maximum (<function _MaximumGrad at 0x7f0ec41aa9e0>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering Minimum (<function _MinimumGrad at 0x7f0ec41aaa70>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering SquaredDifference (<function _SquaredDifferenceGrad at 0x7f0ec41aab00>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering Less (None) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering LessEqual (None) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering Greater (None) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering GreaterEqual (None) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering Equal (None) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering ApproximateEqual (None) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering NotEqual (None) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering LogicalAnd (None) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering LogicalOr (None) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering LogicalNot (None) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering Select (<function _SelectGrad at 0x7f0ec41aab90>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering SelectV2 (<function _SelectGradV2 at 0x7f0ec41aac20>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering MatMul (<function _MatMulGrad at 0x7f0ec41aadd0>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering SparseMatMul (<function _SparseMatMulGrad at 0x7f0ec41aae60>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering Floor (<function _FloorGrad at 0x7f0ec41aaef0>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering Ceil (<function _CeilGrad at 0x7f0ec41aaf80>) in gradient.
+2024-10-25 15:13:45,588 Level 1 Registering Round (<function _RoundGrad at 0x7f0ec41af050>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering Rint (<function _RintGrad at 0x7f0ec41af0e0>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering BatchMatMul (<function _BatchMatMul at 0x7f0ec41af170>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering BatchMatMulV2 (<function _BatchMatMulV2 at 0x7f0ec41af200>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering Range (None) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering LinSpace (None) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering Complex (<function _ComplexGrad at 0x7f0ec41af290>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering Real (<function _RealGrad at 0x7f0ec41af320>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering Imag (<function _ImagGrad at 0x7f0ec41af3b0>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering Angle (<function _AngleGrad at 0x7f0ec41af440>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering Conj (<function _ConjGrad at 0x7f0ec41af4d0>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering ComplexAbs (<function _ComplexAbsGrad at 0x7f0ec41af560>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering Cast (<function _CastGrad at 0x7f0ec41af5f0>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering Cross (<function _CrossGrad at 0x7f0ec41af680>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering Cumsum (<function _CumsumGrad at 0x7f0ec41af710>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering Cumprod (<function _CumprodGrad at 0x7f0ec41af7a0>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering CumulativeLogsumexp (<function _CumulativeLogsumexpGrad at 0x7f0ec41af830>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering NextAfter (<function _NextAfterGrad at 0x7f0ec41af8c0>) in gradient.
+2024-10-25 15:13:45,589 Level 1 Registering RandomGamma (<function _RandomGammaGrad at 0x7f0ec41afb00>) in gradient.
+2024-10-25 15:13:45,591 Level 1 Registering BlockLSTM (<function _block_lstm_grad at 0x7f0ec41afa70>) in gradient.
+2024-10-25 15:13:45,591 Level 1 Registering BlockLSTMV2 (<function _block_lstm_grad at 0x7f0ec41afa70>) in gradient.
+2024-10-25 15:13:45,591 Level 1 Registering SparseAddGrad (None) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering SparseConcat (None) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering SparseReorder (<function _SparseReorderGrad at 0x7f0ec41afd40>) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering SparseAdd (<function _SparseAddGrad at 0x7f0ec414e560>) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering SparseTensorDenseAdd (<function _SparseTensorDenseAddGrad at 0x7f0ec414e5f0>) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering SparseReduceSum (<function _SparseReduceSumGrad at 0x7f0ec414e680>) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering SparseSlice (<function _SparseSliceGrad at 0x7f0ec414e710>) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering SparseTensorDenseMatMul (<function _SparseTensorDenseMatMulGrad at 0x7f0ec414e7a0>) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering SparseDenseCwiseAdd (<function _SparseDenseCwiseAddGrad at 0x7f0ec414e830>) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering SparseDenseCwiseMul (<function _SparseDenseCwiseMulGrad at 0x7f0ec414e950>) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering SparseDenseCwiseDiv (<function _SparseDenseCwiseDivGrad at 0x7f0ec414e9e0>) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering SparseSoftmax (<function _SparseSoftmaxGrad at 0x7f0ec414ea70>) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering SparseSparseMaximum (<function _SparseSparseMaximumGrad at 0x7f0ec414eb00>) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering SparseSparseMinimum (<function _SparseSparseMinimumGrad at 0x7f0ec414eb90>) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering SparseFillEmptyRows (<function _SparseFillEmptyRowsGrad at 0x7f0ec414ec20>) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering SparseToDense (<function _SparseToDenseGrad at 0x7f0ec414ecb0>) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering Assign (None) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering AssignAdd (None) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering AssignSub (None) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering ScatterAdd (None) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering ScatterSub (None) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering ScatterMul (None) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering ScatterDiv (None) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering ScatterNdUpdate (None) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering ScatterNdAdd (None) in gradient.
+2024-10-25 15:13:45,592 Level 1 Registering ScatterNdSub (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering ScatterNdMul (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering ScatterNdDiv (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArray (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayGrad (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArraySize (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayClose (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayV2 (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayGradV2 (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArraySizeV2 (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayCloseV2 (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayV3 (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayGradV3 (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayGradWithShape (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArraySizeV3 (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayCloseV3 (None) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayReadV3 (<function _TensorArrayReadGrad at 0x7f0ec41564d0>) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayReadV2 (<function _TensorArrayReadGrad at 0x7f0ec41564d0>) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayRead (<function _TensorArrayReadGrad at 0x7f0ec41564d0>) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayWriteV3 (<function _TensorArrayWriteGrad at 0x7f0ec4156560>) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayWriteV2 (<function _TensorArrayWriteGrad at 0x7f0ec4156560>) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayWrite (<function _TensorArrayWriteGrad at 0x7f0ec4156560>) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayGatherV3 (<function _TensorArrayGatherGrad at 0x7f0ec41565f0>) in gradient.
+2024-10-25 15:13:45,593 Level 1 Registering TensorArrayGatherV2 (<function _TensorArrayGatherGrad at 0x7f0ec41565f0>) in gradient.
+2024-10-25 15:13:45,594 Level 1 Registering TensorArrayGather (<function _TensorArrayGatherGrad at 0x7f0ec41565f0>) in gradient.
+2024-10-25 15:13:45,594 Level 1 Registering TensorArrayScatterV3 (<function _TensorArrayScatterGrad at 0x7f0ec4156680>) in gradient.
+2024-10-25 15:13:45,594 Level 1 Registering TensorArrayScatterV2 (<function _TensorArrayScatterGrad at 0x7f0ec4156680>) in gradient.
+2024-10-25 15:13:45,594 Level 1 Registering TensorArrayScatter (<function _TensorArrayScatterGrad at 0x7f0ec4156680>) in gradient.
+2024-10-25 15:13:45,594 Level 1 Registering TensorArrayConcatV3 (<function _TensorArrayConcatGrad at 0x7f0ec4156710>) in gradient.
+2024-10-25 15:13:45,594 Level 1 Registering TensorArrayConcatV2 (<function _TensorArrayConcatGrad at 0x7f0ec4156710>) in gradient.
+2024-10-25 15:13:45,594 Level 1 Registering TensorArrayConcat (<function _TensorArrayConcatGrad at 0x7f0ec4156710>) in gradient.
+2024-10-25 15:13:45,594 Level 1 Registering TensorArraySplitV3 (<function _TensorArraySplitGrad at 0x7f0ec41567a0>) in gradient.
+2024-10-25 15:13:45,594 Level 1 Registering TensorArraySplitV2 (<function _TensorArraySplitGrad at 0x7f0ec41567a0>) in gradient.
+2024-10-25 15:13:45,594 Level 1 Registering TensorArraySplit (<function _TensorArraySplitGrad at 0x7f0ec41567a0>) in gradient.
+2024-10-25 15:13:45,595 Level 1 Registering XlaBroadcastHelper (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,595 Level 1 Registering XlaConv (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,595 Level 1 Registering XlaDequantize (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,595 Level 1 Registering XlaDot (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,595 Level 1 Registering XlaDynamicSlice (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,596 Level 1 Registering XlaDynamicUpdateSlice (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,596 Level 1 Registering XlaEinsum (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,596 Level 1 Registering XlaIf (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,596 Level 1 Registering XlaKeyValueSort (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,596 Level 1 Registering XlaPad (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,596 Level 1 Registering XlaRecv (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,596 Level 1 Registering XlaReduce (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,596 Level 1 Registering XlaReduceWindow (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,596 Level 1 Registering XlaReplicaId (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,597 Level 1 Registering XlaSelectAndScatter (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,597 Level 1 Registering XlaSelfAdjointEig (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,597 Level 1 Registering XlaSend (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,597 Level 1 Registering XlaSort (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,597 Level 1 Registering XlaSvd (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,597 Level 1 Registering XlaWhile (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,598 Level 1 Registering XlaEinsum (<function _einsum_grad at 0x7f0ec41100e0>) in gradient.
+2024-10-25 15:13:45,602 Level 1 Registering NcclAllReduce (<function _all_sum_grad at 0x7f0ec408ea70>) in gradient.
+2024-10-25 15:13:45,602 Level 1 Registering NcclReduce (<function _reduce_sum_grad at 0x7f0ec4091440>) in gradient.
+2024-10-25 15:13:45,602 Level 1 Registering NcclBroadcast (<function _broadcast_grad at 0x7f0ec4091560>) in gradient.
+2024-10-25 15:13:45,607 Level 1 Registering Conv2DBackpropInput (<function _Conv2DBackpropInputGrad at 0x7f0ec401f3b0>) in gradient.
+2024-10-25 15:13:45,607 Level 1 Registering Conv2DBackpropFilter (<function _Conv2DBackpropFilterGrad at 0x7f0ec4030cb0>) in gradient.
+2024-10-25 15:13:45,607 Level 1 Registering DepthwiseConv2dNativeBackpropInput (<function _DepthwiseConv2dNativeBackpropInputGrad at 0x7f0ec4030d40>) in gradient.
+2024-10-25 15:13:45,607 Level 1 Registering DepthwiseConv2dNativeBackpropFilter (<function _DepthwiseConv2dNativeBackpropFilterGrad at 0x7f0ec4030dd0>) in gradient.
+2024-10-25 15:13:45,607 Level 1 Registering Conv3D (<function _Conv3DGrad at 0x7f0ec4030e60>) in gradient.
+2024-10-25 15:13:45,607 Level 1 Registering Conv3DBackpropInputV2 (<function _Conv3DBackpropInputGrad at 0x7f0ec4030ef0>) in gradient.
+2024-10-25 15:13:45,607 Level 1 Registering Conv3DBackpropFilterV2 (<function _Conv3DBackpropFilterGrad at 0x7f0ec4030f80>) in gradient.
+2024-10-25 15:13:45,607 Level 1 Registering AvgPool3D (<function _AvgPool3DGrad at 0x7f0ec4036050>) in gradient.
+2024-10-25 15:13:45,607 Level 1 Registering AvgPool3DGrad (<function _AvgPool3DGradGrad at 0x7f0ec40360e0>) in gradient.
+2024-10-25 15:13:45,607 Level 1 Registering MaxPool3D (<function _MaxPool3DGrad at 0x7f0ec4036170>) in gradient.
+2024-10-25 15:13:45,607 Level 1 Registering MaxPool3DGrad (<function _MaxPool3DGradGrad at 0x7f0ec4036200>) in gradient.
+2024-10-25 15:13:45,607 Level 1 Registering MaxPool3DGradGrad (<function _MaxPool3DGradGradGrad at 0x7f0ec4036290>) in gradient.
+2024-10-25 15:13:45,607 Level 1 Registering Softmax (<function _SoftmaxGrad at 0x7f0ec4036320>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering LogSoftmax (<function _LogSoftmaxGrad at 0x7f0ec40363b0>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering BiasAdd (<function _BiasAddGrad at 0x7f0ec4036440>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering BiasAddGrad (<function _BiasAddGradGrad at 0x7f0ec40364d0>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering BiasAddV1 (<function _BiasAddGradV1 at 0x7f0ec4036560>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering Relu (<function _ReluGrad at 0x7f0ec40365f0>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering EluGrad (<function _EluGradGrad at 0x7f0ec4036680>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering SeluGrad (<function _SeluGradGrad at 0x7f0ec4036710>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering Relu6 (<function _Relu6Grad at 0x7f0ec40367a0>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering Relu6Grad (<function _Relu6GradGrad at 0x7f0ec4036830>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering LeakyRelu (<function _LeakyReluGrad at 0x7f0ec40368c0>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering LeakyReluGrad (<function _LeakyReluGradGrad at 0x7f0ec4036950>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering Elu (<function _EluGrad at 0x7f0ec40369e0>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering Selu (<function _SeluGrad at 0x7f0ec4036a70>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering Softplus (<function _SoftplusGrad at 0x7f0ec4036b00>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering SoftplusGrad (<function _SoftplusGradGrad at 0x7f0ec4036b90>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering Softsign (<function _SoftsignGrad at 0x7f0ec4036c20>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering ReluGrad (<function _ReluGradGrad at 0x7f0ec4036cb0>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering SoftmaxCrossEntropyWithLogits (<function _SoftmaxCrossEntropyWithLogitsGrad at 0x7f0ec4036dd0>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering SparseSoftmaxCrossEntropyWithLogits (<function _SparseSoftmaxCrossEntropyWithLogitsGrad at 0x7f0ec4036e60>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering Conv2D (<function _Conv2DGrad at 0x7f0ec4036ef0>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering DepthwiseConv2dNative (<function _DepthwiseConv2dNativeGrad at 0x7f0ec4036f80>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering Dilation2D (<function _Dilation2DGrad at 0x7f0ec3fba050>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering LRN (<function _LRNGrad at 0x7f0ec3fba0e0>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering AvgPool (<function _AvgPoolGrad at 0x7f0ec3fba170>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering AvgPoolGrad (<function _AvgPoolGradGrad at 0x7f0ec3fba200>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering MaxPool (<function _MaxPoolGrad at 0x7f0ec3fba290>) in gradient.
+2024-10-25 15:13:45,608 Level 1 Registering MaxPoolV2 (<function _MaxPoolGradV2 at 0x7f0ec3fba320>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering MaxPoolWithArgmax (<function _MaxPoolGradWithArgmax at 0x7f0ec3fba3b0>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering MaxPoolGrad (<function _MaxPoolGradGrad at 0x7f0ec3fba440>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering MaxPoolGradV2 (<function _MaxPoolGradGradV2 at 0x7f0ec3fba4d0>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering MaxPoolGradGrad (<function _MaxPoolGradGradGrad at 0x7f0ec3fba560>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering FractionalMaxPool (<function _FractionalMaxPoolGrad at 0x7f0ec3fba5f0>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering FractionalAvgPool (<function _FractionalAvgPoolGrad at 0x7f0ec3fba680>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering BatchNormWithGlobalNormalization (<function _BatchNormWithGlobalNormalizationGrad at 0x7f0ec3fba710>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering FusedBatchNorm (<function _FusedBatchNormGrad at 0x7f0ec3fba830>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering FusedBatchNormV2 (<function _FusedBatchNormV2Grad at 0x7f0ec3fba8c0>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering FusedBatchNormV3 (<function _FusedBatchNormV3Grad at 0x7f0ec3fba950>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering FusedBatchNormGrad (<function _FusedBatchNormGradGrad at 0x7f0ec3fbaa70>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering FusedBatchNormGradV2 (<function _FusedBatchNormGradGradV2 at 0x7f0ec3fbab00>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering FusedBatchNormGradV3 (<function _FusedBatchNormGradGradV3 at 0x7f0ec3fbab90>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering L2Loss (<function _L2LossGrad at 0x7f0ec3fbac20>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering TopKV2 (<function _TopKGrad at 0x7f0ec3fbacb0>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering TopK (<function _TopKGrad at 0x7f0ec3fbacb0>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering NthElement (<function _NthElementGrad at 0x7f0ec3fbad40>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering CTCLoss (<function _CTCLossGrad at 0x7f0ec4030c20>) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering CTCGreedyDecoder (None) in gradient.
+2024-10-25 15:13:45,609 Level 1 Registering CTCBeamSearchDecoder (None) in gradient.
+2024-10-25 15:13:45,612 Level 1 Registering SetSize (None) in gradient.
+2024-10-25 15:13:45,613 Level 1 Registering DenseToDenseSetOperation (None) in gradient.
+2024-10-25 15:13:45,613 Level 1 Registering DenseToSparseSetOperation (None) in gradient.
+2024-10-25 15:13:45,613 Level 1 Registering SparseToSparseSetOperation (None) in gradient.
+2024-10-25 15:13:45,622 Level 1 Registering XlaClusterOutput (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,622 Level 1 Registering XlaLaunch (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,622 Level 1 Registering XlaClusterOutput (<function _XlaClusterOutputGrad at 0x7f0ec3ed0b90>) in gradient.
+2024-10-25 15:13:45,629 Level 1 Registering AllToAll (<function _all_to_all_grad at 0x7f0ec3e5ce60>) in gradient.
+2024-10-25 15:13:45,629 Level 1 Registering CollectivePermute (<function _collective_permute_grad at 0x7f0ec3e67050>) in gradient.
+2024-10-25 15:13:45,629 Level 1 Registering CrossReplicaSum (<function _cross_replica_sum_grad at 0x7f0ec3e670e0>) in gradient.
+2024-10-25 15:13:45,629 Level 1 Registering TPUEmbeddingActivations (<function _embedding_activations_grad at 0x7f0ec3e67170>) in gradient.
+2024-10-25 15:13:45,629 Level 1 Registering TPUReplicatedInput (None) in gradient.
+2024-10-25 15:13:45,633 Level 1 Registering Switch (<function _SwitchGrad at 0x7f0ec3dba4d0>) in gradient.
+2024-10-25 15:13:45,633 Level 1 Registering RefSwitch (<function _SwitchGrad at 0x7f0ec3dba4d0>) in gradient.
+2024-10-25 15:13:45,633 Level 1 Registering Merge (<function _MergeGrad at 0x7f0ec3dbac20>) in gradient.
+2024-10-25 15:13:45,633 Level 1 Registering RefMerge (<function _RefMergeGrad at 0x7f0ec3dbacb0>) in gradient.
+2024-10-25 15:13:45,633 Level 1 Registering Exit (<function _ExitGrad at 0x7f0ec3dbad40>) in gradient.
+2024-10-25 15:13:45,633 Level 1 Registering RefExit (<function _ExitGrad at 0x7f0ec3dbad40>) in gradient.
+2024-10-25 15:13:45,634 Level 1 Registering NextIteration (<function _NextIterationGrad at 0x7f0ec3dbadd0>) in gradient.
+2024-10-25 15:13:45,634 Level 1 Registering RefNextIteration (<function _RefNextIterationGrad at 0x7f0ec3dbae60>) in gradient.
+2024-10-25 15:13:45,634 Level 1 Registering Enter (<function _EnterGrad at 0x7f0ec3dbaef0>) in gradient.
+2024-10-25 15:13:45,634 Level 1 Registering RefEnter (<function _RefEnterGrad at 0x7f0ec3dbaf80>) in gradient.
+2024-10-25 15:13:45,634 Level 1 Registering LoopCond (<function _LoopCondGrad at 0x7f0ec3dbf050>) in gradient.
+2024-10-25 15:13:45,637 Level 1 Registering ResizeNearestNeighbor (<function _ResizeNearestNeighborGrad at 0x7f0ec3dbab90>) in gradient.
+2024-10-25 15:13:45,637 Level 1 Registering ResizeBilinear (<function _ResizeBilinearGrad at 0x7f0ec3de9680>) in gradient.
+2024-10-25 15:13:45,637 Level 1 Registering ScaleAndTranslate (<function _ScaleAndTranslateGrad at 0x7f0ec3d8a290>) in gradient.
+2024-10-25 15:13:45,637 Level 1 Registering ResizeBicubic (<function _ResizeBicubicGrad at 0x7f0ec3d8a320>) in gradient.
+2024-10-25 15:13:45,637 Level 1 Registering CropAndResize (<function _CropAndResizeGrad at 0x7f0ec3d8a3b0>) in gradient.
+2024-10-25 15:13:45,637 Level 1 Registering RGBToHSV (<function _RGBToHSVGrad at 0x7f0ec3d8a4d0>) in gradient.
+2024-10-25 15:13:45,638 Level 1 Registering MatrixInverse (<function _MatrixInverseGrad at 0x7f0ec3dbf560>) in gradient.
+2024-10-25 15:13:45,638 Level 1 Registering MatrixDeterminant (<function _MatrixDeterminantGrad at 0x7f0ec3d99ef0>) in gradient.
+2024-10-25 15:13:45,638 Level 1 Registering MatrixSquareRoot (<function _MatrixSquareRootGrad at 0x7f0ec3da2830>) in gradient.
+2024-10-25 15:13:45,638 Level 1 Registering LogMatrixDeterminant (<function _LogMatrixDeterminantGrad at 0x7f0ec3da28c0>) in gradient.
+2024-10-25 15:13:45,638 Level 1 Registering Cholesky (<function _CholeskyGrad at 0x7f0ec3da2950>) in gradient.
+2024-10-25 15:13:45,638 Level 1 Registering Qr (<function _QrGrad at 0x7f0ec3da29e0>) in gradient.
+2024-10-25 15:13:45,638 Level 1 Registering MatrixSolve (<function _MatrixSolveGrad at 0x7f0ec3da2a70>) in gradient.
+2024-10-25 15:13:45,638 Level 1 Registering MatrixSolveLs (<function _MatrixSolveLsGrad at 0x7f0ec3da2b00>) in gradient.
+2024-10-25 15:13:45,638 Level 1 Registering MatrixTriangularSolve (<function _MatrixTriangularSolveGrad at 0x7f0ec3da2b90>) in gradient.
+2024-10-25 15:13:45,638 Level 1 Registering SelfAdjointEigV2 (<function _SelfAdjointEigV2Grad at 0x7f0ec3da2c20>) in gradient.
+2024-10-25 15:13:45,638 Level 1 Registering Svd (<function _SvdGrad at 0x7f0ec3da2cb0>) in gradient.
+2024-10-25 15:13:45,638 Level 1 Registering TridiagonalMatMul (<function _TridiagonalMatMulGrad at 0x7f0ec3da2e60>) in gradient.
+2024-10-25 15:13:45,638 Level 1 Registering TridiagonalSolve (<function _TridiagonalSolveGrad at 0x7f0ec3da2ef0>) in gradient.
+2024-10-25 15:13:45,638 Level 1 Registering OptionalFromValue (<function _OptionalFromValueGrad at 0x7f0ec3d96950>) in gradient.
+2024-10-25 15:13:45,639 Level 1 Registering OptionalGetValue (<function _OptionalGetValueGrad at 0x7f0ec3da3440>) in gradient.
+2024-10-25 15:13:45,641 Level 1 Registering LookupTableFind (None) in gradient.
+2024-10-25 15:13:45,641 Level 1 Registering LookupTableFindV2 (None) in gradient.
+2024-10-25 15:13:45,641 Level 1 Registering LookupTableInsert (None) in gradient.
+2024-10-25 15:13:45,642 Level 1 Registering LookupTableInsertV2 (None) in gradient.
+2024-10-25 15:13:45,642 Level 1 Registering LookupTableSize (None) in gradient.
+2024-10-25 15:13:45,642 Level 1 Registering LookupTableSizeV2 (None) in gradient.
+2024-10-25 15:13:45,642 Level 1 Registering HashTable (None) in gradient.
+2024-10-25 15:13:45,642 Level 1 Registering HashTableV2 (None) in gradient.
+2024-10-25 15:13:45,642 Level 1 Registering InitializeTable (None) in gradient.
+2024-10-25 15:13:45,642 Level 1 Registering InitializeTableV2 (None) in gradient.
+2024-10-25 15:13:45,642 Level 1 Registering InitializeTableFromTextFile (None) in gradient.
+2024-10-25 15:13:45,642 Level 1 Registering InitializeTableFromTextFileV2 (None) in gradient.
+2024-10-25 15:13:45,642 Level 1 Registering MutableDenseHashTable (None) in gradient.
+2024-10-25 15:13:45,642 Level 1 Registering MutableDenseHashTableV2 (None) in gradient.
+2024-10-25 15:13:45,642 Level 1 Registering MutableHashTable (None) in gradient.
+2024-10-25 15:13:45,642 Level 1 Registering MutableHashTableV2 (None) in gradient.
+2024-10-25 15:13:45,642 Level 1 Registering MutableHashTableOfTensors (None) in gradient.
+2024-10-25 15:13:45,642 Level 1 Registering MutableHashTableOfTensorsV2 (None) in gradient.
+2024-10-25 15:13:45,643 Level 1 Registering DecodeProtoV2 (None) in gradient.
+2024-10-25 15:13:45,643 Level 1 Registering EncodeProto (None) in gradient.
+2024-10-25 15:13:45,643 Level 1 Registering StatelessMultinomial (None) in gradient.
+2024-10-25 15:13:45,644 Level 1 Registering StatelessRandomNormal (None) in gradient.
+2024-10-25 15:13:45,644 Level 1 Registering StatelessRandomUniform (None) in gradient.
+2024-10-25 15:13:45,644 Level 1 Registering StatelessRandomUniformInt (None) in gradient.
+2024-10-25 15:13:45,644 Level 1 Registering StatelessTruncatedNormal (None) in gradient.
+2024-10-25 15:13:45,715 Level 1 Registering BitwiseAnd (None) in gradient.
+2024-10-25 15:13:45,715 Level 1 Registering BitwiseOr (None) in gradient.
+2024-10-25 15:13:45,715 Level 1 Registering BitwiseXor (None) in gradient.
+2024-10-25 15:13:45,715 Level 1 Registering Invert (None) in gradient.
+2024-10-25 15:13:45,715 Level 1 Registering PopulationCount (None) in gradient.
+2024-10-25 15:13:45,715 Level 1 Registering LeftShift (None) in gradient.
+2024-10-25 15:13:45,715 Level 1 Registering RightShift (None) in gradient.
+2024-10-25 15:13:45,719 Level 1 Registering queue_runners ((<class 'tensorflow.core.protobuf.queue_runner_pb2.QueueRunnerDef'>, <function QueueRunner.to_proto at 0x7f0ec3c338c0>, <function QueueRunner.from_proto at 0x7f0ec3c33950>)) in proto functions.
+2024-10-25 15:13:45,720 Level 1 Registering RandomCrop (None) in gradient.
+2024-10-25 15:13:45,720 Level 1 Registering HSVToRGB (None) in gradient.
+2024-10-25 15:13:45,720 Level 1 Registering DrawBoundingBoxes (None) in gradient.
+2024-10-25 15:13:45,721 Level 1 Registering SampleDistortedBoundingBox (None) in gradient.
+2024-10-25 15:13:45,721 Level 1 Registering SampleDistortedBoundingBoxV2 (None) in gradient.
+2024-10-25 15:13:45,721 Level 1 Registering ExtractGlimpse (None) in gradient.
+2024-10-25 15:13:45,721 Level 1 Registering NonMaxSuppression (None) in gradient.
+2024-10-25 15:13:45,721 Level 1 Registering NonMaxSuppressionV2 (None) in gradient.
+2024-10-25 15:13:45,721 Level 1 Registering NonMaxSuppressionWithOverlaps (None) in gradient.
+2024-10-25 15:13:45,846 Level 1 Registering FFT (<function _fft_grad at 0x7f0ebf25e830>) in gradient.
+2024-10-25 15:13:45,846 Level 1 Registering IFFT (<function _ifft_grad at 0x7f0ebf25e8c0>) in gradient.
+2024-10-25 15:13:45,847 Level 1 Registering FFT2D (<function _fft2d_grad at 0x7f0ebf25e950>) in gradient.
+2024-10-25 15:13:45,847 Level 1 Registering IFFT2D (<function _ifft2d_grad at 0x7f0ebf25e9e0>) in gradient.
+2024-10-25 15:13:45,847 Level 1 Registering FFT3D (<function _fft3d_grad at 0x7f0ebf25ea70>) in gradient.
+2024-10-25 15:13:45,847 Level 1 Registering IFFT3D (<function _ifft3d_grad at 0x7f0ebf25eb00>) in gradient.
+2024-10-25 15:13:45,847 Level 1 Registering RFFT (<function _rfft_grad_helper.<locals>._grad at 0x7f0ebf25edd0>) in gradient.
+2024-10-25 15:13:45,847 Level 1 Registering IRFFT (<function _irfft_grad_helper.<locals>._grad at 0x7f0ebf25ee60>) in gradient.
+2024-10-25 15:13:45,847 Level 1 Registering RFFT2D (<function _rfft_grad_helper.<locals>._grad at 0x7f0ebf25eef0>) in gradient.
+2024-10-25 15:13:45,847 Level 1 Registering IRFFT2D (<function _irfft_grad_helper.<locals>._grad at 0x7f0ebf25ef80>) in gradient.
+2024-10-25 15:13:45,855 Level 1 Registering Reciprocal,flops (<function _reciprocal_flops at 0x7f0ebf1e7ef0>) in statistical functions.
+2024-10-25 15:13:45,855 Level 1 Registering Square,flops (<function _square_flops at 0x7f0ebf1e7f80>) in statistical functions.
+2024-10-25 15:13:45,855 Level 1 Registering Rsqrt,flops (<function _rsqrt_flops at 0x7f0ebf1ed050>) in statistical functions.
+2024-10-25 15:13:45,855 Level 1 Registering Log,flops (<function _log_flops at 0x7f0ebf1ed0e0>) in statistical functions.
+2024-10-25 15:13:45,855 Level 1 Registering Neg,flops (<function _neg_flops at 0x7f0ebf1ed170>) in statistical functions.
+2024-10-25 15:13:45,855 Level 1 Registering AssignSub,flops (<function _assign_sub_flops at 0x7f0ebf1ed200>) in statistical functions.
+2024-10-25 15:13:45,855 Level 1 Registering AssignAdd,flops (<function _assign_add_flops at 0x7f0ebf1ed290>) in statistical functions.
+2024-10-25 15:13:45,855 Level 1 Registering L2Loss,flops (<function _l2_loss_flops at 0x7f0ebf1ed320>) in statistical functions.
+2024-10-25 15:13:45,855 Level 1 Registering Softmax,flops (<function _softmax_flops at 0x7f0ebf1ed3b0>) in statistical functions.
+2024-10-25 15:13:45,855 Level 1 Registering Add,flops (<function _add_flops at 0x7f0ebf1ed4d0>) in statistical functions.
+2024-10-25 15:13:45,855 Level 1 Registering Sub,flops (<function _sub_flops at 0x7f0ebf1ed560>) in statistical functions.
+2024-10-25 15:13:45,855 Level 1 Registering Mul,flops (<function _mul_flops at 0x7f0ebf1ed5f0>) in statistical functions.
+2024-10-25 15:13:45,855 Level 1 Registering RealDiv,flops (<function _real_div_flops at 0x7f0ebf1ed680>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering Maximum,flops (<function _maximum_flops at 0x7f0ebf1ed710>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering Minimum,flops (<function _minimum_flops at 0x7f0ebf1ed7a0>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering Pow,flops (<function _pow_flops at 0x7f0ebf1ed830>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering RsqrtGrad,flops (<function _rsqrt_grad_flops at 0x7f0ebf1ed8c0>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering GreaterEqual,flops (<function _greater_equal_flops at 0x7f0ebf1ed950>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering Greater,flops (<function _greater_flops at 0x7f0ebf1ed9e0>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering LessEqual,flops (<function _less_equal_flops at 0x7f0ebf1eda70>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering Less,flops (<function _less_flops at 0x7f0ebf1edb00>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering Equal,flops (<function _equal_flops at 0x7f0ebf1edb90>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering NotEqual,flops (<function _not_equal_flops at 0x7f0ebf1edc20>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering SquaredDifference,flops (<function _squared_difference_flops at 0x7f0ebf1edcb0>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering Mean,flops (<function _mean_flops at 0x7f0ebf1eddd0>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering Sum,flops (<function _sum_flops at 0x7f0ebf1ede60>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering ArgMax,flops (<function _arg_max_flops at 0x7f0ebf1edef0>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering ArgMin,flops (<function _arg_min_flops at 0x7f0ebf1edf80>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering BiasAddGrad,flops (<function _bias_add_grad_flops at 0x7f0ebf1f0050>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering AvgPool,flops (<function _avg_pool_flops at 0x7f0ebf1f0200>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering MaxPool,flops (<function _max_pool_flops at 0x7f0ebf1f0290>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering AvgPoolGrad,flops (<function _avg_pool_grad_flops at 0x7f0ebf1f0320>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering MaxPoolGrad,flops (<function _max_pool_grad_flops at 0x7f0ebf1f03b0>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering Conv2DBackpropInput,flops (<function _conv_2d_backprop_input_flops at 0x7f0ebf1f0440>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering Conv2DBackpropFilter,flops (<function _conv_2d_backprop_filter_flops at 0x7f0ebf1f04d0>) in statistical functions.
+2024-10-25 15:13:45,856 Level 1 Registering AddN,flops (<function _add_n_flops at 0x7f0ebf1f0560>) in statistical functions.
+2024-10-25 15:13:45,861 Level 1 Registering Fact (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,865 Level 1 Registering SdcaFprint (None) in gradient.
+2024-10-25 15:13:45,865 Level 1 Registering SdcaOptimizer (None) in gradient.
+2024-10-25 15:13:45,866 Level 1 Registering SdcaOptimizerV2 (None) in gradient.
+2024-10-25 15:13:45,866 Level 1 Registering SdcaShrinkL1 (None) in gradient.
+2024-10-25 15:13:45,870 Level 1 Registering GenerateVocabRemapping (None) in gradient.
+2024-10-25 15:13:45,871 Level 1 Registering LoadAndRemapMatrix (None) in gradient.
+2024-10-25 15:13:45,895 Level 1 Registering AudioMicrofrontend (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:45,905 Level 1 Registering AudioMicrofrontend (None) in gradient.
+2024-10-25 15:13:45,936 Level 1 Registering tpu_estimator_iterations_per_loop ((<class 'tensorflow.core.framework.variable_pb2.VariableDef'>, <function _to_proto_fn at 0x7f0ec49dcf80>, <function _from_proto_fn at 0x7f0ec3f8d710>)) in proto functions.
+2024-10-25 15:13:45,940 Level 1 Registering If (<function _IfGrad at 0x7f0ebea6a050>) in gradient.
+2024-10-25 15:13:45,940 Level 1 Registering StatelessIf (<function _IfGrad at 0x7f0ebea6a050>) in gradient.
+2024-10-25 15:13:45,940 Level 1 Registering Case (<function _CaseGrad at 0x7f0ebea6add0>) in gradient.
+2024-10-25 15:13:45,996 INFO =====> Seed: 3, initial parameters: E=[169731.39], nu=[0.34282947], yield_stress=[6527.19], rho=[1510.8276]
+2024-10-25 15:13:46,355 INFO =====> Computing: epoch 0, motion poking-2, agent rectangle, data 0
+2024-10-25 15:13:46,365 INFO ===> New TaichiEnv created.
+2024-10-25 15:13:46,365 INFO ===> Specifications: horizon = 94, dt = 0.01, n_substeps = 50, dt_sub = 0.0002
+2024-10-25 15:13:46,382 Level 1 Registering Batch (<function _BatchGrad at 0x7f0ee28317a0>) in gradient.
+2024-10-25 15:13:46,382 Level 1 Registering Unbatch (<function _UnbatchGrad at 0x7f0ebc0830e0>) in gradient.
+2024-10-25 15:13:46,391 Level 1 Registering GRUBlockCell (<function _GRUBlockCellGrad at 0x7f0eb45b9680>) in gradient.
+2024-10-25 15:13:46,391 Level 1 Registering LSTMBlockCell (<function _LSTMBlockCellGrad at 0x7f0eb45d3680>) in gradient.
+2024-10-25 15:13:46,394 Level 1 Registering ZeroInitializer (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,395 Level 1 Registering ZeroVarInitializer (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,396 Level 1 Registering SparseFeatureCross (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,396 Level 1 Registering SparseFeatureCrossV2 (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,400 Level 1 Registering SparseFeatureCross (None) in gradient.
+2024-10-25 15:13:46,400 Level 1 Registering SparseFeatureCrossV2 (None) in gradient.
+2024-10-25 15:13:46,413 Level 1 Registering GDNLowerBound (<function GDN._lower_bound_grad at 0x7f0eb4251ef0>) in gradient.
+2024-10-25 15:13:46,450 Level 1 Registering ObtainNext (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,458 Level 1 Registering hparams ((<class 'tensorflow.contrib.training.python.training.hparam_pb2.HParamDef'>, <function HParams.to_proto at 0x7f0e94dcba70>, <function HParams.from_proto at 0x7f0e94dcbb00>)) in proto functions.
+2024-10-25 15:13:46,464 Level 1 Registering MaskedMatmul (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,464 Level 1 Registering WALSComputePartialLhsAndRhs (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,499 Level 1 Registering AdjustHsvInYiq (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,501 Level 1 Registering BipartiteMatch (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,501 Level 1 Registering ImageConnectedComponents (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,501 Level 1 Registering ImageProjectiveTransform (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,501 Level 1 Registering ImageProjectiveTransformV2 (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,505 Level 1 Registering ImageConnectedComponents (<function call_cpp_shape_fn at 0x7f0ee080a950>) in shape functions.
+2024-10-25 15:13:46,505 Level 1 Registering ImageProjectiveTransform (<function call_cpp_shape_fn at 0x7f0ee080a950>) in shape functions.
+2024-10-25 15:13:46,505 Level 1 Registering ImageProjectiveTransformV2 (<function call_cpp_shape_fn at 0x7f0ee080a950>) in shape functions.
+2024-10-25 15:13:46,505 Level 1 Registering ImageProjectiveTransformV2 (<function _image_projective_transform_grad at 0x7f0e948c9680>) in gradient.
+2024-10-25 15:13:46,505 Level 1 Registering BipartiteMatch (None) in gradient.
+2024-10-25 15:13:46,505 Level 1 Registering ImageConnectedComponents (None) in gradient.
+2024-10-25 15:13:46,505 Level 1 Registering SingleImageRandomDotStereograms (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,509 Level 1 Registering SingleImageRandomDotStereograms (None) in gradient.
+2024-10-25 15:13:46,525 Level 1 Registering BytesInUse (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,525 Level 1 Registering BytesLimit (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,525 Level 1 Registering MaxBytesInUse (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,538 Level 1 Registering PeriodicResample (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,538 Level 1 Registering PeriodicResampleOpGrad (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,540 Level 1 Registering PeriodicResample (<function _periodic_resample_grad_cc at 0x7f0e94030d40>) in gradient.
+2024-10-25 15:13:46,545 Level 1 Registering FoldFusedBatchNormGrad (<function _FoldFusedBatchNormGrad at 0x7f0d4f8777a0>) in gradient.
+2024-10-25 15:13:46,546 Level 1 Registering Resampler (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,547 Level 1 Registering ResamplerGrad (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,549 Level 1 Registering Resampler (<function _resampler_grad at 0x7f0d4f893e60>) in gradient.
+2024-10-25 15:13:46,549 Level 1 Registering ResamplerGrad (None) in gradient.
+2024-10-25 15:13:46,566 Level 1 Registering Rpc (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,566 Level 1 Registering TryRpc (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,566 Level 1 Registering Rpc (None) in gradient.
+2024-10-25 15:13:46,566 Level 1 Registering TryRpc (None) in gradient.
+2024-10-25 15:13:46,570 Level 1 Registering GatherTree (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,580 Level 1 Registering ReinterpretStringToFloat (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,580 Level 1 Registering ScatterAddNdim (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,585 Level 1 Registering CreateTreeVariable (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,585 Level 1 Registering DecisionTreeResourceHandleOp (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,586 Level 1 Registering FeatureUsageCounts (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,586 Level 1 Registering TraverseTreeV4 (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,586 Level 1 Registering TreeDeserialize (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,586 Level 1 Registering TreeIsInitializedOp (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,586 Level 1 Registering TreePredictionsV4 (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,586 Level 1 Registering TreeSerialize (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,586 Level 1 Registering TreeSize (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,587 Level 1 Registering UpdateModelV4 (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,593 Level 1 Registering TreeVariable (None) in gradient.
+2024-10-25 15:13:46,593 Level 1 Registering TreeSerialize (None) in gradient.
+2024-10-25 15:13:46,593 Level 1 Registering TreeDeserialize (None) in gradient.
+2024-10-25 15:13:46,593 Level 1 Registering TreeSize (None) in gradient.
+2024-10-25 15:13:46,593 Level 1 Registering TreePredictionsV4 (None) in gradient.
+2024-10-25 15:13:46,593 Level 1 Registering FeatureUsageCounts (None) in gradient.
+2024-10-25 15:13:46,594 Level 1 Registering CreateFertileStatsVariable (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,594 Level 1 Registering FertileStatsDeserialize (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,594 Level 1 Registering FertileStatsIsInitializedOp (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,594 Level 1 Registering FertileStatsResourceHandleOp (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,594 Level 1 Registering FertileStatsSerialize (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,594 Level 1 Registering FinalizeTree (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,594 Level 1 Registering GrowTreeV4 (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,594 Level 1 Registering ProcessInputV4 (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,599 Level 1 Registering FertileStatsVariable (None) in gradient.
+2024-10-25 15:13:46,600 Level 1 Registering FertileStatsSerialize (None) in gradient.
+2024-10-25 15:13:46,600 Level 1 Registering FertileStatsDeserialize (None) in gradient.
+2024-10-25 15:13:46,600 Level 1 Registering GrowTreeV4 (None) in gradient.
+2024-10-25 15:13:46,600 Level 1 Registering ProcessInputV4 (None) in gradient.
+2024-10-25 15:13:46,600 Level 1 Registering FinalizeTree (None) in gradient.
+2024-10-25 15:13:46,615 Level 1 Registering RemoteFusedGraphExecute (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,615 Level 1 Registering RemoteFusedGraphExecute (None) in gradient.
+2024-10-25 15:13:46,618 Level 1 Registering BigQueryReader (None) in gradient.
+2024-10-25 15:13:46,619 Level 1 Registering BigtableClient (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,619 Level 1 Registering BigtableLookupDataset (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,619 Level 1 Registering BigtablePrefixKeyDataset (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,619 Level 1 Registering BigtableRangeKeyDataset (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,619 Level 1 Registering BigtableSampleKeyPairsDataset (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,620 Level 1 Registering BigtableSampleKeysDataset (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,620 Level 1 Registering BigtableScanDataset (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,620 Level 1 Registering BigtableTable (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:13:46,620 Level 1 Registering DatasetToBigtable (<function _set_call_cpp_shape_fn.<locals>.call_without_requiring at 0x7f0ee080aa70>) in default shape functions.
+2024-10-25 15:14:56,951 INFO =====> Total loss: 6101.87744140625
+2024-10-25 15:14:56,952 INFO =====> Grad: [ 2.1178873e-04 -7.5189290e+00  3.3411491e-01 -1.4681290e+00
+ -1.2604061e+03 -6.7011752e+00]
+2024-10-25 15:14:56,952 INFO ========> Avg. Loss: point_distance_sr: 8811.88671875
+2024-10-25 15:14:56,952 INFO ========> Avg. Loss: point_distance_rs: 956.22314453125
+2024-10-25 15:14:56,952 INFO ========> Avg. Loss: chamfer_loss_pcd: 9768.109375
+2024-10-25 15:14:56,952 INFO ========> Avg. Loss: particle_distance_sr: 2377.341796875
+2024-10-25 15:14:56,953 INFO ========> Avg. Loss: particle_distance_rs: 2787.078369140625
+2024-10-25 15:14:56,953 INFO ========> Avg. Loss: chamfer_loss_particle: 5164.419921875
+2024-10-25 15:14:56,953 INFO ========> Avg. Loss: height_map_loss_pcd: 1416.8377685546875
+2024-10-25 15:14:56,953 INFO ========> Avg. Loss: emd_point_distance_loss: 983.334716796875
+2024-10-25 15:14:56,953 INFO ========> Avg. Loss: emd_particle_distance_loss: 6101.87744140625
+2024-10-25 15:14:56,953 INFO ========> Avg. Loss: total_loss: 6101.87744140625
+2024-10-25 15:14:56,954 INFO ========> Avg. grads: [ 2.1178873e-04 -7.5189290e+00  3.3411491e-01 -1.4681290e+00
+ -1.2604061e+03 -6.7011752e+00]
+2024-10-25 15:14:56,954 INFO ========> Num. aborted data so far: 0
+2024-10-25 15:14:56,955 INFO =====> Run validation at epoch 0
+2024-10-25 15:14:57,665 INFO ===> New TaichiEnv created.
+2024-10-25 15:14:57,666 INFO ===> Specifications: horizon = 94, dt = 0.01, n_substeps = 50, dt_sub = 0.0002

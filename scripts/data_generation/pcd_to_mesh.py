@@ -16,13 +16,15 @@ def main(args):
     agent = 'round'
     assert agent in ['round', 'rectangle', 'cylinder']
     data_ind = '0'
-    pcd_index = '1'
+    pcd_index = '0'
 
     script_path = os.path.dirname(os.path.abspath(__file__))
     script_path = os.path.join(script_path, '..')
-    data_path = os.path.join(script_path, '..', 'data',
-                             f'data-motion-{motion_name}-{motion_ind}',
-                             f'eef-{agent}')
+    # data_path = os.path.join(script_path, '..', 'data',
+    #                          f'data-motion-{motion_name}-{motion_ind}',
+    #                          f'eef-{agent}')
+    data_path = os.path.join(script_path, '..', 'data', 'other_mats',
+                             'slime')
     extra_data = False
     if extra_data:
         data_path = os.path.join(data_path, 'extra_data')
@@ -33,7 +35,7 @@ def main(args):
 
     print(f'Processing data {data_ind} and pcd {pcd_index}.')
     pcd_path = os.path.join(data_path, 'pcd_'+data_ind+pcd_index+'.ply')
-    bounding_box_array = np.load(os.path.join(script_path, 'reconstruction_bounding_box_array_in_base.npy'))
+    bounding_box_array = np.load(os.path.join(script_path, 'data_generation', 'reconstruction_bounding_box_array_in_base.npy'))
 
     bounding_box = o3d.geometry.AxisAlignedBoundingBox.create_from_points(points=o3d.utility.Vector3dVector(bounding_box_array))
     bounding_box.color = [1, 0, 0]
@@ -131,7 +133,7 @@ if __name__ == '__main__':
     description = ("This script generates meshes from point clouds. "
                    "For different point clouds one may need to fine-tune the radii used by the ball-pivoting algorithm to achieve better meshing details.")
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('--save', dest='save', default=False, type=bool,
+    parser.add_argument('--save', dest='save', default=True, type=bool,
                         help="Save the mesh. Not recommended as this alternates the files uploaded by the authors.")
     arguments = vars(parser.parse_args())
     main(arguments)

@@ -5,8 +5,8 @@ import numpy as np
 from time import time
 from torch.utils.tensorboard import SummaryWriter
 from doma.optimiser.adam import Adam, GD
-from doma.envs.sys_id_env import make_env, set_parameters
-from doma.engine.utils.misc import get_gpu_memory
+from doma.envs.sys_id_env import make_env
+from doma.engine.utils.misc import get_gpu_memory, set_parameters
 import psutil
 import json
 import logging
@@ -152,7 +152,7 @@ def main(arguments):
         'n_epoch': n_epoch,
         'seeds': seeds,
     }
-    if arguments['param_set'] == 1:
+    if contact_level == 2:
         training_config['lr_nu'] = 1e-3
         training_config['lr_yield_stress'] = 1e2
         training_config['lr_manipulator_friction'] = 0.1
@@ -256,7 +256,7 @@ def main(arguments):
 
             for i in range(n_datapoints):
                 motion_id = str(motion_ids[i])
-                trajectory = np.load(os.path.join(script_path, '..', 'trajectories',
+                trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories',
                                                   f'tr_{motion_name}_{motion_id}_v_dt_{dt_global:0.2f}.npy'))
                 horizon = trajectory.shape[0]
 
@@ -271,7 +271,7 @@ def main(arguments):
 
                 ti.reset()
                 ti.init(arch=backend, default_fp=DTYPE_TI, default_ip=ti.i32, fast_math=True, random_seed=seed,
-                        debug=False, check_out_of_bound=False, device_memory_GB=6)
+                        debug=False, check_out_of_bound=False, device_memory_GB=arguments['device_memory_GB'])
                 data_cfg = {
                     'data_path': training_data_path,
                     'data_ind': str(data_ind),
@@ -289,7 +289,7 @@ def main(arguments):
                 logging.info(f'=====> Computing: epoch {epoch}, motion {motion_name}-{motion_id}, agent {agent}, data {data_ind}')
                 env, mpm_env, init_state = make_env(data_cfg, env_cfg, loss_cfg, logger=logging)
                 set_parameters(mpm_env, env_cfg['material_id'],
-                               E=E.copy(), nu=nu.copy(), yield_stress=yield_stress.copy(), rho=rho.copy(),
+                               e=E.copy(), nu=nu.copy(), yield_stress=yield_stress.copy(), rho=rho.copy(),
                                ground_friction=ground_friction.copy(),
                                manipulator_friction=manipulator_friction.copy())
                 loss_info = forward_backward(mpm_env, init_state, trajectory)
@@ -341,8 +341,8 @@ def main(arguments):
                     logging.error(f'===> [Warning] Rho: {rho}, ground friction: {ground_friction}, manipulator friction: {manipulator_friction}')
                     n_aborted_data += 1
                 else:
-                    for i, v in loss.items():
-                        loss[i].append(loss_info[i])
+                    for j, v in loss.items():
+                        loss[j].append(loss_info[j])
                     grads.append(grad.copy())
 
                 print(f'=====> Total loss: {mpm_env.loss.total_loss[None]}')
@@ -375,7 +375,7 @@ def main(arguments):
             yield_stress = np.clip(yield_stress, yield_stress_range[0], yield_stress_range[1])
             rho = optim_rho.step(rho.copy(), avg_grad[3])
             rho = np.clip(rho, rho_range[0], rho_range[1])
-            if arguments['param_set'] == 1:
+            if contact_level == 2:
                 manipulator_friction = optim_mf.step(manipulator_friction.copy(), avg_grad[4])
                 manipulator_friction = np.clip(manipulator_friction, mf_range[0], mf_range[1])
                 ground_friction = optim_gf.step(ground_friction.copy(), avg_grad[5])
@@ -389,9 +389,9 @@ def main(arguments):
             logger.add_scalar(tag='Grad/yield_stress', scalar_value=avg_grad[2], global_step=epoch)
             logger.add_scalar(tag='Param/rho', scalar_value=rho, global_step=epoch)
             logger.add_scalar(tag='Grad/rho', scalar_value=avg_grad[3], global_step=epoch)
-            print(f"========> Epoch {epoch}: time={time() - t1}\n"
+            print(f"========> Epoch {epoch}: time={time() - t1} seconds\n"
                   f"========> E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
-            if arguments['param_set'] == 1:
+            if contact_level == 2:
                 logger.add_scalar(tag='Param/manipulator_friction', scalar_value=manipulator_friction, global_step=epoch)
                 logger.add_scalar(tag='Grad/manipulator_friction', scalar_value=avg_grad[4], global_step=epoch)
                 logger.add_scalar(tag='Param/ground_friction', scalar_value=ground_friction, global_step=epoch)
@@ -421,10 +421,11 @@ def main(arguments):
                 if agent == 'rectangle':
                     agent_init_euler = (0, 0, 45)
 
-                trajectory = np.load(os.path.join(script_path, '..',
+                trajectory = np.load(os.path.join(script_path, '..', 'data',
                                                   'trajectories', f'tr_{motion_name}_2_v_dt_{dt_global:0.2f}.npy'))
-                validation_data_path = os.path.join(script_path, '..',
+                validation_data_path = os.path.join(script_path, '..', 'data',
                                                     f'data-motion-{motion_name}-2', f'eef-{agent}', 'validation_data')
+                print(validation_data_path)
                 data_inds = [0, 1]
                 horizon = trajectory.shape[0]
                 for data_ind in data_inds:
@@ -447,7 +448,7 @@ def main(arguments):
                     env, mpm_env, init_state = make_env(validation_data_cfg, validation_env_cfg,
                                                         validation_loss_config, logger=logging)
                     set_parameters(mpm_env, validation_env_cfg['material_id'],
-                                   E=E.copy(), nu=nu.copy(), yield_stress=yield_stress.copy(), rho=rho.copy(),
+                                   e=E.copy(), nu=nu.copy(), yield_stress=yield_stress.copy(), rho=rho.copy(),
                                    ground_friction=ground_friction.copy(),
                                    manipulator_friction=manipulator_friction.copy())
                     loss_info = forward_backward(mpm_env, init_state, trajectory, backward=False)

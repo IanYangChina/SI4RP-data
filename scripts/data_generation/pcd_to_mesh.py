@@ -15,8 +15,8 @@ def main(args):
     assert motion_ind in ['1', '2']
     agent = 'round'
     assert agent in ['round', 'rectangle', 'cylinder']
-    data_ind = '0'
-    pcd_index = '0'
+    data_ind = '1'
+    pcd_index = '1'
 
     script_path = os.path.dirname(os.path.abspath(__file__))
     script_path = os.path.join(script_path, '..')
@@ -24,7 +24,7 @@ def main(args):
     #                          f'data-motion-{motion_name}-{motion_ind}',
     #                          f'eef-{agent}')
     data_path = os.path.join(script_path, '..', 'data', 'other_mats',
-                             'slime')
+                             'soil', 'pcd_to_mesh')
     extra_data = False
     if extra_data:
         data_path = os.path.join(data_path, 'extra_data')
@@ -68,13 +68,13 @@ def main(args):
     print(original_pcd)
     print(pcd)
 
-    radii = [0.0028, 0.003]
+    radii = [0.004]
     mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(pcd, o3d.utility.DoubleVector(radii))
 
-    o3d.visualization.draw_geometries([pcd, world_frame, bounding_box,  outliner, mesh],
-                                      width=800, height=800,
-                                      mesh_show_back_face=True,
-                                      mesh_show_wireframe=True)
+    # o3d.visualization.draw_geometries([pcd, world_frame, bounding_box,  outliner, mesh],
+    #                                   width=800, height=800,
+    #                                   mesh_show_back_face=True,
+    #                                   mesh_show_wireframe=True)
 
     mesh_path = os.path.join(data_path, 'mesh_'+data_ind+pcd_index+'.ply')
     o3d.io.write_triangle_mesh(mesh_path, mesh)
@@ -133,7 +133,7 @@ if __name__ == '__main__':
     description = ("This script generates meshes from point clouds. "
                    "For different point clouds one may need to fine-tune the radii used by the ball-pivoting algorithm to achieve better meshing details.")
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('--save', dest='save', default=True, type=bool,
+    parser.add_argument('--save', dest='save', default=True, action='store_true',
                         help="Save the mesh. Not recommended as this alternates the files uploaded by the authors.")
     arguments = vars(parser.parse_args())
     main(arguments)

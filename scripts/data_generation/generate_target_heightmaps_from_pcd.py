@@ -18,7 +18,7 @@ def run(args):
             fast_math=False, random_seed=1)
 
     height_map_res = args['hmr']
-    height_map_size = 0.11  # meter
+    height_map_size = 0.15  # meter
     height_map_xy_offset = (0.25 * 1000, 0.25 * 1000)
     height_map_pixel_size = height_map_size * 1000 / height_map_res
     height_map_pcd_target = ti.field(dtype=DTYPE_TI, shape=(height_map_res, height_map_res), needs_grad=True)
@@ -35,9 +35,10 @@ def run(args):
     script_path = os.path.join(script_path, '..')
     for motion in ['poking-1', 'poking-2', 'poking-shifting-1', 'poking-shifting-2', 'long-horizon']:
         for agent in ['cylinder', 'rectangle', 'round']:
-            for data_ind in [str(_) for _ in range(2)]:
-                data_path = os.path.join(script_path, '..', 'data',
-                                         f'data-motion-{motion}', f'eef-{agent}')
+            for data_ind in [str(_) for _ in range(1)]:
+                data_path = os.path.join(script_path, '..', 'data', 'other_mats',
+                                         'slime', 'long-motion-validation')
+                                         #f'data-motion-{motion}', f'eef-{agent}')
                 # hm = np.load(os.path.join(data_path, f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(down_sample_voxel_size)}.npy'))
                 # plt.imshow(hm, cmap='Greys')
                 # plt.show()
@@ -71,7 +72,7 @@ def run(args):
 
                 compute_height_map_pcd()
                 height_map_pcd = height_map_pcd_target.to_numpy()
-                plt.imshow(height_map_pcd, cmap='Greys')
+                plt.imshow(height_map_pcd, cmap='YlOrBr')
                 plt.show()
                 np.save(
                     os.path.join(data_path, f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(down_sample_voxel_size)}.npy'), height_map_pcd)
@@ -82,7 +83,7 @@ def run(args):
 if __name__ == '__main__':
     description = "This script generates target height maps from the fused point clouds."
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('--pd', dest='pd', default=3e7, type=float, help="Particle density")
+    parser.add_argument('--pd', dest='pd', default=4e7, type=float, help="Particle density")
     parser.add_argument('--vds', dest='vds', default=0.001, type=float, help="Voxel down sample size")
     parser.add_argument('--hmr', dest='hmr', default=32, type=int, help="Height map resolution")
     arguments = vars(parser.parse_args())

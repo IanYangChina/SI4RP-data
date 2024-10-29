@@ -86,6 +86,10 @@ def main(arguments):
         'height_map_res': 32,
         'height_map_size': 0.11,
     }
+    if arguments['soil']:
+        loss_cfg['height_map_size'] = 0.17
+    if arguments['slime']:
+        loss_cfg['height_map_size'] = 0.15
 
     # Parameter ranges
     E_range = (1e4, 3e5)
@@ -100,6 +104,14 @@ def main(arguments):
     assert contact_level in [1, 2], 'contact_level must be 1 or 2'
     dataset = arguments['dataset']
     assert dataset in ['12mix', '6mix', '1cyl', '1rec', '1round'], 'dataset must be 12mix, 6mix, 1cyl, 1rec, or 1round'
+    if arguments['slime']:
+        assert not arguments['soil'], 'Cannot use both slime and soil datasets.'
+        contact_level = 2
+        dataset = 'slime'
+    if arguments['soil']:
+        assert not arguments['slime'], 'Cannot use both slime and soil datasets.'
+        contact_level = 2
+        dataset = 'soil'
     motion_name = 'poking' if contact_level == 1 else 'poking-shifting'
 
     n_epoch = 100
@@ -247,12 +259,18 @@ def main(arguments):
                 motion_ids = [2]
                 data_inds = [0]
 
-                if arguments['dataset'] == '1cyl':
-                    agent_ids = [2]
-                elif arguments['dataset'] == '1rec':
+                if arguments['dataset'] == '1rec':
                     agent_ids = [0]
-                else:
+                elif arguments['dataset'] == '1round':
                     agent_ids = [1]
+                else:
+                    agent_ids = [2]
+
+            if arguments['slime'] or arguments['soil']:
+                n_datapoints = 1
+                motion_ids = [2]
+                agent_ids = [2]
+                data_inds = [0]
 
             for i in range(n_datapoints):
                 motion_id = str(motion_ids[i])
@@ -266,6 +284,10 @@ def main(arguments):
                     agent_init_euler = (0, 0, 45)
                 training_data_path = os.path.join(script_path, '..', 'data',
                                                   f'data-motion-{motion_name}-{motion_id}', f'eef-{agent}')
+                if arguments['slime']:
+                    training_data_path = os.path.join(script_path, '..', 'data', 'other_mats', 'slime')
+                if arguments['soil']:
+                    training_data_path = os.path.join(script_path, '..', 'data', 'other_mats', 'soil')
 
                 data_ind = data_inds[i]
 
@@ -356,6 +378,8 @@ def main(arguments):
             for i, v in loss.items():
                 loss[i] = np.mean(v)
             avg_grad = np.mean(grads, axis=0)
+            if arguments['hm_loss']:
+                avg_grad *= -1.0
 
             for i, v in loss.items():
                 print(f"========> Avg. Loss: {i}: {v}")
@@ -425,8 +449,15 @@ def main(arguments):
                                                   'trajectories', f'tr_{motion_name}_2_v_dt_{dt_global:0.2f}.npy'))
                 validation_data_path = os.path.join(script_path, '..', 'data',
                                                     f'data-motion-{motion_name}-2', f'eef-{agent}', 'validation_data')
-                print(validation_data_path)
                 data_inds = [0, 1]
+                if arguments['slime']:
+                    data_inds = [0]
+                    trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_long-horizon-{agent}_v_dt_{dt_global:0.2f}.npy'))
+                    validation_data_path = os.path.join(script_path, '..', 'data', 'other_mats', 'slime', 'long-motion-validation')
+                if arguments['soil']:
+                    data_inds = [0]
+                    trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_long-horizon-{agent}_v_dt_{dt_global:0.2f}.npy'))
+                    validation_data_path = os.path.join(script_path, '..', 'data', 'other_mats', 'soil', 'long-motion-validation')
                 horizon = trajectory.shape[0]
                 for data_ind in data_inds:
                     ti.reset()
@@ -518,6 +549,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--n_run', dest='n_run', type=int, default=-1, help='Run number. If -1, create a new run, otherwise store into the given run folder.')
     parser.add_argument('--seed', dest='seed', type=int, default=-1, help='Random seed. If -1, use 0, 1, 2.')
+    parser.add_argument('--slime', dest='slime', default=False, action='store_true', help='Use slime dataset.')
+    parser.add_argument('--soil', dest='soil', default=False, action='store_true', help='Use soil dataset.')
     parser.add_argument('--con_lv', dest='contact_level', type=int, default=1, choices=[1, 2], help='Contact level: 1 or 2')
     parser.add_argument('--dataset', dest='dataset', type=str, default='12mix', choices=['12mix', '6mix', '1cyl', '1rec', '1round'], help='Dataset: 12mix, 6mix, 1cyl, 1rec, 1round')
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7, help='Particle density')

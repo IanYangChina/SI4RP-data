@@ -440,7 +440,11 @@ def main(arguments):
                 'emd_particle_distance_loss': [],
                 'total_loss': []
             }
-            for agent in agents:
+            if arguments['slime'] or arguments['soil']:
+                agents_to_validate = ['cylinder']
+            else:
+                agents_to_validate = agents
+            for agent in agents_to_validate:
                 agent_init_euler = (0, 0, 0)
                 if agent == 'rectangle':
                     agent_init_euler = (0, 0, 45)

@@ -1,5 +1,7 @@
 /.idea
 imgui.ini
+/data/other_mats/*/*.vox
+/data/other_mats/*/long-motion-validation/*.vox
 /data/data-motion-long-horizon/eef-cylinder/*.vox
 /data/data-motion-long-horizon/eef-rectangle/*.vox
 /data/data-motion-long-horizon/eef-round/*.vox

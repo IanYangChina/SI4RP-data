@@ -3,6 +3,7 @@ import json
 import numpy as np
 from drl_implementation.agent.utils import plot as plot
 import matplotlib as mpl
+from copy import deepcopy as dcp
 
 mpl.use('TkAgg')
 import matplotlib.pyplot as plt
@@ -33,84 +34,22 @@ loss_types = ['point_distance_sr',
 params = ['E', 'nu', 'yield_stress', 'rho', 'mf', 'gf']
 
 
-def read_losses(run_ids, contact_level=0, dataset='12mix', save_meanstd=False):
+def read_losses(run_ids, contact_level=0, dataset='12mix',
+                extra_seeds=False, save_meanstd=False):
     """generate mean and deviation data from tensorboard logs"""
     assert contact_level in [1, 2]
-    assert dataset in ['12mix', '6mix', '1rec', '1round', '1cyl']
+    assert dataset in ['12mix', '6mix', '1rec', '1round', '1cyl', 'slime', 'soil']
     assert len(run_ids) > 0
     dir_prefix = f'level{contact_level}-{dataset}'
     for run_id in run_ids:
         run_dir = os.path.join(cwd, '..', 'optimisation-results',
                                f'{dir_prefix}-run{run_id}-logs', )
+        if extra_seeds:
+            run_dir = os.path.join(cwd, '..', 'optimisation-results',
+                                   f'{dir_prefix}-run{run_id}-extra-seeds-logs', )
         save_data_dir = os.path.join(run_dir, 'data')
         os.makedirs(save_data_dir, exist_ok=True)
-
-        data_dict = {
-            'seed-0': {
-                'training': {
-                    'point_distance_sr': [],
-                    'point_distance_rs': [],
-                    'chamfer_loss_pcd': [],
-                    'particle_distance_sr': [],
-                    'particle_distance_rs': [],
-                    'chamfer_loss_particle': [],
-                    'height_map_loss_pcd': [],
-                    'emd_point_distance_loss': [],
-                    'emd_particle_distance_loss': []
-                },
-                'validation': {
-                    'point_distance_sr': [],
-                    'point_distance_rs': [],
-                    'chamfer_loss_pcd': [],
-                    'particle_distance_sr': [],
-                    'particle_distance_rs': [],
-                    'chamfer_loss_particle': [],
-                    'height_map_loss_pcd': [],
-                    'emd_point_distance_loss': [],
-                    'emd_particle_distance_loss': []
-                },
-                'parameters': {
-                    'E': [],
-                    'nu': [],
-                    'yield_stress': [],
-                    'rho': [],
-                    'mf': [],
-                    'gf': []
-                }
-            },
-            'seed-1': {
-                'training': {
-                    'point_distance_sr': [],
-                    'point_distance_rs': [],
-                    'chamfer_loss_pcd': [],
-                    'particle_distance_sr': [],
-                    'particle_distance_rs': [],
-                    'chamfer_loss_particle': [],
-                    'height_map_loss_pcd': [],
-                    'emd_point_distance_loss': [],
-                    'emd_particle_distance_loss': []
-                },
-                'validation': {
-                    'point_distance_sr': [],
-                    'point_distance_rs': [],
-                    'chamfer_loss_pcd': [],
-                    'particle_distance_sr': [],
-                    'particle_distance_rs': [],
-                    'chamfer_loss_particle': [],
-                    'height_map_loss_pcd': [],
-                    'emd_point_distance_loss': [],
-                    'emd_particle_distance_loss': []
-                },
-                'parameters': {
-                    'E': [],
-                    'nu': [],
-                    'yield_stress': [],
-                    'rho': [],
-                    'mf': [],
-                    'gf': []
-                }
-            },
-            'seed-2': {
+        sub_data_dict = {
                 'training': {
                     'point_distance_sr': [],
                     'point_distance_rs': [],
@@ -142,9 +81,13 @@ def read_losses(run_ids, contact_level=0, dataset='12mix', save_meanstd=False):
                     'gf': []
                 }
             }
-        }
-
-        seeds = [0, 1, 2]
+        data_dict = {}
+        if extra_seeds:
+            seeds = [3, 4, 5, 6, 7, 8, 9, 10]
+        else:
+            seeds = [0, 1, 2]
+        for seed in seeds:
+            data_dict[f'seed-{seed}'] = dcp(sub_data_dict)
         for seed in seeds:
             seed_dir = os.path.join(run_dir, f'seed-{str(seed)}')
             for filename in os.listdir(seed_dir):
@@ -242,22 +185,34 @@ def read_losses(run_ids, contact_level=0, dataset='12mix', save_meanstd=False):
                                             file_name=os.path.join(save_data_dir, f'validation-{loss_type}.json'))
 
 
-def plot_legends():
-    legends = [
-        'PCD CD',
-        'PRT CD',
-        'PCD EMD',
-        'PRT EMD',
-    ]
+def plot_legends(extra_seeds=False):
+    if extra_seeds:
+        legends = [f'seed-{n}' for n in range(8)]
+        plt.rcParams.update({'font.size': 40})
+        plot.smoothed_plot_mean_deviation(
+            file=os.path.join(cwd, '..', 'figures', 'result-figs', 'legend-extra-seeds.pdf'),
+            legend_file=os.path.join(cwd, '..', 'figures', 'result-figs', 'legend-extra-seeds.pdf'),
+            horizontal_lines=None, linestyle='--', linewidth=3, handlelength=2,
+            legend=legends, legend_ncol=4, legend_frame=False,
+            legend_bbox_to_anchor=(1.6, 1.7),
+            legend_loc='upper right',
+            data_dict_list=[None for _ in range(len(legends))], legend_only=True)
+    else:
+        legends = [
+            'PCD CD',
+            'PRT CD',
+            'PCD EMD',
+            'PRT EMD',
+        ]
 
-    plot.smoothed_plot_mean_deviation(
-        file=os.path.join(cwd, '..', 'result-figs', 'legend.pdf'),
-        legend_file=os.path.join(cwd, '..', 'result-figs', 'legend.pdf'),
-        horizontal_lines=None, linestyle='--', linewidth=3, handlelength=2,
-        legend=legends, legend_ncol=4, legend_frame=False,
-        legend_bbox_to_anchor=(1.6, 1.1),
-        legend_loc='upper right',
-        data_dict_list=[None for _ in range(len(legends))], legend_only=True)
+        plot.smoothed_plot_mean_deviation(
+            file=os.path.join(cwd, '..', 'result-figs', 'legend.pdf'),
+            legend_file=os.path.join(cwd, '..', 'result-figs', 'legend.pdf'),
+            horizontal_lines=None, linestyle='--', linewidth=3, handlelength=2,
+            legend=legends, legend_ncol=4, legend_frame=False,
+            legend_bbox_to_anchor=(1.6, 1.1),
+            legend_loc='upper right',
+            data_dict_list=[None for _ in range(len(legends))], legend_only=True)
 
 
 def plot_loss_param_curves(contact_level=1):
@@ -272,7 +227,7 @@ def plot_loss_param_curves(contact_level=1):
     if contact_level == 1:
         params = ['E', 'nu', 'yield_stress', 'rho']
     plt.rcParams.update({'font.size': 40})
-    result_dir = os.path.join(cwd, '..', 'fugures', 'result-figs')
+    result_dir = os.path.join(cwd, '..', 'figures', 'result-figs')
     os.makedirs(result_dir, exist_ok=True)
 
     fig, axes = plt.subplots(5, 5, figsize=(5 * 5, 5 * 4))
@@ -482,6 +437,200 @@ def plot_loss_param_curves(contact_level=1):
     plt.close(fig)
 
 
+def plot_loss_param_curves_extra_seeds():
+    loss_types = ['chamfer_loss_pcd',
+                  'chamfer_loss_particle',
+                  'emd_point_distance_loss',
+                  'emd_particle_distance_loss',
+                  'height_map_loss_pcd'
+                  ]
+    params = ['E', 'nu', 'yield_stress', 'rho']
+    plt.rcParams.update({'font.size': 40})
+    result_dir = os.path.join(cwd, '..', 'figures', 'result-figs')
+    os.makedirs(result_dir, exist_ok=True)
+
+    fig, axes = plt.subplots(5, 3, figsize=(5 * 3, 5 * 4))
+    plt.subplots_adjust(wspace=0.05, hspace=0.1)
+    datasets = ['1rec', '1round', '1cyl']
+    dataset_name = ['1-rec.', '1-round', '1-cyl.']
+    case = 'validation'
+    for dataset_id in range(len(datasets)):
+        dataset = datasets[dataset_id]
+        dir_prefix = f'level1-{dataset}'
+        if dataset == '1rec':
+            y_axis_off = False
+        else:
+            y_axis_off = True
+        for loss_id in range(5):
+            title = None
+            loss_type = loss_types[loss_id]
+            if loss_type == 'chamfer_loss_pcd':
+                title = dataset_name[dataset_id]
+                y_label = 'PCD\nCD'
+                ylim_valid = [8720, 9670]
+            elif loss_type == 'chamfer_loss_particle':
+                y_label = 'PRT\nCD'
+                ylim_valid = [5850, 6750]
+            elif loss_type == 'emd_point_distance_loss':
+                y_label = 'PCD\nEMD'
+                ylim_valid = [1160, 1430]
+            elif loss_type == 'emd_particle_distance_loss':
+                y_label = 'PRT\nEMD'
+                ylim_valid = [5240, 7200]
+            elif loss_type == 'height_map_loss_pcd':
+                y_label = 'Height\nMap'
+                ylim_valid = [1970, 2380]
+            else:
+                raise ValueError('Unknown loss type')
+
+            yticks = (round(ylim_valid[0] * 1.03),
+                      round(ylim_valid[1] * 0.97))
+
+            color_pool = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
+                          'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan', 'k']
+            datas = []
+            colors = []
+            linestyles = []
+            linewidths = []
+            alphas = []
+            for run_id in [3]:
+                run_dir = os.path.join(cwd, '..', 'optimisation-results',
+                                       f'{dir_prefix}-run{run_id}-extra-seeds-logs', 'data')
+                losses = json.load(open(os.path.join(run_dir, 'raw_loss.json'), 'rb'))
+                n = 0
+                for seed in [3, 4, 5, 6, 7, 8, 9, 10]:
+                    datas.append(losses[f'seed-{seed}'][case][loss_type])
+                    colors.append(color_pool[n])
+                    linestyles.append('-')
+                    linewidths.append(2)
+                    alphas.append(1)
+                    n += 1
+
+            max_y = np.max(np.max(datas))
+            min_y = np.min(np.min(datas))
+            if case == 'training':
+                ylim_valid = (min_y * 0.995, max_y * 1.005)
+                delta_y = (max_y - min_y) / 30
+                yticks = (round(min_y + delta_y),
+                          round((min_y + max_y) / 2),
+                          round(max_y - delta_y))
+
+            # Plotting
+            axes[loss_id, dataset_id].set_xlabel(None)
+            axes[loss_id, dataset_id].set_xticks([])
+            if y_axis_off:
+                axes[loss_id, dataset_id].set_ylabel(None)
+                axes[loss_id, dataset_id].set_yticks([])
+            else:
+                axes[loss_id, dataset_id].set_ylabel(y_label, rotation='horizontal', horizontalalignment='left')
+                axes[loss_id, dataset_id].yaxis.set_label_coords(-0.8, 0.3)
+                if yticks is not None:
+                    axes[loss_id, dataset_id].set_yticks(yticks)
+            if ylim_valid[0] is not None:
+                axes[loss_id, dataset_id].set_ylim(ylim_valid)
+            if title is not None:
+                axes[loss_id, dataset_id].set_title(title)
+
+            window = 10
+            for t in range(len(datas)):
+                N = len(datas[t])
+                x = [i for i in range(N)]
+                if window != 0:
+                    running_avg = np.empty(N)
+                    for n in range(N):
+                        running_avg[n] = np.mean(datas[t][max(0, n - window):(n + 1)])
+                else:
+                    running_avg = datas[t]
+                axes[loss_id, dataset_id].plot(x, running_avg,
+                                               c=colors[t], linestyle=linestyles[t],
+                                               linewidth=linewidths[t], alpha=alphas[t])
+    plt.savefig(os.path.join(result_dir, f'loss-curves-level1-extra-seeds.pdf'),
+                bbox_inches='tight', pad_inches=0, dpi=500)
+    plt.close(fig)
+
+    fig, axes = plt.subplots(len(params), 3, figsize=(5 * 3, len(params) * 4))
+    plt.subplots_adjust(wspace=0.05, hspace=0.1)
+    for dataset_id in range(len(datasets)):
+        dataset = datasets[dataset_id]
+        dir_prefix = f'level1-{dataset}'
+        if dataset == '1rec':
+            y_axis_off = False
+        else:
+            y_axis_off = True
+
+        for p_id in range(len(params)):
+            p = params[p_id]
+            if p == 'E':
+                ylim_valid = [1e4 - 15000, 3e5 + 15000]
+                yticks = (1e4, 3e5)
+                yticklabels = ['1e4', '3e5']
+                y_label = 'Young\'s\nModulus\n$E$ (kPa)'
+            elif p == 'nu':
+                ylim_valid = [-0.03, 0.52]
+                yticks = (0, 0.5)
+                yticklabels = ['0', '0.5']
+                y_label = 'Poisson\'s\nRatio\n$\\nu$'
+            elif p == 'yield_stress':
+                ylim_valid = [1e3 - 1000, 2e4 + 1000]
+                yticks = (1e3, 2e4)
+                yticklabels = ['1e3', '2e4']
+                y_label = 'Yield\nStress\n$\\sigma_y$ (Pa)'
+            elif p == 'rho':
+                ylim_valid = [950, 2050]
+                yticks = (1000, 2000)
+                yticklabels = ['1e3', '2e3']
+                y_label = 'Material\nDensity\n$\\rho$ (kg/m$^3$)'
+            else:
+                raise ValueError('Unknown parameter')
+
+            color_pool = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
+                          'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan', 'k']
+            datas = []
+            colors = []
+            linewidths = []
+            for run_id in [3]:
+                run_dir = os.path.join(cwd, '..', 'optimisation-results', f'{dir_prefix}-run{run_id}-extra-seeds-logs', 'data')
+                losses = json.load(open(os.path.join(run_dir, 'raw_loss.json'), 'rb'))
+                n = 0
+                for seed in [3, 4, 5, 6, 7, 8, 9, 10]:
+                    datas.append(losses[f'seed-{seed}']['parameters'][p])
+                    colors.append(color_pool[n])
+                    linewidths.append(2)
+                    n += 1
+
+            # Plotting
+            axes[p_id, dataset_id].set_xlabel(None)
+            axes[p_id, dataset_id].set_xticks([])
+            if y_axis_off:
+                axes[p_id, dataset_id].set_ylabel(None)
+                axes[p_id, dataset_id].set_yticks([])
+            else:
+                axes[p_id, dataset_id].set_ylabel(y_label, rotation='horizontal', horizontalalignment='left')
+                axes[p_id, dataset_id].yaxis.set_label_coords(-0.8, 0.25)
+                if yticks is not None:
+                    axes[p_id, dataset_id].set_yticks(yticks, yticklabels)
+            if ylim_valid[0] is not None:
+                axes[p_id, dataset_id].set_ylim(ylim_valid)
+
+            window = 10
+            for t in range(len(datas)):
+                N = len(datas[t])
+                x = [i for i in range(N)]
+                if window != 0:
+                    running_avg = np.empty(N)
+                    for n in range(N):
+                        running_avg[n] = np.mean(datas[t][max(0, n - window):(n + 1)])
+                else:
+                    running_avg = datas[t]
+                axes[p_id, dataset_id].plot(x, running_avg,
+                                               c=colors[t], linestyle='-',
+                                               linewidth=linewidths[t], alpha=1)
+
+    plt.savefig(os.path.join(result_dir, f'param-curves-level1-extra-seeds.pdf'),
+                bbox_inches='tight', pad_inches=0, dpi=500)
+    plt.close(fig)
+
+
 def collect_best_validation_losses(run_ids, contact_level=0, dataset='12mix'):
     case = 'validation'
     assert contact_level in [1, 2]
@@ -557,14 +706,16 @@ if __name__ == '__main__':
     The read_losses function reads the tensorboard logs and store the training and validation statistics as well as their means and standard deviations.
     Examples:
     """
-    # read_losses(run_ids=[0, 1, 2, 3], contact_level=1, dataset='12mix', save_meanstd=True)
-    # read_losses(run_ids=[0, 1, 2, 3], contact_level=2, dataset='12mix', save_meanstd=True)
+    # read_losses(run_ids=[0], contact_level=2, dataset='slime', extra_seeds=False, save_meanstd=True)
+    # read_losses(run_ids=[0], contact_level=2, dataset='soil', extra_seeds=False, save_meanstd=True)
     """
     The plot_loss_param_curves() function plots the curves of the training and validation losses and the parameters using the statistics saved by the read_losses() function.
     Examples:
     """
     # plot_loss_param_curves(contact_level=1)
     # plot_loss_param_curves(contact_level=2)
+    plot_loss_param_curves_extra_seeds()
+    # plot_legends(extra_seeds=True)
     """
     The collect_best_validation_losses() and collect_beset_long_horizon_motion_losses() functions collect the best losses of simulating the validation motions and long horizon motions.
     The best validation losses are determined by the mean of the last 10 validation heightmap losses during training.

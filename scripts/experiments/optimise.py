@@ -124,6 +124,8 @@ def main(arguments):
         # Append experiment into existing folder
         n = arguments['n_run']
         log_p_dir = os.path.join(result_path, f'level{contact_level}-{dataset}-run{n}-logs')
+        if arguments['init_guess']:
+            log_p_dir = os.path.join(result_path, f'level{contact_level}-{dataset}-run{n}-man-init-logs')
     else:
         # New experiments
         n = 0
@@ -202,6 +204,13 @@ def main(arguments):
 
         manipulator_friction = np.asarray([0.3], dtype=DTYPE_NP).reshape((1,))  # Manipulator friction
         ground_friction = np.asarray([2.0], dtype=DTYPE_NP).reshape((1,))  # Ground friction
+        if arguments['init_guess']:
+            E = np.asarray([30000], dtype=DTYPE_NP).reshape((1,))
+            nu = np.asarray([0.4], dtype=DTYPE_NP).reshape((1,))
+            yield_stress = np.asarray([1000], dtype=DTYPE_NP).reshape((1,))
+            rho = np.asarray([1330], dtype=DTYPE_NP).reshape((1,))
+            manipulator_friction = np.asarray([0.7], dtype=DTYPE_NP).reshape((1,))
+            ground_friction = np.asarray([0.7], dtype=DTYPE_NP).reshape((1,))
 
         print(f"=====> Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
         logging.info(f"=====> Seed: {seed}, initial parameters: E={E}, nu={nu}, yield_stress={yield_stress}, rho={rho}")
@@ -378,8 +387,8 @@ def main(arguments):
             for i, v in loss.items():
                 loss[i] = np.mean(v)
             avg_grad = np.mean(grads, axis=0)
-            if arguments['hm_loss']:
-                avg_grad *= -1.0
+            # if arguments['hm_loss']:
+            #     avg_grad *= -1.0
 
             for i, v in loss.items():
                 print(f"========> Avg. Loss: {i}: {v}")
@@ -565,5 +574,6 @@ if __name__ == '__main__':
     parser.add_argument('--hm_loss', dest='hm_loss', default=False, action='store_true', help='Count height map loss into loss computation.')
     parser.add_argument('--backend', dest='backend', default='cuda', type=str, choices=['opengl', 'cuda', 'vulkan'], help='Computation backend: opengl, cuda, vulkan')
     parser.add_argument('--device_mem', dest='device_memory_GB', default=5, type=int, help='Device memory in GB, depending on your GPU device, if out of memory, increase this value.')
+    parser.add_argument('--init_guess', dest='init_guess', default=False, action='store_true', help='Use initial guess for parameters.')
     args = vars(parser.parse_args())
     main(args)

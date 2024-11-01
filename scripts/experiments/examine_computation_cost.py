@@ -118,15 +118,15 @@ def main(arguments):
         'agent_name': agent,
         'agent_init_euler': (0, 0, 0),
     }
-    print(f'===> CPU memory occupied before create env: {process.memory_percent()} %')
-    print(f'===> GPU memory before create env: {get_gpu_memory()}')
+    # print(f'===> CPU memory occupied before create env: {process.memory_percent()} %')
+    # print(f'===> GPU memory before create env: {get_gpu_memory()}')
     env, mpm_env, init_state = make_env(data_cfg, env_cfg, loss_cfg)
     mpm_env.agent.effectors[0].mesh.update_color((0.2, 0.2, 0.2, 1.0))
     print(f'===> Num. simulation particles: {mpm_env.loss.n_particles_matching_mat}')
     print(f'===> Num. target pcd points: {mpm_env.loss.n_target_pcd_points}')
     print(f'===> Num. target particles: {mpm_env.loss.n_target_particles_from_mesh}')
-    print(f'===> CPU memory occupied after create env: {process.memory_percent()} %')
-    print(f'===> GPU memory after create env: {get_gpu_memory()}')
+    # print(f'===> CPU memory occupied after create env: {process.memory_percent()} %')
+    # print(f'===> GPU memory after create env: {get_gpu_memory()}')
 
     print(f'===> Parameters: E = {E}, nu = {nu}, yield_stress = {yield_stress}, rho = {rho}, gf = {gf}, mf = {mf}')
     set_parameters(mpm_env, env_cfg['material_id'],
@@ -139,8 +139,8 @@ def main(arguments):
     print('Third run')
     forward_backward(mpm_env, init_state, trajectory.copy(), backward=arguments['backward'])
 
-    print(f'===> CPU memory occupied after forward: {process.memory_percent()} %')
-    print(f'===> GPU memory after forward: {get_gpu_memory()}')
+    # print(f'===> CPU memory occupied after forward: {process.memory_percent()} %')
+    # print(f'===> GPU memory after forward: {get_gpu_memory()}')
 
 
 if __name__ == '__main__':

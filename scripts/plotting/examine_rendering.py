@@ -5,7 +5,6 @@ from vedo import Points, show, Mesh
 from PIL import Image
 import imageio
 import matplotlib as mpl
-mpl.use('Agg')
 import matplotlib.pylab as plt
 
 import psutil
@@ -26,7 +25,6 @@ def forward(mpm_env, init_state, trajectory, render=False,
             img_dir=None, save_loss=True,
             render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
             init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
-
     mpm_env.set_state(init_state['state'], grad_enabled=False)
     # print(mpm_env.agent.effectors[0].pos[mpm_env.simulator.cur_substep_local])
     if render_init_pcd:
@@ -65,15 +63,16 @@ def forward(mpm_env, init_state, trajectory, render=False,
     for i in range(mpm_env.horizon):
         action = trajectory[i]
         mpm_env.step(action)
-        if save_img or save_gif or save_tr_combined_img:
+        if save_img or save_gif:
             if i in frames_to_save:
                 img = mpm_env.render(mode='rgb_array')
-                Image.fromarray(img).save(os.path.join(img_dir, f'img_{i}.png'))
-                if save_gif or save_tr_combined_img:
-                    frames.append(img)
+                # Image.fromarray(img).save(os.path.join(img_dir, f'img_{i}.png'))
+                frames.append(img)
 
         if render:
             mpm_env.render(mode='human')
+            if i == 0:
+                input("Press Enter to continue...")
 
     loss_info = mpm_env.get_final_loss()
     for i, v in loss_info.items():
@@ -103,6 +102,7 @@ def forward(mpm_env, init_state, trajectory, render=False,
                 writer.append_data(frames[i])
 
     if save_img:
+        mpl.use('Agg')
         fig, axes = plt.subplots(1, len(frames_to_save), figsize=(len(frames_to_save) * 2, 2))
         plt.subplots_adjust(wspace=0.01)
         for i in range(len(frames_to_save)):
@@ -111,10 +111,12 @@ def forward(mpm_env, init_state, trajectory, render=False,
             axes[i].get_xaxis().set_visible(False)
             axes[i].get_yaxis().set_visible(False)
             axes[i].set_frame_on(False)
-        plt.savefig(os.path.join(img_dir, f'img_combine.pdf'), bbox_inches='tight', pad_inches=0)
+        plt.savefig(os.path.join(img_dir, f'img_combine.pdf'), bbox_inches='tight', pad_inches=0, dpi=300)
         plt.close(fig)
 
     if save_heightmap or render_heightmap:
+        if save_heightmap:
+            mpl.use('Agg')
         cmap = 'YlOrBr'
         target_hm = mpm_env.loss.height_map_pcd_target.to_numpy()
         min_val, max_val = np.amin(target_hm), np.amax(target_hm)
@@ -126,7 +128,7 @@ def forward(mpm_env, init_state, trajectory, render=False,
         if render_heightmap:
             plt.show()
         if save_heightmap:
-            plt.savefig(os.path.join(img_dir, 'end_heightmap.png'), bbox_inches='tight', dpi=300)
+            plt.savefig(os.path.join(img_dir, 'end_heightmap.png'), bbox_inches='tight', pad_inches=0, dpi=300)
 
     if render_end_pcd:
         y_offset = 0.0
@@ -212,6 +214,10 @@ def main(args):
         'emd_point_distance_loss': False,
         'emd_particle_distance_loss': False
     }
+    if args['load_params_dataset'] == 'soil':
+        loss_cfg['height_map_size'] = 0.17
+    if args['load_params_dataset'] == 'slime':
+        loss_cfg['height_map_size'] = 0.15
 
     assert args['agent_ind'] in [0, 1, 2]
     agents = ['rectangle', 'round', 'cylinder']
@@ -224,8 +230,20 @@ def main(args):
         cam_cfg['pos'] = (0.40, 0.07, 0.08)
         cam_cfg['lookat'] = (0.25, 0.25, 0.05)
         agent_init_euler = (0, 0, 0)
+        if args['load_params_dataset'] == 'soil':
+            cam_cfg['pos'] = (0.365, 0.07, 0.06)
+            if args['long_motion']:
+                cam_cfg['pos'] = (0.355, 0.07, 0.05)
+            cam_cfg['lookat'] = (0.25, 0.25, 0.03)
+        else:
+            # args['load_params_dataset'] == 'slime'
+            cam_cfg['pos'] = (0.37, 0.04, 0.05)
+            cam_cfg['lookat'] = (0.27, 0.25, 0.03)
+            if args['long_motion']:
+                cam_cfg['pos'] = (0.37, 0.06, 0.07)
+                cam_cfg['lookat'] = (0.25, 0.25, 0.03)
     else:
-        # agent == 'round'
+        # agent == 'round':
         cam_cfg['pos'] = (0.45, 0.17, 0.07)
         cam_cfg['lookat'] = (0.25, 0.25, 0.055)
         agent_init_euler = (0, 0, 0)
@@ -235,6 +253,8 @@ def main(args):
     motion_ind = str(2)
     if args['long_motion']:
         data_path = os.path.join(script_path, '..', 'data', 'data-motion-long-horizon', f'eef-{agent}')
+        if args['load_params_dataset'] in ['slime', 'soil']:
+            data_path = os.path.join(script_path, '..', 'data', 'other_mats', args['load_params_dataset'], 'long-motion-validation')
         if not args['dt_avg']:
             dt_global = args['dt']
             trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_long-horizon-{agent}_v_dt_{dt_global:0.2f}.npy'))
@@ -243,6 +263,8 @@ def main(args):
             trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_long-horizon-{agent}_v_dt_avg.npy'))
     else:
         data_path = os.path.join(script_path, '..', 'data', f'data-motion-{motion_name}-{motion_ind}', f'eef-{agent}', 'validation_data')
+        if args['load_params_dataset'] in ['slime', 'soil']:
+            data_path = os.path.join(script_path, '..', 'data', 'other_mats', args['load_params_dataset'])
         if not args['dt_avg']:
             dt_global = args['dt']
             trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_{motion_name}_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
@@ -263,7 +285,7 @@ def main(args):
         run_id = args['load_params_run']
         seed_id = args['load_params_seed']
         dataset = args['load_params_dataset']
-        assert dataset in ['12mix', '6mix', '1cyl', '1rec', '1round'], f"Dataset {dataset} not found."
+        assert dataset in ['12mix', '6mix', '1cyl', '1rec', '1round', 'slime', 'soil'], f"Dataset {dataset} not found."
         print(f'Loading parameters from optimisation result at contact level {contact_level} with dataset {dataset}, '
               f'run {run_id} seed {seed_id}...')
         data_dir = os.path.join(script_path, '..', 'optimisation-results',
@@ -292,6 +314,8 @@ def main(args):
     print(f"Images/videos will be saved in {image_dir}, if any.")
 
     data_ids = [0, 1]
+    if args['load_params_dataset'] in ['slime', 'soil']:
+        data_ids = [0]
     n_episode = 0
     for data_ind in data_ids:
         ti.reset()
@@ -347,9 +371,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--ptcl_d', dest='ptcl_density', type=float, default=4e7, help='Particle density')
     parser.add_argument('--load_params', dest='load_params', default=False, action='store_true', help='Load optimised parameters')
-    parser.add_argument('--load_params_dataset', dest='load_params_dataset', type=str, default='12mix', help='Dataset used for identifying the loaded optimised parameters')
-    parser.add_argument('--load_params_run', dest='load_params_run', type=int, default=0, help='Run ID for the optimised parameters')
-    parser.add_argument('--load_params_seed', dest='load_params_seed', type=int, default=0, help='Seed for the optimised parameters')
+    parser.add_argument('--lp_dataset', dest='load_params_dataset', type=str, default='12mix', help='Dataset used for identifying the loaded optimised parameters')
+    parser.add_argument('--lp_run', dest='load_params_run', type=int, default=0, help='Run ID for the optimised parameters')
+    parser.add_argument('--lp_seed', dest='load_params_seed', type=int, default=0, help='Seed for the optimised parameters')
     parser.add_argument('--dt', dest='dt', type=float, default=0.01, choices=[0.01, 0.02, 0.03, 0.04], help='Global time step, change this value to verify that the identified parameters are robust against simulation step size.')
     parser.add_argument('--dt_avg', dest='dt_avg', default=False, action='store_true', help='Use dt computed by averaging the MOVEIT! trajectory duration over its time steps')
     parser.add_argument('--con_lv', dest='contact_level', type=int, default=1, choices=[1, 2], help='Examing motions from contact level 1 or 2')

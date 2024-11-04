@@ -39,6 +39,24 @@ def main(args):
                 plt.yticks([])
                 plt.show()
 
+    data_path = os.path.join(script_path, '..', '..', 'data', 'other_mats', 'slime', 'long-motion-validation')
+    hm_1 = np.load(os.path.join(data_path, f'target_pcd_height_map-0-res32-vdsize0.001.npy'))
+    min_val, max_val = np.amin(hm_1), np.amax(hm_1)
+
+    plt.imshow(hm_1, cmap=cmap, vmin=min_val, vmax=max_val)
+    plt.xticks([])
+    plt.yticks([])
+    plt.show()
+
+    data_path = os.path.join(script_path, '..', '..', 'data', 'other_mats', 'soil', 'long-motion-validation')
+    hm_1 = np.load(os.path.join(data_path, f'target_pcd_height_map-0-res32-vdsize0.001.npy'))
+    min_val, max_val = np.amin(hm_1), np.amax(hm_1)
+
+    plt.imshow(hm_1, cmap=cmap, vmin=min_val, vmax=max_val)
+    plt.xticks([])
+    plt.yticks([])
+    plt.show()
+
 
 if __name__ == '__main__':
     description = 'This script is used to examine height map data.'
@@ -47,4 +65,5 @@ if __name__ == '__main__':
     parser.add_argument('--motion_id', type=int, default=1, help='ID of the motion: 1 or 2')
     parser.add_argument('--long_motion', action='store_true', help='Examine long-horizon data')
     parser.add_argument('--valid', dest='validation_data', action='store_true', help='Examine validation data')
-    args = vars(parser.parse_args())
+    arguments = vars(parser.parse_args())
+    main(arguments)

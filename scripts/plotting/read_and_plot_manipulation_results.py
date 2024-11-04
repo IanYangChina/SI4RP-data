@@ -8,6 +8,7 @@ plt.rcParams["font.weight"] = "normal"
 plt.rcParams.update({'font.size': 30})
 
 script_path = os.path.dirname(os.path.realpath(__file__))
+script_path = os.path.join(script_path, '..')
 param_set = 1
 if param_set == 0:
     m_id = 2
@@ -18,10 +19,7 @@ else:
     end_img_id = 152
 
 long_motion = True
-if long_motion:
-    save_path = os.path.join(script_path, '..', 'result-figs', f'data-motion-validation')
-else:
-    save_path = os.path.join(script_path, '..', 'result-figs', f'data-motion-{m_id}')
+save_path = os.path.join(script_path, '..', 'figures', 'result-figs', 'other_mats')
 os.makedirs(save_path, exist_ok=True)
 
 cases = ['fewshot', 'oneshot', 'realoneshot-rectangle', 'realoneshot-round', 'realoneshot-cylinder']

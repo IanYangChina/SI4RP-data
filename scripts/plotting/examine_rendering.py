@@ -8,7 +8,6 @@ import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pylab as plt
 
-from doma.engine.utils.misc import get_gpu_memory
 import psutil
 import json
 import argparse
@@ -18,7 +17,8 @@ DTYPE_TI = ti.f32
 script_path = os.path.dirname(os.path.realpath(__file__))
 script_path = os.path.join(script_path, '..')
 
-from doma.envs.sys_id_env import make_env, set_parameters
+from doma.envs.sys_id_env import make_env
+from doma.engine.utils.misc import get_gpu_memory, set_parameters
 
 
 def forward(mpm_env, init_state, trajectory, render=False,
@@ -183,39 +183,11 @@ def main(args):
                    {'pos': (0.5, 0.5, 1.0), 'color': (0.6, 0.6, 0.6)},
                    {'pos': (0.5, 0.0, 1.0), 'color': (0.8, 0.8, 0.8)}],
         'particle_radius': 0.002,
-        'res': (640, 640)
+        'res': (640, 640),
+        'euler': (135, 0, 180),
+        'focal_length': 0.01
     }
 
-    cam_cfg_cylinder = {
-        'pos': (0.40, 0.07, 0.08),
-        'lookat': (0.25, 0.25, 0.05),
-        'fov': 30,
-        'lights': [{'pos': (0.5, 0.25, 0.2), 'color': (0.6, 0.6, 0.6)},
-                   {'pos': (0.5, 0.5, 1.0), 'color': (0.6, 0.6, 0.6)},
-                   {'pos': (0.5, 0.0, 1.0), 'color': (0.8, 0.8, 0.8)}],
-        'particle_radius': 0.002,
-        'res': (640, 640)
-    }
-    cam_cfg_rectangle = {
-        'pos': (0.46, 0.1, 0.067),
-        'lookat': (0.25, 0.25, 0.06),
-        'fov': 30,
-        'lights': [{'pos': (0.5, 0.25, 0.2), 'color': (0.6, 0.6, 0.6)},
-                   {'pos': (0.5, 0.5, 1.0), 'color': (0.6, 0.6, 0.6)},
-                   {'pos': (0.5, 0.0, 1.0), 'color': (0.8, 0.8, 0.8)}],
-        'particle_radius': 0.002,
-        'res': (640, 640)
-    }
-    cam_cfg_round = {
-        'pos': (0.45, 0.17, 0.07),
-        'lookat': (0.25, 0.25, 0.055),
-        'fov': 30,
-        'lights': [{'pos': (0.5, 0.25, 0.2), 'color': (0.6, 0.6, 0.6)},
-                   {'pos': (0.5, 0.5, 1.0), 'color': (0.6, 0.6, 0.6)},
-                   {'pos': (0.5, 0.0, 1.0), 'color': (0.8, 0.8, 0.8)}],
-        'particle_radius': 0.002,
-        'res': (640, 640)
-    }
     agent_colors = {
         'rectangle': (0.9, 0.1, 0.1, 1.0),
         'round': (0.8, 0.8, 0.8, 1.0),
@@ -245,21 +217,24 @@ def main(args):
     agents = ['rectangle', 'round', 'cylinder']
     agent = agents[args['agent_ind']]
     if agent == 'rectangle':
-        cam_cfg = cam_cfg_rectangle
+        cam_cfg['pos'] = (0.46, 0.1, 0.067)
+        cam_cfg['lookat'] = (0.25, 0.25, 0.06)
         agent_init_euler = (0, 0, 45)
-    else:
+    elif agent == 'cylinder':
+        cam_cfg['pos'] = (0.40, 0.07, 0.08)
+        cam_cfg['lookat'] = (0.25, 0.25, 0.05)
         agent_init_euler = (0, 0, 0)
-
-    if agent == 'cylinder':
-        cam_cfg = cam_cfg_cylinder
-    elif agent == 'round':
-        cam_cfg = cam_cfg_round
+    else:
+        # agent == 'round'
+        cam_cfg['pos'] = (0.45, 0.17, 0.07)
+        cam_cfg['lookat'] = (0.25, 0.25, 0.055)
+        agent_init_euler = (0, 0, 0)
 
     contact_level = args['contact_level']
     motion_name = 'poking' if contact_level == 1 else 'poking-shifting'
-    motion_ind = str(args['motion_ind'])
+    motion_ind = str(2)
     if args['long_motion']:
-        data_path = os.path.join(script_path, '..', 'data-motion-long-horizon', f'eef-{agent}')
+        data_path = os.path.join(script_path, '..', 'data', 'data-motion-long-horizon', f'eef-{agent}')
         if not args['dt_avg']:
             dt_global = args['dt']
             trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_long-horizon-{agent}_v_dt_{dt_global:0.2f}.npy'))
@@ -267,7 +242,7 @@ def main(args):
             dt_global = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_long-horizon-{agent}_dt_avg.npy'))
             trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_long-horizon-{agent}_v_dt_avg.npy'))
     else:
-        data_path = os.path.join(script_path, '..', f'data-motion-{motion_name}-{motion_ind}', f'eef-{agent}')
+        data_path = os.path.join(script_path, '..', 'data', f'data-motion-{motion_name}-{motion_ind}', f'eef-{agent}', 'validation_data')
         if not args['dt_avg']:
             dt_global = args['dt']
             trajectory = np.load(os.path.join(script_path, '..', 'data', 'trajectories', f'tr_{motion_name}_{motion_ind}_v_dt_{dt_global:0.2f}.npy'))
@@ -277,12 +252,12 @@ def main(args):
 
     horizon = trajectory.shape[0]
 
-    E = 1e4  # [1e4, 3e5]
-    nu = 0.3  # [0.01, 0.48]
-    yield_stress = 6e3  # [1e2, 2e4]
-    rho = 1300  # [1000, 2000]
-    gf = 2.0  # [0.01, 2.0]
-    mf = 0.3  # [0.01, 2.0]
+    E = np.asarray([30000], dtype=DTYPE_NP).reshape((1,))
+    nu = np.asarray([0.4], dtype=DTYPE_NP).reshape((1,))
+    yield_stress = np.asarray([1000], dtype=DTYPE_NP).reshape((1,))
+    rho = np.asarray([1330], dtype=DTYPE_NP).reshape((1,))
+    mf = np.asarray([0.7], dtype=DTYPE_NP).reshape((1,))
+    gf = np.asarray([0.7], dtype=DTYPE_NP).reshape((1,))
     save_dir = os.path.join(script_path, '..', 'optimisation-results', 'figures')
     if args['load_params']:
         run_id = args['load_params_run']
@@ -305,6 +280,7 @@ def main(args):
         if contact_level == 2:
             mf = params[4]
             gf = params[5]
+    print(f'===> Parameters: E = {E}, nu = {nu}, yield_stress = {yield_stress}, rho = {rho}, gf = {gf}, mf = {mf}')
 
     if args['img_dir'] is None:
         if args['long_motion']:
@@ -379,7 +355,7 @@ if __name__ == '__main__':
     parser.add_argument('--con_lv', dest='contact_level', type=int, default=1, choices=[1, 2], help='Examing motions from contact level 1 or 2')
     parser.add_argument('--m_id', dest='motion_ind', type=int, default=1, choices=[1, 2], help='Motion index')
     parser.add_argument('--long_motion', dest='long_motion', default=False, action='store_true', help='Examine long horizon motion simulation. This diseffects the contact_level and motion_ind arguments.')
-    parser.add_argument('--agent_ind', dest='agent_ind', type=int, default=0, choices=[0, 1, 2], help='Examine the motion executed by which end-effector: 0 - rectangle, 1 - round, 2 - cylinder')
+    parser.add_argument('--agent_id', dest='agent_ind', type=int, default=0, choices=[0, 1, 2], help='Examine the motion executed by which end-effector: 0 - rectangle, 1 - round, 2 - cylinder')
     parser.add_argument('--r_human', dest='render_human', default=False, action='store_true', help='Render the simulation with a pop-up window')
     parser.add_argument('--r_init_pcd', dest='render_init_pcd', default=False, action='store_true', help='Render the initial point cloud with a pop-up window')
     parser.add_argument('--r_end_pcd', dest='render_end_pcd', default=False, action='store_true', help='Render the final point cloud with a pop-up window')

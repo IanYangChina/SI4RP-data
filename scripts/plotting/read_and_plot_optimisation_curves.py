@@ -34,6 +34,17 @@ loss_types = ['point_distance_sr',
 params = ['E', 'nu', 'yield_stress', 'rho', 'mf', 'gf']
 
 
+def read_final_params(run_ids, contact_level=0, dataset='12mix'):
+    for run in run_ids:
+        for seed in [0, 1, 2]:
+            path = os.path.join(cwd, '..', 'optimisation-results',
+                                f'level{contact_level}-{dataset}-run{run}-logs',
+                                f'seed-{seed}', 'final_params.npy')
+            parameters = np.load(path)
+            for i in range(len(params)):
+                print(f'Run {run}, Seed {seed}: {params[i]}: {parameters[i]}')
+
+
 def read_losses(run_ids, contact_level=0, dataset='12mix',
                 extra_seeds=False, man_init=False, save_meanstd=False):
     """generate mean and deviation data from tensorboard logs"""
@@ -202,31 +213,32 @@ def plot_legends(extra_seeds=False, heightmap=False):
             legend_bbox_to_anchor=(1.6, 1.7),
             legend_loc='upper right',
             data_dict_list=[None for _ in range(len(legends))], legend_only=True)
-    elif heightmap:
-        legends = ['PRT EMD', 'Height Map', 'Negated Height Map']
-        plt.rcParams.update({'font.size': 40})
-        plot.smoothed_plot_mean_deviation(
-            file=os.path.join(cwd, '..', 'figures', 'result-figs', 'legend-extra-seeds.pdf'),
-            legend_file=os.path.join(cwd, '..', 'figures', 'result-figs', 'legend-hm.pdf'),
-            horizontal_lines=None, linestyle='--', linewidth=15, handlelength=2,
-            legend=legends, legend_ncol=4, legend_frame=False,
-            legend_bbox_to_anchor=(1.6, 1.7),
-            legend_loc='upper right',
-            data_dict_list=[None for _ in range(len(legends))], legend_only=True)
     else:
-        legends = [
-            'PCD CD',
-            'PRT CD',
-            'PCD EMD',
-            'PRT EMD',
-        ]
+        plt.rcParams.update({'font.size': 40})
+        if heightmap:
+            legends = [
+                'PCD CD',
+                'PRT EMD',
+                'Height Map',
+                'Negated Height Map'
+            ]
+            file_name = '-hm'
+        else:
+            legends = [
+                'PCD CD',
+                'PRT CD',
+                'PCD EMD',
+                'PRT EMD',
+            ]
+            file_name = ''
 
         plot.smoothed_plot_mean_deviation(
-            file=os.path.join(cwd, '..', 'result-figs', 'legend.pdf'),
-            legend_file=os.path.join(cwd, '..', 'result-figs', 'legend.pdf'),
-            horizontal_lines=None, linestyle='--', linewidth=3, handlelength=2,
+            file=os.path.join(cwd, '..', 'figures', 'result-figs', 'legend.pdf'),
+            legend_file=os.path.join(cwd, '..', 'figures', 'result-figs',
+                                     f'legend{file_name}.pdf'),
+            horizontal_lines=None, linestyle='--', linewidth=15, handlelength=1.1,
             legend=legends, legend_ncol=4, legend_frame=False,
-            legend_bbox_to_anchor=(1.6, 1.1),
+            legend_bbox_to_anchor=(5, 2),
             legend_loc='upper right',
             data_dict_list=[None for _ in range(len(legends))], legend_only=True)
 
@@ -537,7 +549,7 @@ def plot_loss_param_curves_extra(man_init=False, heightmap=False):
                             n += 1
             else:
                 n = 0
-                for run_id in [3, 4, 5]:
+                for run_id in [0, 3, 4, 5]:
                     run_dir = os.path.join(cwd, '..', 'optimisation-results',
                                            f'{dir_prefix}-run{run_id}-logs', 'data')
                     losses = json.load(open(os.path.join(run_dir, 'raw_loss.json'), 'rb'))
@@ -595,10 +607,10 @@ def plot_loss_param_curves_extra(man_init=False, heightmap=False):
                                                c=colors[t], linestyle=linestyles[t],
                                                linewidth=linewidths[t], alpha=alphas[t])
     if heightmap:
-        plt.savefig(os.path.join(result_dir, f'loss-curves-level1-heightmap.pdf'),
+        plt.savefig(os.path.join(result_dir, f'{case}-loss-curves-level1-heightmap.pdf'),
                     bbox_inches='tight', pad_inches=0, dpi=500)
     else:
-        plt.savefig(os.path.join(result_dir, f'loss-curves-level1-extra-seeds.pdf'),
+        plt.savefig(os.path.join(result_dir, f'{case}-loss-curves-level1-extra-seeds.pdf'),
                     bbox_inches='tight', pad_inches=0, dpi=500)
     plt.close(fig)
 
@@ -667,7 +679,7 @@ def plot_loss_param_curves_extra(man_init=False, heightmap=False):
                             n += 1
             else:
                 n = 0
-                for run_id in [3, 4, 5]:
+                for run_id in [0, 3, 4, 5]:
                     run_dir = os.path.join(cwd, '..', 'optimisation-results', f'{dir_prefix}-run{run_id}-logs', 'data')
                     losses = json.load(open(os.path.join(run_dir, 'raw_loss.json'), 'rb'))
                     for seed in [0, 1, 2]:
@@ -747,36 +759,48 @@ def collect_best_validation_losses(run_ids, contact_level=0, dataset='12mix'):
         json.dump(data_dict, f)
 
 
-def collect_beset_long_horizon_motion_losses(run_ids, dataset='12mix'):
-    dir_prefix = f'level2-{dataset}'
+def collect_beset_long_horizon_motion_losses(run_ids, save=False, print_loss=False):
+    dicts = []
+    for dataset in ['12mix', '6mix', '1rec', '1round', '1cyl']:
+        dir_prefix = f'level2-{dataset}'
 
-    data_dict = {
-        'rectangle-motion': {},
-        'round-motion': {},
-        'cylinder-motion': {}
-    }
-    for run_id in run_ids:
-        run_dir = os.path.join(cwd, '..', 'optimisation-results', 'figures', dir_prefix,
-                               'best-seed-visualisation', f'run{run_id}')
-        for seed in [0, 1, 2]:
-            seed_dir = os.path.join(run_dir, f'seed{seed}')
-            if os.path.isdir(seed_dir):
-                break
+        data_dict = {
+            'rectangle-motion': {},
+            'round-motion': {},
+            'cylinder-motion': {}
+        }
+        for run_id in run_ids:
+            run_dir = os.path.join(cwd, '..', 'optimisation-results', 'figures', dir_prefix,
+                                   f'run{run_id}')
+            for seed in [0, 1, 2]:
+                seed_dir = os.path.join(run_dir, f'seed{seed}')
+                if os.path.isdir(seed_dir):
+                    break
+            for motion_agent in ['rectangle', 'round', 'cylinder']:
+                data_dir_1 = os.path.join(seed_dir, f'long_motion-{motion_agent}', 'data-0')
+                losses_1 = json.load(open(os.path.join(data_dir_1, 'loss_info.json'), 'rb'))
+                hm_loss_1 = losses_1['height_map_loss_pcd']
+                data_dict[f'{motion_agent}-motion'].update({
+                        f'data-0-run{run_id}': hm_loss_1
+                })
+
+        dicts.append(data_dict)
+        if save:
+            with open(os.path.join(cwd, '..', 'optimisation-results', 'figures', dir_prefix,
+                                   'best-seed-visualisation', 'long_motion_losses.json'), 'w') as f:
+                json.dump(data_dict, f)
+
+    if print_loss:
         for motion_agent in ['rectangle', 'round', 'cylinder']:
-            data_dir_0 = os.path.join(seed_dir, f'validation_tr_imgs-long_motion-{motion_agent}', '0')
-            losses_0 = json.load(open(os.path.join(data_dir_0, 'loss_info.json'), 'rb'))
-            hm_loss_0 = losses_0['height_map_loss_pcd']
-            data_dir_1 = os.path.join(seed_dir, f'validation_tr_imgs-long_motion-{motion_agent}', '1')
-            losses_1 = json.load(open(os.path.join(data_dir_1, 'loss_info.json'), 'rb'))
-            hm_loss_1 = losses_1['height_map_loss_pcd']
-            data_dict[f'{motion_agent}-motion'].update({
-                    f'data-0-run{run_id}': hm_loss_0,
-                    f'data-1-run{run_id}': hm_loss_1
-            })
-
-    with open(os.path.join(cwd, '..', 'optimisation-results', 'figures', dir_prefix,
-                           'best-seed-visualisation', 'long_motion_losses.json'), 'w') as f:
-        json.dump(data_dict, f)
+            for data_id in ['data-0']:
+                for run_id in run_ids:
+                    print(f'{motion_agent} motion {data_id} run{run_id}')
+                    print(f'{dicts[0][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]:.2f} &', end=' ')
+                    print(f'{dicts[1][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]:.2f} &', end=' ')
+                    print(f'{dicts[2][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]:.2f} &', end=' ')
+                    print(f'{dicts[3][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]:.2f} &', end=' ')
+                    print(f'{dicts[4][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]:.2f} \\\\')
+                    print()
 
 
 if __name__ == '__main__':
@@ -788,6 +812,7 @@ if __name__ == '__main__':
     The read_losses function reads the tensorboard logs and store the training and validation statistics as well as their means and standard deviations.
     Examples:
     """
+    # read_final_params(run_ids=[0], contact_level=2, dataset='soil')
     # read_losses(run_ids=[3], contact_level=1, dataset='1cyl', extra_seeds=False, man_init=True, save_meanstd=True)
     # read_losses(run_ids=[3], contact_level=1, dataset='1rec', extra_seeds=False, man_init=True, save_meanstd=True)
     # read_losses(run_ids=[3], contact_level=1, dataset='1round', extra_seeds=False, man_init=True, save_meanstd=True)
@@ -798,7 +823,7 @@ if __name__ == '__main__':
     # plot_loss_param_curves(contact_level=1)
     # plot_loss_param_curves(contact_level=2)
     # plot_loss_param_curves_extra(heightmap=True)
-    plot_legends(heightmap=True)
+    # plot_legends(heightmap=True)
     """
     The collect_best_validation_losses() and collect_beset_long_horizon_motion_losses() functions collect the best losses of simulating the validation motions and long horizon motions.
     The best validation losses are determined by the mean of the last 10 validation heightmap losses during training.
@@ -808,4 +833,4 @@ if __name__ == '__main__':
     """
     # collect_best_validation_losses(run_ids=[0, 1, 2, 3], contact_level=1, dataset='12mix')
     # collect_best_validation_losses(run_ids=[0, 1, 2, 3], contact_level=2, dataset='12mix')
-    # collect_beset_long_horizon_motion_losses(run_ids=[0, 1, 2, 3], dataset='12mix')
+    collect_beset_long_horizon_motion_losses(run_ids=[0, 1, 2, 3], print_loss=True)

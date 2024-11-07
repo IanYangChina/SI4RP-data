@@ -57,17 +57,20 @@ def forward(mpm_env, init_state, trajectory, render=False,
         frames_to_save = [0, interval, 2 * interval, 3 * interval, 4 * interval, 5 * interval,
                           6 * interval, 7 * interval, 8 * interval, 9 * interval, mpm_env.horizon - 1]
         if save_gif:
-            frames_to_save = list(range(mpm_env.horizon))
-        frames = []
+            frames_to_save_for_gifs = list(range(mpm_env.horizon))
 
+    frames = []
+    frames_for_gifs = []
     for i in range(mpm_env.horizon):
         action = trajectory[i]
         mpm_env.step(action)
         if save_img or save_gif:
-            if i in frames_to_save:
-                img = mpm_env.render(mode='rgb_array')
-                # Image.fromarray(img).save(os.path.join(img_dir, f'img_{i}.png'))
+            img = mpm_env.render(mode='rgb_array')
+            # Image.fromarray(img).save(os.path.join(img_dir, f'img_{i}.png'))
+            if save_img and i in frames_to_save:
                 frames.append(img)
+            if save_gif and i in frames_to_save_for_gifs:
+                frames_for_gifs.append(img)
 
         if render:
             mpm_env.render(mode='human')
@@ -99,7 +102,7 @@ def forward(mpm_env, init_state, trajectory, render=False,
             for i in range(mpm_env.horizon):
                 if i % 5 != 0:
                     continue
-                writer.append_data(frames[i])
+                writer.append_data(frames_for_gifs[i])
 
     if save_img:
         mpl.use('Agg')
@@ -299,6 +302,8 @@ def main(args):
         nu = params[1]
         yield_stress = params[2]
         rho = params[3]
+        mf = np.asarray([0.3], dtype=DTYPE_NP).reshape((1,))
+        gf = np.asarray([2.0], dtype=DTYPE_NP).reshape((1,))
         if contact_level == 2:
             mf = params[4]
             gf = params[5]
@@ -306,18 +311,21 @@ def main(args):
 
     if args['img_dir'] is None:
         if args['long_motion']:
-            image_dir = os.path.join(save_dir, 'rendering-results', f'long_motion-{agent}')
+            image_dir = os.path.join(save_dir, f'long_motion-{agent}')
         else:
-            image_dir = os.path.join(save_dir, 'rendering-results', f'motion{motion_ind}-{agent}')
+            image_dir = os.path.join(save_dir, f'motion{motion_ind}-{agent}')
     else:
         image_dir = os.path.join(save_dir, 'rendering-results', args['img_dir'])
     print(f"Images/videos will be saved in {image_dir}, if any.")
 
     data_ids = [0, 1]
+    agent_init_pos_xy_offset = (0.0, 0.0)
     if args['load_params_dataset'] in ['slime', 'soil']:
         data_ids = [0]
+        agent_init_pos_xy_offset = (0.01, 0.0)
     n_episode = 0
     for data_ind in data_ids:
+        image_dir_ = os.path.join(image_dir, f'data-{data_ind}')
         ti.reset()
         ti.init(arch=ti.cuda, default_fp=DTYPE_TI, default_ip=ti.i32, debug=False, device_memory_GB=3,
                 fast_math=True, advanced_optimization=True, random_seed=1)
@@ -333,6 +341,7 @@ def main(args):
             'material_id': 2,
             'agent_name': agent,
             'agent_init_euler': agent_init_euler,
+            'agent_init_pos_xy_offset': agent_init_pos_xy_offset,
         }
         print(f'===> CPU memory occupied before create env: {process.memory_percent()} %')
         print(f'===> GPU memory before create env: {get_gpu_memory()}')
@@ -353,7 +362,7 @@ def main(args):
                 save_gif=args['save_gif'],
                 save_img=args['save_img'],
                 save_heightmap=args['save_heightmap'],
-                img_dir=image_dir,
+                img_dir=image_dir_,
                 render_init_pcd=args['render_init_pcd'],
                 render_end_pcd=args['render_end_pcd'],
                 render_heightmap=args['render_heightmap'],

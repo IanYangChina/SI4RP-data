@@ -777,7 +777,7 @@ def collect_beset_long_horizon_motion_losses(run_ids, save=False, print_loss=Fal
                 if os.path.isdir(seed_dir):
                     break
             for motion_agent in ['rectangle', 'round', 'cylinder']:
-                data_dir_1 = os.path.join(seed_dir, f'long_motion-{motion_agent}', 'data-0')
+                data_dir_1 = os.path.join(seed_dir, f'long_motion-{motion_agent}')
                 losses_1 = json.load(open(os.path.join(data_dir_1, 'loss_info.json'), 'rb'))
                 hm_loss_1 = losses_1['height_map_loss_pcd']
                 data_dict[f'{motion_agent}-motion'].update({
@@ -793,14 +793,32 @@ def collect_beset_long_horizon_motion_losses(run_ids, save=False, print_loss=Fal
     if print_loss:
         for motion_agent in ['rectangle', 'round', 'cylinder']:
             for data_id in ['data-0']:
+                dataset_avg = np.zeros(shape=(5,))
                 for run_id in run_ids:
                     print(f'{motion_agent} motion {data_id} run{run_id}')
                     print(f'{dicts[0][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]:.2f} &', end=' ')
                     print(f'{dicts[1][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]:.2f} &', end=' ')
                     print(f'{dicts[2][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]:.2f} &', end=' ')
                     print(f'{dicts[3][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]:.2f} &', end=' ')
-                    print(f'{dicts[4][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]:.2f} \\\\')
-                    print()
+                    print(f'{dicts[4][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]:.2f} &', end=' ')
+                    avg = (dicts[0][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"] +
+                           dicts[1][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"] +
+                           dicts[2][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"] +
+                           dicts[3][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"] +
+                           dicts[4][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]) / 5
+                    print(f'{avg:.2f} \n')
+                    dataset_avg[0] += dicts[0][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]
+                    dataset_avg[1] += dicts[1][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]
+                    dataset_avg[2] += dicts[2][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]
+                    dataset_avg[3] += dicts[3][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]
+                    dataset_avg[4] += dicts[4][f"{motion_agent}-motion"][f"{data_id}-run{run_id}"]
+
+                print(f'{motion_agent} motion {data_id} avg')
+                print(f'{dataset_avg[0] / 4:.2f} &', end=' ')
+                print(f'{dataset_avg[1] / 4:.2f} &', end=' ')
+                print(f'{dataset_avg[2] / 4:.2f} &', end=' ')
+                print(f'{dataset_avg[3] / 4:.2f} &', end=' ')
+                print(f'{dataset_avg[4] / 4:.2f} \n')
 
 
 if __name__ == '__main__':

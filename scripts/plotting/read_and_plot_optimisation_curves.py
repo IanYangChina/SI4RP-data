@@ -495,19 +495,19 @@ def plot_loss_param_curves_extra(man_init=False, heightmap=False):
             if loss_type == 'chamfer_loss_pcd':
                 title = dataset_name[dataset_id]
                 y_label = 'PCD\nCD'
-                ylim_valid = [8720, 10280]
+                ylim_valid = [8720, 9700]
             elif loss_type == 'chamfer_loss_particle':
                 y_label = 'PRT\nCD'
-                ylim_valid = [5850, 6600]
+                ylim_valid = [5800, 6700]
             elif loss_type == 'emd_point_distance_loss':
                 y_label = 'PCD\nEMD'
-                ylim_valid = [1160, 1490]
+                ylim_valid = [1160, 1440]
             elif loss_type == 'emd_particle_distance_loss':
                 y_label = 'PRT\nEMD'
                 ylim_valid = [5240, 7200]
             elif loss_type == 'height_map_loss_pcd':
                 y_label = 'Height\nMap'
-                ylim_valid = [1970, 2480]
+                ylim_valid = [1970, 2380]
             else:
                 raise ValueError('Unknown loss type')
 
@@ -529,24 +529,23 @@ def plot_loss_param_curves_extra(man_init=False, heightmap=False):
                     n = 0
                     for seed in [3, 4, 5, 6, 7, 8, 9, 10]:
                         datas.append(losses[f'seed-{seed}'][case][loss_type])
-                        colors.append(color_pool[n])
-                        linestyles.append('-')
+                        colors.append('k')
+                        linestyles.append(':')
                         linewidths.append(2)
                         alphas.append(1)
                         n += 1
 
-                    if man_init:
+                if man_init and dataset == '1cyl':
+                    for run_id in [0, 1, 2, 3]:
                         run_dir = os.path.join(cwd, '..', 'optimisation-results',
                                                f'{dir_prefix}-run{run_id}-man-init-logs', 'data')
                         losses = json.load(open(os.path.join(run_dir, 'raw_loss.json'), 'rb'))
-                        n = 0
                         for seed in [0, 1, 2, 3, 4, 5, 6, 7]:
                             datas.append(losses[f'seed-{seed}'][case][loss_type])
-                            colors.append(color_pool[n])
-                            linestyles.append(':')
-                            linewidths.append(3)
+                            colors.append(color_pool[run_id])
+                            linestyles.append('-')
+                            linewidths.append(1)
                             alphas.append(1)
-                            n += 1
             else:
                 n = 0
                 for run_id in [0, 3, 4, 5]:
@@ -662,21 +661,21 @@ def plot_loss_param_curves_extra(man_init=False, heightmap=False):
                     n = 0
                     for seed in [3, 4, 5, 6, 7, 8, 9, 10]:
                         datas.append(losses[f'seed-{seed}']['parameters'][p])
-                        colors.append(color_pool[n])
                         linewidths.append(2)
-                        linestyles.append('-')
+                        colors.append('k')
+                        linestyles.append(':')
                         n += 1
-                    if man_init:
+
+                if man_init and dataset == '1cyl':
+                    for run_id in [0, 1, 2, 3]:
                         run_dir = os.path.join(cwd, '..', 'optimisation-results',
                                                f'{dir_prefix}-run{run_id}-man-init-logs', 'data')
                         losses = json.load(open(os.path.join(run_dir, 'raw_loss.json'), 'rb'))
-                        n = 0
                         for seed in [0, 1, 2, 3, 4, 5, 6, 7]:
                             datas.append(losses[f'seed-{seed}']['parameters'][p])
-                            colors.append(color_pool[n])
-                            linewidths.append(3)
-                            linestyles.append(':')
-                            n += 1
+                            colors.append(color_pool[run_id])
+                            linewidths.append(2)
+                            linestyles.append('-')
             else:
                 n = 0
                 for run_id in [0, 3, 4, 5]:
@@ -685,7 +684,7 @@ def plot_loss_param_curves_extra(man_init=False, heightmap=False):
                     for seed in [0, 1, 2]:
                         datas.append(losses[f'seed-{seed}']['parameters'][p])
                         colors.append(color_pool[n])
-                        linewidths.append(2)
+                        linewidths.append(1)
                         linestyles.append('-')
                     n += 1
 
@@ -831,16 +830,16 @@ if __name__ == '__main__':
     Examples:
     """
     # read_final_params(run_ids=[0], contact_level=2, dataset='soil')
-    # read_losses(run_ids=[3], contact_level=1, dataset='1cyl', extra_seeds=False, man_init=True, save_meanstd=True)
-    # read_losses(run_ids=[3], contact_level=1, dataset='1rec', extra_seeds=False, man_init=True, save_meanstd=True)
-    # read_losses(run_ids=[3], contact_level=1, dataset='1round', extra_seeds=False, man_init=True, save_meanstd=True)
+    # read_losses(run_ids=[0], contact_level=1, dataset='1cyl', extra_seeds=False, man_init=True, save_meanstd=True)
+    # read_losses(run_ids=[1], contact_level=1, dataset='1cyl', extra_seeds=False, man_init=True, save_meanstd=True)
+    # read_losses(run_ids=[2], contact_level=1, dataset='1cyl', extra_seeds=False, man_init=True, save_meanstd=True)
     """
     The plot_loss_param_curves() function plots the curves of the training and validation losses and the parameters using the statistics saved by the read_losses() function.
     Examples:
     """
     # plot_loss_param_curves(contact_level=1)
     # plot_loss_param_curves(contact_level=2)
-    # plot_loss_param_curves_extra(heightmap=True)
+    plot_loss_param_curves_extra(man_init=True)
     # plot_legends(heightmap=True)
     """
     The collect_best_validation_losses() and collect_beset_long_horizon_motion_losses() functions collect the best losses of simulating the validation motions and long horizon motions.
@@ -851,4 +850,4 @@ if __name__ == '__main__':
     """
     # collect_best_validation_losses(run_ids=[0, 1, 2, 3], contact_level=1, dataset='12mix')
     # collect_best_validation_losses(run_ids=[0, 1, 2, 3], contact_level=2, dataset='12mix')
-    collect_beset_long_horizon_motion_losses(run_ids=[0, 1, 2, 3], print_loss=True)
+    # collect_beset_long_horizon_motion_losses(run_ids=[0, 1, 2, 3], print_loss=True)

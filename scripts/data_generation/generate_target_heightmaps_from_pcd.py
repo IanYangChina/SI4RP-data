@@ -18,7 +18,7 @@ def run(args):
             fast_math=False, random_seed=1)
 
     height_map_res = args['hmr']
-    height_map_size = 0.15  # meter
+    height_map_size = 0.11  # meter
     height_map_xy_offset = (0.25 * 1000, 0.25 * 1000)
     height_map_pixel_size = height_map_size * 1000 / height_map_res
     height_map_pcd_target = ti.field(dtype=DTYPE_TI, shape=(height_map_res, height_map_res), needs_grad=True)
@@ -33,17 +33,20 @@ def run(args):
     process = psutil.Process(os.getpid())
     script_path = os.path.dirname(os.path.realpath(__file__))
     script_path = os.path.join(script_path, '..')
-    for motion in ['poking-1', 'poking-2', 'poking-shifting-1', 'poking-shifting-2', 'long-horizon']:
+    for motion in ['long-horizon']:
         for agent in ['cylinder', 'rectangle', 'round']:
-            for data_ind in [str(_) for _ in range(1)]:
-                data_path = os.path.join(script_path, '..', 'data', 'other_mats',
-                                         'slime', 'long-motion-validation')
-                                         #f'data-motion-{motion}', f'eef-{agent}')
-                # hm = np.load(os.path.join(data_path, f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(down_sample_voxel_size)}.npy'))
-                # plt.imshow(hm, cmap='Greys')
-                # plt.show()
-                # plt.close()
-                # continue
+            for data_ind in [str(_) for _ in range(2)]:
+                data_path = os.path.join(script_path, '..', 'data',
+                                         # 'other_mats', 'slime', 'long-motion-validation')
+                                         # f'data-motion-{motion}', f'eef-{agent}')
+                                         'data-planning-targets')
+                hm_path = os.path.join(data_path, f'target_pcd_height_map-{data_ind}-res{str(height_map_res)}-vdsize{str(down_sample_voxel_size)}.npy')
+                print(hm_path)
+                hm = np.load(hm_path)
+                plt.imshow(hm, cmap='Greys')
+                plt.show()
+                plt.close()
+                continue
 
                 target_pcd_path = os.path.join(data_path, f'pcd_{data_ind}1.ply')
                 obj_start_centre_real = np.load(os.path.join(data_path, f'mesh_{data_ind}0_repaired_centre.npy')).astype(DTYPE_NP)

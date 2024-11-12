@@ -1,0 +1,46 @@
+[
+    {
+        "action": [
+            2,
+            0,
+            0
+        ],
+        "loss": 6072.10400390625
+    },
+    {
+        "action": [
+            1,
+            0,
+            -1
+        ],
+        "loss": 5884.67529296875
+    },
+    {
+        "action": [
+            1,
+            -1,
+            -1
+        ],
+        "loss": 5988.03857421875
+    },
+    {
+        "action": [
+            1,
+            -1,
+            -1
+        ],
+        "loss": 6051.4306640625
+    },
+    {
+        "action": [
+            1,
+            -1,
+            -1
+        ],
+        "loss": 6131.19580078125
+    },
+    {
+        "data_path": "/home/xintong/Documents/PyProjects/SI4RP-data/scripts/experiments/../../data/data-motion-long-horizon/eef-cylinder",
+        "data_ind": "0"
+    }
+]

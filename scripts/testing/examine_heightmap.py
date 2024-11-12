@@ -30,6 +30,7 @@ def main(args):
                 data_path = os.path.join(script_path, '..', '..', 'data',
                                          f'data-motion-{motion}', f'eef-{agent}', 'validation_data')
             for data_id in ['0', '1']:
+                print(f'Examine height map for {motion_name} {motion_id} {agent} {data_id}')
                 hm_1 = np.load(os.path.join(data_path,
                                             f'target_pcd_height_map-{data_id}-res{res}-vdsize0.001.npy'))
                 min_val, max_val = np.amin(hm_1), np.amax(hm_1)
@@ -63,7 +64,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('--motion_name', type=str, default='poking', help='Name of the motion: poking or poking-shifting')
     parser.add_argument('--motion_id', type=int, default=1, help='ID of the motion: 1 or 2')
-    parser.add_argument('--long_motion', action='store_true', help='Examine long-horizon data')
+    parser.add_argument('--long_motion', default=True, action='store_true', help='Examine long-horizon data')
     parser.add_argument('--valid', dest='validation_data', action='store_true', help='Examine validation data')
     arguments = vars(parser.parse_args())
     main(arguments)

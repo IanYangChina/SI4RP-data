@@ -229,6 +229,7 @@ def plot_legends(extra_seeds=False, heightmap=False):
                 'PRT CD',
                 'PCD EMD',
                 'PRT EMD',
+                'PRT EMD (Random Init)'
             ]
             file_name = ''
 
@@ -839,8 +840,8 @@ if __name__ == '__main__':
     """
     # plot_loss_param_curves(contact_level=1)
     # plot_loss_param_curves(contact_level=2)
-    plot_loss_param_curves_extra(man_init=True)
-    # plot_legends(heightmap=True)
+    # plot_loss_param_curves_extra(man_init=True)
+    plot_legends(heightmap=True)
     """
     The collect_best_validation_losses() and collect_beset_long_horizon_motion_losses() functions collect the best losses of simulating the validation motions and long horizon motions.
     The best validation losses are determined by the mean of the last 10 validation heightmap losses during training.

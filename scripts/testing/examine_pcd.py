@@ -119,7 +119,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('--motion', dest='motion', type=str, default='poking-shifting-1',
                         help='Name of the motion used to collect the point clouds: poking-1, poking-2, poking-shifting-1, poking-shifting-2')
-    parser.add_argument('--long_motion', dest='long_motion', default=True, action='store_true', help='Examine long-horizon data')
+    parser.add_argument('--long_motion', dest='long_motion', default=False, action='store_true', help='Examine long-horizon data')
     parser.add_argument('--valid', dest='validation_data', action='store_true', help='Examine validation data')
     arguments = vars(parser.parse_args())
     main(arguments)

@@ -4,7 +4,7 @@ import taichi as ti
 import matplotlib.pylab as plt
 import matplotlib as mpl
 from time import time
-
+import argparse
 import json
 from doma.envs.sys_id_env import make_env
 from doma.engine.utils.misc import set_parameters
@@ -206,31 +206,32 @@ def find_best_action(init_agent_pos, init_state, resultant_heightmap_z_max=None)
     return best_action, best_loss, finished_state, resultant_heightmap_z_max_
 
 
-def main():
-    # hm = plt.imshow(np.load(os.path.join(script_path, '..', 'data', 'data-planning-targets',
-    #                                      'target_pcd_height_map-1-res32-vdsize0.001.npy')),
-    #                 cmap='YlOrBr', vmin=0, vmax=60)
-    # plt.xticks([])
-    # plt.yticks([])
-    # plt.savefig(os.path.join(script_path, '..', 'data', 'data-planning-targets',
-    #                          'target_pcd_height_map-1-res32-vdsize0.001.pdf'), bbox_inches='tight', pad_inches=0,
-    #             dpi=300)
-    #
-    # plt.close()
-    # exit()
+def plot_target_height_map(colourbar_only=False):
+    if not colourbar_only:
+        plt.imshow(np.load(os.path.join(script_path, '..', 'data', 'data-planning-targets',
+                                         'target_pcd_height_map-1-res32-vdsize0.001.npy')),
+                    cmap='YlOrBr', vmin=0, vmax=60)
+        plt.xticks([])
+        plt.yticks([])
+        plt.savefig(os.path.join(script_path, '..', 'data', 'data-planning-targets',
+                                 'target_pcd_height_map-1-res32-vdsize0.001.pdf'), bbox_inches='tight', pad_inches=0,
+                    dpi=300)
 
-    # plt.rcParams.update({'font.size': 20})
-    # fig = plt.figure()
-    # ax = fig.add_axes([0.05, 0.80, 0.9, 0.1])
-    #
-    # cb = mpl.colorbar.ColorbarBase(ax, orientation='horizontal',
-    #                                cmap='YlOrBr',
-    #                                norm=mpl.colors.Normalize(0, 60),
-    #                                ticks=[0, 20, 40, 60])
-    #
-    # plt.savefig('just_colorbar', bbox_inches='tight')
-    # exit()
+        plt.close()
+    else:
+        plt.rcParams.update({'font.size': 20})
+        fig = plt.figure()
+        ax = fig.add_axes([0.05, 0.80, 0.9, 0.1])
 
+        cb = mpl.colorbar.ColorbarBase(ax, orientation='horizontal',
+                                       cmap='YlOrBr',
+                                       norm=mpl.colors.Normalize(0, 60),
+                                       ticks=[0, 20, 40, 60])
+
+        plt.savefig('just_colorbar', bbox_inches='tight')
+        plt.close()
+
+def main(arguments):
     # Target height map ind
     # loss_cfg['target_ind'] = 0
     # Object initial configuration
@@ -239,13 +240,13 @@ def main():
     # data_cfg['data_ind'] = str(0)
 
     # Target height map ind
-    loss_cfg['target_ind'] = 1
+    loss_cfg['target_ind'] = arguments['target_id']
     # Object initial configuration
     data_cfg['data_path'] = os.path.join(script_path, '..', 'data', 'data-motion-poking-shifting-1',
                                          'eef-rectangle')
     data_cfg['data_ind'] = str(1)
 
-    evaluate = False
+    evaluate = arguments['evaluate']
     log_p_dir = os.path.join(script_path, '..', 'greedy-planning-logs')
     os.makedirs(log_p_dir, exist_ok=True)
 
@@ -291,4 +292,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--eval', dest='evaluate', action='store_true', default=False)
+    parser.add_argument('--target-id', dest='target_id', type=int, default=1)
+    args = parser.parse_args()
+    main(args)

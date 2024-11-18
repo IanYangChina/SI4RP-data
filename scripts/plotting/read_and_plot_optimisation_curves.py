@@ -536,7 +536,7 @@ def plot_loss_param_curves_extra(man_init=False, heightmap=False):
                         alphas.append(1)
                         n += 1
 
-                if man_init and dataset == '1cyl':
+                if man_init:
                     for run_id in [0, 1, 2, 3]:
                         run_dir = os.path.join(cwd, '..', 'optimisation-results',
                                                f'{dir_prefix}-run{run_id}-man-init-logs', 'data')
@@ -667,7 +667,7 @@ def plot_loss_param_curves_extra(man_init=False, heightmap=False):
                         linestyles.append(':')
                         n += 1
 
-                if man_init and dataset == '1cyl':
+                if man_init:
                     for run_id in [0, 1, 2, 3]:
                         run_dir = os.path.join(cwd, '..', 'optimisation-results',
                                                f'{dir_prefix}-run{run_id}-man-init-logs', 'data')
@@ -831,17 +831,18 @@ if __name__ == '__main__':
     Examples:
     """
     # read_final_params(run_ids=[0], contact_level=2, dataset='soil')
-    # read_losses(run_ids=[0], contact_level=1, dataset='1cyl', extra_seeds=False, man_init=True, save_meanstd=True)
-    # read_losses(run_ids=[1], contact_level=1, dataset='1cyl', extra_seeds=False, man_init=True, save_meanstd=True)
-    # read_losses(run_ids=[2], contact_level=1, dataset='1cyl', extra_seeds=False, man_init=True, save_meanstd=True)
+    # read_losses(run_ids=[0], contact_level=1, dataset='1round', extra_seeds=False, man_init=True, save_meanstd=True)
+    # read_losses(run_ids=[1], contact_level=1, dataset='1round', extra_seeds=False, man_init=True, save_meanstd=True)
+    # read_losses(run_ids=[2], contact_level=1, dataset='1round', extra_seeds=False, man_init=True, save_meanstd=True)
+    # read_losses(run_ids=[3], contact_level=1, dataset='1round', extra_seeds=False, man_init=True, save_meanstd=True)
     """
     The plot_loss_param_curves() function plots the curves of the training and validation losses and the parameters using the statistics saved by the read_losses() function.
     Examples:
     """
     # plot_loss_param_curves(contact_level=1)
     # plot_loss_param_curves(contact_level=2)
-    # plot_loss_param_curves_extra(man_init=True)
-    plot_legends(heightmap=True)
+    plot_loss_param_curves_extra(man_init=True)
+    # plot_legends(heightmap=True)
     """
     The collect_best_validation_losses() and collect_beset_long_horizon_motion_losses() functions collect the best losses of simulating the validation motions and long horizon motions.
     The best validation losses are determined by the mean of the last 10 validation heightmap losses during training.

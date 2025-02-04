@@ -1,31 +1,22 @@
 ## Physics Parameter Identification for Robotic Elastoplastic Object Manipulation via Differentiable Physics
-### Experiment scripts and data
-#### **It is highly suggestted that you download the codes from Code Ocean and run them at your local Ubuntu machine. Because Code Ocean doesn't support online visualisation.
+## Experiment scripts and data
 
-### Instructions for reviewers
-- Launch an Ubuntu 20.04 machine, launch a terminal and run:
+### Instructions
+- On an Ubuntu (>18.04) terminal and run:
   - `sudo apt-get update`
   - `sudo apt-get install build-essential`
   - `sudo apt-get install libx11-6`
 - Download the code and data. They should be in three folders: 
-  - `deformable-object-manipulation-1.0`
-  - `DRL_Implementation`
-  - `SI4RP-data`
-- Install the simulation package, from a terminal:
-  - `cd deformable-object-manipulation-1.0`
-  - create your conda env `conda env create -f environment.yml`
-  - `conda activate DPS`
-  - `pip install .`
-- (Optional) If you would like to verify some of the plotting scripts
-  - `cd DRL_Implementation`
-  - `pip install .`
+  - Install the [simulator](https://github.com/IanYangChina/deformable-object-manipulation)
+  - Install the [reinforcement learning package](https://github.com/IanYangChina/DRL_Implementation)
+  - Clone this repository `git clone https://github.com/IanYangChina/SI4RP-data.git`
 - You are ready to run the scripts.
   - `cd SI4RP-data`
   - **Read the structure of the folder below**
   - `conda activate DPS`
   - Understand what a script does in detail: `python scripts/ANY_SCRIPT_FOLDER/ANY_SCRIPT.py -h`
 
-#### Structure of the data folder
+### Structure of the repository
 - `data/SI4RP-data/data` contains the data for the SI4RP dataset
   - `data-motion-*` contains the point cloud data collected by different motions
   - `trajectories` contains the trajectories of the motions from the MOVEIT! planner that was used on the real robot, as well as the constructed trajectories used in the simulation

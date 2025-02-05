@@ -10,8 +10,8 @@ Video: <a href="https://www.youtube.com/watch?v=2-9JWRsQhTU"><img src="https://u
 </h2>
 
 <p align="center">
-  <img src="https://github.com/IanYangChina/SI4RP-data/blob/main/docs/Clay.gif" height="200"/>
-  <img src="https://github.com/IanYangChina/SI4RP-data/blob/main/docs/Cloud_slime.gif" height="200"/>
+  <img src="./Clay.gif" height="200"/>
+  <img src="./Cloud_slime.gif" height="200"/>
 </p>
 
 <h2 align="center"> Abstract </h2>
@@ -21,10 +21,10 @@ Video: <a href="https://www.youtube.com/watch?v=2-9JWRsQhTU"><img src="https://u
 ### Extensive experiments show that with only a single real-world interaction, the estimated parameters, Young’s modulus, Poisson’s ratio, yield stress and friction coefficients, can accurately simulate visually and physically realistic deformation behaviours induced by unseen and long-horizon manipulation motions. Additionally, the DPSI framework inherently provides physically intuitive interpretations for the parameters in contrast to black-box approaches such as deep neural networks. 
 
 <pre align="center">
-  <img src="https://github.com/IanYangChina/SI4RP-data/blob/main/docs/real-platform-problem.png" width="700"/>
+  <img src="./real-platform-problem.png" width="700"/>
 
 
-  <img src="https://github.com/IanYangChina/SI4RP-data/blob/main/docs/Diagram.png" width="710"/>
+  <img src="./Diagram.png" width="710"/>
 
 
 

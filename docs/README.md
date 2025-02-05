@@ -1,30 +1,43 @@
-## Physics Parameter Identification for Robotic Elastoplastic Object Manipulation via Differentiable Physics
-## Experiment scripts and data
+<h1 align="center">
+Differentiable Physics-based System Identification for 
 
-### Instructions
-- On an Ubuntu (>18.04) terminal and run:
-  - `sudo apt-get update`
-  - `sudo apt-get install build-essential`
-  - `sudo apt-get install libx11-6`
-- Download the code and data. They should be in three folders: 
-  - Install the [simulator](https://github.com/IanYangChina/deformable-object-manipulation)
-  - Clone this repository `git clone https://github.com/IanYangChina/SI4RP-data.git`
-- You are ready to run the scripts.
-  - `cd SI4RP-data`
-  - **Read the structure of the folder below**
-  - `conda activate DPS`
-  - Understand what a script does in detail: `python scripts/ANY_SCRIPT_FOLDER/ANY_SCRIPT.py -h`
+Robotic Manipulation of Elastoplastic Materials
+</h1>
 
-### Structure of the repository
-- `data/SI4RP-data/data` contains the data for the SI4RP dataset
-  - `data-motion-*` contains the point cloud data collected by different motions
-  - `trajectories` contains the trajectories of the motions from the MOVEIT! planner that was used on the real robot, as well as the constructed trajectories used in the simulation
-- `data/SI4RP-data/figures` contains the visualisation figures from the experiment results
-- `data/SI4RP-data/gradient-analysis` contains the gradient analysis results
-- `data/SI4RP-data/loss-lanscape-analysis` contains the loss landscape analysis results
-- `data/SI4RP-data/optimisation-results` contains the system identification results
-- `data/SI4RP-data/scripts` contains the various scripts
-  - `data_generation` contains the scripts for generating heightmaps and meshes from point clouds
-  - `experiments` contains the scripts for computing the loss landscapes, gradients and running the system identification experiments
-  - `plotting` contains the scripts for plotting the results
-  - `testing` contains the scripts for various testing purposes
+<h2 align="center">
+Code: <a href="https://github.com/IanYangChina/SI4RP-data"><img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="20" height="20"></a>
+Video: <a href="https://www.youtube.com/watch?v=2-9JWRsQhTU"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/2560px-YouTube_full-color_icon_%282017%29.svg.png" width="25" height="20"></a>
+</h2>
+
+<p align="center">
+  <img src="/docs/Clay.gif" height="200"/>
+  <img src="/docs/Cloud_slime.gif" height="200"/>
+</p>
+
+<h2 align="center"> Abstract </h2>
+
+### Robotic manipulation of volumetric elastoplastic deformable materials, from foods such as dough to construction materials like clay, is in its infancy, largely due to the difficulty of modelling and perception in a high-dimensional space. Simulating the dynamics of such materials is computationally expensive. It tends to suffer from inaccurately estimated physics parameters of the materials and the environment, impeding high-precision manipulation. Estimating such parameters from raw point clouds captured by optical cameras suffers further from heavy occlusions.
+### To address this challenge, this work introduces a novel Differentiable Physics-based System Identification (DPSI) framework that enables a robot arm to infer the physics parameters of elastoplastic materials and the environment using simple manipulation motions and incomplete 3D point clouds, aligning the simulation with the real world.
+### Extensive experiments show that with only a single real-world interaction, the estimated parameters, Young’s modulus, Poisson’s ratio, yield stress and friction coefficients, can accurately simulate visually and physically realistic deformation behaviours induced by unseen and long-horizon manipulation motions. Additionally, the DPSI framework inherently provides physically intuitive interpretations for the parameters in contrast to black-box approaches such as deep neural networks. 
+
+<pre align="center">
+  <img src="/docs/real-platform-problem.png" width="700"/>
+
+
+  <img src="/docs/Diagram.png" width="710"/>
+
+
+
+
+
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ef/Cardiff_University_%28logo%29.svg/512px-Cardiff_University_%28logo%29.svg.png" height="80"/>    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/UKRI_EPSR_Council-Logo_Horiz-RGB.png/799px-UKRI_EPSR_Council-Logo_Horiz-RGB.png" height="80"/>
+</pre>
+
+```bibtex
+@article{yang2024differentiable,
+  title={Differentiable Physics-based System Identification for Robotic Manipulation of Elastoplastic Materials},
+  author={Yang, Xintong and Ji, Ze and Lai, Yu-Kun},
+  journal={arXiv preprint arXiv:2411.00554},
+  year={2024}
+}
+```

@@ -1,7 +1,6 @@
 import os
 import json
 import numpy as np
-from drl_implementation.agent.utils import plot as plot
 import matplotlib as mpl
 from copy import deepcopy as dcp
 
@@ -32,6 +31,96 @@ loss_types = ['point_distance_sr',
               'emd_particle_distance_loss'
               ]
 params = ['E', 'nu', 'yield_stress', 'rho', 'mf', 'gf']
+
+
+def smoothed_plot_mean_deviation(file, data_dict_list, title=None,
+                                 vertical_lines=None, horizontal_lines=None, linestyle='--', linewidth=4,
+                                 x_label='Timesteps', x_axis_off=False, xticks=None,
+                                 y_label="Success rate", window=5, ylim=(None, None), y_axis_off=False, yticks=None,
+                                 legend=None, legend_only=False, legend_file=None, legend_loc="upper right",
+                                 legend_title=None, legend_bbox_to_anchor=None, legend_ncol=4, legend_frame=False,
+                                 handlelength=2):
+    colors = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
+              'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan','k']
+    if not isinstance(data_dict_list, list):
+        data_dict_list = [data_dict_list]
+
+    if y_axis_off:
+        plt.ylabel(None)
+        plt.yticks([])
+    else:
+        plt.ylabel(y_label)
+        if yticks is not None:
+            plt.yticks(yticks)
+    if ylim[0] is not None:
+        plt.ylim(ylim)
+    if title is not None:
+        plt.title(title)
+
+    if x_axis_off:
+        plt.xlabel(None)
+        plt.xticks([])
+    else:
+        plt.xlabel(x_label)
+        if x_label == "Epoch":
+            x_tick_interval = len(data_dict_list[0]["mean"]) // 10
+            plt.xticks([n * x_tick_interval for n in range(11)])
+        if xticks is not None:
+            plt.xticks(xticks)
+
+    handles = [Line2D([0], [0], color=colors[i], linewidth=linewidth) for i in range(len(data_dict_list))]
+    if legend is not None:
+        legend_plot = plt.legend(handles, legend, handlelength=handlelength,
+                                 title=legend_title, loc=legend_loc, labelspacing=0.15,
+                                 bbox_to_anchor=legend_bbox_to_anchor, ncol=legend_ncol, frameon=legend_frame)
+        if legend_only:
+            assert legend_file is not None, 'specify legend save path'
+            fig = legend_plot.figure
+            fig.canvas.draw()
+            bbox = legend_plot.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+            fig.savefig(legend_file, dpi=500, bbox_inches=bbox)
+            plt.close()
+            return
+
+    N = len(data_dict_list[0]["mean"])
+    x = [i for i in range(N)]
+    for i in range(len(data_dict_list)):
+        case_data = data_dict_list[i]
+        for key in case_data:
+            running_avg = np.empty(N)
+            for n in range(N):
+                running_avg[n] = np.mean(case_data[key][max(0, n - window):(n + 1)])
+
+            case_data[key] = dcp(running_avg)
+
+        plt.fill_between(x, case_data["upper"], case_data["lower"], alpha=0.3, color=colors[i], label='_nolegend_')
+        plt.plot(x, case_data["mean"], color=colors[i])
+
+    if horizontal_lines is not None:
+        for n in range(len(horizontal_lines)):
+            plt.axhline(y=horizontal_lines[n], color=colors[len(data_dict_list) + n], xmin=0.05, xmax=0.95,
+                        linestyle=linestyle, linewidth=linewidth)
+    if vertical_lines is not None:
+        assert horizontal_lines is None
+        for n in range(len(vertical_lines)):
+            plt.axvline(x=vertical_lines[n], color=colors[len(data_dict_list) + n], ymin=0.05, ymax=0.95,
+                        linestyle=linestyle, linewidth=linewidth)
+
+    plt.savefig(file, bbox_inches='tight', dpi=500)
+    plt.close()
+
+
+def get_mean_and_deviation(data, save_data=False, file_name=None):
+    upper = np.max(data, axis=0)
+    lower = np.min(data, axis=0)
+    mean = np.mean(data, axis=0)
+    statistics = {"mean": mean.tolist(),
+                  "upper": upper.tolist(),
+                  "lower": lower.tolist()}
+    if save_data:
+        assert file_name is not None
+        json.dump(statistics, open(file_name, 'w'))
+    return statistics
 
 
 def read_final_params(run_ids, contact_level=0, dataset='12mix'):
@@ -188,7 +277,7 @@ def read_losses(run_ids, contact_level=0, dataset='12mix',
                 for seed in seeds:
                     d = np.array(data_dict[f'seed-{seed}']['training'][loss_type])
                     data.append(d)
-                plot.get_mean_and_deviation(np.array(data),
+                get_mean_and_deviation(np.array(data),
                                             save_data=True,
                                             file_name=os.path.join(save_data_dir, f'training-{loss_type}.json'))
                 # validation
@@ -196,7 +285,7 @@ def read_losses(run_ids, contact_level=0, dataset='12mix',
                 for seed in seeds:
                     d = data_dict[f'seed-{seed}']['validation'][loss_type]
                     validation_data.append(np.array(d))
-                plot.get_mean_and_deviation(np.array(validation_data),
+                get_mean_and_deviation(np.array(validation_data),
                                             save_data=True,
                                             file_name=os.path.join(save_data_dir, f'validation-{loss_type}.json'))
 
@@ -205,7 +294,7 @@ def plot_legends(extra_seeds=False, heightmap=False):
     if extra_seeds:
         legends = [f'seed-{n}' for n in range(8)]
         plt.rcParams.update({'font.size': 40})
-        plot.smoothed_plot_mean_deviation(
+        smoothed_plot_mean_deviation(
             file=os.path.join(cwd, '..', 'figures', 'result-figs', 'legend-extra-seeds.pdf'),
             legend_file=os.path.join(cwd, '..', 'figures', 'result-figs', 'legend-extra-seeds.pdf'),
             horizontal_lines=None, linestyle='--', linewidth=15, handlelength=1,
@@ -233,7 +322,7 @@ def plot_legends(extra_seeds=False, heightmap=False):
             ]
             file_name = ''
 
-        plot.smoothed_plot_mean_deviation(
+        smoothed_plot_mean_deviation(
             file=os.path.join(cwd, '..', 'figures', 'result-figs', 'legend.pdf'),
             legend_file=os.path.join(cwd, '..', 'figures', 'result-figs',
                                      f'legend{file_name}.pdf'),

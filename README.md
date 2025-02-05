@@ -1,5 +1,12 @@
-## Physics Parameter Identification for Robotic Elastoplastic Object Manipulation via Differentiable Physics
-## Experiment scripts and data
+<h1 align="center">
+Differentiable Physics-based System Identification for 
+
+Robotic Manipulation of Elastoplastic Materials
+</h1>
+<h2>
+Code: <a href="https://github.com/IanYangChina/SI4RP-data"><img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="20" height="20"></a>
+Video: <a href="https://www.youtube.com/watch?v=2-9JWRsQhTU"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/2560px-YouTube_full-color_icon_%282017%29.svg.png" width="25" height="20"></a>
+</h2>
 
 ### Instructions
 - On an Ubuntu (>18.04) terminal and run:

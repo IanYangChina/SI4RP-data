@@ -1,0 +1,22 @@
+type: AgentRigid
+effectors:
+  - type: Rigid
+    params:
+      # offset on z-axi: 0.1
+      # 1 unit in simulation = 1 meter in the real world
+      init_pos: (0.25, 0.25, 0.05)  # meter
+      init_euler: (0.0, 0.0, 0.0)  # degree
+      action_dim: 6
+    mesh:
+      # The plate's base is a 0.1m x 0.01m rectangle.
+      # The side intersection plane of the plate is
+      #      an equilateral triangle with a top-angle of 5 degrees.
+      file: CylinderEEF.obj
+      scale: (1.0, 1.0, 1.0)
+      euler: (0.0, 0.0, 0.0)
+      material: MANIPULATOR
+      sdf_res: 150
+    boundary:
+      type: cube
+      lower: (0.0, 0.0, 0.01)
+      upper: (0.4, 0.4, 0.4)

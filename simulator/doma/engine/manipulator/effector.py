@@ -21,7 +21,7 @@ class Effector:
             max_action_steps_global,
             ckpt_dest,
             dt,
-            ctrl_type='velocity',
+            ctrl_type='position',
             has_mesh=False,
             dim=3,
             action_dim=3,

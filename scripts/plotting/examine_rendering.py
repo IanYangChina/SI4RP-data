@@ -33,7 +33,7 @@ particle_color = (76 << 16) + (0 << 8) + 153
 
 def forward(mpm_env, init_state, trajectory, render=False,
             save_img=False, save_heightmap=False,  save_gif=False, save_tr_combined_img=False,
-            img_dir=None, save_loss=True, use_plb_renderer=False,
+            img_dir=None, save_loss=True, use_ray_tracing_renderer=False,
             render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
             init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
     mpm_env.set_state(init_state['state'], grad_enabled=False)
@@ -70,7 +70,7 @@ def forward(mpm_env, init_state, trajectory, render=False,
         if save_gif:
             frames_to_save_for_gifs = list(range(mpm_env.horizon))
 
-    if use_plb_renderer:
+    if use_ray_tracing_renderer:
         plb_renderer = Renderer(cfg=RENDERER, primitives=[mpm_env.agent.effectors[0].mesh])
         if render:
             plt.ion()
@@ -84,7 +84,7 @@ def forward(mpm_env, init_state, trajectory, render=False,
         mpm_env.step(action)
         if save_img or save_gif:
             cur_time = time.time()
-            if use_plb_renderer:
+            if use_ray_tracing_renderer:
                 particle_np = mpm_env.simulator.get_x()
                 particle_np_swap = np.zeros_like(particle_np)
                 particle_np_swap[:, 0] = particle_np[:, 0]
@@ -104,7 +104,7 @@ def forward(mpm_env, init_state, trajectory, render=False,
                 frames_for_gifs.append(img)
 
         if render:
-            if use_plb_renderer:
+            if use_ray_tracing_renderer:
                 particle_np = mpm_env.simulator.get_x()
                 particle_np_swap = np.zeros_like(particle_np)
                 particle_np_swap[:, 0] = particle_np[:, 0]
@@ -400,6 +400,7 @@ def main(args):
                        rho=rho, ground_friction=gf, manipulator_friction=mf)
         forward(mpm_env, init_state, trajectory.copy(),
                 render=args['render_human'],
+                use_ray_tracing_renderer=args['use_ray_tracing_renderer'],
                 save_loss=args['save_loss'],
                 save_gif=args['save_gif'],
                 save_img=args['save_img'],
@@ -431,6 +432,7 @@ if __name__ == '__main__':
     parser.add_argument('--m_id', dest='motion_ind', type=int, default=1, choices=[1, 2], help='Motion index')
     parser.add_argument('--long_motion', dest='long_motion', default=False, action='store_true', help='Examine long horizon motion simulation. This diseffects the contact_level and motion_ind arguments.')
     parser.add_argument('--agent_id', dest='agent_ind', type=int, default=0, choices=[0, 1, 2], help='Examine the motion executed by which end-effector: 0 - rectangle, 1 - round, 2 - cylinder')
+    parser.add_argument('--use_ray_tracing_renderer', dest='use_ray_tracing_renderer', default=False, action='store_true', help='Use the ray tracing renderer for rendering the simulation')
     parser.add_argument('--r_human', dest='render_human', default=False, action='store_true', help='Render the simulation with a pop-up window')
     parser.add_argument('--r_init_pcd', dest='render_init_pcd', default=False, action='store_true', help='Render the initial point cloud with a pop-up window')
     parser.add_argument('--r_end_pcd', dest='render_end_pcd', default=False, action='store_true', help='Render the final point cloud with a pop-up window')

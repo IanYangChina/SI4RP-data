@@ -6,6 +6,7 @@ from PIL import Image
 import imageio
 import matplotlib as mpl
 import matplotlib.pylab as plt
+import time
 
 import psutil
 import json
@@ -18,11 +19,21 @@ script_path = os.path.join(script_path, '..')
 
 from doma.envs.sys_id_env import make_env
 from doma.engine.utils.misc import get_gpu_memory, set_parameters
+from doma.engine.renderer.plb_renderer import Renderer, RENDERER
+RENDERER.max_ray_depth = 2
+RENDERER.image_res = (512, 512)
+RENDERER.ground_color = [0.9, 0.9, 0.9]
+RENDERER.camera_pos = (0.25, 0.35, 0.6)
+RENDERER.camera_rot = (0.7, 0)
+RENDERER.use_directional_light = True
+RENDERER.light_direction = (1., 1., 0.7)
+# Red = 76, Green = 0, Blue = 153 → hex
+particle_color = (76 << 16) + (0 << 8) + 153
 
 
 def forward(mpm_env, init_state, trajectory, render=False,
             save_img=False, save_heightmap=False,  save_gif=False, save_tr_combined_img=False,
-            img_dir=None, save_loss=True,
+            img_dir=None, save_loss=True, use_plb_renderer=False,
             render_init_pcd=False, render_end_pcd=False, render_heightmap=False,
             init_pcd_path=None, init_pcd_offset=None, init_mesh_path=None, init_mesh_pos=None):
     mpm_env.set_state(init_state['state'], grad_enabled=False)
@@ -59,13 +70,33 @@ def forward(mpm_env, init_state, trajectory, render=False,
         if save_gif:
             frames_to_save_for_gifs = list(range(mpm_env.horizon))
 
+    if use_plb_renderer:
+        plb_renderer = Renderer(cfg=RENDERER, primitives=[mpm_env.agent.effectors[0].mesh])
+        if render:
+            plt.ion()
+            figure, ax = plt.subplots(figsize=(6, 6))
+            plt.axis('off')
+
     frames = []
     frames_for_gifs = []
     for i in range(mpm_env.horizon):
         action = trajectory[i]
         mpm_env.step(action)
         if save_img or save_gif:
-            img = mpm_env.render(mode='rgb_array')
+            cur_time = time.time()
+            if use_plb_renderer:
+                particle_np = mpm_env.simulator.get_x()
+                particle_np_swap = np.zeros_like(particle_np)
+                particle_np_swap[:, 0] = particle_np[:, 0]
+                particle_np_swap[:, 1] = particle_np[:, 2]
+                particle_np_swap[:, 2] = particle_np[:, 1]
+                plb_renderer.set_particles(particle_np_swap, np.zeros(particle_np.shape[0], ) + particle_color)
+                img = plb_renderer.render_frame(20, shape=1, primitive=1, target=0)
+                img = (img * 255).astype(np.uint8)
+            else:
+                img = mpm_env.render(mode='rgb_array')
+            print("Step %i of %i, Rendering FPS: %0.2f" % (i, mpm_env.horizon, 1 / (time.time() - cur_time)), end='\r')
+
             # Image.fromarray(img).save(os.path.join(img_dir, f'img_{i}.png'))
             if save_img and i in frames_to_save:
                 frames.append(img)
@@ -73,9 +104,20 @@ def forward(mpm_env, init_state, trajectory, render=False,
                 frames_for_gifs.append(img)
 
         if render:
-            mpm_env.render(mode='human')
-            if i == 0:
-                input("Press Enter to continue...")
+            if use_plb_renderer:
+                particle_np = mpm_env.simulator.get_x()
+                particle_np_swap = np.zeros_like(particle_np)
+                particle_np_swap[:, 0] = particle_np[:, 0]
+                particle_np_swap[:, 1] = particle_np[:, 2]
+                particle_np_swap[:, 2] = particle_np[:, 1]
+                plb_renderer.set_particles(particle_np_swap, np.zeros(particle_np.shape[0], ) + particle_color)
+                img = plb_renderer.render_frame(20, shape=1, primitive=1, target=0)
+                img = (img * 255).astype(np.uint8)
+                plt.imshow(img)
+                figure.canvas.draw()
+                figure.canvas.flush_events()
+            else:
+                mpm_env.render(mode='human')
 
     loss_info = mpm_env.get_final_loss()
     for i, v in loss_info.items():

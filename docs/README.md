@@ -7,7 +7,7 @@ Robotic Manipulation of Elastoplastic Materials
 <h2 align="center">
 Code: <a href="https://github.com/IanYangChina/SI4RP-data"><img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="20" height="20"></a>
 Video: <a href="https://www.youtube.com/watch?v=2-9JWRsQhTU"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/2560px-YouTube_full-color_icon_%282017%29.svg.png" width="25" height="20"></a>
-Paper: <a href="https://arxiv.org/abs/2411.00554"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/PDF_icon.svg/1200px-PDF_icon.svg.png" width="25" height="20"></a>
+Paper: <a href="https://journals.sagepub.com/doi/full/10.1177/02783649251334661"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/PDF_icon.svg/1200px-PDF_icon.svg.png" width="25" height="20"></a>
 </h2>
 
 <p align="center">
